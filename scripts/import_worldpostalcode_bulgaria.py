@@ -1,154 +1,116 @@
 #!/usr/bin/env python3
-"""Import Bulgarian settlement/postal-code rows from WorldPostalCode.
+"""Download and normalize GeoNames' Bulgaria postal-code export.
 
-Usage:
-  python scripts/import_worldpostalcode_bulgaria.py
-
-Writes UTF-8 CSV to data/bulgaria_postal_codes.csv. This is a source-derived
-reference dataset, not an official Bulgarian postal register.
+Source: https://download.geonames.org/export/zip/BG.zip
+Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
+The source is not an official Bulgarian postal register; values are preserved
+without inventing missing municipality/settlement relationships.
 """
 from __future__ import annotations
 
 import csv
-import re
+import io
 import sys
-import time
-from collections import deque
+import urllib.request
+import zipfile
 from pathlib import Path
-from urllib.parse import urljoin, urlparse
 
-import requests
-from bs4 import BeautifulSoup
-
-BASE_URL = "https://worldpostalcode.com/bulgaria/"
+SOURCE_URL = "https://download.geonames.org/export/zip/BG.zip"
+USER_AGENT = "Spestoslav/1.0 (open postal reference data import)"
 OUTPUT = Path(__file__).resolve().parents[1] / "data" / "bulgaria_postal_codes.csv"
-USER_AGENT = "SpestoslavDataImporter/1.0 (postal-code reference import; contact: project maintainers)"
-REQUEST_DELAY_SECONDS = 0.8
-TIMEOUT_SECONDS = 25
-POSTAL_CODE = re.compile(r"^\d{4}$")
-SKIP_LABELS = {"all", "codes", "regions", "search by map", "how to find a postal code"}
 
-session = requests.Session()
-session.headers.update({"User-Agent": USER_AGENT})
-
-
-def clean(value: str) -> str:
-    return re.sub(r"\s+", " ", value).strip()
-
-
-def fetch(url: str) -> BeautifulSoup:
-    response = session.get(url, timeout=TIMEOUT_SECONDS)
-    response.raise_for_status()
-    time.sleep(REQUEST_DELAY_SECONDS)
-    return BeautifulSoup(response.text, "html.parser")
+SOURCE_FIELDS = (
+    "country_code", "postal_code", "place_name", "admin_name1", "admin_code1",
+    "admin_name2", "admin_code2", "admin_name3", "admin_code3",
+    "latitude", "longitude", "accuracy",
+)
+OUTPUT_FIELDS = (
+    "country_code", "postal_code", "place_name_source",
+    "settlement_name_bg", "settlement_name_latin",
+    "oblast_name_source", "oblast_code",
+    "municipality_name_source", "municipality_code",
+    "settlement_admin_name_source", "settlement_admin_code",
+    "latitude", "longitude", "coordinate_accuracy", "source_url",
+)
 
 
-def in_bulgaria(url: str) -> bool:
-    parsed = urlparse(url)
-    return parsed.netloc.lower() == "worldpostalcode.com" and parsed.path.startswith("/bulgaria/")
-
-
-def section_links(soup: BeautifulSoup) -> list[str]:
-    """Get links in the page's Regions section (region/municipality navigation)."""
-    heading = next(
-        (h for h in soup.find_all(["h2", "h3"]) if clean(h.get_text(" ", strip=True)).lower() == "regions"),
-        None,
-    )
-    if not heading:
-        return []
-    links: list[str] = []
-    for sibling in heading.next_siblings:
-        if getattr(sibling, "name", None) in {"h1", "h2", "h3"}:
-            break
-        if hasattr(sibling, "find_all"):
-            for anchor in sibling.find_all("a", href=True):
-                target = urljoin(BASE_URL, anchor["href"])
-                if in_bulgaria(target):
-                    links.append(target)
-    # Some layouts wrap the links in a parent between heading and next heading.
-    if not links:
-        parent = heading.parent
-        for anchor in parent.find_all("a", href=True):
-            target = urljoin(BASE_URL, anchor["href"])
-            if in_bulgaria(target):
-                links.append(target)
-    return list(dict.fromkeys(links))
-
-
-def extract_rows(soup: BeautifulSoup, page_url: str) -> list[dict[str, str]]:
-    text = soup.get_text("\n", strip=True)
-    lines = [clean(line) for line in text.splitlines() if clean(line)]
-    start = next((i for i, line in enumerate(lines) if re.search(r"\bCodes\s*$", line, re.I)), None)
-    if start is None:
-        return []
-    end = next((i for i in range(start + 1, len(lines)) if lines[i].lower() == "search by map"), len(lines))
-    region_or_municipality = clean(lines[start][:-5]).strip(" :-")
-    rows = []
-    for index in range(start + 1, end):
-        if not POSTAL_CODE.fullmatch(lines[index]):
-            continue
-        # The source presents each locality followed by its four-digit code;
-        # preceding one-letter lines are alphabetical index headings.
-        if index == start + 1:
-            continue
-        locality = lines[index - 1]
-        if len(locality) == 1 or locality.lower() in SKIP_LABELS or re.search(r"\bCodes\s*$", locality, re.I):
-            continue
-        if POSTAL_CODE.fullmatch(locality):
-            continue
-        rows.append({
-            "settlement_name": locality,
-            "postal_code": lines[index],
-            "municipality_or_region": region_or_municipality,
-            "source_url": page_url,
-        })
-    return rows
+def split_bilingual(value: str) -> tuple[str, str]:
+    """Split only the explicit 'Bulgarian / Latin' convention; otherwise preserve."""
+    value = value.strip()
+    if " / " in value:
+        left, right = value.split(" / ", 1)
+        return left.strip(), right.strip()
+    return value, ""
 
 
 def main() -> int:
-    queue = deque([BASE_URL])
-    visited: set[str] = set()
-    records: dict[tuple[str, str, str], dict[str, str]] = {}
-    errors: list[tuple[str, str]] = []
-
-    while queue:
-        url = queue.popleft()
-        if url in visited:
-            continue
-        visited.add(url)
-        try:
-            soup = fetch(url)
-            for row in extract_rows(soup, url):
-                key = (
-                    row["settlement_name"].casefold(),
-                    row["postal_code"],
-                    row["municipality_or_region"].casefold(),
-                )
-                records[key] = row
-            for child in section_links(soup):
-                if child not in visited:
-                    queue.append(child)
-            print(f"[ok] {url} ({len(extract_rows(soup, url))} rows; {len(visited)} pages visited)")
-        except requests.RequestException as exc:
-            errors.append((url, str(exc)))
-            print(f"[error] {url}: {exc}", file=sys.stderr)
-
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    fields = ["settlement_name", "postal_code", "municipality_or_region", "source_url"]
-    with OUTPUT.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(sorted(records.values(), key=lambda r: (r["settlement_name"].casefold(), r["postal_code"])))
-
-    print(f"\nVisited {len(visited)} pages; wrote {len(records)} unique rows to {OUTPUT}")
-    if errors:
-        error_path = OUTPUT.with_name("worldpostalcode_import_errors.txt")
-        error_path.write_text("\n".join(f"{url}\t{error}" for url, error in errors) + "\n", encoding="utf-8")
-        print(f"{len(errors)} page errors recorded in {error_path}", file=sys.stderr)
+    request = urllib.request.Request(
+        SOURCE_URL, headers={"User-Agent": USER_AGENT}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:
+            archive_bytes = response.read()
+        with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
+            member = next((n for n in archive.namelist() if n.lower().endswith(".txt")), None)
+            if member is None:
+                raise ValueError("GeoNames archive contains no .txt data file")
+            raw = archive.read(member).decode("utf-8")
+    except Exception as exc:
+        print(f"Download/read failed: {exc}", file=sys.stderr)
         return 2
-    if not records:
-        print("No postal-code rows were extracted. Review the source markup before using the output.", file=sys.stderr)
+
+    rows: list[dict[str, str]] = []
+    for line_number, line in enumerate(raw.splitlines(), 1):
+        if not line.strip():
+            continue
+        values = line.split("\t")
+        if len(values) != len(SOURCE_FIELDS):
+            print(f"Skipping malformed line {line_number}: {len(values)} columns", file=sys.stderr)
+            continue
+        item = dict(zip(SOURCE_FIELDS, values))
+        if item["country_code"] != "BG":
+            continue
+        bg_name, latin_name = split_bilingual(item["place_name"])
+        rows.append({
+            "country_code": item["country_code"],
+            "postal_code": item["postal_code"],
+            "place_name_source": item["place_name"],
+            "settlement_name_bg": bg_name,
+            "settlement_name_latin": latin_name,
+            "oblast_name_source": item["admin_name1"],
+            "oblast_code": item["admin_code1"],
+            "municipality_name_source": item["admin_name2"],
+            "municipality_code": item["admin_code2"],
+            "settlement_admin_name_source": item["admin_name3"],
+            "settlement_admin_code": item["admin_code3"],
+            "latitude": item["latitude"],
+            "longitude": item["longitude"],
+            "coordinate_accuracy": item["accuracy"],
+            "source_url": SOURCE_URL,
+        })
+
+    if not rows:
+        print("No Bulgaria records found; output was not replaced.", file=sys.stderr)
         return 1
+
+    rows.sort(key=lambda r: (
+        r["settlement_name_bg"].casefold(),
+        r["oblast_name_source"].casefold(),
+        r["municipality_name_source"].casefold(),
+        r["postal_code"],
+    ))
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
+    with OUTPUT.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=OUTPUT_FIELDS)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    missing_municipality = sum(not r["municipality_name_source"] for r in rows)
+    missing_settlement_admin = sum(not r["settlement_admin_name_source"] for r in rows)
+    print(f"Wrote {len(rows)} GeoNames Bulgaria rows to {OUTPUT}")
+    print(f"Rows missing municipality label: {missing_municipality}")
+    print(f"Rows missing settlement-level admin label: {missing_settlement_admin}")
+    print("No missing administrative values were inferred or filled.")
     return 0
 
 
