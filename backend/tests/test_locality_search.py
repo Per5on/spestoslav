@@ -39,8 +39,6 @@ def setup_function():
                 type="CITY",
                 municipality="Столична",
                 region="София (столица)",
-                latitude=42.6977,
-                longitude=23.3219,
                 on_map=True,
             )
         )
