@@ -54,26 +54,35 @@ def search_localities(
         return []
 
     normalized = term.casefold()
-    contains = f"%{normalized}%"
-    starts_with = f"{normalized}%"
+    # Bulgarian transliterations vary (e.g. София is commonly written Sofia,
+    # while GeoNames stores Sofija). Search common "ia" -> "ija" variants too.
+    latin_terms = {normalized, normalized.replace("ia", "ija")}
+    contains_patterns = [f"%{value}%" for value in latin_terms]
+    starts_with_patterns = [f"{value}%" for value in latin_terms]
     postal_matches = select(LocalityPostalCode.locality_id).where(
         LocalityPostalCode.postal_code.like(f"{term}%")
     )
 
+    text_matches = [
+        func.lower(Locality.name).like(pattern)
+        for pattern in contains_patterns
+    ] + [
+        func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
+        for pattern in contains_patterns
+    ] + [
+        func.lower(func.coalesce(Locality.name_bg, "")).like(f"%{normalized}%")
+    ]
+
     localities = db.scalars(
         select(Locality)
         .where(Locality.on_map.is_(True))
-        .where(
-            or_(
-                func.lower(Locality.name).like(contains),
-                func.lower(func.coalesce(Locality.name_bg, "")).like(contains),
-                func.lower(func.coalesce(Locality.name_latin, "")).like(contains),
-                Locality.id.in_(postal_matches),
-            )
-        )
+        .where(or_(*text_matches, Locality.id.in_(postal_matches)))
         .order_by(
             (func.lower(func.coalesce(Locality.name_bg, "")) == normalized).desc(),
-            (func.lower(func.coalesce(Locality.name_bg, "")).like(starts_with)).desc(),
+            or_(*[
+                func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
+                for pattern in starts_with_patterns
+            ]).desc(),
             Locality.name_bg,
             Locality.name,
         )
