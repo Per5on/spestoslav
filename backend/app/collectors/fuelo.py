@@ -7,7 +7,6 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import os
 import time
-from urllib.parse import urlsplit
 import httpx
 
 

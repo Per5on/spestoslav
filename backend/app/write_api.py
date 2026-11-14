@@ -3,7 +3,6 @@
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 import hashlib
-import json
 from urllib.parse import urlsplit
 from uuid import UUID
 
@@ -23,7 +22,7 @@ from sqlalchemy.orm import Session
 from .auth import Principal, admin_user, auth_base_url, collector_user, current_user
 from .db import get_db
 from .models import Category, Product, Retailer, StoreBranch, PriceObservation
-from .marketplace import CurrentPrice, PriceCache, ProductBarcode, Promotion
+from .marketplace import CurrentPrice, PriceCache, ProductBarcode
 from .workflows import ReviewSubmission, CollectionSource, ProductImage
 
 router = APIRouter(prefix="/api/v1")

@@ -15,7 +15,7 @@ from .db import get_db
 from .models import Category, Product, Retailer, StoreBranch, PriceObservation
 from .marketplace import CurrentPrice, ProductBarcode
 from .workflows import ProductIdentificationRequest, ProductImage, NationalOffer
-from .write_api import Input, ProductInput, PriceInput
+from .write_api import Input, ProductInput
 
 router = APIRouter(prefix="/api/v1")
 

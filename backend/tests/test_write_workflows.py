@@ -1,9 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from io import BytesIO
 from decimal import Decimal
-import uuid
 
-from fastapi.testclient import TestClient
 from PIL import Image
 import pytest
 from sqlalchemy import select
@@ -12,10 +10,9 @@ import test_locality_search as fixtures
 from app.main import app
 from app.db import get_db
 from app.auth import Principal, current_user
-from app.marketplace import CurrentPrice, PriceCache, ReceiptScan
+from app.marketplace import PriceCache
 from app.models import Product, StoreBranch
 from app.receipt_worker import process_one
-from app.receipts import ReceiptStorage
 
 
 @pytest.fixture(autouse=True)

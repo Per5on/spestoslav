@@ -1,6 +1,5 @@
 """Private receipt upload and owner-scoped retrieval; OCR runs in a worker."""
 
-from datetime import datetime
 import hashlib
 from io import BytesIO
 import os
@@ -15,11 +14,18 @@ from PIL import Image, UnidentifiedImageError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from .auth import current_user, admin_user
+from .auth import current_user
 from .db import get_db
 from .models import StoreBranch
 from .marketplace import ReceiptScan, ReceiptItem
 from .workflows import ReceiptJob
+from .write_api import PriceInput
+
+
+class ReceiptPriceInput(PriceInput):
+    # The server always replaces this with its own receipt/item reference.
+    source_reference: str = ""
+
 
 router = APIRouter(prefix="/api/v1/receipts")
 MAX_BYTES = 8 * 1024 * 1024
@@ -41,6 +47,9 @@ class ReceiptStorage:
                 endpoint_url=os.getenv("RECEIPT_S3_ENDPOINT")
                 or os.getenv("AWS_ENDPOINT_URL_S3")
                 or None,
+                region_name=os.getenv(
+                    "AWS_REGION", os.getenv("AWS_DEFAULT_REGION", "eu-central-1")
+                ),
                 config=Config(
                     signature_version="s3v4",
                     s3={"addressing_style": "path"},
@@ -185,7 +194,7 @@ def receipt(
 def submit_receipt_price(
     scan_id: uuid.UUID,
     item_id: uuid.UUID,
-    payload: dict,
+    payload: ReceiptPriceInput,
     principal=Depends(current_user),
     db: Session = Depends(get_db),
 ):
@@ -213,7 +222,10 @@ def submit_receipt_price(
         raise HTTPException(409, "Receipt extraction is not ready for review")
     try:
         data = PriceInput.model_validate(
-            dict(payload, source_reference=f"receipt:{scan_id}:item:{item_id}")
+            dict(
+                payload.model_dump(),
+                source_reference=f"receipt:{scan_id}:item:{item_id}",
+            )
         )
     except ValidationError:
         raise HTTPException(

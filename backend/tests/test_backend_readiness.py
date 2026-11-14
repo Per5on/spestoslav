@@ -2,15 +2,12 @@
 
 from datetime import datetime, timedelta, timezone
 import pytest
-from sqlalchemy import select, update
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import load_only
-from fastapi.testclient import TestClient
+from sqlalchemy import update
 
 import test_locality_search as fixtures
 from app.db import get_db, normalize_database_url
 from app.main import app
-from app.models import Category, Product, Retailer, StoreBranch, Locality
+from app.models import Category, Product, Retailer, StoreBranch
 from app.marketplace import CurrentPrice, Promotion
 
 

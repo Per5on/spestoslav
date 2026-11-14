@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session, load_only
 from .db import get_db
 from .models import Category, Locality, LocalityPostalCode, Product, Retailer, StoreBranch
 from .marketplace import CurrentPrice, ProductBarcode, Promotion
-from .workflows import ReviewSubmission,ReceiptJob,CollectionSource,ProductImage
+from .workflows import ReviewSubmission,ReceiptJob,CollectionSource,ProductImage,NationalOffer,ProductIdentificationRequest
 
 app = FastAPI(title="Спестослав API", version="0.4.0")
 
@@ -45,6 +45,7 @@ def readiness(db: Session = Depends(get_db)):
             select(StoreBranch).limit(1),
             select(Product).limit(1),select(CurrentPrice).limit(1), select(Promotion).limit(1),
             select(ReviewSubmission.id).limit(1),select(ReceiptJob.id).limit(1),select(CollectionSource.code).limit(1),
+            select(ProductImage.product_id).limit(1),select(NationalOffer.id).limit(1),select(ProductIdentificationRequest.id).limit(1),
         ):
             db.execute(statement)
     except SQLAlchemyError:
