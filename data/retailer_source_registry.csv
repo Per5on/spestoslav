@@ -4,9 +4,9 @@ lidl,Lidl,groceries,https://www.lidl.bg/,https://www.lidl.bg/s/bg-BG/magazini/,L
 billa,BILLA,groceries,https://www.billa.bg/,https://www.billa.bg/magazini,LOCATOR_CONFIRMED
 cba,CBA,groceries,https://www.cba.bg/,,NEEDS_LOCATOR_URL
 fantastico,Fantastico,groceries,https://www.fantastico.bg/,https://www.fantastico.bg/shops,LOCATOR_CONFIRMED
-metro,METRO,groceries,https://www.metro.bg/,,NEEDS_LOCATOR_URL
-t_market,T MARKET,groceries,https://tmarket.bg/,,NEEDS_LOCATOR_URL
-promarket,ProMarket,groceries,https://promarket.bg/,,NEEDS_LOCATOR_URL
+metro,METRO,groceries,https://www.metro.bg/,https://www.metro.bg/magazini,LOCATOR_CONFIRMED
+t_market,T MARKET,groceries,https://tmarket.bg/,https://tmarket.bg/,LOCATOR_INTERACTIVE_HOME
+promarket,ProMarket,groceries,https://promarket.bg/,https://promarket.bg/shops/,LOCATOR_CONFIRMED
 moyat_magazin,Моят магазин,groceries,,,NEEDS_SOURCE
 burlex,Burlex,groceries,,,NEEDS_SOURCE
 klasiko,Klasiko,groceries,,,NEEDS_SOURCE
