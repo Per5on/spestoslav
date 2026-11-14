@@ -13,27 +13,27 @@ klasiko,Klasiko,groceries,https://www.klasiko.bg/,https://www.klasiko.bg/bg/info
 hit_max,HIT Max,groceries,https://www.hit-max.bg/,https://www.hit-max.bg/elements/pages/our-stores/,LOCATOR_CONFIRMED
 abc_market,ABC Market,groceries,,,NEEDS_SOURCE
 mini_mart,Mini Mart,groceries,https://minimart.bg/,,NEEDS_LOCATOR_URL
-eko,EKO,fuel,https://www.eko.bg/,,NEEDS_LOCATOR_URL
+eko,EKO,fuel,https://www.eko.bg/,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,LOCATOR_CONFIRMED
 insa_oil,Insa Oil,fuel,https://insa-oil.com/,,NEEDS_LOCATOR_URL
 lukoil,LUKOIL,fuel,https://lukoil.bg/,,NEEDS_LOCATOR_URL
 omv,OMV,fuel,https://www.omv.bg/,,NEEDS_LOCATOR_URL
 petrol,Petrol,fuel,https://www.petrol.bg/,,NEEDS_LOCATOR_URL
 rompetrol,Rompetrol,fuel,https://www.rompetrol.bg/,,NEEDS_LOCATOR_URL
-shell,Shell,fuel,https://www.shell.bg/,,NEEDS_LOCATOR_URL
-bauhaus,Bauhaus,home,https://www.bauhaus.bg/,,NEEDS_LOCATOR_URL
+shell,Shell,fuel,https://www.shell.bg/,https://www.shell.bg/shell-service-stations/shell-station-locator.html,LOCATOR_CONFIRMED
+bauhaus,Bauhaus,home,https://www.bauhaus.bg/,https://www.bauhaus.bg/,LOCATOR_NEEDS_REVIEW
 homemax,HomeMax,home,https://www.home-max.bg/,,NEEDS_LOCATOR_URL
-ikea,IKEA,home,https://www.ikea.bg/,,NEEDS_LOCATOR_URL
+ikea,IKEA,home,https://www.ikea.bg/,https://www.ikea.bg/stores,LOCATOR_CONFIRMED
 jysk,JYSK,home,https://jysk.bg/,,NEEDS_LOCATOR_URL
 mondo,Mondo,home,,,NEEDS_SOURCE
-mr_bricolage,Mr. Bricolage,home,https://mr-bricolage.bg/,,NEEDS_LOCATOR_URL
-praktiker,Praktiker,home,https://praktiker.bg/,,NEEDS_LOCATOR_URL
-videnov,Мебели Виденов,home,https://videnov.bg/,,NEEDS_LOCATOR_URL
+mr_bricolage,Mr. Bricolage,home,https://mr-bricolage.bg/,https://mr-bricolage.bg/stores,LOCATOR_CONFIRMED
+praktiker,Praktiker,home,https://praktiker.bg/,https://praktiker.bg/stores,LOCATOR_CONFIRMED
+videnov,Мебели Виденов,home,https://videnov.bg/,https://videnov.bg/stores,LOCATOR_CONFIRMED
 praktis,Практис,home,https://praktis.bg/,,NEEDS_LOCATOR_URL
 technopolis,Technopolis,technology,https://www.technopolis.bg/,https://www.technopolis.bg/stores,LOCATOR_CONFIRMED
 technomarket,Technomarket,technology,https://www.technomarket.bg/,https://www.technomarket.bg/magazini,LOCATOR_CONFIRMED
 zora,Зора,technology,https://zora.bg/,https://zora.bg/stores,LOCATOR_CONFIRMED
 ardes,Ardes,technology,https://ardes.bg/,,NEEDS_LOCATOR_URL
-jar_computers,Jar Computers,technology,https://www.jarcomputers.com/,,NEEDS_LOCATOR_URL
+jar_computers,Jar Computers,technology,https://www.jarcomputers.com/,https://www.jarcomputers.com/stores/,LOCATOR_CONFIRMED
 plasico,Plasico,technology,https://plasico.bg/,,NEEDS_LOCATOR_URL
 plesio,Plesio,technology,https://plesio.bg/,,NEEDS_LOCATOR_URL
 vali,Вали,technology,https://www.vali.bg/,,NEEDS_LOCATOR_URL
