@@ -7,7 +7,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
 from app.main import app
-from app.models import Locality, LocalityPostalCode
+from app.models import Locality, LocalityPostalCode, Category, Product, Retailer, StoreBranch\nfrom app.marketplace import CurrentPrice, ProductBarcode, Promotion\nfrom datetime import datetime, timedelta, timezone
 
 engine = create_engine(
     "sqlite://",
@@ -49,6 +49,19 @@ def setup_function():
                 source="TEST",
             )
         )
+
+        db.add(Category(code="FOOD", name_bg="Храни", name_en="Food"))
+        db.add(Retailer(code="TEST", name="Test Market", category_code="FOOD"))
+        product_id, branch_id = uuid.uuid4(), uuid.uuid4()
+        db.add(Product(id=product_id, category_code="FOOD", barcode="3800000000000",
+            name="Test product", normalized_name="test product"))
+        db.add(ProductBarcode(product_id=product_id, barcode="3800000000000", source="TEST", verified=True))
+        db.add(StoreBranch(id=branch_id, retailer_code="TEST", locality_id=locality_id, address="Main street 1"))
+        db.add(CurrentPrice(product_id=product_id, branch_id=branch_id, price_eur=1.25,
+            source="TEST", verified_at=datetime.now(timezone.utc)))
+        db.add(Promotion(product_id=product_id, branch_id=branch_id, promotional_price_eur=0.99,
+            regular_price_eur=1.25, starts_at=datetime.now(timezone.utc)-timedelta(days=1),
+            ends_at=datetime.now(timezone.utc)+timedelta(days=1), source="TEST", verified=True))
         db.commit()
 
 
@@ -87,3 +100,24 @@ def test_search_by_postal_code():
     response = client.get("/api/v1/localities", params={"q": "1000"})
     assert response.status_code == 200
     assert response.json()[0]["postal_codes"] == ["1000"]
+
+
+def test_barcode_lookup():
+    response = client.get("/api/v1/products/barcode/3800000000000")
+    assert response.status_code == 200
+    assert response.json()["name"] == "Test product"
+
+
+def test_store_list_is_limited_to_registered_active_branches():
+    locality_id = client.get("/api/v1/localities", params={"q": "София"}).json()[0]["id"]
+    response = client.get("/api/v1/stores", params={"locality_id": locality_id})
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    assert response.json()[0]["retailer_name"] == "Test Market"
+
+
+def test_current_prices_and_promotions():
+    assert len(client.get("/api/v1/prices/current").json()) == 1
+    offers = client.get("/api/v1/promotions").json()
+    assert len(offers) == 1
+    assert offers[0]["promotional_price_eur"] == 0.99
