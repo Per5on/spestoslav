@@ -1,28 +1,40 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException, Query
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from .db import get_db
+from .models import Category, Locality
 
-app = FastAPI(title="Спестослав API", version="0.1.0")
+app = FastAPI(title="Спестослав API", version="0.2.0")
 
-
-class Category(BaseModel):
+class CategoryResponse(BaseModel):
     code: str
     name_bg: str
     name_en: str
 
-
-CATEGORIES = [
-    Category(code="food", name_bg="Храни", name_en="Food"),
-    Category(code="fuel", name_bg="Горива", name_en="Fuel"),
-    Category(code="home", name_bg="Дом", name_en="Home"),
-    Category(code="technology", name_bg="Техника", name_en="Technology"),
-]
-
+class LocalityResponse(BaseModel):
+    id: str
+    name: str
+    name_bg: str | None = None
+    postal_code: str | None = None
+    type: str
+    municipality: str | None = None
+    region: str | None = None
 
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "spestoslav-api"}
 
+@app.get("/api/v1/categories", response_model=list[CategoryResponse])
+def categories(db: Session = Depends(get_db)):
+    rows = db.scalars(select(Category).where(Category.active.is_(True)).order_by(Category.sort_order)).all()
+    return [CategoryResponse(code=r.code, name_bg=r.name_bg, name_en=r.name_en) for r in rows]
 
-@app.get("/api/v1/categories", response_model=list[Category])
-def categories():
-    return CATEGORIES
+@app.get("/api/v1/localities", response_model=list[LocalityResponse])
+def search_localities(q: str = Query(min_length=2, max_length=80), db: Session = Depends(get_db)):
+    term = q.strip()
+    if len(term) < 2:
+        return []
+    pattern = f"%{term}%"
+    rows = db.scalars(select(Locality).where(Locality.on_map.is_(True)).where(or_(func.lower(Locality.name).like(pattern.lower()), func.lower(func.coalesce(Locality.name_bg, "")).like(pattern.lower()), Locality.postal_code == term)).order_by((func.lower(Locality.name) == term.lower()).desc(), Locality.name).limit(20)).all()
+    return [LocalityResponse(id=str(r.id), name=r.name, name_bg=r.name_bg, postal_code=r.postal_code, type=r.type, municipality=r.municipality, region=r.region) for r in rows]
