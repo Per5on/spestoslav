@@ -1,9 +1,6 @@
 name: Android preview APK
 on:
   workflow_dispatch:
-  push:
-    branches: ["codex/android-preview-*"]
-    paths: ["mobile/**", ".github/workflows/android-preview.yml"]
   pull_request:
     paths: ["mobile/**", ".github/workflows/android-preview.yml"]
 permissions:
@@ -62,6 +59,7 @@ jobs:
             adb install mobile/spestovnik-preview-001.apk
             cd mobile && python3 scripts/smoke-android.py
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: spestovnik-preview-001
           path: |
