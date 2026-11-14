@@ -23,7 +23,7 @@ def identity_id(row):
         row["municipality_code"].strip(),
         row["oblast_code"].strip(),
     ))
-    return hashlib.sha256(identity.encode("utf-8")).hexdigest()[:32]
+    return hashlib.md5(identity.encode("utf-8")).hexdigest()
 
 def main():
     if SessionLocal is None:
