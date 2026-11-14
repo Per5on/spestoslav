@@ -23,6 +23,9 @@ class Locality(Base):
     source_id: Mapped[str] = mapped_column(String(100), nullable=False)
     name: Mapped[str] = mapped_column(String(180), nullable=False)
     name_bg: Mapped[str | None] = mapped_column(String(180))
+    name_latin: Mapped[str | None] = mapped_column(String(180))
+    municipality_code: Mapped[str | None] = mapped_column(String(20))
+    region_code: Mapped[str | None] = mapped_column(String(12))
     postal_code: Mapped[str | None] = mapped_column(String(12))
     type: Mapped[str] = mapped_column(String(24), nullable=False, default="OTHER")
     municipality: Mapped[str | None] = mapped_column(String(160))
@@ -84,3 +87,12 @@ class UserSubmission(Base):
     locality_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("inhabited_localities.id"))
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDING")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class LocalityPostalCode(Base):
+    __tablename__ = "locality_postal_codes"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    locality_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("inhabited_localities.id", ondelete="CASCADE"), nullable=False)
+    postal_code: Mapped[str] = mapped_column(String(12), nullable=False)
+    source: Mapped[str] = mapped_column(String(40), nullable=False, default="GEONAMES")
+    __table_args__ = (UniqueConstraint("locality_id", "postal_code", name="uq_locality_postal_code"),)
