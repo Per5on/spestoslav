@@ -100,6 +100,27 @@ def main() -> int:
         print("No Bulgaria records found; output was not replaced.", file=sys.stderr)
         return 1
 
+    # Keep only rows with the fields required for the app's locality picker.
+    # Settlement-admin labels are intentionally not required.
+    required_fields = (
+        "postal_code",
+        "settlement_name_bg",
+        "settlement_name_latin",
+        "oblast_name_source",
+        "oblast_code",
+        "municipality_name_source",
+        "municipality_code",
+    )
+    source_row_count = len(rows)
+    rows = [
+        row for row in rows
+        if all(row[field].strip() for field in required_fields)
+    ]
+    excluded_incomplete = source_row_count - len(rows)
+    if not rows:
+        print("No complete locality rows remain; output was not replaced.", file=sys.stderr)
+        return 1
+
     rows.sort(key=lambda r: (
         r["settlement_name_bg"].casefold(),
         r["oblast_name_source"].casefold(),
@@ -114,10 +135,12 @@ def main() -> int:
 
     missing_municipality = sum(not r["municipality_name_source"] for r in rows)
     missing_settlement_admin = sum(not r["settlement_admin_name_source"] for r in rows)
-    print(f"Wrote {len(rows)} GeoNames Bulgaria rows to {OUTPUT}")
-    print(f"Rows missing municipality label: {missing_municipality}")
-    print(f"Rows missing settlement-level admin label: {missing_settlement_admin}")
-    print("No missing administrative values were inferred or filled.")
+    print(f"Source rows: {source_row_count}")
+    print(f"Excluded rows missing required locality fields: {excluded_incomplete}")
+    print(f"Wrote {len(rows)} complete GeoNames Bulgaria rows to {OUTPUT}")
+    print(f"Rows missing municipality label in output: {missing_municipality}")
+    print(f"Rows missing settlement-level admin label (not required): {missing_settlement_admin}")
+    print("No missing values were inferred or filled.")
     return 0
 
 
