@@ -14,16 +14,13 @@ concurrency:
 
 jobs:
   receipt-ocr:
-    if: vars.BACKEND_WORKERS_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 12
+    permissions:
+      contents: read
+      id-token: write
     env:
-      DATABASE_URL: ${{ secrets.BACKEND_WORKER_DATABASE_URL }}
-      AWS_ENDPOINT_URL_S3: ${{ secrets.RECEIPT_S3_ENDPOINT }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.RECEIPT_S3_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.RECEIPT_S3_SECRET_ACCESS_KEY }}
-      AWS_REGION: eu-central-1
-      RECEIPT_S3_BUCKET: receipts
+      API_BASE_URL: https://spestoslav-api.onrender.com
       OCR_LANGUAGES: bul+eng
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +29,7 @@ jobs:
           python-version: '3.12'
       - run: sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr tesseract-ocr-bul
       - run: pip install -r backend/requirements.txt
-      - run: cd backend && python -m app.receipt_worker --once --max-jobs 10
+      - run: python scripts/run_remote_receipt_worker.py --max-jobs 10
   fuelo:
     if: vars.FUELO_COLLECTION_ENABLED == 'true'
     runs-on: ubuntu-latest

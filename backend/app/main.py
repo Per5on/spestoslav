@@ -9,7 +9,7 @@ from .models import Category, Locality, LocalityPostalCode, Product, Retailer, S
 from .marketplace import CurrentPrice, ProductBarcode, Promotion
 from .workflows import ReviewSubmission,ReceiptJob,CollectionSource,ProductImage,NationalOffer,ProductIdentificationRequest
 
-app = FastAPI(title="Спестослав API", version="0.4.0")
+app = FastAPI(title="Спестослав API", version="0.4.1")
 
 
 class CategoryResponse(BaseModel):
@@ -313,3 +313,6 @@ app.include_router(catalog_router)
 
 from .demo_api import router as demo_router
 app.include_router(demo_router)
+
+from .worker_api import router as worker_router
+app.include_router(worker_router)
