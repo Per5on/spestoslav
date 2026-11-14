@@ -25,8 +25,10 @@ The CSV preserves the GeoNames source value and provides separate Bulgarian/Lati
 
 - `oblast_name_source`: GeoNames admin_name1
 - `municipality_name_source`: GeoNames admin_name2
-- `settlement_admin_name_source`: GeoNames admin_name3 (partially populated upstream)
+- `settlement_admin_name_source`: GeoNames admin_name3 (a settlement-level administrative grouping in some records; partially populated upstream, not the locality name)
 - Corresponding source codes are retained where provided.
+
+The locality name comes from GeoNames `place_name`. Do not substitute `admin_name3` for it: one administrative grouping can contain several distinct localities. Rows without an explicit Bulgarian/Latin name pair are excluded by the importer rather than having transliterations guessed.
 
 Missing values remain empty. Do not derive a municipality or settlement from a page title, postal-code prefix, or neighbouring record.
 
@@ -34,7 +36,7 @@ Missing values remain empty. Do not derive a municipality or settlement from a p
 
 - GeoNames is a reference dataset, not the Bulgarian Posts' authoritative register.
 - GeoNames reports 5,304 Bulgaria postal-code records in its current catalogue; the number of records is not the number of unique settlements.
-- The same settlement name or postal code can occur in multiple municipalities. Do not deduplicate by name or postal code alone.
+- The same postal code can be associated with multiple localities, and one administrative grouping can cover multiple localities. Do not deduplicate by postal code or `admin_name3`.
 - The settlement-level administrative field is incomplete in the upstream data. Keep it nullable and use an official EKATTE register as the settlement identity/master-data source.
 - Review row counts and missing-field counts after every refresh. A successful download does not prove completeness or postal accuracy.
 
