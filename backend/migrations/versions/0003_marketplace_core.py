@@ -9,9 +9,16 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
-    op.add_column("store_branches", sa.Column("postal_code", sa.String(12)))
-    op.add_column("store_branches", sa.Column("latitude", sa.Numeric(9,6)))
-    op.add_column("store_branches", sa.Column("longitude", sa.Numeric(9,6)))
+    columns = {column["name"] for column in sa.inspect(op.get_bind()).get_columns("store_branches")}
+    if "locality_id" not in columns:
+        op.add_column("store_branches", sa.Column("locality_id", postgresql.UUID(as_uuid=True),
+            sa.ForeignKey("inhabited_localities.id"), nullable=True))
+    if "postal_code" not in columns:
+        op.add_column("store_branches", sa.Column("postal_code", sa.String(12)))
+    if "latitude" not in columns:
+        op.add_column("store_branches", sa.Column("latitude", sa.Numeric(9,6)))
+    if "longitude" not in columns:
+        op.add_column("store_branches", sa.Column("longitude", sa.Numeric(9,6)))
     op.create_table("product_barcodes",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column("product_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("products.id", ondelete="CASCADE"), nullable=False),
@@ -69,6 +76,12 @@ def downgrade():
     op.drop_table("price_cache")
     op.drop_table("current_prices")
     op.drop_table("product_barcodes")
-    op.drop_column("store_branches","longitude")
-    op.drop_column("store_branches","latitude")
-    op.drop_column("store_branches","postal_code")
+    columns = {column["name"] for column in sa.inspect(op.get_bind()).get_columns("store_branches")}
+    if "longitude" in columns:
+        op.drop_column("store_branches","longitude")
+    if "latitude" in columns:
+        op.drop_column("store_branches","latitude")
+    if "postal_code" in columns:
+        op.drop_column("store_branches","postal_code")
+    if "locality_id" in columns:
+        op.drop_column("store_branches","locality_id")
