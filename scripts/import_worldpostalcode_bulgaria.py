@@ -73,7 +73,7 @@ def main() -> int:
         item = dict(zip(SOURCE_FIELDS, values))
         if item["country_code"] != "BG":
             continue
-        bg_name, latin_name = split_bilingual(item["place_name"])
+        # admin_name3 is the settlement-level administrative name and is\n        # bilingual in GeoNames when supplied. Prefer it over place_name,\n        # which is sometimes Latin-only. Fall back to place_name only when\n        # the settlement-level field is absent.\n        settlement_name_source = item["admin_name3"].strip() or item["place_name"].strip()\n        bg_name, latin_name = split_bilingual(settlement_name_source)
         rows.append({
             "country_code": item["country_code"],
             "postal_code": item["postal_code"],
