@@ -19,7 +19,7 @@ engine = create_engine(
 @event.listens_for(engine, "connect")
 def register_unicode_lower(dbapi_connection, _connection_record):
     dbapi_connection.create_function(
-        "lower", 1, lambda value: value.casefold() if value is not None else None
+        "lower", 1, lambda value: value.casefold() if value is not None else None, deterministic=True
     )
 
 

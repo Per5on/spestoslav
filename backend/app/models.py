@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Numeric, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, Index, ForeignKey, Numeric, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from .db import Base
@@ -31,7 +31,11 @@ class Locality(Base):
     municipality: Mapped[str | None] = mapped_column(String(160))
     region: Mapped[str | None] = mapped_column(String(160))
     on_map: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    __table_args__ = (UniqueConstraint("source", "source_id", name="uq_inhabited_locality_source"),)
+    __table_args__ = (
+        UniqueConstraint("source", "source_id", name="uq_inhabited_locality_source"),
+        Index("ix_localities_name_lower", func.lower(name)),
+        Index("ix_localities_postal_code", "postal_code"),
+    )
 
 class Retailer(Base):
     __tablename__ = "catalog_retailers"
@@ -45,7 +49,8 @@ class Product(Base):
     __tablename__ = "products"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     category_code: Mapped[str] = mapped_column(ForeignKey("product_categories.code"), nullable=False)
-    barcode: Mapped[str | None] = mapped_column(String(64))
+    barcode: Mapped[str | None] = mapped_column(String(64), index=False)
+    __table_args__ = (Index("ix_products_barcode", "barcode"),)
     brand: Mapped[str | None] = mapped_column(String(160))
     name: Mapped[str] = mapped_column(String(300), nullable=False)
     variant: Mapped[str | None] = mapped_column(String(200))
@@ -62,11 +67,12 @@ class StoreBranch(Base):
     branch_name: Mapped[str | None] = mapped_column(String(160))
     address: Mapped[str] = mapped_column(String(300), nullable=False)
     postal_code: Mapped[str | None] = mapped_column(String(12))
-    latitude: Mapped[float | None] = mapped_column(Float)
+    latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
     longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
     source: Mapped[str] = mapped_column(String(40), nullable=False, default="MANUAL")
     source_id: Mapped[str | None] = mapped_column(String(100))
     active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    __table_args__ = (Index("ix_branch_locality", "locality_id", "active"),)
 
 class PriceObservation(Base):
     __tablename__ = "price_observations"
@@ -81,6 +87,7 @@ class PriceObservation(Base):
     valid_from: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     valid_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     collected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (CheckConstraint("price_eur > 0", name="ck_price_positive"),)
 
 class UserSubmission(Base):
     __tablename__ = "user_submissions"
@@ -91,6 +98,8 @@ class UserSubmission(Base):
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="PENDING")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
 
 class LocalityPostalCode(Base):
     __tablename__ = "locality_postal_codes"
@@ -98,4 +107,4 @@ class LocalityPostalCode(Base):
     locality_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("inhabited_localities.id", ondelete="CASCADE"), nullable=False)
     postal_code: Mapped[str] = mapped_column(String(12), nullable=False)
     source: Mapped[str] = mapped_column(String(40), nullable=False, default="GEONAMES")
-    __table_args__ = (UniqueConstraint("locality_id", "postal_code", name="uq_locality_postal_code"),)
+    __table_args__ = (UniqueConstraint("locality_id", "postal_code", name="uq_locality_postal_code"), Index("ix_locality_postal_code_value", "postal_code"))

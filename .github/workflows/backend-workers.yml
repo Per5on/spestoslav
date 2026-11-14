@@ -1,0 +1,50 @@
+name: Backend collection and receipt workers
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-workers
+  cancel-in-progress: false
+
+jobs:
+  receipt-ocr:
+    if: vars.BACKEND_WORKERS_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      DATABASE_URL: ${{ secrets.BACKEND_WORKER_DATABASE_URL }}
+      AWS_ENDPOINT_URL_S3: ${{ secrets.RECEIPT_S3_ENDPOINT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.RECEIPT_S3_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.RECEIPT_S3_SECRET_ACCESS_KEY }}
+      AWS_REGION: eu-central-1
+      RECEIPT_S3_BUCKET: receipts
+      OCR_LANGUAGES: bul+eng
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr tesseract-ocr-bul
+      - run: pip install -r backend/requirements.txt
+      - run: cd backend && python -m app.receipt_worker --once --max-jobs 10
+  fuelo:
+    if: vars.FUELO_COLLECTION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FUELO_API_KEY: ${{ secrets.FUELO_API_KEY }}
+      API_BASE_URL: ${{ vars.API_BASE_URL }}
+      COLLECTOR_API_KEY: ${{ secrets.COLLECTOR_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.txt
+      - run: python scripts/collect_fuelo.py --mapping data/fuelo_station_mappings.json

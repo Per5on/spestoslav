@@ -11,3 +11,8 @@
 | OSM incompleteness | OSM is supplementary, not the sole authoritative locality/postal-code registry. |
 | Price verification | Provenance and timestamps are retained; new observations default to unverified; EUR only. |
 | Reference website | Correct reference is `https://avtogararuse.org/index.cgi`; the form contains “Тръгва от” and “Пристига в” select controls. Adapt its selection pattern to one shared locality selector. |
+
+
+## Current backend verification
+
+The table above records historical preparation status. Current implementation and exact verification/rollout scope are tracked in `../BACKEND_READINESS.md`; frontend requirements are in `../FRONTEND_BRIEF.md`. New product, review, collection, scanning, national-offer and basket APIs have tests, but implementation/test success is not itself deployment evidence.
