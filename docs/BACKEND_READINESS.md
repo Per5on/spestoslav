@@ -57,7 +57,7 @@ Admin access is a verified JWT subject in server-controlled `ADMIN_SUBJECTS`, or
 
 Private S3-compatible storage is configured through standard AWS variables, SigV4 and path-style addressing. `RECEIPT_STORAGE_DIR` is explicit local/persistent-disk development mode; never use Render's ephemeral filesystem as durable storage.
 
-The scheduled GitHub workflow is opt-in via `BACKEND_WORKERS_ENABLED`. It installs Bulgarian OCR data and processes a bounded batch every 15 minutes after rollout. This introduces no paid Render worker. A manual workflow dispatch is also available.
+The scheduled GitHub workflow installs Bulgarian OCR data and processes at most ten receipts every 15 minutes. It authenticates using GitHub OIDC with an exact audience, immutable repository/owner IDs, the approved workflow on `main`, the expected subject and GitHub-hosted schedule/manual-dispatch events. Forks, other branches/workflows and other repositories are rejected. The runner receives only a short-lived, run-bound job lease and one private image, then submits untrusted OCR text. Database/storage credentials and admin keys stay on Render; repository secrets are not required for OCR. `RECEIPT_WORKER_OIDC_ENABLED` on Render is the kill switch. No paid Render worker was introduced. A manual workflow dispatch is also available.
 
 ## Fuelo
 
@@ -77,7 +77,7 @@ Neon project: `long-resonance-77491878`. Shared preview: `br-snowy-morning-baym8
 
 Render target (owner-confirmed workspace): `tea-dbqur9jrjlhs73cga8eg`, service `srv-dbs313ei0phs73bvvd00` (`spestoslav-api`). The service auto-deploys `main`; backend code on a PR is not yet deployed merely because its tests pass. The separate legacy `Per5on/testing` service was not changed.
 
-Before publishing new routes: apply the additive script, configure the variables in `backend/.env.example`, verify readiness, and activate receipt workers with server-only repository secrets. Keep `FUELO_COLLECTION_ENABLED` off until a key and reviewed mappings exist. An empty production catalog is not solved by inserting demonstration prices; real data enters through authenticated catalog/collection/review APIs. Demo product photos are isolated from all live price tables.
+Before publishing new routes: apply the additive script, configure the variables in `backend/.env.example`, verify readiness, and enable the approved OIDC receipt worker on Render. Keep `FUELO_COLLECTION_ENABLED` off until a key and reviewed mappings exist. An empty production catalog is not solved by inserting demonstration prices; real data enters through authenticated catalog/collection/review APIs. Demo product photos are isolated from all live price tables.
 
 ## Verification evidence and limits
 
@@ -89,3 +89,12 @@ Before publishing new routes: apply the additive script, configure the variables
 - Shared live locality lookup returned 200 after the additive compatibility repair. Direct PostgreSQL TCP from this coding environment to Neon is blocked, so migration tests use local PostgreSQL and branch checks use Neon SQL tools.
 - One upstream Starlette/httpx deprecation warning remains, unrelated to functional failures.
 - Exact final-commit GitHub Actions and deployment links belong in the PR after they finish. Do not substitute historical green runs for current evidence.
+
+
+## Rollout continuation
+
+PR #3 was merged as `377d255da64f52944a94124b456404336036c504`; Render deployment `dep-dbs592m7bikc73ekqs30` became live and served API 0.4.0. Both merged-commit CI jobs logged 47 passing tests. Live readiness, localities/postal search, categories, catalog, region-filtered stores, demo product photos and authentication denial were verified. Live product/price tables remain unpopulated until source-backed data is supplied.
+
+The GitHub connection cannot manage Actions secrets/variables (HTTP 403). The OCR continuation removes that dependency using documented GitHub workload identity; no forbidden secret-management API was bypassed. GitHub's current OIDC reference includes immutable subject IDs for repositories created after July 2026. Both documented subject formats are accepted only with exact immutable IDs and all other trust conditions. No secrets are returned by the worker API.
+
+The continuation has 58 local tests passing, including PostgreSQL integration, signed worker-identity trust rejection, run-bound leases, duplicate completion, exhausted retries and runner request validation. Its exact CI/deployment/workflow outcomes are recorded in the associated PR after completion. Fuelo still needs owner-supplied API access.
