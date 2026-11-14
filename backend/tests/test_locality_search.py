@@ -7,7 +7,9 @@ from sqlalchemy.pool import StaticPool
 
 from app.db import Base, get_db
 from app.main import app
-from app.models import Locality, LocalityPostalCode, Category, Product, Retailer, StoreBranch\nfrom app.marketplace import CurrentPrice, ProductBarcode, Promotion\nfrom datetime import datetime, timedelta, timezone
+from app.models import Locality, LocalityPostalCode, Category, Product, Retailer, StoreBranch
+from app.marketplace import CurrentPrice, ProductBarcode, Promotion
+from datetime import datetime, timedelta, timezone
 
 engine = create_engine(
     "sqlite://",
