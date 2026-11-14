@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -14,6 +14,13 @@ engine = create_engine(
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
+@event.listens_for(engine, "connect")
+def register_unicode_lower(dbapi_connection, _connection_record):
+    dbapi_connection.create_function(
+        "lower", 1, lambda value: value.casefold() if value is not None else None
+    )
+
+
 TestingSessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
 
