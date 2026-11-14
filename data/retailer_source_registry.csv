@@ -1,9 +1,9 @@
 retailer_code,retailer_name,category_code,official_website,store_locator_url,collection_status
 kaufland,Kaufland,groceries,https://www.kaufland.bg/,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/,LOCATOR_CONFIRMED
 lidl,Lidl,groceries,https://www.lidl.bg/,https://www.lidl.bg/s/bg-BG/magazini/,LOCATOR_CONFIRMED
-billa,BILLA,groceries,https://www.billa.bg/,,NEEDS_LOCATOR_URL
+billa,BILLA,groceries,https://www.billa.bg/,https://www.billa.bg/magazini,LOCATOR_CONFIRMED
 cba,CBA,groceries,https://www.cba.bg/,,NEEDS_LOCATOR_URL
-fantastico,Fantastico,groceries,https://www.fantastico.bg/,,NEEDS_LOCATOR_URL
+fantastico,Fantastico,groceries,https://www.fantastico.bg/,https://www.fantastico.bg/shops,LOCATOR_CONFIRMED
 metro,METRO,groceries,https://www.metro.bg/,,NEEDS_LOCATOR_URL
 t_market,T MARKET,groceries,https://tmarket.bg/,,NEEDS_LOCATOR_URL
 promarket,ProMarket,groceries,https://promarket.bg/,,NEEDS_LOCATOR_URL
