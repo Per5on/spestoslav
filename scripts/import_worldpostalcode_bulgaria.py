@@ -73,10 +73,10 @@ def main() -> int:
         item = dict(zip(SOURCE_FIELDS, values))
         if item["country_code"] != "BG":
             continue
-        # Prefer GeoNames admin_name3 for the settlement name because
-        # place_name is sometimes Latin-only. Fall back when admin_name3
-        # is absent, preserving the source rather than inventing a value.
-        settlement_name_source = item["admin_name3"].strip() or item["place_name"].strip()
+        # place_name is the locality associated with this postal-code row.
+        # admin_name3 is a higher-level settlement administrative grouping
+        # in some records, so it must never replace the locality name.
+        settlement_name_source = item["place_name"].strip()
         bg_name, latin_name = split_bilingual(settlement_name_source)
         rows.append({
             "country_code": item["country_code"],
