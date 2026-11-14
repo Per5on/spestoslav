@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
-export type Locality = { id: string; name: string; name_bg?: string | null; postal_code?: string | null; type: string; municipality?: string | null; region?: string | null };
+export type Locality = { id: string; name: string; name_bg?: string | null; postal_codes: string[]; type: string; municipality?: string | null; region?: string | null };
 type Props = { apiBaseUrl: string; selected: Locality | null; onSelect: (value: Locality) => void };
 
 export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
@@ -30,7 +30,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
     <Text style={styles.label}>Населено място</Text>
     <TextInput value={query} onChangeText={(v) => { setQuery(v); setOpen(true); }} onFocus={() => setOpen(true)} placeholder="Търси град, село или пощенски код" autoCorrect={false} style={styles.input} accessibilityLabel="Търсене на населено място или пощенски код" />
     {open && query.trim().length >= 2 && <View style={styles.menu}>
-      {loading ? <ActivityIndicator /> : error ? <Text style={styles.empty}>{error}</Text> : <FlatList keyboardShouldPersistTaps="handled" data={results} keyExtractor={(x) => x.id} ListEmptyComponent={<Text style={styles.empty}>Няма намерени населени места</Text>} renderItem={({item}) => <Pressable style={styles.option} onPress={() => { onSelect(item); setQuery(item.name_bg || item.name); setOpen(false); }}><Text style={styles.optionTitle}>{item.name_bg || item.name}</Text><Text style={styles.meta}>{[item.postal_code, item.municipality, item.region].filter(Boolean).join(' · ')}</Text></Pressable>} />}
+      {loading ? <ActivityIndicator /> : error ? <Text style={styles.empty}>{error}</Text> : <FlatList keyboardShouldPersistTaps="handled" data={results} keyExtractor={(x) => x.id} ListEmptyComponent={<Text style={styles.empty}>Няма намерени населени места</Text>} renderItem={({item}) => <Pressable style={styles.option} onPress={() => { onSelect(item); setQuery(item.name_bg || item.name); setOpen(false); }}><Text style={styles.optionTitle}>{item.name_bg || item.name}</Text><Text style={styles.meta}>{[item.postal_codes.join(", "), item.municipality, item.region].filter(Boolean).join(' · ')}</Text></Pressable>} />}
     </View>}
     {selected && <Text style={styles.selected}>Избрано: {selected.name_bg || selected.name}</Text>}
   </View>;
