@@ -7,6 +7,9 @@ import {
   Text,
   View,
 } from 'react-native';
+import { LocationPicker, Locality } from './src/location/LocationPicker';
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:8000';
 
 const tabs = [
   { id: 'food', bg: 'Храни', en: 'Food', icon: '🛒' },
@@ -17,7 +20,8 @@ const tabs = [
 
 export default function App() {
   const [active, setActive] = useState('food');
-  const [settlement] = useState<string | null>(null);
+  // One app-level selection is shared by all four category tabs.
+  const [selectedLocality, setSelectedLocality] = useState<Locality | null>(null);
   const language = 'bg';
   const tab = tabs.find((item) => item.id === active) ?? tabs[0];
 
@@ -48,16 +52,16 @@ export default function App() {
 
       <View style={styles.body}>
         <Text style={styles.heading}>{tab.bg}</Text>
-        <Pressable accessibilityRole="button" style={styles.location}>
-          <Text style={styles.locationText}>
-            📍 {settlement ?? 'Избери населено място'}  ▾
-          </Text>
-        </Pressable>
+        <LocationPicker
+          apiBaseUrl={API_BASE_URL}
+          selected={selectedLocality}
+          onSelect={setSelectedLocality}
+        />
         <View style={styles.card}>
           <Text style={styles.pig}>🐷</Text>
           <Text style={styles.cardTitle}>Добре дошли в Спестослав</Text>
           <Text style={styles.copy}>
-            Начална структура. Следва възпроизвеждане на референтния дизайн и свързване с API.
+            Изберете населено място, за да сравнявате наличните предложения.
           </Text>
         </View>
       </View>
@@ -78,14 +82,6 @@ const styles = StyleSheet.create({
   selectedText: { color: '#FFF' },
   body: { padding: 18, gap: 16 },
   heading: { fontSize: 24, fontWeight: '800', color: '#234E2D' },
-  location: {
-    padding: 15,
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#D9E5D9',
-    borderRadius: 12,
-  },
-  locationText: { fontSize: 15, color: '#294E31', fontWeight: '600' },
   card: {
     padding: 24,
     backgroundColor: '#FFF',

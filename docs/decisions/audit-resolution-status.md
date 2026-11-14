@@ -2,11 +2,12 @@
 
 | Finding | Current response |
 |---|---|
-| Duplicate locality route | Single canonical FastAPI locality search route in new project; legacy unchanged. |
-| Missing Flyway V5/V6 source | Do not reconstruct unknown history; independent Alembic baseline created. |
-| Missing product/price/submission APIs | Core SQLAlchemy models and locality/category endpoints started; domain endpoints remain outstanding. |
-| Prototype basket/submission UI | Not treated as functional; persistent APIs and tests required before shipping. |
-| GPS/radius selection | Excluded entirely; shared searchable settlement dropdown only. |
-| Postal code absent | Optional postal_code field in new locality model; populate only from verified source. |
-| OSM incompleteness | Supplementary source only; canonical settlement registry required. |
-| Price verification | Provenance retained; observations default unverified. |
+| Duplicate legacy locality route | New FastAPI app defines one canonical `GET /api/v1/localities?q=...` route. Legacy repo left unchanged. |
+| Missing Flyway V5/V6 source | Do not invent missing migration scripts or run Flyway against the legacy preview. New project has an independent Alembic baseline. |
+| Missing product/price/submission APIs | Initial SQLAlchemy domain models and category/locality endpoints are in place; product, price, promotion and submission endpoints still need implementation and tests. |
+| Prototype basket/submission UI | Not considered functional; persistent APIs and tests are required before release. |
+| GPS/radius location flow | Explicitly excluded. App-level shared searchable settlement dropdown only. |
+| Postal code absent | Optional `postal_code` field exists in the new locality model; populate only from a verified dataset. |
+| OSM incompleteness | OSM is supplementary, not the sole authoritative locality/postal-code registry. |
+| Price verification | Provenance and timestamps are retained; new observations default to unverified; EUR only. |
+| Reference website | Correct reference is `https://avtogararuse.org/index.cgi`; the form contains “Тръгва от” and “Пристига в” select controls. Adapt its selection pattern to one shared locality selector. |
