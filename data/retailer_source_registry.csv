@@ -8,7 +8,7 @@ metro,METRO,groceries,https://www.metro.bg/,https://www.metro.bg/magazini,LOCATO
 t_market,T MARKET,groceries,https://tmarket.bg/,https://tmarketonline.bg/page/stores-t-market,LOCATOR_CONFIRMED_REQUIRES_CLOSURE_RECONCILIATION
 promarket,ProMarket,groceries,https://promarket.bg/,https://promarket.bg/shops/,LOCATOR_CONFIRMED
 moyat_magazin,Моят магазин,groceries,,,NEEDS_SOURCE
-burlex,Burlex,groceries,https://burlex.bg/,https://burlex.bg/магазини-бурлекс/,LOCATOR_CONFIRMED
+burlex,Burlex,groceries,https://burlex.bg/,https://burlex.bg/магазини-бурлекс/,LOCATOR_CONFIRMED_REQUIRES_COMPLETENESS_RECONCILIATION
 klasiko,Klasiko,groceries,https://www.klasiko.bg/,https://www.klasiko.bg/bg/info/i8/За-нас.html,LOCATOR_CONFIRMED
 hit_max,HIT Max,groceries,https://www.hit-max.bg/,https://www.hit-max.bg/elements/pages/our-stores/,LOCATOR_CONFIRMED
 abc_market,ABC Market,groceries,,,NEEDS_SOURCE
