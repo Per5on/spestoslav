@@ -51,7 +51,10 @@ def main() -> int:
         with urllib.request.urlopen(request, timeout=60) as response:
             archive_bytes = response.read()
         with zipfile.ZipFile(io.BytesIO(archive_bytes)) as archive:
-            member = next((n for n in archive.namelist() if n.lower().endswith(".txt")), None)
+            members = [n for n in archive.namelist() if n.lower().endswith(".txt")]
+            member = next((n for n in members if Path(n).name.lower() == "bg.txt"), None)
+            if member is None:
+                member = next((n for n in members if Path(n).name.lower() != "readme.txt"), None)
             if member is None:
                 raise ValueError("GeoNames archive contains no .txt data file")
             raw = archive.read(member).decode("utf-8")
