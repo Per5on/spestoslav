@@ -6,7 +6,7 @@ Use the GeoNames Bulgaria postal-code export:
 
 - Download: https://download.geonames.org/export/zip/BG.zip
 - Dataset documentation: https://www.geonames.org/export/zip/
-- Licence: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- Licence: Creative Commons Attribution 3.0 (CC BY 3.0)
 - Attribution: GeoNames (https://www.geonames.org)
 
 The importer is `scripts/import_worldpostalcode_bulgaria.py` (the historical filename is retained to avoid breaking existing instructions; it now imports GeoNames and does not access WorldPostalCode).
