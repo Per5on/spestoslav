@@ -9,16 +9,10 @@ branch_labels = None
 depends_on = None
 
 def upgrade():
-    columns = {column["name"] for column in sa.inspect(op.get_bind()).get_columns("store_branches")}
-    if "locality_id" not in columns:
-        op.add_column("store_branches", sa.Column("locality_id", postgresql.UUID(as_uuid=True),
-            sa.ForeignKey("inhabited_localities.id"), nullable=True))
-    if "postal_code" not in columns:
-        op.add_column("store_branches", sa.Column("postal_code", sa.String(12)))
-    if "latitude" not in columns:
-        op.add_column("store_branches", sa.Column("latitude", sa.Numeric(9,6)))
-    if "longitude" not in columns:
-        op.add_column("store_branches", sa.Column("longitude", sa.Numeric(9,6)))
+    # This chain targets a fresh application database, never the Flyway preview.
+    op.add_column("store_branches", sa.Column("postal_code", sa.String(12)))
+    op.add_column("store_branches", sa.Column("latitude", sa.Numeric(9,6)))
+    op.add_column("store_branches", sa.Column("longitude", sa.Numeric(9,6)))
     op.create_table("product_barcodes",
         sa.Column("id", postgresql.UUID(as_uuid=True), primary_key=True),
         sa.Column("product_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("products.id", ondelete="CASCADE"), nullable=False),
@@ -66,7 +60,7 @@ def upgrade():
         sa.Column("product_id", postgresql.UUID(as_uuid=True), sa.ForeignKey("products.id", ondelete="SET NULL")),
         sa.Column("raw_description", sa.String(400), nullable=False), sa.Column("quantity", sa.Numeric(12,3)),
         sa.Column("unit_price_eur", sa.Numeric(12,4)), sa.Column("line_total_eur", sa.Numeric(12,4)),
-        sa.Column("match_confidence", sa.Numeric(5,4)), sa.Column("status", sa.String(20), nullable=False, server_default="UNMATCHED")))
+        sa.Column("match_confidence", sa.Numeric(5,4)), sa.Column("status", sa.String(20), nullable=False, server_default="UNMATCHED"))
 
 def downgrade():
     op.drop_table("receipt_items")
@@ -76,10 +70,6 @@ def downgrade():
     op.drop_table("price_cache")
     op.drop_table("current_prices")
     op.drop_table("product_barcodes")
-    columns = {column["name"] for column in sa.inspect(op.get_bind()).get_columns("store_branches")}
-    if "longitude" in columns:
-        op.drop_column("store_branches","longitude")
-    if "latitude" in columns:
-        op.drop_column("store_branches","latitude")
-    if "postal_code" in columns:
-        op.drop_column("store_branches","postal_code")
+    op.drop_column("store_branches", "longitude")
+    op.drop_column("store_branches", "latitude")
+    op.drop_column("store_branches", "postal_code")
