@@ -2,7 +2,7 @@
 """Download and normalize GeoNames' Bulgaria postal-code export.
 
 Source: https://download.geonames.org/export/zip/BG.zip
-Licence: Creative Commons Attribution 4.0 International (CC BY 4.0).
+Licence: Creative Commons Attribution 3.0 (CC BY 3.0), per the GeoNames postal-code archive readme.
 The source is not an official Bulgarian postal register; values are preserved
 without inventing missing municipality/settlement relationships.
 """
