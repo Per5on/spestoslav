@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { LocationPicker, Locality } from './src/location/LocationPicker';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:8000';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'https://spestoslav-api.onrender.com';
 
 const tabs = [
   { id: 'food', bg: 'Храни', en: 'Food', icon: '🛒' },
