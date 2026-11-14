@@ -83,5 +83,3 @@ def downgrade():
         op.drop_column("store_branches","latitude")
     if "postal_code" in columns:
         op.drop_column("store_branches","postal_code")
-    if "locality_id" in columns:
-        op.drop_column("store_branches","locality_id")

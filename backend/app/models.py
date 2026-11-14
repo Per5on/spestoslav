@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Numeric, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from .db import Base
@@ -62,7 +62,7 @@ class StoreBranch(Base):
     branch_name: Mapped[str | None] = mapped_column(String(160))
     address: Mapped[str] = mapped_column(String(300), nullable=False)
     postal_code: Mapped[str | None] = mapped_column(String(12))
-    latitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
+    latitude: Mapped[float | None] = mapped_column(Float)
     longitude: Mapped[Decimal | None] = mapped_column(Numeric(9, 6))
     source: Mapped[str] = mapped_column(String(40), nullable=False, default="MANUAL")
     source_id: Mapped[str | None] = mapped_column(String(100))
