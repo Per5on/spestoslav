@@ -1,0 +1,62 @@
+{
+  "project_id": "long-resonance-77491878",
+  "branch_id": "br-snowy-morning-baym8iw6",
+  "checked_at": "2026-11-14",
+  "before": {
+    "branches": 116,
+    "linked": 116,
+    "retailers": 12
+  },
+  "final_queries_result": [
+    [
+      [
+        {
+          "branches": "139",
+          "linked": "139",
+          "retailers": "15",
+          "active": "138"
+        }
+      ],
+      [
+        {
+          "retailer_code": "cba",
+          "total": "6",
+          "active": "6",
+          "linked": "6"
+        },
+        {
+          "retailer_code": "mini_mart",
+          "total": "10",
+          "active": "9",
+          "linked": "10"
+        },
+        {
+          "retailer_code": "t_market",
+          "total": "7",
+          "active": "7",
+          "linked": "7"
+        }
+      ],
+      [
+        {
+          "mismatched_localities": "0"
+        }
+      ],
+      [],
+      [
+        {
+          "batch_rows": "23",
+          "unique_ids": "23",
+          "max_source_id_length": 52
+        }
+      ],
+      [
+        {
+          "category_code": "groceries",
+          "count": "3"
+        }
+      ]
+    ]
+  ],
+  "notes": "22 active verified additions; one inactive pending record retained for audit. Import repeated with unchanged counts."
+}

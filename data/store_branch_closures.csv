@@ -1,0 +1,5 @@
+retailer_code,city,municipality,region,address,closed_at,source_url,source_checked_at,status
+t_market,Бургас,Бургас,Бургас,"ул. „Константин Величков“ № 34, ъгъл с ул. „Странджа“ № 2",2026-10-05,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-14,CLOSED_NOT_PREVIOUSLY_INVENTORIED
+t_market,София,Столична,София (столица),"ж.к. Лозенец, ул. Персенк 22, бл. 34",2026-10-05,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-14,CLOSED_NOT_PREVIOUSLY_INVENTORIED
+t_market,София,Столична,София (столица),"ж.к. Изток, ул. Атанас Далчев 2",2026-10-05,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-14,CLOSED_NOT_PREVIOUSLY_INVENTORIED
+t_market,София,Столична,София (столица),"ж.к. Дружба 2, до бл. 311",2026-10-05,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-14,CLOSED_NOT_PREVIOUSLY_INVENTORIED
