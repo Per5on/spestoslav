@@ -5,3 +5,9 @@ __pycache__/
 .env
 .env.*
 !.env.example
+mobile/android/
+mobile/ios/
+mobile/dist/
+*.apk
+*.jks
+*.keystore

@@ -1,17 +1,28 @@
 {
   "name": "spestoslav-mobile",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "main": "expo/AppEntry",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android"
+    "android": "expo run:android",
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/test-model.cjs",
+    "build:android:preview": "expo prebuild --platform android && cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~6.1.2",
+    "@expo/vector-icons": "^15.0.3",
+    "@react-native-async-storage/async-storage": "2.2.0",
     "expo": "~54.0.0",
+    "expo-build-properties": "~1.0.10",
     "expo-status-bar": "~3.0.0",
+    "expo-system-ui": "~6.0.9",
     "react": "19.1.0",
-    "react-native": "0.81.0"
+    "react-dom": "19.1.0",
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-web": "^0.21.0"
   },
   "devDependencies": {
     "typescript": "~5.9.0",

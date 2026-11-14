@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
-} from 'react-native';
-
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { filterLocalities } from "../catalog/model";
 export type Locality = {
   id: string;
   name: string;
@@ -19,157 +19,196 @@ export type Locality = {
   municipality?: string | null;
   region?: string | null;
 };
-
 type Props = {
   apiBaseUrl: string;
   selected: Locality | null;
   onSelect: (value: Locality) => void;
 };
-
 export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
-  const [query, setQuery] = useState(selected?.name_bg || selected?.name || '');
+  const [query, setQuery] = useState("");
+  const [mode, setMode] = useState<"name" | "postal">("name");
   const [results, setResults] = useState<Locality[]>([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [error, setError] = useState('');
-
+  const [error, setError] = useState("");
+  const [retry, setRetry] = useState(0);
   useEffect(() => {
-    const term = query.trim();
-    if (term.length < 2) {
+    if (!open || query.trim().length < 2) {
       setResults([]);
       setLoading(false);
-      setError('');
+      setError("");
       return;
     }
-
     let cancelled = false;
     const controller = new AbortController();
+    setLoading(true);
+    setError("");
+    setResults([]);
+    let timeout: ReturnType<typeof setTimeout>;
     const timer = setTimeout(async () => {
-      setLoading(true);
-      setError('');
+      timeout = setTimeout(() => controller.abort(), 60000);
       try {
-        const baseUrl = apiBaseUrl.replace(/\\/$/, '');
         const response = await fetch(
-          `${baseUrl}/api/v1/localities?q=${encodeURIComponent(term)}`,
+          `${apiBaseUrl.replace(/\/$/, "")}/api/v1/localities?q=${encodeURIComponent(query.trim())}`,
           { signal: controller.signal },
         );
-        if (!response.ok) throw new Error('Search unavailable');
+        if (!response.ok) throw Error("Search unavailable");
         const data: Locality[] = await response.json();
-        if (!cancelled) setResults(data);
+        if (!cancelled) setResults(filterLocalities(data, query, mode));
       } catch {
-        if (!cancelled) setError('Търсенето временно не е достъпно. Опитайте отново.');
+        if (!cancelled) setError("Търсенето временно не е достъпно.");
       } finally {
+        clearTimeout(timeout);
         if (!cancelled) setLoading(false);
       }
-    }, 250);
-
+    }, 300);
     return () => {
       cancelled = true;
       controller.abort();
       clearTimeout(timer);
+      clearTimeout(timeout);
     };
-  }, [query, apiBaseUrl]);
-
-  const choose = (locality: Locality) => {
-    onSelect(locality);
-    setQuery(locality.name_bg || locality.name);
-    setOpen(false);
-    setResults([]);
-  };
-
+  }, [query, mode, open, apiBaseUrl, retry]);
   return (
-    <View style={styles.wrap}>
-      <Text style={styles.label}>Населено място</Text>
-      <TextInput
-        value={query}
-        onChangeText={(value) => {
-          setQuery(value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        placeholder="Търси град, село или пощенски код"
-        autoCorrect={false}
-        autoCapitalize="none"
-        returnKeyType="search"
-        style={styles.input}
-        accessibilityLabel="Търсене на населено място или пощенски код"
-      />
-
-      {open && query.trim().length >= 2 && (
-        <View style={styles.menu}>
-          {loading ? (
-            <ActivityIndicator style={styles.loading} color="#276B3A" />
-          ) : error ? (
-            <Text style={styles.empty}>{error}</Text>
-          ) : (
-            <FlatList
-              keyboardShouldPersistTaps="handled"
-              data={results}
-              keyExtractor={(item) => item.id}
-              ListEmptyComponent={
-                <Text style={styles.empty}>Няма намерени населени места</Text>
-              }
-              renderItem={({ item }) => (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={`${item.name_bg || item.name}, ${item.postal_codes.join(', ')}`}
-                  style={styles.option}
-                  onPress={() => choose(item)}
-                >
-                  <Text style={styles.optionTitle}>{item.name_bg || item.name}</Text>
-                  <Text style={styles.meta}>
-                    {[
-                      item.name_latin,
-                      item.postal_codes.join(', '),
-                      item.municipality,
-                      item.region,
-                    ]
-                      .filter(Boolean)
-                      .join(' · ')}
-                  </Text>
-                </Pressable>
-              )}
-            />
-          )}
+    <View style={s.wrap}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Избор на местоположение"
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(!open)}
+        style={s.trigger}
+      >
+        <Ionicons name="location-outline" size={23} color="#19562a" />
+        <View style={{ flex: 1 }}>
+          <Text style={s.label}>МЕСТОПОЛОЖЕНИЕ</Text>
+          <Text style={s.title}>
+            {selected?.name_bg || selected?.name || "Изберете населено място"}
+          </Text>
         </View>
-      )}
-
-      {selected && (
-        <Text style={styles.selected}>
-          Избрано: {selected.name_bg || selected.name}
-        </Text>
+        <Ionicons
+          name={open ? "chevron-up" : "chevron-down"}
+          size={20}
+          color="#19562a"
+        />
+      </Pressable>
+      {open && (
+        <View style={s.menu}>
+          <View style={s.row}>
+            {(["name", "postal"] as const).map((m) => (
+              <Pressable
+                key={m}
+                accessibilityRole="radio"
+                accessibilityState={{ checked: mode === m }}
+                onPress={() => {
+                  setMode(m);
+                  setQuery("");
+                }}
+                style={[s.mode, mode === m && s.active]}
+              >
+                <Text style={{ color: mode === m ? "#fff" : "#245532" }}>
+                  {m === "name" ? "Населено място" : "Пощ. код"}
+                </Text>
+              </Pressable>
+            ))}
+          </View>
+          <TextInput
+            accessibilityLabel={
+              mode === "name" ? "Търси населено място" : "Търси пощенски код"
+            }
+            value={query}
+            onChangeText={setQuery}
+            placeholder={
+              mode === "name" ? "Търси населено място…" : "Търси пощенски код…"
+            }
+            keyboardType={mode === "postal" ? "number-pad" : "default"}
+            autoCorrect={false}
+            style={s.input}
+          />
+          {loading ? (
+            <ActivityIndicator color="#19562a" />
+          ) : error ? (
+            <View>
+              <Text style={s.meta}>{error}</Text>
+              <Pressable onPress={() => setRetry(retry + 1)} style={s.mode}>
+                <Text>Опитайте отново</Text>
+              </Pressable>
+            </View>
+          ) : (
+            results.map((l) => (
+              <Pressable
+                accessibilityRole="button"
+                key={l.id}
+                style={s.option}
+                onPress={() => {
+                  onSelect(l);
+                  setOpen(false);
+                  setQuery("");
+                }}
+              >
+                <Text style={s.title}>{l.name_bg || l.name}</Text>
+                <Text style={s.meta}>
+                  {[l.municipality, l.region, l.postal_codes.join(", ")]
+                    .filter(Boolean)
+                    .join(" · ")}
+                </Text>
+              </Pressable>
+            ))
+          )}
+          {!loading &&
+            !error &&
+            query.trim().length >= 2 &&
+            !results.length && (
+              <Text style={s.meta}>Няма намерени населени места.</Text>
+            )}
+        </View>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  wrap: { gap: 6, zIndex: 10 },
-  label: { color: '#294E31', fontWeight: '700' },
-  input: {
-    backgroundColor: '#FFF',
-    borderColor: '#D9E5D9',
+const s = StyleSheet.create({
+  wrap: { gap: 8 },
+  trigger: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 14,
+    borderRadius: 15,
     borderWidth: 1,
-    borderRadius: 12,
-    padding: 13,
-    color: '#203D28',
+    borderColor: "#dae2d6",
+    backgroundColor: "#fff",
+    minHeight: 64,
   },
+  label: { fontSize: 11, color: "#617363", letterSpacing: 1 },
+  title: { color: "#234b2d", fontWeight: "700", fontSize: 15, marginTop: 3 },
   menu: {
-    maxHeight: 260,
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#D9E5D9',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  loading: { padding: 16 },
-  option: {
     padding: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E5ECE4',
+    borderWidth: 1,
+    borderColor: "#dae2d6",
+    borderRadius: 15,
+    gap: 10,
+    backgroundColor: "#fff",
   },
-  optionTitle: { color: '#203D28', fontWeight: '700' },
-  meta: { color: '#758276', fontSize: 12, marginTop: 3 },
-  empty: { color: '#758276', padding: 14 },
-  selected: { color: '#52775A', fontSize: 12 },
+  row: { flexDirection: "row", gap: 6 },
+  mode: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: "#eef3e7",
+    minHeight: 44,
+  },
+  active: { backgroundColor: "#ff8500" },
+  input: {
+    fontSize: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#dae2d6",
+    borderRadius: 10,
+    color: "#233c2a",
+  },
+  option: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#edf0e9",
+    minHeight: 48,
+  },
+  meta: { fontSize: 12, color: "#617363", marginTop: 4 },
 });
