@@ -17,5 +17,5 @@ The user specified https://avtogararuse.org/index.cgi. The page presents a route
 
 - Search canonical Bulgarian settlement records, not only localities inferred from retailer branches.
 - Postal codes are optional until imported from a reliable, validated source.
-- OSM may supplement locality names and branch locations but is not a complete postal-code authority.
+- OSM integration is excluded. Use the reviewed locality/postal dataset and official retailer branch sources.
 - Never auto-select a locality from the device's position.

@@ -2,6 +2,8 @@
 
 ## Current continuation notes
 
+**Ongoing project entry point:** read [PROJECT_STATUS.md](PROJECT_STATUS.md) and the newest [ACTIVITY_LOG.md](ACTIVITY_LOG.md) entry first. These supersede historical snapshots below. The owner requested persistent continuity and an audit before the next development phase.
+
 Backend fixes, verification and rollout state are documented in [BACKEND_READINESS.md](BACKEND_READINESS.md). The latest user-confirmed visual brief is [FRONTEND_BRIEF.md](FRONTEND_BRIEF.md), based on `12.docx`, `app.docx` and the supplied artwork. Latest decisions: green header, orange selections, four category tabs, separate searchable location dropdown and the provided piggy-bank sample logo. Finish backend verification before frontend implementation. These current decisions supersede conflicting older visual notes; historical CI/deployment statements below remain snapshots.
 
 Fuelo is approved as a third-party fuel source. API access is not yet available; the adapter remains disabled, and averages/unknown-certainty prices must not become verified station prices.

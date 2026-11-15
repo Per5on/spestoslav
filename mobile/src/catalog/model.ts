@@ -8,6 +8,7 @@ export type Product = {
   package_unit?: string | null;
   is_demo?: boolean;
 };
+export const MAX_BASKET_ITEMS = 100;
 export type BasketItem = { product: Product; quantity: number };
 export type Store = {
   id: string;
@@ -28,6 +29,7 @@ export function changeQuantity(
   delta: number,
 ): BasketItem[] {
   const existing = items.find((i) => i.product.id === product.id);
+  if (!existing && items.length >= MAX_BASKET_ITEMS) return items;
   const quantity = Math.max(0, Math.min(99, (existing?.quantity ?? 0) + delta));
   return existing
     ? items.flatMap((i) =>
@@ -59,7 +61,7 @@ export function restoreBasket(value: unknown): BasketItem[] {
       seen.add(i.product.id);
       return true;
     })
-    .slice(0, 100);
+    .slice(0, MAX_BASKET_ITEMS);
 }
 // Never treat demo fixtures or prices for another locality as purchasable offers.
 export function lowestPrice(
@@ -91,12 +93,21 @@ export function matchesProduct(p: Product, query: string) {
     .includes(query.trim().toLocaleLowerCase("bg"));
 }
 export function filterLocalities<
-  T extends { name: string; name_bg?: string | null; postal_codes: string[] },
+  T extends {
+    name: string;
+    name_bg?: string | null;
+    name_latin?: string | null;
+    postal_codes: string[];
+  },
 >(rows: T[], query: string, mode: "name" | "postal"): T[] {
   const q = query.trim().toLocaleLowerCase("bg");
+  const normalize = (name: string) =>
+    name.toLocaleLowerCase("bg").replace(/ia/g, "ija");
   return rows.filter((l) =>
     mode === "postal"
       ? l.postal_codes.some((c) => c.startsWith(q))
-      : [l.name, l.name_bg].some((n) => n?.toLocaleLowerCase("bg").includes(q)),
+      : [l.name, l.name_bg, l.name_latin].some(
+          (n) => n && normalize(n).includes(normalize(q)),
+        ),
   );
 }

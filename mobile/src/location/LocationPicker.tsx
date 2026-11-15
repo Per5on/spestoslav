@@ -115,6 +115,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
             accessibilityLabel={
               mode === "name" ? "Търси населено място" : "Търси пощенски код"
             }
+            maxLength={80}
             value={query}
             onChangeText={setQuery}
             placeholder={

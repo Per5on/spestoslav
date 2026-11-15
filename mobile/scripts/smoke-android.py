@@ -1,5 +1,5 @@
 """Verify the installed release starts on Android 10 and the four tabs respond."""
-import re, subprocess, time, xml.etree.ElementTree as ET
+import os, re, subprocess, time, xml.etree.ElementTree as ET
 from pathlib import Path
 
 def adb(*args):
@@ -34,6 +34,6 @@ assert adb('shell','pidof','bg.spestoslav.preview').strip(), 'App process died'
 logs=adb('logcat','-d')
 assert 'FATAL EXCEPTION' not in logs, logs
 Path('android-smoke.log').write_text(logs)
-with open('android-preview-001.png','wb') as f:
+with open('android-preview-'+os.environ.get('PREVIEW_SEQUENCE','001')+'.png','wb') as f:
     f.write(subprocess.check_output(['adb','exec-out','screencap','-p']))
 print('Android 10 smoke passed: launch, four tabs, empty list, honest camera state; process alive.')

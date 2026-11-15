@@ -18,6 +18,7 @@ import { LocationPicker, Locality } from "./src/location/LocationPicker";
 import { api, API_BASE_URL } from "./src/api";
 import {
   BasketItem,
+  MAX_BASKET_ITEMS,
   Product,
   Store,
   Price,
@@ -159,6 +160,13 @@ function Main() {
     setDraft([]);
     setQuery("");
     setSearchOpen(false);
+    if (category !== "groceries") {
+      setLoading(false);
+      return () => {
+        alive = false;
+        controller.abort();
+      };
+    }
     (async () => {
       try {
         const rows = await api<Product[]>(
@@ -240,10 +248,17 @@ function Main() {
       controller.abort();
     };
   }, [locality?.id, category, refresh]);
-  useEffect(() => {
-    setComparison(null);
-  }, [basket, locality?.id]);
   const change = (p: Product, delta: number) => {
+    if (
+      delta > 0 &&
+      basket.length >= MAX_BASKET_ITEMS &&
+      !basket.some((i) => i.product.id === p.id)
+    ) {
+      setNotice(
+        `Списъкът може да съдържа най-много ${MAX_BASKET_ITEMS} различни продукта.`,
+      );
+      return;
+    }
     setBasket((b) => changeQuantity(b, p, delta));
     setComparison(null);
   };
@@ -378,13 +393,13 @@ function Main() {
       : screen === "scan"
         ? "Сканиране"
         : screen === "checks"
-          ? "Преглед 01"
+          ? "Преглед 02"
           : category === "groceries" && view === "products"
             ? "Продукти"
             : "Магазини";
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]}>
-      <StatusBar style="light" backgroundColor="#195b27" />
+      <StatusBar style="light" />
       <View style={s.header}>
         <Image
           source={require("./assets/piggy-bank-logo.png")}
@@ -760,7 +775,7 @@ function Main() {
               покритието на бекенда. Примерните продукти не се сравняват.
             </Text>
             <Text style={s.meta}>
-              Android преглед 01 · v0.1.1{"\n"}
+              Android преглед 02 · v0.1.2{"\n"}
               {API_BASE_URL}
             </Text>
           </View>

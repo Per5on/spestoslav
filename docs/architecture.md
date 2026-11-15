@@ -5,7 +5,7 @@
 - Bulgarian default, English first additional language; localization from the beginning.
 - Four top-level categories: food, fuel, home and technology.
 - Settlement selection is shared across all categories.
-- Prefer settlement/postal-code selection; GPS/radius is not mandatory.
+- Use shared settlement/postal-code selection. GPS, radius and OSM features are excluded.
 - Price observations retain source, timestamp, verification state and physical branch.
 - Demo values must never be presented as verified live prices.
 - Legacy `Per5on/testing` remains unchanged during migration.

@@ -63,3 +63,45 @@ assert.equal(filterLocalities(cities, "1000", "name").length, 0);
 console.log(
   "Model checks passed: basket restoration/quantity bounds, demo and locality price isolation, expiry, search modes.",
 );
+
+assert.equal(
+  filterLocalities(
+    [
+      {
+        name: "Sofija",
+        name_bg: "София",
+        name_latin: "Sofija",
+        postal_codes: ["1000"],
+      },
+    ],
+    "Sofia",
+    "name",
+  ).length,
+  1,
+);
+const full = Array.from({ length: 100 }, (_, i) => ({
+  product: { ...p, id: `p-${i}` },
+  quantity: 1,
+}));
+assert.equal(changeQuantity(full, p, 1).length, 100);
+assert.equal(changeQuantity(full, full[0].product, 1)[0].quantity, 2);
+
+// Reproduce prototype poisoning through both merge arguments, including null-prototype targets.
+const merge = require("deepmerge");
+for (const [target, source] of [
+  [JSON.parse('{"__proto__":{"polluted":true}}'), {}],
+  [Object.create(null), JSON.parse('{"__proto__":{"polluted":true}}')],
+  [{}, JSON.parse('{"constructor":{"prototype":{"polluted":true}}}')],
+]) {
+  const result = merge(target, source);
+  assert.equal(Object.getPrototypeOf(result), Object.prototype);
+  assert.equal(result.polluted, undefined);
+  assert.equal(Object.prototype.polluted, undefined);
+}
+assert.deepEqual(
+  merge({ nested: { a: 1 }, list: [1] }, { nested: { b: 2 }, list: [2] }),
+  { nested: { a: 1, b: 2 }, list: [1, 2] },
+);
+console.log(
+  "Dependency regression checks passed: safe deep merges and ordinary config merging.",
+);
