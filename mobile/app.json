@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Спестовник 03",
+    "name": "Спестовник 04",
     "slug": "spestoslav",
-    "version": "0.2.0",
+    "version": "0.2.1",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
       "package": "bg.spestoslav.preview",
-      "versionCode": 3,
+      "versionCode": 4,
       "permissions": [],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",

@@ -29,3 +29,11 @@ Rollout order: test fresh PostgreSQL migrations and FK cleanup; merge and deploy
 Version 0.2.0, Android versionCode 3, package `bg.spestoslav.preview`. Earlier artifacts stay unchanged; the next changed preview after this is 004. Native APK and visual snapshot are named 003.
 
 Local TypeScript/model/language-key checks pass. Browser checks against current public API data pass ordered tabs, absent Home/postal/lower ribbon, name-only search, 88-point thumbnails, one-second feedback, shared location, six languages, font scaling, state restoration, widths 320/390/736 and API retry recovery, without JavaScript errors. Screenshot capture waits for modal transitions to finish. PostgreSQL and native emulator CI plus shared rollout remain separate gates until their actual results are recorded in the activity log.
+
+## Completed shared rollout
+
+PR #6 source `293c4be` passed PostgreSQL CI 43709020828 (**61 tests per SQLAlchemy matrix job**) and Android/native/publish run 43709020956. Merged as `538bd9a`. API 0.5.0 deployed live as Render `dep-dbsppd8n74is73aimkc0`; version/readiness/name-only search were checked **before** retiring storage. Then the validated SQL transaction was applied to shared preview.
+
+Shared result: 5,291 localities, 139 branches, 29 retailers, zero Home categories and zero postal storage columns. Locality UUID digest `f8d3d55571c20ea931cfd66c131d8f63` and branch UUID/locality/address digest `6694e399b5549bdb34ab49ba72a2300c` match pre-change values exactly. Locality CSV source-ID digest `d32d673ce9eccaee8bac205bb1b86e3a` matches the existing database. Post-removal readiness, ordered three-category read, name search, empty postal search and Sofia's 46 grocery branches passed. Recovery/validation branches remain isolated; no app credentials were switched.
+
+Published [APK/snapshot 003](https://github.com/Per5on/spestoslav/releases/tag/android-preview-003); downloaded APK checksum matched `bf02e1ec78f6d1b140fa6b92ff702a30c3aa2fa2279f2cabf465d688a7837f58`. The actual Android screenshot was inspected. The owner then requested the extra single-row/autosizing refinement, which is preserved separately as 004.

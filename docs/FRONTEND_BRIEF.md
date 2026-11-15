@@ -11,3 +11,5 @@ Latest owner instructions (15 November 2026), implemented as preview 003, supers
 - Known barcode lookup retained. Unknown identification, private receipt OCR/review and account UI remain subsequent work unless specifically authorized. No fake camera, receipt, login or price result.
 
 Implementation/data-removal plan and evidence: `PREVIEW_003.md`. Project resume point: `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry. Historical references: `docs/references/`; their illustrated prices, distances and three-tab layouts are not current functional requirements.
+
+Latest refinement (preview 004): put Products, Stores and Refresh on one shared row, remove the duplicate Products title and separate control row, and automatically fit button labels. Keep readable text and 44-point touch targets across language/font choices. See `PREVIEW_004.md`.

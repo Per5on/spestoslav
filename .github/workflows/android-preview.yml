@@ -4,7 +4,7 @@ on:
   pull_request:
     paths: ["mobile/**", ".github/workflows/android-preview.yml"]
 env:
-  PREVIEW_SEQUENCE: "003"
+  PREVIEW_SEQUENCE: "004"
 permissions:
   contents: read
 jobs:

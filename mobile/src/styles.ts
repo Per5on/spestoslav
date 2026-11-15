@@ -60,6 +60,7 @@ export const s = StyleSheet.create({
   headingRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   heading: { fontSize: 20, fontWeight: "700", color: "#243d2b", flex: 1 },
   button: {
+    maxWidth: "100%",
     paddingHorizontal: 13,
     paddingVertical: 11,
     borderRadius: 11,
