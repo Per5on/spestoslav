@@ -83,6 +83,9 @@ jobs:
       GH_REPO: ${{ github.repository }}
       SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ env.SOURCE_SHA }}
       - uses: actions/download-artifact@v5
         with:
           name: spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}
@@ -90,16 +93,21 @@ jobs:
       - name: Publish a new numbered prerelease without replacing assets
         shell: bash
         run: |
+          APP_SOURCE_TREE="$(git rev-parse "${SOURCE_SHA}:mobile")"
           cd apk
           sha256sum -c "spestovnik-preview-${PREVIEW_SEQUENCE}.apk.sha256"
           TAG="android-preview-${PREVIEW_SEQUENCE}"
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "A numbered release already exists; increment PREVIEW_SEQUENCE rather than overwrite it."
+          if gh release view "$TAG" --json body --jq .body > previous-notes.md 2>/dev/null; then
+            if grep -Fq "App tree: ${APP_SOURCE_TREE}." previous-notes.md; then
+              echo "This app source is already published; preserving its existing assets."
+              exit 0
+            fi
+            echo "A different app source already uses this number; increment PREVIEW_SEQUENCE."
             exit 1
           fi
           cat > notes.md <<EOF_NOTES
           Standalone Android 10+ test build. Green/orange four-tab UI, shared locality search, backend demo photos, saved list and manual barcode lookup. Camera, receipts and login remain future UI work; demo products have no verified price.
 
-          Audit cleanup build ${PREVIEW_SEQUENCE}. Source: ${SOURCE_SHA}. Build and Android 10 smoke checks passed before publication. Previous numbered artifacts are preserved.
+          Audit cleanup build ${PREVIEW_SEQUENCE}. Source: ${SOURCE_SHA}. App tree: ${APP_SOURCE_TREE}. Build and Android 10 smoke checks passed before publication. Previous numbered artifacts are preserved.
           EOF_NOTES
           gh release create "$TAG" "spestovnik-preview-${PREVIEW_SEQUENCE}.apk" "spestovnik-preview-${PREVIEW_SEQUENCE}.apk.sha256" "android-preview-${PREVIEW_SEQUENCE}.png" --target "$SOURCE_SHA" --title "Спестовник — Android preview ${PREVIEW_SEQUENCE}" --notes-file notes.md --prerelease --latest=false
