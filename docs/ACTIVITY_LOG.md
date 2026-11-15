@@ -39,3 +39,10 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 
 - Discovered the latest scheduled OCR run failed on a 30-second read timeout during API startup (run 43699395724). Corrected the runner with a bounded read-only warm-up before identity/claim requests; never retry a mutation that might already have claimed work. Two regression cases cover timeout/503 recovery and bounded failure.
 - Next validation gate: current-main backend matrix plus an actual manual-dispatch OCR run; retain their linked outcomes before final readiness. Android 002 source/artifact stays unchanged.
+
+### Runtime verification and pause point
+
+- Worker follow-up `b87423b`: 60 tests per PostgreSQL matrix job passed (43705642152); real authenticated OCR run 43705642164 passed with 0 queued jobs. Cold-timeout behavior has mocked regression coverage, not a claim of full OCR accuracy.
+- Render had queued no automatic update; clean rebuild `dep-dbsor8gn74is73ag7b9g` reached live on exact runtime commit `b87423b`, with Pillow 13.0.0 confirmed in build logs. Post-deploy public reads/readiness and authentication-denial checks passed. Final continuation commits are documentation/release metadata only.
+- Durable original inline preview copied unchanged to `docs/references/preview-001.html`; `preview-sequence.json` records 001 and 002, next 003. Published APK 002 link/hash are in the checkpoint.
+- **ACTIVE, audit complete; await owner's next instruction.** Do not restart history review, implement additional features or claim the unresolved Render health-check setting was changed. Recheck latest CI/deploy state on resume and read only missing detailed references as needed.

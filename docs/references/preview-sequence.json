@@ -1,0 +1,25 @@
+{
+  "next_version": "003",
+  "versions": [
+    {
+      "version": "001",
+      "kind": "interactive snapshot preview",
+      "file": "preview-001.html",
+      "sha256": "d1633708fd9c43511b177e471de87b4c502e6a3ddf8c0845a04c1163b13f9313"
+    },
+    {
+      "version": "001",
+      "kind": "Android APK",
+      "source": "5daa807c5b59ebda0d34772a2c646f10973b919a",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/43600409741",
+      "sha256": "b834eae05f5db399a335f140e9e90d0d8fb7cff927dea8d8f46acd745cd654a2",
+      "note": "Original artifact retained in workspace and workflow; not publicly published as a release."
+    },
+    {
+      "version": "002",
+      "kind": "Android APK",
+      "url": "https://github.com/Per5on/spestoslav/releases/download/android-preview-002/spestovnik-preview-002.apk",
+      "sha256": "693c45f72c197cc4cf205a3f61daeba8fb8901a15ff2fbc8222a5adcc4218e3e"
+    }
+  ]
+}
