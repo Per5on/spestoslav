@@ -1,0 +1,197 @@
+[
+  {
+    "url": "https://mini-mart.bg/nameri-magazin-3/",
+    "checked_at": "2026-11-14",
+    "http_status": 200,
+    "sha256": "90d9fa3d8bf0636d2418ba1f51c627b5efd4e584571358c29b5a6d82bcdef415",
+    "evidence": [
+      {
+        "branch_name": "Mini Mart София – ул. „Ярослав Вешин“ № 41",
+        "city": "София",
+        "address": "ул. „Ярослав Вешин“ № 41"
+      },
+      {
+        "branch_name": "Mini Mart София – бул. „Цар Борис III“ № 7",
+        "city": "София",
+        "address": "бул. „Цар Борис III“ № 7"
+      },
+      {
+        "branch_name": "Mini Mart София – ул. „Вишнева“ № 12",
+        "city": "София",
+        "address": "ул. „Вишнева“ № 12"
+      },
+      {
+        "branch_name": "Mini Mart София – бул. „Витоша“ № 99",
+        "city": "София",
+        "address": "бул. „Витоша“ № 99"
+      },
+      {
+        "branch_name": "Mini Mart София – ул. „проф. Христо Вакарелски” № 11",
+        "city": "София",
+        "address": "ул. „проф. Христо Вакарелски” № 11"
+      },
+      {
+        "branch_name": "Mini Mart София – бул. „Патриарх Евтимий” № 61",
+        "city": "София",
+        "address": "бул. „Патриарх Евтимий” № 61"
+      },
+      {
+        "branch_name": "Mini Mart София – бул. „Княз Александър Дондуков” № 53",
+        "city": "София",
+        "address": "бул. „Княз Александър Дондуков” № 53"
+      },
+      {
+        "branch_name": "Mini Mart София – ул. „Георги С. Раковски“ № 68",
+        "city": "София",
+        "address": "ул. „Георги С. Раковски“ № 68"
+      },
+      {
+        "branch_name": "Mini Mart София – ул. „Алабин” № 1 (площад Македония)",
+        "city": "София",
+        "address": "ул. „Алабин” № 1 (площад Македония)"
+      }
+    ]
+  },
+  {
+    "url": "https://www.cba.bg/shops.php",
+    "checked_at": "2026-11-14",
+    "http_status": 200,
+    "sha256": "b7373308f7a1e3db9f313a5acfdaaa25fd214287f5218711b24febbc52f903b6",
+    "evidence": [
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО 2\" МЕДЕН РУДНИК",
+        "city": "Бургас",
+        "address": "ж.к. \"Меден рудник\", до бл.408"
+      },
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО 3\"",
+        "city": "Бургас",
+        "address": "ж.к. \"Зорница\", бл.47, вх.Е"
+      },
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО 6\"",
+        "city": "Бургас",
+        "address": "жк.Братя Миладинови блок 147, ул.Струма"
+      },
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО 11\"",
+        "city": "Бургас",
+        "address": "ж.к. \"Славейков\", бл.164"
+      },
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО 12\"",
+        "city": "Бургас",
+        "address": "ж.к.Лазур до бл.71"
+      },
+      {
+        "branch_name": "CBA Бургас – \"БОЛЕРО АКВА\"",
+        "city": "Бургас",
+        "address": "ж.к. \"Лазур\", бл. 163, вх. 1"
+      }
+    ]
+  },
+  {
+    "url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+    "checked_at": "2026-11-14",
+    "method": "Web tool full official article, lines 35–64",
+    "published_at": "2026-10-02",
+    "evidence": [
+      {
+        "branch_name": "T MARKET София – Студентски град",
+        "city": "София",
+        "address": "ул. Академик Борис Стефанов 38"
+      },
+      {
+        "branch_name": "T MARKET София – Дианабад",
+        "city": "София",
+        "address": "ул. Васил Калчев 10"
+      },
+      {
+        "branch_name": "T MARKET София – Дружба 1 – бл. 86",
+        "city": "София",
+        "address": "ж.к. Дружба 1, до бл. 86"
+      },
+      {
+        "branch_name": "T MARKET София – Дружба 1 – 5030",
+        "city": "София",
+        "address": "ж.к. Дружба 1, ул. „5030“ 6"
+      },
+      {
+        "branch_name": "T MARKET София – Иван Вазов",
+        "city": "София",
+        "address": "ул. Стефан Малинов 2"
+      },
+      {
+        "branch_name": "T MARKET Бургас – Марагидик",
+        "city": "Бургас",
+        "address": "ул. „Марагидик“ №17"
+      },
+      {
+        "branch_name": "T MARKET Бургас – Славейков",
+        "city": "Бургас",
+        "address": "кв. „Славейков“, бл. 214"
+      }
+    ]
+  },
+  {
+    "url": "https://mini-mart.bg/nameri-magazin/",
+    "feed_endpoint": "https://mini-mart.bg/wp-admin/admin-ajax.php?action=asl_load_stores&load_all=1&layout=1",
+    "checked_at": "2026-11-14",
+    "http_status": 200,
+    "sha256": "b4d9acef310c7ecadd7e44b362efb6369906c4f3df205c154fd8c034aa49855f",
+    "published_records": 358,
+    "evidence": [
+      {
+        "id": "65",
+        "city": "София",
+        "street": "улица „Ярослав Вешин“ 41"
+      },
+      {
+        "id": "66",
+        "city": "София",
+        "street": "булевард „Цар Борис III“ 7"
+      },
+      {
+        "id": "68",
+        "city": "София",
+        "street": "бул. „Витоша“ 99"
+      },
+      {
+        "id": "69",
+        "city": "София",
+        "street": "ул. проф. Христо Вакарелски 11"
+      },
+      {
+        "id": "72",
+        "city": "София",
+        "street": "улица „Вишнева“ 12, 1164 София"
+      },
+      {
+        "id": "75",
+        "city": "София",
+        "street": "Бул. Патриарх Евтимий 61"
+      },
+      {
+        "id": "76",
+        "city": "София",
+        "street": "бул. Княз Александър Дондуков 53"
+      },
+      {
+        "id": "77",
+        "city": "София",
+        "street": "ул. Алабин 1 / TELLUS Tower"
+      },
+      {
+        "id": "118",
+        "city": "София",
+        "street": "бул. Патриарх Евтимий 61"
+      },
+      {
+        "id": "133",
+        "city": "София",
+        "street": "ул. Георги С. Раковски 68"
+      }
+    ],
+    "notes": "Nine selected physical branches cross-checked. IDs 75 and 118 repeat the same address; not two branches. Hristo Botev 75 absent: pending, excluded from verified batch and deactivated in preview."
+  }
+]
