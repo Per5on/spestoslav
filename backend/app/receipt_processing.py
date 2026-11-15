@@ -39,6 +39,7 @@ def claim_job(db):
             ),
         )
         .order_by(ReceiptScan.created_at, ReceiptScan.id)
+        .limit(1)
         .with_for_update(skip_locked=True)
     ).first()
     if row:

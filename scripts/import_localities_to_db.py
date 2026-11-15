@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Import the reviewed GeoNames locality CSV into the Spestoslav database."""
+
 import csv
 import hashlib
-import os
 import sys
 from pathlib import Path
 
@@ -16,14 +16,18 @@ from app.models import Locality, LocalityPostalCode
 
 CSV_PATH = ROOT / "data" / "bulgaria_postal_codes.csv"
 
+
 def identity_id(row):
-    identity = "|".join((
-        row["settlement_name_bg"].strip().casefold(),
-        row["settlement_name_latin"].strip().casefold(),
-        row["municipality_code"].strip(),
-        row["oblast_code"].strip(),
-    ))
+    identity = "|".join(
+        (
+            row["settlement_name_bg"].strip().casefold(),
+            row["settlement_name_latin"].strip().casefold(),
+            row["municipality_code"].strip(),
+            row["oblast_code"].strip(),
+        )
+    )
     return hashlib.md5(identity.encode("utf-8")).hexdigest()
+
 
 def main():
     if SessionLocal is None:
@@ -54,25 +58,44 @@ def main():
     with SessionLocal() as db:
         with db.begin():
             for item in localities.values():
-                stmt = insert(Locality).values(**item).on_conflict_do_update(
-                    constraint="uq_inhabited_locality_source",
-                    set_={k:v for k,v in item.items() if k not in ("source","source_id")}
+                stmt = (
+                    insert(Locality)
+                    .values(**item)
+                    .on_conflict_do_update(
+                        constraint="uq_inhabited_locality_source",
+                        set_={
+                            k: v
+                            for k, v in item.items()
+                            if k not in ("source", "source_id")
+                        },
+                    )
                 )
                 db.execute(stmt)
             ids = {
-                x.source_id: x.id for x in db.scalars(
+                x.source_id: x.id
+                for x in db.scalars(
                     select(Locality).where(Locality.source == "GEONAMES")
                 ).all()
             }
             link_rows = [
-                {"locality_id": ids[source_id], "postal_code": code, "source": "GEONAMES"}
-                for source_id, code in postal_links if source_id in ids
+                {
+                    "locality_id": ids[source_id],
+                    "postal_code": code,
+                    "source": "GEONAMES",
+                }
+                for source_id, code in postal_links
+                if source_id in ids
             ]
             if link_rows:
-                db.execute(insert(LocalityPostalCode).values(link_rows).on_conflict_do_nothing(
-                    constraint="uq_locality_postal_code"
-                ))
-    print(f"Imported/updated {len(localities)} localities and {len(postal_links)} postal-code links.")
+                db.execute(
+                    insert(LocalityPostalCode)
+                    .values(link_rows)
+                    .on_conflict_do_nothing(constraint="uq_locality_postal_code")
+                )
+    print(
+        f"Imported/updated {len(localities)} localities and {len(postal_links)} postal-code links."
+    )
+
 
 if __name__ == "__main__":
     main()

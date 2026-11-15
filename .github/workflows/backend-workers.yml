@@ -23,11 +23,12 @@ jobs:
       API_BASE_URL: https://spestoslav-api.onrender.com
       OCR_LANGUAGES: bul+eng
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - run: sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr tesseract-ocr-bul
+      - run: python -m pip install --upgrade pip
       - run: pip install -r backend/requirements.txt
       - run: python scripts/run_remote_receipt_worker.py --max-jobs 10
   fuelo:
@@ -39,8 +40,8 @@ jobs:
       API_BASE_URL: ${{ vars.API_BASE_URL }}
       COLLECTOR_API_KEY: ${{ secrets.COLLECTOR_API_KEY }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - run: pip install -r backend/requirements.txt

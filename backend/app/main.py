@@ -1,13 +1,27 @@
 from fastapi import Depends, FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
-from sqlalchemy import func, or_, select, text
+from sqlalchemy import func, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
-from .models import Category, Locality, LocalityPostalCode, Product, Retailer, StoreBranch
+from .models import (
+    Category,
+    Locality,
+    LocalityPostalCode,
+    Product,
+    Retailer,
+    StoreBranch,
+)
 from .marketplace import CurrentPrice, ProductBarcode, Promotion
-from .workflows import ReviewSubmission,ReceiptJob,CollectionSource,ProductImage,NationalOffer,ProductIdentificationRequest
+from .workflows import (
+    ReviewSubmission,
+    ReceiptJob,
+    CollectionSource,
+    ProductImage,
+    NationalOffer,
+    ProductIdentificationRequest,
+)
 
 app = FastAPI(title="Спестослав API", version="0.4.1")
 
@@ -43,9 +57,15 @@ def readiness(db: Session = Depends(get_db)):
             select(Locality.id, Locality.name_bg, Locality.name_latin).limit(1),
             select(LocalityPostalCode.postal_code).limit(1),
             select(StoreBranch).limit(1),
-            select(Product).limit(1),select(CurrentPrice).limit(1), select(Promotion).limit(1),
-            select(ReviewSubmission.id).limit(1),select(ReceiptJob.id).limit(1),select(CollectionSource.code).limit(1),
-            select(ProductImage.product_id).limit(1),select(NationalOffer.id).limit(1),select(ProductIdentificationRequest.id).limit(1),
+            select(Product).limit(1),
+            select(CurrentPrice).limit(1),
+            select(Promotion).limit(1),
+            select(ReviewSubmission.id).limit(1),
+            select(ReceiptJob.id).limit(1),
+            select(CollectionSource.code).limit(1),
+            select(ProductImage.product_id).limit(1),
+            select(NationalOffer.id).limit(1),
+            select(ProductIdentificationRequest.id).limit(1),
         ):
             db.execute(statement)
     except SQLAlchemyError:
@@ -57,9 +77,7 @@ def readiness(db: Session = Depends(get_db)):
 @app.get("/api/v1/categories", response_model=list[CategoryResponse])
 def categories(db: Session = Depends(get_db)):
     rows = db.scalars(
-        select(Category)
-        .where(Category.active.is_(True))
-        .order_by(Category.sort_order)
+        select(Category).where(Category.active.is_(True)).order_by(Category.sort_order)
     ).all()
     return [
         CategoryResponse(code=row.code, name_bg=row.name_bg, name_en=row.name_en)
@@ -86,29 +104,38 @@ def search_localities(
         LocalityPostalCode.postal_code.like(f"{term}%")
     )
 
-    text_matches = [
-        func.lower(Locality.name).like(pattern)
-        for pattern in contains_patterns
-    ] + [
-        func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
-        for pattern in contains_patterns
-    ] + [
-        func.lower(func.coalesce(Locality.name_bg, "")).like(f"%{normalized}%")
-    ]
+    text_matches = (
+        [func.lower(Locality.name).like(pattern) for pattern in contains_patterns]
+        + [
+            func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
+            for pattern in contains_patterns
+        ]
+        + [func.lower(func.coalesce(Locality.name_bg, "")).like(f"%{normalized}%")]
+    )
 
     localities = db.scalars(
-        select(Locality).options(load_only(
-            Locality.id, Locality.name, Locality.name_bg, Locality.name_latin,
-            Locality.type, Locality.municipality, Locality.region,
-        ))
+        select(Locality)
+        .options(
+            load_only(
+                Locality.id,
+                Locality.name,
+                Locality.name_bg,
+                Locality.name_latin,
+                Locality.type,
+                Locality.municipality,
+                Locality.region,
+            )
+        )
         .where(Locality.on_map.is_(True))
         .where(or_(*text_matches, Locality.id.in_(postal_matches)))
         .order_by(
             (func.lower(func.coalesce(Locality.name_bg, "")) == normalized).desc(),
-            or_(*[
-                func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
-                for pattern in starts_with_patterns
-            ]).desc(),
+            or_(
+                *[
+                    func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
+                    for pattern in starts_with_patterns
+                ]
+            ).desc(),
             Locality.name_bg,
             Locality.name,
         )
@@ -116,11 +143,15 @@ def search_localities(
     ).all()
 
     locality_ids = [locality.id for locality in localities]
-    postal_rows = db.execute(
-        select(LocalityPostalCode.locality_id, LocalityPostalCode.postal_code)
-        .where(LocalityPostalCode.locality_id.in_(locality_ids))
-        .order_by(LocalityPostalCode.postal_code)
-    ).all() if locality_ids else []
+    postal_rows = (
+        db.execute(
+            select(LocalityPostalCode.locality_id, LocalityPostalCode.postal_code)
+            .where(LocalityPostalCode.locality_id.in_(locality_ids))
+            .order_by(LocalityPostalCode.postal_code)
+        ).all()
+        if locality_ids
+        else []
+    )
 
     postal_codes_by_locality: dict[str, list[str]] = {}
     for locality_id, postal_code in postal_rows:
@@ -143,7 +174,6 @@ def search_localities(
 
 from datetime import datetime, timezone
 from uuid import UUID
-from fastapi import HTTPException
 
 
 class ProductLookupResponse(BaseModel):
@@ -192,32 +222,57 @@ class PromotionResponse(BaseModel):
 @app.get("/api/v1/products/barcode/{barcode}", response_model=ProductLookupResponse)
 def product_by_barcode(barcode: str, db: Session = Depends(get_db)):
     product = db.scalar(
-        select(Product).join(ProductBarcode, ProductBarcode.product_id == Product.id)
-        .where(ProductBarcode.barcode == barcode, ProductBarcode.verified.is_(True), Product.active.is_(True))
+        select(Product)
+        .join(ProductBarcode, ProductBarcode.product_id == Product.id)
+        .where(
+            ProductBarcode.barcode == barcode,
+            ProductBarcode.verified.is_(True),
+            Product.active.is_(True),
+        )
     )
     if product is None:
-        product = db.scalar(select(Product).where(Product.barcode == barcode, Product.active.is_(True)))
+        product = db.scalar(
+            select(Product).where(Product.barcode == barcode, Product.active.is_(True))
+        )
     if product is None:
-        raise HTTPException(status_code=404, detail="Product not found for this barcode")
-    codes = db.scalars(select(ProductBarcode.barcode).where(
-        ProductBarcode.product_id == product.id, ProductBarcode.verified.is_(True)
-    ).order_by(ProductBarcode.barcode)).all()
+        raise HTTPException(
+            status_code=404, detail="Product not found for this barcode"
+        )
+    codes = db.scalars(
+        select(ProductBarcode.barcode)
+        .where(
+            ProductBarcode.product_id == product.id, ProductBarcode.verified.is_(True)
+        )
+        .order_by(ProductBarcode.barcode)
+    ).all()
     if product.barcode and product.barcode not in codes:
         codes.append(product.barcode)
     return ProductLookupResponse(
-        id=str(product.id), category_code=product.category_code, name=product.name,
-        brand=product.brand, variant=product.variant,
-        package_quantity=float(product.package_quantity) if product.package_quantity is not None else None,
-        package_unit=product.package_unit, barcodes=codes,
-        image_url=(image.image_url if (image:=db.get(ProductImage,product.id)) else None),
+        id=str(product.id),
+        category_code=product.category_code,
+        name=product.name,
+        brand=product.brand,
+        variant=product.variant,
+        package_quantity=float(product.package_quantity)
+        if product.package_quantity is not None
+        else None,
+        package_unit=product.package_unit,
+        barcodes=codes,
+        image_url=(
+            image.image_url if (image := db.get(ProductImage, product.id)) else None
+        ),
     )
 
 
 @app.get("/api/v1/stores", response_model=list[StoreBranchResponse])
-def stores_for_locality(locality_id: UUID | None = None, region: str | None = Query(default=None,max_length=160),
-                        category_code: str | None = None,
-                        limit:int=Query(default=100,ge=1,le=500),offset:int=Query(default=0,ge=0),
-                        db: Session = Depends(get_db)):
+def stores_for_locality(
+    locality_id: UUID | None = None,
+    region: str | None = Query(default=None, max_length=160),
+    category_code: str | None = None,
+    limit: int = Query(default=100, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
     if locality_id is None and not region:
         raise HTTPException(422, "Provide a canonical locality_id or region")
     rows = db.execute(
@@ -225,15 +280,25 @@ def stores_for_locality(locality_id: UUID | None = None, region: str | None = Qu
         .join(Retailer, Retailer.code == StoreBranch.retailer_code)
         .join(Locality, Locality.id == StoreBranch.locality_id)
         .where(StoreBranch.active.is_(True), Retailer.active.is_(True))
-        .where(StoreBranch.locality_id == locality_id if locality_id else Locality.region == region)
+        .where(
+            StoreBranch.locality_id == locality_id
+            if locality_id
+            else Locality.region == region
+        )
         .where(Retailer.category_code == category_code if category_code else True)
-        .order_by(Retailer.name, StoreBranch.address, StoreBranch.id).offset(offset).limit(limit)
+        .order_by(Retailer.name, StoreBranch.address, StoreBranch.id)
+        .offset(offset)
+        .limit(limit)
     ).all()
     return [
         StoreBranchResponse(
-            id=str(branch.id), retailer_code=branch.retailer_code, retailer_name=retailer_name,
-            locality_id=str(branch.locality_id), locality_name=name_bg or locality_name,
-            branch_name=branch.branch_name, address=branch.address,
+            id=str(branch.id),
+            retailer_code=branch.retailer_code,
+            retailer_name=retailer_name,
+            locality_id=str(branch.locality_id),
+            locality_name=name_bg or locality_name,
+            branch_name=branch.branch_name,
+            address=branch.address,
             postal_code=getattr(branch, "postal_code", None),
         )
         for branch, retailer_name, name_bg, locality_name in rows
@@ -242,17 +307,26 @@ def stores_for_locality(locality_id: UUID | None = None, region: str | None = Qu
 
 @app.get("/api/v1/prices/current", response_model=list[CurrentPriceResponse])
 def current_prices(
-    product_id: UUID | None = None, branch_id: UUID | None = None,
-    locality_id: UUID | None = None, limit:int=Query(default=500,ge=1,le=500),
-    offset:int=Query(default=0,ge=0),db: Session = Depends(get_db),
+    product_id: UUID | None = None,
+    branch_id: UUID | None = None,
+    locality_id: UUID | None = None,
+    limit: int = Query(default=500, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
 ):
-    stmt = (select(CurrentPrice)
+    stmt = (
+        select(CurrentPrice)
         .join(StoreBranch, StoreBranch.id == CurrentPrice.branch_id)
         .join(Retailer, Retailer.code == StoreBranch.retailer_code)
         .join(Product, Product.id == CurrentPrice.product_id)
         .join(Category, Category.code == Product.category_code)
-        .where(StoreBranch.active.is_(True), Retailer.active.is_(True),
-               Product.active.is_(True), Category.active.is_(True)))
+        .where(
+            StoreBranch.active.is_(True),
+            Retailer.active.is_(True),
+            Product.active.is_(True),
+            Category.active.is_(True),
+        )
+    )
     if product_id:
         stmt = stmt.where(CurrentPrice.product_id == product_id)
     if branch_id:
@@ -260,29 +334,53 @@ def current_prices(
     if locality_id:
         stmt = stmt.where(StoreBranch.locality_id == locality_id)
     now = datetime.now(timezone.utc)
-    rows = db.scalars(stmt.where(CurrentPrice.verified_at <= now, or_(CurrentPrice.expires_at.is_(None), CurrentPrice.expires_at > now))
-        .order_by(CurrentPrice.verified_at.desc(),CurrentPrice.id).offset(offset).limit(limit)).all()
-    return [CurrentPriceResponse(
-        id=str(row.id), product_id=str(row.product_id), branch_id=str(row.branch_id),
-        price_eur=float(row.price_eur), source=row.source,
-        verified_at=row.verified_at, expires_at=row.expires_at,
-    ) for row in rows]
+    rows = db.scalars(
+        stmt.where(
+            CurrentPrice.verified_at <= now,
+            or_(CurrentPrice.expires_at.is_(None), CurrentPrice.expires_at > now),
+        )
+        .order_by(CurrentPrice.verified_at.desc(), CurrentPrice.id)
+        .offset(offset)
+        .limit(limit)
+    ).all()
+    return [
+        CurrentPriceResponse(
+            id=str(row.id),
+            product_id=str(row.product_id),
+            branch_id=str(row.branch_id),
+            price_eur=float(row.price_eur),
+            source=row.source,
+            verified_at=row.verified_at,
+            expires_at=row.expires_at,
+        )
+        for row in rows
+    ]
 
 
 @app.get("/api/v1/promotions", response_model=list[PromotionResponse])
 def active_promotions(
-    locality_id: UUID | None = None, branch_id: UUID | None = None,
-    product_id: UUID | None = None, limit:int=Query(default=500,ge=1,le=500),
-    offset:int=Query(default=0,ge=0),db: Session = Depends(get_db),
+    locality_id: UUID | None = None,
+    branch_id: UUID | None = None,
+    product_id: UUID | None = None,
+    limit: int = Query(default=500, ge=1, le=500),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
 ):
     now = datetime.now(timezone.utc)
-    stmt = (select(Promotion).join(StoreBranch, StoreBranch.id == Promotion.branch_id)
+    stmt = (
+        select(Promotion)
+        .join(StoreBranch, StoreBranch.id == Promotion.branch_id)
         .join(Retailer, Retailer.code == StoreBranch.retailer_code)
         .join(Product, Product.id == Promotion.product_id)
-        .join(Category, Category.code == Product.category_code)).where(
-        Retailer.active.is_(True), Product.active.is_(True), Category.active.is_(True),
-        Promotion.verified.is_(True), Promotion.starts_at <= now,
-        or_(Promotion.ends_at.is_(None), Promotion.ends_at >= now), StoreBranch.active.is_(True),
+        .join(Category, Category.code == Product.category_code)
+    ).where(
+        Retailer.active.is_(True),
+        Product.active.is_(True),
+        Category.active.is_(True),
+        Promotion.verified.is_(True),
+        Promotion.starts_at <= now,
+        or_(Promotion.ends_at.is_(None), Promotion.ends_at >= now),
+        StoreBranch.active.is_(True),
     )
     if locality_id:
         stmt = stmt.where(StoreBranch.locality_id == locality_id)
@@ -290,29 +388,47 @@ def active_promotions(
         stmt = stmt.where(Promotion.branch_id == branch_id)
     if product_id:
         stmt = stmt.where(Promotion.product_id == product_id)
-    rows = db.scalars(stmt.order_by(Promotion.ends_at.asc().nullslast(),Promotion.id).offset(offset).limit(limit)).all()
-    return [PromotionResponse(
-        id=str(row.id), product_id=str(row.product_id), branch_id=str(row.branch_id),
-        promotional_price_eur=float(row.promotional_price_eur),
-        regular_price_eur=float(row.regular_price_eur) if row.regular_price_eur is not None else None,
-        starts_at=row.starts_at, ends_at=row.ends_at,
-    ) for row in rows]
+    rows = db.scalars(
+        stmt.order_by(Promotion.ends_at.asc().nullslast(), Promotion.id)
+        .offset(offset)
+        .limit(limit)
+    ).all()
+    return [
+        PromotionResponse(
+            id=str(row.id),
+            product_id=str(row.product_id),
+            branch_id=str(row.branch_id),
+            promotional_price_eur=float(row.promotional_price_eur),
+            regular_price_eur=float(row.regular_price_eur)
+            if row.regular_price_eur is not None
+            else None,
+            starts_at=row.starts_at,
+            ends_at=row.ends_at,
+        )
+        for row in rows
+    ]
 
 
 from .write_api import router as write_router
+
 app.include_router(write_router)
 
 from .receipts import router as receipt_router
+
 app.include_router(receipt_router)
 
 from .limits import ReceiptUploadLimit
+
 app.add_middleware(ReceiptUploadLimit)
 
 from .catalog_api import router as catalog_router
+
 app.include_router(catalog_router)
 
 from .demo_api import router as demo_router
+
 app.include_router(demo_router)
 
 from .worker_api import router as worker_router
+
 app.include_router(worker_router)

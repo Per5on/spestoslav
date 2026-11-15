@@ -75,6 +75,30 @@ def test_migrations_round_trip_match_models_and_offline_sql(monkeypatch):
             db.flush()
             product_id = product.id
             branch_id = branch.id
+        # Two open transactions must be able to claim different queued receipts.
+        # A SELECT without LIMIT locks every eligible row before .first() runs.
+        from app.marketplace import ReceiptScan
+        from app.workflows import ReceiptJob
+        from app.receipt_processing import claim_job
+
+        with sessions.begin() as db:
+            for number in range(2):
+                scan = ReceiptScan(
+                    image_storage_key=f"test/receipt-{number}.png", status="UPLOADED"
+                )
+                db.add(scan)
+                db.flush()
+                db.add(ReceiptJob(scan_id=scan.id, owner_subject="postgres-test-user"))
+        with sessions() as first, sessions() as second:
+            first.execute(text("SET LOCAL statement_timeout = '5s'"))
+            second.execute(text("SET LOCAL statement_timeout = '5s'"))
+            one = claim_job(first)
+            two = claim_job(second)
+            assert one is not None and two is not None
+            assert one[0].id != two[0].id
+            first.rollback()
+            second.rollback()
+
         previous = dict(app.dependency_overrides)
 
         def database():

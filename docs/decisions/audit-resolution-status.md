@@ -8,7 +8,7 @@
 | Prototype basket/submission UI | Not considered functional; persistent APIs and tests are required before release. |
 | GPS/radius location flow | Explicitly excluded. App-level shared searchable settlement dropdown only. |
 | Postal code absent | Optional `postal_code` field exists in the new locality model; populate only from a verified dataset. |
-| OSM incompleteness | OSM is supplementary, not the sole authoritative locality/postal-code registry. |
+| OSM incompleteness | OSM integration is excluded; use reviewed locality/postal data and official retailer sources. |
 | Price verification | Provenance and timestamps are retained; new observations default to unverified; EUR only. |
 | Reference website | Correct reference is `https://avtogararuse.org/index.cgi`; the form contains “Тръгва от” and “Пристига в” select controls. Adapt its selection pattern to one shared locality selector. |
 
