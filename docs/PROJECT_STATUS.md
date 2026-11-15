@@ -39,7 +39,7 @@ The requested review, confirmed code fixes, cleanup and application verification
 
 ## Open work / known limits
 
-Immediate: await the owner's next development instruction. Code CI for `91ea05e` passed: backend run 43704406362 (58 tests per matrix job) and Android/publish run 43704406411. Follow-up continuity/release-guard documentation is on main. Confirm latest Render deployment before claiming new runtime code is live. HTTP health-check setting remains an explicit external follow-up; do not repeat the entire audit or create new features unsolicited.
+Immediate: finish verifying the scheduled-worker cold-start follow-up (see newest log entry), then await the owner's next development instruction. Code CI for `91ea05e` passed: backend run 43704406362 (58 tests per matrix job) and Android/publish run 43704406411. Follow-up continuity/release-guard documentation is on main. Confirm latest Render deployment before claiming new runtime code is live. HTTP health-check setting remains an explicit external follow-up; do not repeat the entire audit or create new features unsolicited.
 
 Remaining product work is separate from audit defects: login/camera/private receipt UI, unknown-barcode requests, full catalog pagination and sourced real product/price coverage. Preview 001 includes manual known-barcode lookup, saved local basket/locality and explicit unavailable camera/receipt labels. No verified live prices were fabricated to fill empty screens.
 

@@ -195,6 +195,10 @@ def test_runner_requests_fresh_identity_and_preserves_endpoint_query(
 
     def handler(request):
         seen.append(request)
+        if request.url.path == "/ready":
+            assert request.method == "GET"
+            assert "Authorization" not in request.headers
+            return httpx.Response(200, json={"status": "ready"})
         if request.url.host == "pipelines.actions.githubusercontent.com":
             assert request.url.params["api-version"] == "2.0"
             assert (
@@ -213,5 +217,42 @@ def test_runner_requests_fresh_identity_and_preserves_endpoint_query(
         lambda **kwargs: original(transport=httpx.MockTransport(handler), **kwargs),
     )
     module.main()
-    assert len(seen) == 2
+    assert len(seen) == 3
+    assert seen[0].url.path == "/ready"
     assert "processed 0 jobs" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("first", ["timeout", 503])
+def test_readiness_retry_is_bounded_and_never_claims_work(monkeypatch, first):
+    import importlib.util
+    from pathlib import Path
+    import httpx
+
+    spec = importlib.util.spec_from_file_location(
+        "remote_worker_readiness",
+        Path(__file__).resolve().parents[2] / "scripts/run_remote_receipt_worker.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    monkeypatch.setattr(module.time, "sleep", lambda _: None)
+    calls = []
+
+    def handler(request):
+        calls.append(request)
+        assert request.method == "GET" and request.url.path == "/ready"
+        assert "Authorization" not in request.headers
+        if len(calls) == 1:
+            if first == "timeout":
+                raise httpx.ReadTimeout("cold start", request=request)
+            return httpx.Response(first)
+        return httpx.Response(200)
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        module.ensure_ready(client, "https://spestoslav-api.onrender.com")
+    assert len(calls) == 2
+    calls.clear()
+    with httpx.Client(
+        transport=httpx.MockTransport(lambda request: httpx.Response(503))
+    ) as client:
+        with pytest.raises(RuntimeError, match="bounded readiness"):
+            module.ensure_ready(client, "https://spestoslav-api.onrender.com")

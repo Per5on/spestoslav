@@ -5,10 +5,29 @@ import argparse
 import os
 from pathlib import Path
 import sys
+import time
 import httpx
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.receipt_worker import extract_text
+
+
+def ensure_ready(client, base):
+    # Warm the free API before acquiring a short-lived identity or claiming work.
+    # Only this read-only request is retried; claims must not be duplicated.
+    for attempt in range(2):
+        try:
+            response = client.get(base + "/ready", timeout=60)
+            if response.status_code == 200:
+                return
+            if response.status_code not in (502, 503, 504):
+                raise RuntimeError(f"API readiness failed: HTTP {response.status_code}")
+        except httpx.RequestError:
+            pass
+        if attempt == 0:
+            print("API is not ready yet; retrying the readiness check once")
+            time.sleep(2)
+    raise RuntimeError("API is unavailable after bounded readiness checks")
 
 
 def main():
@@ -27,6 +46,7 @@ def main():
     ):
         raise RuntimeError("Unexpected GitHub identity endpoint")
     with httpx.Client(timeout=30, follow_redirects=False) as client:
+        ensure_ready(client, base)
         processed = 0
         for _ in range(args.max_jobs):
             token_response = client.get(
@@ -42,7 +62,7 @@ def main():
             print("::add-mask::" + token)
             headers = {"Authorization": "Bearer " + token}
             response = client.post(
-                base + "/internal/receipt-worker/claim", headers=headers
+                base + "/internal/receipt-worker/claim", headers=headers, timeout=60
             )
             if response.status_code != 200:
                 raise RuntimeError(f"Receipt claim failed: HTTP {response.status_code}")
