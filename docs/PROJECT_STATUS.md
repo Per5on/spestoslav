@@ -1,21 +1,21 @@
 # Ongoing project checkpoint
 
-Status: **ACTIVE — code audit complete; awaiting the owner's next development step.**
+Status: **ACTIVE — implementing owner-requested preview 003 and scoped database retirement.**
 Updated: 15 November 2026 (Europe/Sofia).
 
 ## Resume here
 
-Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `main`; merged implementation PR: https://github.com/Per5on/spestoslav/pull/5. Check for uncommitted work before continuing.
+Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `codex/preview-003-navigation`; previous merged implementation PR: https://github.com/Per5on/spestoslav/pull/5. Check for uncommitted work before continuing.
 
-The requested review, confirmed code fixes, cleanup and application verification are complete. Do not start another feature phase before the owner supplies the next step. Save this checkpoint at each meaningful pause. One external setting remains: Render HTTP health-check path `/ready`; see the audit report for the capability limitation.
+Current task is the owner's compact navigation/settings redesign, removal of Home and postal storage, new money-bag logo and visual snapshot. See `PREVIEW_003.md` and the current brief; do not resume the superseded four-category/postal design. Finish tests/rollout/snapshot, preserving 001/002.
 
 ## Confirmed decisions
 
 - Product name/artwork: **Спестовник**; repository/service identifiers remain `spestoslav`.
 - Android 10+, existing Expo/React Native + TypeScript; existing FastAPI backend, Neon PostgreSQL, Render. Historical Kotlin/Spring references are not a rewrite request.
 - Green header, orange selections. This explicitly overrides the inverted-palette text in `12.docx`.
-- Four tabs: Храни, Горива, Дом, Техника. Separate shared searchable location dropdown with mutually exclusive name/postal modes, municipality/region/postal details. No Plus, OSM, GPS/current-location or radius flow.
-- Supplied piggy-bank logo and sample photos; preserve originals. Real products/thumbnails come from the backend. Demo fixtures have no verified price.
+- Four upper tabs: Храни, ТЕХНИКА, Горива, Моят списък. Backend categories: groceries, technology, fuel; Home is being retired. Name-only compact shared locality dropdown; no postal mode/storage, lower ribbon, GPS, radius or OSM.
+- Golden money-bag/coins logo from the supplied sample replaces the active piggy-bank logo. Vertical three-dot header settings with scan/login/receipts/font/language; six working interface languages and saved font scaling. Preserve historical originals. Product/cart visibility changes are in PREVIEW_003.md.
 - Keep numbered previews/builds: 01/001 is preserved; changes become 02/002, then 03/003. Never replace a previously delivered version.
 - EUR; physical branch prices, national online offers, promotions and history stay distinct. OCR/submissions need review before publication.
 - Fuelo is approved as a third-party source, but the owner has no API access. No averages/estimated or unknown-certainty values presented as verified station prices.
@@ -39,7 +39,7 @@ The requested review, confirmed code fixes, cleanup and application verification
 
 ## Open work / known limits
 
-Immediate: await the owner's next development instruction. Worker cold-start follow-up source `b87423b` passed backend CI 43705642152 (60 tests per job) and authenticated real worker run 43705642164 (empty queue, no synthetic live data). Code CI for `91ea05e` passed: backend run 43704406362 (58 tests per matrix job) and Android/publish run 43704406411. Follow-up continuity/release-guard documentation is on main. Render deploy `dep-dbsor8gn74is73ag7b9g` is confirmed live on runtime commit `b87423b`; later checkpoint commits do not alter its backend/mobile trees. Recheck live state when resuming, rather than assuming future deployments. HTTP health-check setting remains an explicit external follow-up; do not repeat the entire audit or create new features unsolicited.
+Immediate: finish preview 003 PostgreSQL/native CI, deploy API 0.5.0 before dropping postal storage, apply validated migration to shared preview, verify preserved locality/branch counts and supply the actual visual snapshot. Validation branch: `br-crimson-feather-balgu231`; pre-change recovery copy: `br-frosty-star-badgjcyw`. No local credentials or app connection were switched to either branch. Current shared preview still has Home/postal until rollout.
 
 Remaining product work is separate from audit defects: login/camera/private receipt UI, unknown-barcode requests, full catalog pagination and sourced real product/price coverage. Preview 001 includes manual known-barcode lookup, saved local basket/locality and explicit unavailable camera/receipt labels. No verified live prices were fabricated to fill empty screens.
 

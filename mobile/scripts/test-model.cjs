@@ -54,14 +54,14 @@ assert.equal(
   true,
 );
 const cities = [
-  { name: "Sofia", name_bg: "София", postal_codes: ["1000"] },
-  { name: "Varna", name_bg: "Варна", postal_codes: ["9000"] },
+  { name: "Sofia", name_bg: "София" },
+  { name: "Varna", name_bg: "Варна" },
 ];
-assert.equal(filterLocalities(cities, "100", "postal")[0].name_bg, "София");
-assert.equal(filterLocalities(cities, "СОФ", "name")[0].name_bg, "София");
-assert.equal(filterLocalities(cities, "1000", "name").length, 0);
+assert.equal(filterLocalities(cities, "100").length, 0);
+assert.equal(filterLocalities(cities, "СОФ")[0].name_bg, "София");
+assert.equal(filterLocalities(cities, "1000").length, 0);
 console.log(
-  "Model checks passed: basket restoration/quantity bounds, demo and locality price isolation, expiry, search modes.",
+  "Model checks passed: basket restoration/quantity bounds, demo and locality price isolation, expiry, name-only search.",
 );
 
 assert.equal(
@@ -71,11 +71,9 @@ assert.equal(
         name: "Sofija",
         name_bg: "София",
         name_latin: "Sofija",
-        postal_codes: ["1000"],
       },
     ],
     "Sofia",
-    "name",
   ).length,
   1,
 );
@@ -105,3 +103,21 @@ assert.deepEqual(
 console.log(
   "Dependency regression checks passed: safe deep merges and ordinary config merging.",
 );
+
+assert.deepEqual(
+  restoreBasket([{ product: { ...p, category_code: "home" }, quantity: 1 }]),
+  [],
+);
+const i18nSource = ts.transpileModule(fs.readFileSync("src/i18n.ts", "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS },
+}).outputText;
+const translations = { exports: {} };
+new Function("exports", "require", "module", i18nSource)(
+  translations.exports,
+  require,
+  translations,
+);
+const keys = Object.keys(translations.exports.messages.bg).sort();
+assert.equal(translations.exports.languages.length, 6);
+for (const value of Object.values(translations.exports.messages))
+  assert.deepEqual(Object.keys(value).sort(), keys);

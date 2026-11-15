@@ -22,7 +22,7 @@ def identity(city, municipality, region):
 def validate():
     seed = read("store_branches_seed.csv")
     registry = read("retailer_source_registry.csv")
-    postal = read("bulgaria_postal_codes.csv")
+    locality_rows = read("bulgaria_localities.csv")
     retailers = {row["retailer_code"]: row for row in registry}
     if len(retailers) != len(registry):
         raise ValueError("Duplicate retailer code")
@@ -32,7 +32,7 @@ def validate():
             row["municipality_name_source"].split(" / ")[0],
             row["oblast_name_source"].split(" / ")[0],
         )
-        for row in postal
+        for row in locality_rows
     }
     seen = set()
     for line, row in enumerate(seed, 2):

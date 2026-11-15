@@ -52,6 +52,7 @@ export function restoreBasket(value: unknown): BasketItem[] {
         !i ||
         typeof i.product?.id !== "string" ||
         typeof i.product?.name !== "string" ||
+        i.product.category_code === "home" ||
         !Number.isInteger(i.quantity) ||
         i.quantity < 1 ||
         i.quantity > 99 ||
@@ -97,17 +98,14 @@ export function filterLocalities<
     name: string;
     name_bg?: string | null;
     name_latin?: string | null;
-    postal_codes: string[];
   },
->(rows: T[], query: string, mode: "name" | "postal"): T[] {
-  const q = query.trim().toLocaleLowerCase("bg");
+>(rows: T[], query: string): T[] {
   const normalize = (name: string) =>
-    name.toLocaleLowerCase("bg").replace(/ia/g, "ija");
+    name.trim().toLocaleLowerCase("bg").replace(/ia/g, "ija");
+  const q = normalize(query);
   return rows.filter((l) =>
-    mode === "postal"
-      ? l.postal_codes.some((c) => c.startsWith(q))
-      : [l.name, l.name_bg, l.name_latin].some(
-          (n) => n && normalize(n).includes(normalize(q)),
-        ),
+    [l.name, l.name_bg, l.name_latin].some(
+      (n) => n && normalize(n).includes(q),
+    ),
   );
 }

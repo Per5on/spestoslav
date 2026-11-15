@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Спестовник 02",
+    "name": "Спестовник 03",
     "slug": "spestoslav",
-    "version": "0.1.2",
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
       "package": "bg.spestoslav.preview",
-      "versionCode": 2,
+      "versionCode": 3,
       "permissions": [],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
@@ -16,9 +16,13 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.VIBRATE"
-      ]
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/money-bag-logo.png",
+        "backgroundColor": "#195b27"
+      }
     },
-    "icon": "./assets/piggy-bank-logo.png",
+    "icon": "./assets/money-bag-logo.png",
     "plugins": [
       [
         "expo-build-properties",

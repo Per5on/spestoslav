@@ -1,117 +1,117 @@
-retailer_code,retailer_name,category_code,branch_name,city,municipality,region,address,postal_code,latitude,longitude,source,source_url,source_checked_at
-kaufland,Kaufland,groceries,Kaufland Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Краков 2Б,5000,,,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/veliko-trnovo-8600.html,2026-11-14
-lidl,Lidl,groceries,Lidl Велико Търново – Народни будители,Велико Търново,Велико Търново,Велико Търново,ул. Народни будители 25,,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-narodni-buditeli-25/,2026-11-14
-lidl,Lidl,groceries,Lidl Велико Търново – Серес,Велико Търново,Велико Търново,Велико Търново,ул. Серес 3,,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-seres-3/,2026-11-14
-technopolis,Technopolis,technology,Технополис Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 4,,43.071944,25.638972,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/stores,2026-11-14
-technomarket,Technomarket,technology,Техномаркет Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/veliko-tyrnovo/tehnomarket-veliko-tyrnovo,2026-11-14
-billa,BILLA,groceries,BILLA София – Ломско шосе,София,Столична,София (столица),бул. Ломско шосе 2А,1229,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA София – Монтевидео,София,Столична,София (столица),ул. Монтевидео 23А,1618,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Пловдив – Цариградско шосе,Пловдив,Пловдив,Пловдив,бул. Цариградско шосе 78,4000,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Русе – Тулча,Русе,Русе,Русе,ул. Тулча 19,7005,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Варна – Димитър Икономов,Варна,Варна,Варна,ул. Димитър Икономов 36,9010,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Кюстендил – Пауталия,Кюстендил,Кюстендил,Кюстендил,ул. Пауталия 10,2500,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Монтана – Св. Климент Охридски,Монтана,Монтана,Монтана,ул. Св. Климент Охридски 5,3400,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Ловеч – Бяло море,Ловеч,Ловеч,Ловеч,ул. Бяло море 5,5501,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Плевен – Цар Самуил,Плевен,Плевен,Плевен,ул. Цар Самуил 34,5800,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Бургас – Меден рудник,Бургас,Бургас,Бургас,"ж.к. Меден рудник, Зона А, 171",8011,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Стара Загора – Цар Симеон Велики,Стара Загора,Стара Загора,Стара Загора,бул. Цар Симеон Велики 218,6009,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Ботевград,Ботевград,Ботевград,София,ул. Витоша 1А,,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#14,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Кюстендил,Кюстендил,Кюстендил,Кюстендил,ул. Цар Освободител 231,2501,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#29,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Елин Пелин,Елин Пелин,Елин Пелин,София,ул. Витоша 7,2100,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#41,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Надежда 2,София,Столична,София (столица),бул. Ломско шосе 68,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Панайот Волов,София,Столична,София (столица),ул. Панайот Волов 2–4,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Гео Милев,София,Столична,София (столица),бул. Гео Милев 20,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Македония,София,Столична,София (столица),бул. Македония 24,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Младост 1,София,Столична,София (столица),ул. Димитър Доспевски 2,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Ботевградско шосе,София,Столична,София (столица),бул. Ботевградско шосе 46,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Светослав Тертер,София,Столична,София (столица),ул. Светослав Тертер 27,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Младост 2,София,Столична,София (столица),ул. Проф. Ал. Теодоров-Балан 5,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Самоковско шосе,София,Столична,София (столица),бул. Самоковско шосе 40,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Граф Игнатиев,София,Столична,София (столица),ул. Граф Игнатиев 50,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-promarket,ProMarket,groceries,ProMarket София – Раковски,София,Столична,София (столица),ул. Г. С. Раковски 60,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-metro,METRO,groceries,METRO Велико Търново,Велико Търново,Велико Търново,Велико Търново,бул. България 78,5000,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/veliko-tarnovo,2026-11-14
-burlex,Burlex,groceries,Бурлекс Брегалница,Варна,Варна,Варна,ул. Селиолу 42,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Тервел 2,Тервел,Тервел,Добрич,ул. Хан Аспарух 95,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Хали Русе,Русе,Русе,Русе,ул. Александровска 93,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Здравец,Русе,Русе,Русе,бул. Липник 88,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Братя Миладинови,Русе,Русе,Русе,ул. Братя Миладинови 4,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Воден,Русе,Русе,Русе,ул. Воден 11,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Тервел,Тервел,Тервел,Добрич,ул. Цар Иван Асен 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Нови Искър,Нови Искър,Столична,София (столица),ул. Искърско Дефиле 31,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Илиянци,София,Столична,София (столица),"кв. Илиянци, бул. Рожен 91",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Габрово Хали,Габрово,Габрово,Габрово,ул. Радецка 18,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Мир 40,Варна,Варна,Варна,"ж.к. Левски, ул. Мир бл. 40",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Ботев,Варна,Варна,Варна,ул. Филип Тотю 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Железни врата,Варна,Варна,Варна,ул. Железни Врата 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Толстой,София,Столична,София (столица),"ж.к. Лев Толстой, ул. Йордан Хаджиконстантинов 40",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Владиславово 1,Варна,Варна,Варна,ж.к. Владислав Варненчик 407,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Девня,Девня,Девня,Варна,бул. Съединение 109,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Белослав,Белослав,Белослав,Варна,ул. Сан Стефано 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Добрич звезда,Добрич,Добрич,Добрич,ул. Васил Левски 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Зелени камъни,Варна,Варна,Варна,ж.к. Трошево 39,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Каварна,Каварна,Каварна,Добрич,ул. Сава Ганчев 1,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Кайсиева градина,Варна,Варна,Варна,"бул. Кайсиева градина, блок 235",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Провадия,Провадия,Провадия,Варна,ул. Александър Стамболийски 20,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Нови Пазар,Нови пазар,Нови пазар,Шумен,ул. Оборище 1,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Тракия,Варна,Варна,Варна,ул. Янкул Войвода 24,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Владиславово 2,Варна,Варна,Варна,"ж.к. Владислав Варненчик, ул. Ниш, до Пощата",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Владислав,Варна,Варна,Варна,бул. Владислав Варненчик 82,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Евлоги Георгиев,Варна,Варна,Варна,ул. Евлоги Георгиев 12,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Възраждане 1,Варна,Варна,Варна,"кв. Възраждане, срещу блок 68",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Възраждане 2,Варна,Варна,Варна,"ж.к. Възраждане, срещу бл. 41, вх. 5 №12",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Балчик,Балчик,Балчик,Добрич,"ж.к. Васил Левски, ул. Христо Ботев 24",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Герман,Герман,Столична,София (столица),ул. Младежка 7,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Лесново,Лесново,Елин Пелин,София,център,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Чолаковци,Велико Търново,Велико Търново,Велико Търново,"кв. Чолаковци, ул. Райна Княгиня 2",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Струга,Варна,Варна,Варна,ул. Струга 21,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Трошево,Варна,Варна,Варна,"ж.к. Трошево, ул. Радост 7",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Победа,Варна,Варна,Варна,"ул. Тодор Радев Пенев, близо до бл. 4",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Чайка парк,Варна,Варна,Варна,"кв. Чайка, бл. 27",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Аспарухово,Варна,Варна,Варна,"кв. Аспарухово, бул. Народни будители 2",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Галата,Варна,Варна,Варна,ул. Капитан I-ви ранг Георги Купов 40,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Стражица,Стражица,Стражица,Велико Търново,ул. Михал Друмев 1,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Вапцаров,Варна,Варна,Варна,"ж.к. Чайка, ул. Никола Вапцаров 2",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Гръцка махала,Варна,Варна,Варна,ул. Св. Климент 25,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Червен площад,Варна,Варна,Варна,ул. Васил Друмев 4,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Левски,Варна,Варна,Варна,ул. Дубровник 18,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Приморски,Варна,Варна,Варна,ул. Царевец 38,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Базар Левски,Варна,Варна,Варна,бул. Васил Левски 35,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Стамболийски,София,Столична,София (столица),бул. Александър Стамболийски 44,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Банишора,София,Столична,София (столица),ул. Иван Тургенев 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Борово 2,София,Столична,София (столица),"ж.к. Борово, ъгъла на ул. Родопски извор и ул. Лелинска чука",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Свобода,София,Столична,София (столица),"ж.к. Свобода, бул. Ген. Никола Жеков, до бл. 12",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Търговски парк,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Пазара,Велико Търново,Велико Търново,Велико Търново,бул. България 1,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Магро,Велико Търново,Велико Търново,Велико Търново,ул. Васил Левски 15,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Банкя,Банкя,Столична,София (столица),ул. Александър Стамболийски 2,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Дряново,Дряново,Дряново,Габрово,ул. Бачо Киро 32,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс ж.к. Люлин,София,Столична,София (столица),"ж.к. Люлин 3, ул. Захари Стоянов 17",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Долни Чифлик,Долни чифлик,Долни чифлик,Варна,ул. Ботевска 16,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Младост 2,Варна,Варна,Варна,"кв. Младост 2, пазар Орехчето, до блок 129А",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс ж.к. Младост,Варна,Варна,Варна,"ж.к. Младост II, блок 135",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс ж.к. Чайка,Варна,Варна,Варна,"ж.к. Чайка, до блок 68",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Аксаково,Аксаково,Аксаково,Варна,център,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Борово Хали,София,Столична,София (столица),"ул. Пчела 30, ж.к. Красно село",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Скобелев,София,Столична,София (столица),бул. Генерал Скобелев 69,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Дългопол,Дългопол,Дългопол,Варна,ул. Ген. Заимов 5,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Тутракан,Тутракан,Тутракан,Силистра,ул. Родина 1,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Елин Пелин 2,Елин Пелин,Елин Пелин,София,"бул. София, пазар",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Елин Пелин,Елин Пелин,Елин Пелин,София,бул. София 17,,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Изток,София,Столична,София (столица),"кв. Изток, ул. Тарас Шевченко 11-13",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Надежда,София,Столична,София (столица),"ж.к. Надежда 4, ул. Екзарх Стефан",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Манастирски Ливади,София,Столична,София (столица),"ж.к. Манастирски Ливади, ул. Мур 56",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Бояна,София,Столична,София (столица),"ж.к. Бояна, ул. Севастократор Калоян 77",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Сердика,София,Столична,София (столица),"ж.к. Сердика, бл. 8",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Враждебна,София,Столична,София (столица),"ж.к. Враждебна, ул. 27, №1",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Борово 3,София,Столична,София (столица),"ж.к. Борово 3, ул. Пирински Проход 47В",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-burlex,Burlex,groceries,Бурлекс Лозенец,София,Столична,София (столица),"ж.к. Лозенец, бул. Арсеналски 105",,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
-klasiko,Klasiko,groceries,Класико Картала,Велико Търново,Велико Търново,Велико Търново,"кв. Картала, ул. Стоян Михайловски 7",,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-klasiko,Klasiko,groceries,Класико Пишмана,Велико Търново,Велико Търново,Велико Търново,"кв. Пишмана, ул. Емилиян Станев 9",,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-klasiko,Klasiko,groceries,Класико Център,Велико Търново,Велико Търново,Велико Търново,ул. Бачо Киро 16,,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-klasiko,Klasiko,groceries,Класико Беляковско шосе,Велико Търново,Велико Търново,Велико Търново,бул. България 70,,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-klasiko,Klasiko,groceries,Класико парк Дружба,Велико Търново,Велико Търново,Велико Търново,ул. Мармарлийска 37,,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-klasiko,Klasiko,groceries,Класико Зона Б,Велико Търново,Велико Търново,Велико Търново,"кв. Зона Б, ул. Стоян Коледаров 46",,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
-hit_max,HIT Max,groceries,HIT Max Младост,София,Столична,София (столица),бул. Александър Малинов 75,,,,OFFICIAL_STORE_LOCATOR,https://www.hit-max.bg/elements/pages/our-stores/,2026-11-14
-hit_max,HIT Max,groceries,HIT Max Люлин,София,Столична,София (столица),ул. Обелско шосе 20,,,,OFFICIAL_STORE_LOCATOR,https://www.hit-max.bg/elements/pages/our-stores/,2026-11-14
-eko,EKO,fuel,EKO 1103 Велико Търново,Велико Търново,Велико Търново,Велико Търново,"ул. Магистрала 3, път I-4",,,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
-eko,EKO,fuel,EKO 1167 Велико Търново Вход,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 28,,,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
+retailer_code,retailer_name,category_code,branch_name,city,municipality,region,address,latitude,longitude,source,source_url,source_checked_at
+kaufland,Kaufland,groceries,Kaufland Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Краков 2Б,,,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/veliko-trnovo-8600.html,2026-11-14
+lidl,Lidl,groceries,Lidl Велико Търново – Народни будители,Велико Търново,Велико Търново,Велико Търново,ул. Народни будители 25,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-narodni-buditeli-25/,2026-11-14
+lidl,Lidl,groceries,Lidl Велико Търново – Серес,Велико Търново,Велико Търново,Велико Търново,ул. Серес 3,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-seres-3/,2026-11-14
+technopolis,Technopolis,technology,Технополис Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 4,43.071944,25.638972,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/stores,2026-11-14
+technomarket,Technomarket,technology,Техномаркет Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/veliko-tyrnovo/tehnomarket-veliko-tyrnovo,2026-11-14
+billa,BILLA,groceries,BILLA София – Ломско шосе,София,Столична,София (столица),бул. Ломско шосе 2А,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA София – Монтевидео,София,Столична,София (столица),ул. Монтевидео 23А,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Пловдив – Цариградско шосе,Пловдив,Пловдив,Пловдив,бул. Цариградско шосе 78,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Русе – Тулча,Русе,Русе,Русе,ул. Тулча 19,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Варна – Димитър Икономов,Варна,Варна,Варна,ул. Димитър Икономов 36,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Кюстендил – Пауталия,Кюстендил,Кюстендил,Кюстендил,ул. Пауталия 10,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Монтана – Св. Климент Охридски,Монтана,Монтана,Монтана,ул. Св. Климент Охридски 5,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Ловеч – Бяло море,Ловеч,Ловеч,Ловеч,ул. Бяло море 5,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Плевен – Цар Самуил,Плевен,Плевен,Плевен,ул. Цар Самуил 34,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Бургас – Меден рудник,Бургас,Бургас,Бургас,"ж.к. Меден рудник, Зона А, 171",,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+billa,BILLA,groceries,BILLA Стара Загора – Цар Симеон Велики,Стара Загора,Стара Загора,Стара Загора,бул. Цар Симеон Велики 218,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
+fantastico,Fantastico,groceries,Фантастико Ботевград,Ботевград,Ботевград,София,ул. Витоша 1А,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#14,2026-11-14
+fantastico,Fantastico,groceries,Фантастико Кюстендил,Кюстендил,Кюстендил,Кюстендил,ул. Цар Освободител 231,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#29,2026-11-14
+fantastico,Fantastico,groceries,Фантастико Елин Пелин,Елин Пелин,Елин Пелин,София,ул. Витоша 7,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#41,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Надежда 2,София,Столична,София (столица),бул. Ломско шосе 68,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Панайот Волов,София,Столична,София (столица),ул. Панайот Волов 2–4,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Гео Милев,София,Столична,София (столица),бул. Гео Милев 20,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Македония,София,Столична,София (столица),бул. Македония 24,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Младост 1,София,Столична,София (столица),ул. Димитър Доспевски 2,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Ботевградско шосе,София,Столична,София (столица),бул. Ботевградско шосе 46,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Светослав Тертер,София,Столична,София (столица),ул. Светослав Тертер 27,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Младост 2,София,Столична,София (столица),ул. Проф. Ал. Теодоров-Балан 5,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Самоковско шосе,София,Столична,София (столица),бул. Самоковско шосе 40,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Граф Игнатиев,София,Столична,София (столица),ул. Граф Игнатиев 50,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+promarket,ProMarket,groceries,ProMarket София – Раковски,София,Столична,София (столица),ул. Г. С. Раковски 60,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
+metro,METRO,groceries,METRO Велико Търново,Велико Търново,Велико Търново,Велико Търново,бул. България 78,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/veliko-tarnovo,2026-11-14
+burlex,Burlex,groceries,Бурлекс Брегалница,Варна,Варна,Варна,ул. Селиолу 42,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Тервел 2,Тервел,Тервел,Добрич,ул. Хан Аспарух 95,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Хали Русе,Русе,Русе,Русе,ул. Александровска 93,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Здравец,Русе,Русе,Русе,бул. Липник 88,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Братя Миладинови,Русе,Русе,Русе,ул. Братя Миладинови 4,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Воден,Русе,Русе,Русе,ул. Воден 11,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Тервел,Тервел,Тервел,Добрич,ул. Цар Иван Асен 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Нови Искър,Нови Искър,Столична,София (столица),ул. Искърско Дефиле 31,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Илиянци,София,Столична,София (столица),"кв. Илиянци, бул. Рожен 91",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Габрово Хали,Габрово,Габрово,Габрово,ул. Радецка 18,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Мир 40,Варна,Варна,Варна,"ж.к. Левски, ул. Мир бл. 40",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Ботев,Варна,Варна,Варна,ул. Филип Тотю 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Железни врата,Варна,Варна,Варна,ул. Железни Врата 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Толстой,София,Столична,София (столица),"ж.к. Лев Толстой, ул. Йордан Хаджиконстантинов 40",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Владиславово 1,Варна,Варна,Варна,ж.к. Владислав Варненчик 407,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Девня,Девня,Девня,Варна,бул. Съединение 109,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Белослав,Белослав,Белослав,Варна,ул. Сан Стефано 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Добрич звезда,Добрич,Добрич,Добрич,ул. Васил Левски 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Зелени камъни,Варна,Варна,Варна,ж.к. Трошево 39,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Каварна,Каварна,Каварна,Добрич,ул. Сава Ганчев 1,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Кайсиева градина,Варна,Варна,Варна,"бул. Кайсиева градина, блок 235",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Провадия,Провадия,Провадия,Варна,ул. Александър Стамболийски 20,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Нови Пазар,Нови пазар,Нови пазар,Шумен,ул. Оборище 1,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Тракия,Варна,Варна,Варна,ул. Янкул Войвода 24,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Владиславово 2,Варна,Варна,Варна,"ж.к. Владислав Варненчик, ул. Ниш, до Пощата",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Владислав,Варна,Варна,Варна,бул. Владислав Варненчик 82,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Евлоги Георгиев,Варна,Варна,Варна,ул. Евлоги Георгиев 12,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Възраждане 1,Варна,Варна,Варна,"кв. Възраждане, срещу блок 68",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Възраждане 2,Варна,Варна,Варна,"ж.к. Възраждане, срещу бл. 41, вх. 5 №12",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Балчик,Балчик,Балчик,Добрич,"ж.к. Васил Левски, ул. Христо Ботев 24",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Герман,Герман,Столична,София (столица),ул. Младежка 7,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Лесново,Лесново,Елин Пелин,София,център,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Чолаковци,Велико Търново,Велико Търново,Велико Търново,"кв. Чолаковци, ул. Райна Княгиня 2",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Струга,Варна,Варна,Варна,ул. Струга 21,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Трошево,Варна,Варна,Варна,"ж.к. Трошево, ул. Радост 7",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Победа,Варна,Варна,Варна,"ул. Тодор Радев Пенев, близо до бл. 4",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Чайка парк,Варна,Варна,Варна,"кв. Чайка, бл. 27",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Аспарухово,Варна,Варна,Варна,"кв. Аспарухово, бул. Народни будители 2",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Галата,Варна,Варна,Варна,ул. Капитан I-ви ранг Георги Купов 40,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Стражица,Стражица,Стражица,Велико Търново,ул. Михал Друмев 1,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Вапцаров,Варна,Варна,Варна,"ж.к. Чайка, ул. Никола Вапцаров 2",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Гръцка махала,Варна,Варна,Варна,ул. Св. Климент 25,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Червен площад,Варна,Варна,Варна,ул. Васил Друмев 4,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Левски,Варна,Варна,Варна,ул. Дубровник 18,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Приморски,Варна,Варна,Варна,ул. Царевец 38,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Базар Левски,Варна,Варна,Варна,бул. Васил Левски 35,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Стамболийски,София,Столична,София (столица),бул. Александър Стамболийски 44,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Банишора,София,Столична,София (столица),ул. Иван Тургенев 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Борово 2,София,Столична,София (столица),"ж.к. Борово, ъгъла на ул. Родопски извор и ул. Лелинска чука",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Свобода,София,Столична,София (столица),"ж.к. Свобода, бул. Ген. Никола Жеков, до бл. 12",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Търговски парк,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Пазара,Велико Търново,Велико Търново,Велико Търново,бул. България 1,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Магро,Велико Търново,Велико Търново,Велико Търново,ул. Васил Левски 15,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Банкя,Банкя,Столична,София (столица),ул. Александър Стамболийски 2,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Дряново,Дряново,Дряново,Габрово,ул. Бачо Киро 32,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс ж.к. Люлин,София,Столична,София (столица),"ж.к. Люлин 3, ул. Захари Стоянов 17",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Долни Чифлик,Долни чифлик,Долни чифлик,Варна,ул. Ботевска 16,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Младост 2,Варна,Варна,Варна,"кв. Младост 2, пазар Орехчето, до блок 129А",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс ж.к. Младост,Варна,Варна,Варна,"ж.к. Младост II, блок 135",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс ж.к. Чайка,Варна,Варна,Варна,"ж.к. Чайка, до блок 68",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Аксаково,Аксаково,Аксаково,Варна,център,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Борово Хали,София,Столична,София (столица),"ул. Пчела 30, ж.к. Красно село",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Скобелев,София,Столична,София (столица),бул. Генерал Скобелев 69,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Дългопол,Дългопол,Дългопол,Варна,ул. Ген. Заимов 5,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Тутракан,Тутракан,Тутракан,Силистра,ул. Родина 1,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Елин Пелин 2,Елин Пелин,Елин Пелин,София,"бул. София, пазар",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Елин Пелин,Елин Пелин,Елин Пелин,София,бул. София 17,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Изток,София,Столична,София (столица),"кв. Изток, ул. Тарас Шевченко 11-13",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Надежда,София,Столична,София (столица),"ж.к. Надежда 4, ул. Екзарх Стефан",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Манастирски Ливади,София,Столична,София (столица),"ж.к. Манастирски Ливади, ул. Мур 56",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Бояна,София,Столична,София (столица),"ж.к. Бояна, ул. Севастократор Калоян 77",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Сердика,София,Столична,София (столица),"ж.к. Сердика, бл. 8",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Враждебна,София,Столична,София (столица),"ж.к. Враждебна, ул. 27, №1",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Борово 3,София,Столична,София (столица),"ж.к. Борово 3, ул. Пирински Проход 47В",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+burlex,Burlex,groceries,Бурлекс Лозенец,София,Столична,София (столица),"ж.к. Лозенец, бул. Арсеналски 105",,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
+klasiko,Klasiko,groceries,Класико Картала,Велико Търново,Велико Търново,Велико Търново,"кв. Картала, ул. Стоян Михайловски 7",,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+klasiko,Klasiko,groceries,Класико Пишмана,Велико Търново,Велико Търново,Велико Търново,"кв. Пишмана, ул. Емилиян Станев 9",,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+klasiko,Klasiko,groceries,Класико Център,Велико Търново,Велико Търново,Велико Търново,ул. Бачо Киро 16,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+klasiko,Klasiko,groceries,Класико Беляковско шосе,Велико Търново,Велико Търново,Велико Търново,бул. България 70,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+klasiko,Klasiko,groceries,Класико парк Дружба,Велико Търново,Велико Търново,Велико Търново,ул. Мармарлийска 37,,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+klasiko,Klasiko,groceries,Класико Зона Б,Велико Търново,Велико Търново,Велико Търново,"кв. Зона Б, ул. Стоян Коледаров 46",,,OFFICIAL_STORE_LOCATOR,https://www.klasiko.bg/bg/info/i8/За-нас.html,2026-11-14
+hit_max,HIT Max,groceries,HIT Max Младост,София,Столична,София (столица),бул. Александър Малинов 75,,,OFFICIAL_STORE_LOCATOR,https://www.hit-max.bg/elements/pages/our-stores/,2026-11-14
+hit_max,HIT Max,groceries,HIT Max Люлин,София,Столична,София (столица),ул. Обелско шосе 20,,,OFFICIAL_STORE_LOCATOR,https://www.hit-max.bg/elements/pages/our-stores/,2026-11-14
+eko,EKO,fuel,EKO 1103 Велико Търново,Велико Търново,Велико Търново,Велико Търново,"ул. Магистрала 3, път I-4",,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
+eko,EKO,fuel,EKO 1167 Велико Търново Вход,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 28,,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
