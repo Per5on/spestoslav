@@ -8,7 +8,6 @@ from .db import get_db
 from .models import (
     Category,
     Locality,
-    LocalityPostalCode,
     Product,
     Retailer,
     StoreBranch,
@@ -23,7 +22,7 @@ from .workflows import (
     ProductIdentificationRequest,
 )
 
-app = FastAPI(title="Спестослав API", version="0.4.1")
+app = FastAPI(title="Спестослав API", version="0.5.0")
 
 
 class CategoryResponse(BaseModel):
@@ -37,7 +36,8 @@ class LocalityResponse(BaseModel):
     name: str
     name_bg: str | None = None
     name_latin: str | None = None
-    postal_codes: list[str] = Field(default_factory=list)
+    # Empty compatibility field for APK 001/002; there is no postal search/storage.
+    postal_codes: list[str] = Field(default_factory=list, deprecated=True)
     type: str
     municipality: str | None = None
     region: str | None = None
@@ -55,7 +55,6 @@ def readiness(db: Session = Depends(get_db)):
         for statement in (
             select(Category).limit(1),
             select(Locality.id, Locality.name_bg, Locality.name_latin).limit(1),
-            select(LocalityPostalCode.postal_code).limit(1),
             select(StoreBranch).limit(1),
             select(Product).limit(1),
             select(CurrentPrice).limit(1),
@@ -100,9 +99,6 @@ def search_localities(
     latin_terms = {normalized, normalized.replace("ia", "ija")}
     contains_patterns = [f"%{value}%" for value in latin_terms]
     starts_with_patterns = [f"{value}%" for value in latin_terms]
-    postal_matches = select(LocalityPostalCode.locality_id).where(
-        LocalityPostalCode.postal_code.like(f"{term}%")
-    )
 
     text_matches = (
         [func.lower(Locality.name).like(pattern) for pattern in contains_patterns]
@@ -127,7 +123,7 @@ def search_localities(
             )
         )
         .where(Locality.on_map.is_(True))
-        .where(or_(*text_matches, Locality.id.in_(postal_matches)))
+        .where(or_(*text_matches))
         .order_by(
             (func.lower(func.coalesce(Locality.name_bg, "")) == normalized).desc(),
             or_(
@@ -142,28 +138,12 @@ def search_localities(
         .limit(20)
     ).all()
 
-    locality_ids = [locality.id for locality in localities]
-    postal_rows = (
-        db.execute(
-            select(LocalityPostalCode.locality_id, LocalityPostalCode.postal_code)
-            .where(LocalityPostalCode.locality_id.in_(locality_ids))
-            .order_by(LocalityPostalCode.postal_code)
-        ).all()
-        if locality_ids
-        else []
-    )
-
-    postal_codes_by_locality: dict[str, list[str]] = {}
-    for locality_id, postal_code in postal_rows:
-        postal_codes_by_locality.setdefault(str(locality_id), []).append(postal_code)
-
     return [
         LocalityResponse(
             id=str(locality.id),
             name=locality.name,
             name_bg=locality.name_bg,
             name_latin=locality.name_latin,
-            postal_codes=postal_codes_by_locality.get(str(locality.id), []),
             type=locality.type,
             municipality=locality.municipality,
             region=locality.region,
@@ -196,7 +176,6 @@ class StoreBranchResponse(BaseModel):
     locality_name: str
     branch_name: str | None = None
     address: str
-    postal_code: str | None = None
 
 
 class CurrentPriceResponse(BaseModel):
@@ -299,7 +278,6 @@ def stores_for_locality(
             locality_name=name_bg or locality_name,
             branch_name=branch.branch_name,
             address=branch.address,
-            postal_code=getattr(branch, "postal_code", None),
         )
         for branch, retailer_name, name_bg, locality_name in rows
     ]

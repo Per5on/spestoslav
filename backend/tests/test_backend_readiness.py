@@ -57,7 +57,7 @@ def test_ready_checks_database_and_health_is_liveness():
     assert fixtures.client.get("/ready").status_code == 200
     # Simulate a database whose migration/normalization is missing.
     with fixtures.engine.begin() as db:
-        db.exec_driver_sql("DROP TABLE locality_postal_codes")
+        db.exec_driver_sql("DROP TABLE product_images")
     response = fixtures.client.get("/ready")
     assert response.status_code == 503
     assert response.json()["detail"] == "Database is not ready"
@@ -79,12 +79,18 @@ def test_postgres_driver_is_explicit(url):
     )
 
 
-def test_locality_search_works_without_legacy_postal_column():
-    # Exactly the live-preview failure: normalized postal table exists but the
-    # old single-postal column does not. Do not fix it by changing Flyway tables.
-    with fixtures.engine.begin() as db:
-        db.exec_driver_sql("DROP INDEX ix_localities_postal_code")
-        db.exec_driver_sql("ALTER TABLE inhabited_localities DROP COLUMN postal_code")
+def test_name_search_has_no_postal_storage_dependency():
+    from sqlalchemy import inspect
+
+    inspector = inspect(fixtures.engine)
+    assert "locality_postal_codes" not in inspector.get_table_names()
+    assert "postal_code" not in {
+        c["name"] for c in inspector.get_columns("inhabited_localities")
+    }
+    assert "postal_code" not in {
+        c["name"] for c in inspector.get_columns("store_branches")
+    }
     response = fixtures.client.get("/api/v1/localities", params={"q": "Sofia"})
     assert response.status_code == 200
-    assert response.json()[0]["postal_codes"] == ["1000"]
+    assert response.json()[0]["name_bg"] == "София"
+    assert response.json()[0]["postal_codes"] == []
