@@ -1,5 +1,5 @@
 {
-  "next_version": "003",
+  "next_version": "005",
   "versions": [
     {
       "version": "001",
@@ -20,6 +20,21 @@
       "kind": "Android APK",
       "url": "https://github.com/Per5on/spestoslav/releases/download/android-preview-002/spestovnik-preview-002.apk",
       "sha256": "693c45f72c197cc4cf205a3f61daeba8fb8901a15ff2fbc8222a5adcc4218e3e"
+    },
+    {
+      "version": "003",
+      "kind": "Android APK",
+      "url": "https://github.com/Per5on/spestoslav/releases/download/android-preview-003/spestovnik-preview-003.apk",
+      "sha256": "bf02e1ec78f6d1b140fa6b92ff702a30c3aa2fa2279f2cabf465d688a7837f58",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/43709020956"
+    },
+    {
+      "version": "004",
+      "kind": "Android APK",
+      "url": "https://github.com/Per5on/spestoslav/releases/download/android-preview-004/spestovnik-preview-004.apk",
+      "sha256": "20e0e265ce8ed0e421c3a4b5d72f8bdcabb1cfe6b132bcc7e7a041230fbfc5e9",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/43711564982",
+      "snapshot": "https://github.com/Per5on/spestoslav/releases/download/android-preview-004/android-preview-004.png"
     }
   ]
 }

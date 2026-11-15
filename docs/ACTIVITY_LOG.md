@@ -60,3 +60,10 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 - Merged 538bd9a and deployed API 0.5.0 as dep-dbsppd8n74is73aimkc0. Only after version/readiness/name-only checks passed was the tested shared retirement transaction applied. Verified 5,291 localities/139 branches unchanged, 29 retailers, Home zero and postal storage zero. UUID/address digests match pre-change; locality CSV identity digest matches DB.
 - Owner asked Products/Stores to move before Refresh on one row, then asked automatic button-font sizing. Implementing as 004 to preserve already published 003. Compact toolbar removes one full row; shared button/tab text fits readable single-line labels while retaining 44-point targets. Live-API browser tests passed all languages at 320px and 130% font, plus prior functionality; native 004 checks and final snapshot are next.
 - Architecture question answered: React Native/Expo/TypeScript + Python/FastAPI; Neon PostgreSQL and Render. Node.js is app/build tooling, not the API backend.
+
+### Preview 004 delivered; next step pending
+
+- PR #7 source bbc7b9a merged as 332ae57 after backend 43711564924 (61 tests per matrix job) and Android 43711564982 passed. Verified downloaded APK checksum 20e0e265ce8ed0e421c3a4b5d72f8bdcabb1cfe6b132bcc7e7a041230fbfc5e9 and inspected actual Android 10 image. Release android-preview-004 is public; 001–003 remain unchanged. Catalog and durable snapshots updated; next version 005.
+- Shared backend/data/scripts are identical to live 538bd9a; public readiness passed, no repeated migration/deployment. Updated stale checkpoint Home/postal/deployment wording.
+- Owner deferred other tab button layouts and asked about comparison/API complexity. Explained existing comparison foundation, need for reliable verified feeds and product matching, and retailer-by-retailer access uncertainty. Do not start new integrations without the next instruction.
+- ACTIVE, current requested refinement complete. Resume from this checkpoint and linked results, preserving all numbered artifacts.
