@@ -16,4 +16,4 @@ Local TypeScript/model checks and live-API browser regression pass. Geometry che
 - Backend/data/scripts trees are unchanged from deployed `538bd9a`; readiness rechecked. No further database retirement or API deployment was necessary for this UI refinement.
 - Earlier numbered previews remain intact. Next changed app build is 005.
 - Owner deferred button-layout changes on the other tabs until later instructions. Shared text auto-fitting applies now, but other tab layouts were not redesigned.
-- Owner asked about price comparison and retailer APIs: existing `POST /api/baskets/compare` provides a foundation (see router prefix for exact URL). Reliable verified price ingestion/product identity remains the larger dependency; do not assume retailer APIs exist or fabricate coverage. No additional integration was authorized by this question.
+- Owner asked about price comparison and retailer APIs: existing `POST /api/v1/baskets/compare` provides a foundation. Reliable verified price ingestion/product identity remains the larger dependency; do not assume retailer APIs exist or fabricate coverage. No additional integration was authorized by this question.
