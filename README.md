@@ -1,4 +1,4 @@
-# Спестовник (BG Prices)
+# Спестовник
 
 Android price comparison app for Bulgaria, using Expo/React Native + TypeScript, FastAPI, Neon PostgreSQL and Render. Bulgarian is the default language; four categories share one searchable locality selection.
 
