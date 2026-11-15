@@ -1,11 +1,11 @@
 # Ongoing project checkpoint
 
-Status: **ACTIVE — implementing owner-requested preview 003 and scoped database retirement.**
+Status: **ACTIVE — backend/preview 003 complete; finishing preview 004 toolbar/font refinement.**
 Updated: 15 November 2026 (Europe/Sofia).
 
 ## Resume here
 
-Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `codex/preview-003-navigation`; previous merged implementation PR: https://github.com/Per5on/spestoslav/pull/5. Check for uncommitted work before continuing.
+Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `codex/preview-004-toolbar`; previous merged implementation PR: https://github.com/Per5on/spestoslav/pull/5. Check for uncommitted work before continuing.
 
 Current task is the owner's compact navigation/settings redesign, removal of Home and postal storage, new money-bag logo and visual snapshot. See `PREVIEW_003.md` and the current brief; do not resume the superseded four-category/postal design. Finish tests/rollout/snapshot, preserving 001/002.
 
@@ -39,7 +39,7 @@ Current task is the owner's compact navigation/settings redesign, removal of Hom
 
 ## Open work / known limits
 
-Immediate: finish preview 003 PostgreSQL/native CI, deploy API 0.5.0 before dropping postal storage, apply validated migration to shared preview, verify preserved locality/branch counts and supply the actual visual snapshot. Validation branch: `br-crimson-feather-balgu231`; pre-change recovery copy: `br-frosty-star-badgjcyw`. No local credentials or app connection were switched to either branch. Current shared preview still has Home/postal until rollout.
+Immediate: finish preview 004's single-row Products/Stores/Refresh controls and automatic button-label fitting, run native CI and deliver its actual snapshot. Preserve published 003 and earlier versions. Backend 0.5.0 is live in deploy `dep-dbsppd8n74is73aimkc0` at `538bd9a`; the tested Home/postal retirement was applied to shared preview, retaining all 5,291 localities and 139 branches. Home count/active postal storage count are zero; remaining catalog has 29 retailers. Recovery `br-frosty-star-badgjcyw`; isolated validation `br-crimson-feather-balgu231`. Backend and native 003 CI passed; do not rerun deletion or recreate retired data.
 
 Remaining product work is separate from audit defects: login/camera/private receipt UI, unknown-barcode requests, full catalog pagination and sourced real product/price coverage. Preview 001 includes manual known-barcode lookup, saved local basket/locality and explicit unavailable camera/receipt labels. No verified live prices were fabricated to fill empty screens.
 

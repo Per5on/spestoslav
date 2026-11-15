@@ -1,10 +1,20 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import {
   Text as NativeText,
   TextInput as NativeInput,
   TextProps,
   TextInputProps,
   StyleSheet,
+  Platform,
+  StyleProp,
+  TextStyle,
+  useWindowDimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Language, languages, messages, MessageKey } from "./i18n";
@@ -90,5 +100,59 @@ export function Input(props: TextInputProps) {
         { fontSize: Math.max(16, (style.fontSize ?? 16) * fontScale) },
       ]}
     />
+  );
+}
+
+// Native text fitting plus an exact font-metric fallback for browser previews.
+export function AutoFitLabel({
+  label,
+  style,
+  baseSize = 14,
+}: {
+  label: string;
+  style?: StyleProp<TextStyle>;
+  baseSize?: number;
+}) {
+  const { fontScale } = useUI();
+  const { fontScale: systemScale } = useWindowDimensions();
+  const reference = useRef<React.ComponentRef<typeof NativeText>>(null);
+  const [width, setWidth] = useState(0);
+  const desired = Math.max(11, baseSize * fontScale * systemScale);
+  let fitted = desired;
+  if (
+    Platform.OS === "web" &&
+    typeof document !== "undefined" &&
+    width > 0 &&
+    reference.current
+  ) {
+    const node = reference.current as unknown as HTMLElement;
+    const context = document.createElement("canvas").getContext("2d");
+    if (context && node instanceof HTMLElement) {
+      const font = window.getComputedStyle(node);
+      context.font = `${font.fontWeight} ${desired}px ${font.fontFamily}`;
+      const measured = context.measureText(label).width;
+      if (measured > 0)
+        fitted = Math.max(
+          11,
+          Math.min(desired, (desired * (width - 1)) / measured),
+        );
+    }
+  }
+  return (
+    <NativeText
+      ref={reference}
+      onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
+      numberOfLines={1}
+      allowFontScaling={false}
+      {...(Platform.OS === "web"
+        ? {}
+        : {
+            adjustsFontSizeToFit: true,
+            minimumFontScale: Math.min(1, 11 / desired),
+          })}
+      style={[style, { fontSize: fitted, flexShrink: 1 }]}
+    >
+      {label}
+    </NativeText>
   );
 }

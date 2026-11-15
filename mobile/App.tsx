@@ -30,7 +30,7 @@ import {
 } from "./src/catalog/model";
 import { Category, useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
-import { Input, Text, UIProvider, useUI } from "./src/ui";
+import { Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/ui";
 import { s } from "./src/styles";
 const tabs = [
   { id: "groceries", label: "food", icon: "cart-outline" },
@@ -61,28 +61,39 @@ function Button({
   onPress,
   primary = false,
   disabled = false,
+  compact = false,
 }: {
   label: string;
   onPress: () => void;
   primary?: boolean;
   disabled?: boolean;
+  compact?: boolean;
 }) {
   return (
     <Pressable
       accessibilityRole="button"
       disabled={disabled}
       onPress={onPress}
-      style={[s.button, primary && s.primary, disabled && { opacity: 0.45 }]}
+      style={[
+        s.button,
+        compact && {
+          flexBasis: 0,
+          flexGrow: Math.max(6, Array.from(label).length) + 4,
+          paddingHorizontal: 8,
+          minWidth: 0,
+        },
+        primary && s.primary,
+        disabled && { opacity: 0.45 },
+      ]}
     >
-      <Text
+      <AutoFitLabel
+        label={label}
         style={{
           color: primary ? "#fff" : "#19562a",
           fontWeight: "600",
           textAlign: "center",
         }}
-      >
-        {label}
-      </Text>
+      />
     </Pressable>
   );
 }
@@ -373,9 +384,15 @@ function Main() {
               size={24}
               color={active === tab.id ? "#fff" : "#19562a"}
             />
-            <Text style={[s.tabText, active === tab.id && { color: "#fff" }]}>
-              {t(tab.label)}
-            </Text>
+            <AutoFitLabel
+              label={t(tab.label)}
+              baseSize={12}
+              style={[
+                s.tabText,
+                { width: "100%" },
+                active === tab.id && { color: "#fff" },
+              ]}
+            />
             {tab.id === "basket" && basket.length > 0 && (
               <Text style={s.count}>
                 {basket.reduce((n, i) => n + i.quantity, 0)}
@@ -397,28 +414,64 @@ function Main() {
             setQuote(null);
           }}
         />
-        <View style={s.headingRow}>
-          {screen !== "catalog" && screen !== "basket" && (
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel={t("back")}
-              onPress={() => setScreen("catalog")}
-              style={s.button}
-            >
-              <Ionicons name="arrow-back" color="#19562a" size={20} />
-            </Pressable>
-          )}
-          <Text style={s.heading}>{t(title)}</Text>
-          {screen === "catalog" && (
-            <Button
-              label={t("refresh")}
-              onPress={() => {
-                catalog.refresh();
-                setNotice("");
-                setSelected([]);
-                setDraft([]);
-              }}
-            />
+        <View
+          testID={
+            screen === "catalog" && category === "groceries"
+              ? "catalog-toolbar"
+              : undefined
+          }
+          style={s.headingRow}
+        >
+          {screen === "catalog" && category === "groceries" ? (
+            <>
+              <Button
+                compact
+                label={t("products")}
+                primary={view === "products"}
+                onPress={() => setView("products")}
+              />
+              <Button
+                compact
+                label={`${t("stores")} (${catalog.stores.length})`}
+                primary={view === "stores"}
+                onPress={() => setView("stores")}
+              />
+              <Button
+                compact
+                label={t("refresh")}
+                onPress={() => {
+                  catalog.refresh();
+                  setNotice("");
+                  setSelected([]);
+                  setDraft([]);
+                }}
+              />
+            </>
+          ) : (
+            <>
+              {screen !== "catalog" && screen !== "basket" && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={t("back")}
+                  onPress={() => setScreen("catalog")}
+                  style={s.button}
+                >
+                  <Ionicons name="arrow-back" color="#19562a" size={20} />
+                </Pressable>
+              )}
+              <Text style={s.heading}>{t(title)}</Text>
+              {screen === "catalog" && (
+                <Button
+                  label={t("refresh")}
+                  onPress={() => {
+                    catalog.refresh();
+                    setNotice("");
+                    setSelected([]);
+                    setDraft([]);
+                  }}
+                />
+              )}
+            </>
           )}
         </View>
         {!!notice && (
@@ -430,20 +483,6 @@ function Main() {
           <>
             {!!catalog.storeError && (
               <Text style={s.notice}>{t(catalog.storeError)}</Text>
-            )}
-            {category === "groceries" && (
-              <View style={s.row}>
-                <Button
-                  label={t("products")}
-                  primary={view === "products"}
-                  onPress={() => setView("products")}
-                />
-                <Button
-                  label={`${t("stores")} (${catalog.stores.length})`}
-                  primary={view === "stores"}
-                  onPress={() => setView("stores")}
-                />
-              </View>
             )}
             {category === "fuel" && (
               <>

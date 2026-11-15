@@ -55,6 +55,16 @@ tap("Изберете населено място")
 tap_node(next(n for n in nodes() if n.get("class") == "android.widget.EditText"))
 adb("shell", "input", "text", "Sofia")
 tap_node(wait_text("София"))
+toolbar = nodes()
+products = next(n for n in toolbar if label(n) == "Продукти")
+stores = next(n for n in toolbar if label(n).startswith("Магазини ("))
+refresh = next(n for n in toolbar if label(n) == "Обнови")
+assert (
+    max(bounds(n)[1] for n in [products, stores, refresh])
+    - min(bounds(n)[1] for n in [products, stores, refresh])
+    < 4
+)
+assert bounds(products)[0] < bounds(stores)[0] < bounds(refresh)[0]
 for tab in ["ТЕХНИКА", "Горива", "Моят списък"]:
     tap(tab)
     assert any(label(n) == "София" for n in nodes())
