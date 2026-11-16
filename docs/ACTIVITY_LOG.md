@@ -2,6 +2,13 @@
 
 Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; older entries are historical evidence, not current test/deployment claims.
 
+## 16 November 2026 — post-preview branch isolation (not a release)
+
+- Owner instructed: leave Preview 005 verification and realization pending on PR #9, and create separate source tree `Test_postpreview-005` for Issue #10 toolbar/feedback work. Opened draft PR #11 against Preview 005 branch; no application changes or numbered APK publication have yet occurred on the new branch.
+- Post-preview candidate may become Preview 006 **only by later owner decision** after three full verification passes and a fresh 006 build with updated metadata; it must never replace or masquerade as Preview 005. Earlier numbered releases remain untouched.
+- Added a GitHub Actions job-summary/log note for post-preview builds and disabled automatic numbered release publication on this branch. Preview 005 remains independently pending.
+
+
 ## 14 November 2026 — recovered conversation and backend rollout
 
 - Owner requested handoff/Issue #1 review, latest-main inventory work (Mini Mart, T MARKET, CBA), official-source checks, preview DB sync and PR evidence; preserve Android UI during backend work.
