@@ -1,5 +1,9 @@
 # Ongoing project handoff
 
+## New Preview 006 work — 16 November 2026
+
+**Read [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md) before implementing Issue #10.** Owner reports empty stores, missing product photos/thumbnails, empty petrol stations, and slow location search; requests backend verification **first**, then frontend fixes. Settings in the three-dot menu must use black text on white, compact font-height icons/button shapes and optionally responsive two-column choices. All tasks stay on `Test_postpreview-005` / draft PR #11; three complete verification passes remain required. Published Preview 005 stays intact.
+
 ## Branch isolation and conditional Preview 006 — 16 November 2026
 
 - **Preview 005 remains on PR #9 / `codex/preview-005-grocery-workflows` for its independent Android 10 barcode verification and pending release decision. Do not merge post-preview feature work into that branch while it is under verification.**
