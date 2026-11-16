@@ -90,7 +90,7 @@ if __name__ == "__main__":
     barcode_image().save(args.output / "simulation-ean13.png")
     receipt_image().save(args.output / "simulation-receipt.png")
     if args.video:
-        image = barcode_image().convert("YCbCr")
+        image = barcode_image().resize((640, 480)).convert("YCbCr")
         y, cb, cr = image.split()
         frame = (
             y.tobytes()
