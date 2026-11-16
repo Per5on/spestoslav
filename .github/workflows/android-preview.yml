@@ -33,6 +33,18 @@ jobs:
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
+      - name: Record post-preview branch and conditional release decision
+        if: github.head_ref == 'Test_postpreview-005' || github.ref_name == 'Test_postpreview-005'
+        run: |
+          echo "Candidate branch: Test_postpreview-005; experimental post-preview source, NOT an approved Preview 005 or 006 release."
+          echo "Preview 005 remains pending on PR #9. Owner may separately choose Preview 006 after three complete backend/frontend/native verification passes."
+          echo "Never bypass Android 10 barcode assertions, rename a 005 APK as 006, or replace earlier numbered releases."
+          {
+            echo "### Post-preview release gate"
+            echo "Branch: Test_postpreview-005 (experimental; no automatic release approval)."
+            echo "Preview 005: independent pending verification on PR #9."
+            echo "Preview 006: conditional owner decision after 3 full verification passes; fresh metadata/build required."
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Read preview metadata
         id: preview
         run: node scripts/read-preview.cjs
@@ -92,7 +104,7 @@ jobs:
 
   publish:
     needs: apk
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    if: (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository) && github.head_ref != 'Test_postpreview-005' && github.ref_name != 'Test_postpreview-005'
     runs-on: ubuntu-latest
     permissions:
       contents: write
