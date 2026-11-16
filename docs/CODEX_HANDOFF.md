@@ -1,5 +1,12 @@
 # Ongoing project handoff
 
+## Preview 006 implementation active — 16 November 2026
+
+- Owner confirmed successful Test_postpreview-005 checks and authorized combining Issue #10 with [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md), inspecting backend first and building the Preview 006 candidate. Dedicated branch `codex/preview-006` forked from green post-preview SHA `baa8e1a`; Preview 005 remains published and unchanged.
+- Development workflow deliberately **blocks automatic publication** on `codex/preview-006` until three new verification passes are recorded. First implementation: shared toolbar labels reduced by 1pt and visible green outlined `Обнови` with wider padding. Remaining Settings, email delivery, live stores/fuel/images/location fixes are **not yet complete**.
+- Before declaring Preview 006 ready: finish every backlog item, verify live Render/Neon data and API latency, test backend + frontend + Android 10 three times on final source, and only then explicitly promote the new numbered release. Do not mistake CI compilation for feature completeness.
+
+
 ## Owner gate — await post-preview Actions result before Preview 006 work
 
 - Owner instruction (16 November 2026, 12:28 UTC): **first inspect the result of [Android run 43865608214](https://github.com/Per5on/spestoslav/actions/runs/43865608214) on `Test_postpreview-005`, then re-review the code, then implement the already documented Preview 006 features only if verification is successful.** If it fails, diagnose and fix the existing post-preview baseline before adding features. No automatic merge, build promotion, or release is authorized by an intermediate result.
