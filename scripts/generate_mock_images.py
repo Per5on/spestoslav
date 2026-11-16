@@ -43,13 +43,18 @@ def barcode_image(code="4006381333931"):
         + "".join(invert(left[int(d)]) for d in code[7:])
         + "101"
     )
-    image = Image.new("RGB", (640, 480), "white")
+    image = Image.new("RGB", (1280, 720), "white")
     draw = ImageDraw.Draw(image)
+    # Use wide, integer-aligned modules and generous quiet zones. This makes
+    # the synthetic EAN-13 reliably detectable after Android photo decoding.
+    module_width = 9
+    left_edge = (image.width - len(bits) * module_width) // 2
     for i, bit in enumerate(bits):
         if bit == "1":
-            draw.rectangle((82 + i * 5, 100, 82 + i * 5 + 4, 340), fill="black")
+            x = left_edge + i * module_width
+            draw.rectangle((x, 110, x + module_width - 1, 530), fill="black")
     draw.text(
-        (75, 370), "SIMULATION " + code, font=ImageFont.truetype(FONT, 23), fill="black"
+        (left_edge, 590), "SIMULATION " + code, font=ImageFont.truetype(FONT, 23), fill="black"
     )
     return image
 
