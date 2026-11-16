@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with:
-          node-version: "22"
+          node-version: "24"
           cache: npm
           cache-dependency-path: mobile/package-lock.json
       - uses: actions/setup-java@v5
@@ -83,6 +83,7 @@ jobs:
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk.sha256
             mobile/android-preview-${{ env.PREVIEW_SEQUENCE }}.png
             mobile/android-smoke.log
+            mobile/android-smoke-window.xml
           retention-days: 30
           if-no-files-found: warn
 

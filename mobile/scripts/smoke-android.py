@@ -2,6 +2,7 @@
 
 import os, re, subprocess, time, xml.etree.ElementTree as ET
 import json
+import atexit
 from pathlib import Path
 
 
@@ -29,7 +30,7 @@ def tap_node(n):
 
 
 def tap(text):
-    matches = [n for n in nodes() if label(n) == text]
+    matches = [n for n in nodes() if text in (n.get("text"), n.get("content-desc"))]
     assert matches, f"Missing control: {text}"
     tap_node(matches[0])
 
@@ -37,7 +38,7 @@ def tap(text):
 def wait_text(text, timeout=75):
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
-        matches = [n for n in nodes() if label(n) == text]
+        matches = [n for n in nodes() if text in (n.get("text"), n.get("content-desc"))]
         if matches:
             return matches[0]
         time.sleep(1)
@@ -48,6 +49,20 @@ sequence = os.environ.get("PREVIEW_SEQUENCE")
 if not sequence or not re.fullmatch(r"[0-9]{3}", sequence):
     raise RuntimeError("PREVIEW_SEQUENCE must be supplied from mobile/preview.json")
 
+def save_diagnostics():
+    # Capture evidence even when an assertion fails, before the emulator exits.
+    try:
+        Path("android-smoke.log").write_text(adb("logcat", "-d"))
+        Path("android-preview-" + sequence + ".png").write_bytes(
+            subprocess.check_output(["adb", "exec-out", "screencap", "-p"])
+        )
+        adb("shell", "uiautomator", "dump", "/sdcard/window.xml")
+        Path("android-smoke-window.xml").write_text(adb("shell", "cat", "/sdcard/window.xml"))
+    except (subprocess.SubprocessError, OSError) as error:
+        print("Could not save Android diagnostics:", error)
+
+
+atexit.register(save_diagnostics)
 adb("logcat", "-c")
 adb("shell", "am", "start", "-W", "-n", "bg.spestoslav.preview/.MainActivity")
 wait_text("Спестовник", 20)
@@ -76,7 +91,7 @@ for tab in ["Техника", "Горива", "Моят списък"]:
 assert any("Списъкът е празен" in label(n) for n in nodes())
 tap("Отвори менюто")
 tap("Сканирай")
-assert any(label(n) == "Търсене по баркод" for n in nodes())
+wait_text("Търсене по баркод", 20)
 # Exercise actual Android permission denial and a camera preview, not just its menu.
 adb("shell", "pm", "revoke", "bg.spestoslav.preview", "android.permission.CAMERA")
 tap("Отвори камерата")
@@ -90,7 +105,7 @@ while time.monotonic()<deadline:
 else:
     raise AssertionError("Android camera permission dialog did not appear")
 wait_text("Камерата е забранена. Разрешете достъп в настройките или въведете кода.", 15)
-assert any(label(n)=="Търсене по баркод" for n in nodes())
+wait_text("Търсене по баркод", 15)
 adb("shell", "pm", "grant", "bg.spestoslav.preview", "android.permission.CAMERA")
 tap("Отвори камерата")
 wait_text("Отказ", 15)

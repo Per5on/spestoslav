@@ -114,3 +114,8 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 
 - Owner confirmed to proceed after cleanup. Final TypeScript, npm model/cache/metadata checks, native smoke Python compilation, preview metadata consistency and git whitespace checks passed. Bulgarian/English browser menu regression passed including Feedback nested in About and Back navigation, with no JavaScript errors.
 - Preparing the feature commit/PR to run native Android build and exact-source backend CI. Local79-test matrix results are recorded above; Android005 compilation/runtime remain pending until CI completes. Earlier001–004 artifacts remain preserved.
+
+### Preview005 first native run and shared migration
+
+- PR#9 source e7e591c passed backend CI43840887386 (both SQLAlchemy legs). Android43840887400 compiled/signed successfully but smoke stopped at a barcode-field assertion: native hint text took precedence over accessibilityLabel in the test helper. Updated matching to inspect both attributes with a bounded wait; added always-captured XML/screenshot/log diagnostics. Node24 now matches the web decoder dependency's declared engine. No005 release was published by the failed gate.
+- Created no-compute recovery branch br-silent-leaf-bajr7isp before shared-preview additive0007 migration. Connected SQL requires one prepared statement per entry, so the initial whole-file transaction was rejected without changes; parsed the committed script with sqlparse and applied all six statements atomically. Imported22 bounded catalogue statements. Verified shared1,000identities/6groups/5,291localities/139branches/0prices/0barcodes. Added and verified only the API origin in the existing managed Auth trusted origins. API0.6 deployment remains pending merge.
