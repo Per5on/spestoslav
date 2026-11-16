@@ -1,5 +1,12 @@
 # Ongoing project handoff
 
+## Branch isolation and conditional Preview 006 — 16 November 2026
+
+- **Preview 005 remains on PR #9 / `codex/preview-005-grocery-workflows` for its independent Android 10 barcode verification and pending release decision. Do not merge post-preview feature work into that branch while it is under verification.**
+- **All Issue #10 toolbar and backend/frontend feedback work belongs to the separate `Test_postpreview-005` branch.** Treat it as an experimental source tree, not an approved or released numbered preview. Keep its own CI evidence, tests, and build artifacts separate from Preview 005.
+- **Conditional decision, not automatic release:** After Preview 005 checks finish, owner may choose to abandon publishing Preview 005 and instead promote the fully verified post-preview branch as **Preview 006**. This requires a separate explicit release decision, updating `mobile/preview.json` and corresponding registry/release metadata to 006, three complete verification passes on the exact promoted source, and a fresh native build/emulator barcode test. Do not rename or republish a 005 artifact as 006. Preserve all previous releases and never overwrite numbered assets.
+- **GitHub Actions logs:** post-preview CI must emit the branch identity, candidate status, and conditional 006 decision in the job summary/log. This is a documentation/traceability note, not permission to skip release gates.
+
 ## Latest owner instruction — 16 November 2026
 
 **Codex must implement [Issue #10](https://github.com/Per5on/spestoslav/issues/10) before final build confirmation.** This includes the shared toolbar 1pt label reduction and green-bordered wider “Обнови” button; backend-delivered “Обратна връзка” form with fixed non-editable email destination; and **three separately evidenced verification passes across backend, frontend, and Android 10 emulator**. Issue #10 includes today's barcode scanner commits and current PR #9 release gate. Do not claim real email delivery without provider evidence, do not bypass EAN13 native scan assertion, and preserve all earlier numbered releases.
