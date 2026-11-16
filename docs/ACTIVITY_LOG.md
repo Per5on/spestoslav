@@ -67,3 +67,50 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 - Shared backend/data/scripts are identical to live 538bd9a; public readiness passed, no repeated migration/deployment. Updated stale checkpoint Home/postal/deployment wording.
 - Owner deferred other tab button layouts and asked about comparison/API complexity. Explained existing comparison foundation, need for reliable verified feeds and product matching, and retailer-by-retailer access uncertainty. Do not start new integrations without the next instruction.
 - ACTIVE, current requested refinement complete. Resume from this checkpoint and linked results, preserving all numbered artifacts.
+
+## 15 November 2026 — grocery categories approved; monetization under review
+
+- Owner approved the proposed grocery category structure. Target remains 1,000 verified grocery records, with generic search groups, exact product identities and retailer offers separated. No bulk import or source integration has been executed under this review.
+- Reviewed uploaded monetization notes (Поставен текст.txt, file_000000001ba0821087dde4ea5ff6b08a). Owner is considering paid price alerts; pricing and feature limits are proposals, not approved implementation.
+- Recommendation for evaluation: useful free comparison/scanning/list with 5 tracked products and a digest; Plus hypothesis EUR2.99/month or EUR24.99/year with 50 tracked products, thresholds and notifications after verified source updates. No guaranteed instant delivery, invented historical lows or promised retailer affiliate access. Route optimization remains outside current scope.
+- Official Google Play service-fee page checked: EEA auto-renewing subscriptions currently show 10% service plus 5% Play billing; paid digital features need compliant billing. Firebase Cloud Messaging itself has no usage charge; ingestion, operations and subscription verification still cost money. Affiliate commission/feed access requires individual program verification.
+- Next: finish review of owner's instructions and source feasibility before altering app/database. Categories approved; monetization not approved. Preserve preview004 and next build005.
+
+## 16 November 2026 — recovery/status check for unfinished 005
+
+- Owner asked whether yesterday's work finished. Inspected actual branch/files and handoffs; older checkpoint had not captured the latest implementation, so corrected both entry points now.
+- Branch codex/preview-005-grocery-workflows has uncommitted catalogue/schema, cache, authentication, camera and receipt changes. Official Burlex source yielded 1,000 grocery records in six groups, excluding household/tobacco; no imported prices, no verified GTINs. This is retailer-scoped source coverage, not a balanced nationwide top-1,000 claim.
+- Isolated branch br-ancient-shadow-balr2n5l and synthetic Auth session probe prepared; provider requires signed session cookie for JWT exchange. No shared preview alteration for 005.
+- Last attempted isolated migration/import stopped with KeyError DATABASE_URL before SQL. Full tests/simulation, Bulgarian OCR, native camera verification, PR/build/rollout remain unfinished. Earlier local passing tests are intermediate evidence only.
+- Owner clarified free shop routing should be planned. Keep paid alerts/subscriptions deferred. Next action: fix isolated configuration loading and complete current-tree verification, including private receipt ownership, review-before-price publication, scanning permissions/decoding, cache freshness and comparison. Keep numbered previews intact.
+
+### 16 November — resumed; build hold and next issue
+
+- Owner explicitly requested no build commits/builds until fixes are complete or permission is given. Keep all source changes uncommitted and do not compile/publish APKs or start release CI until the owner confirms. Continue local verification only.
+- Owner queued Issue #8 after current feature work: exact overflow-menu order, nested Settings, Feedback and About with dynamic installed Android version and exact Vimp ownership notice. Read issue and retain it as next task; no Profile section.
+- Fixed isolated environment loading by parsing configuration as data (connection URL contained shell metacharacters). Direct Postgres transport is unavailable here; applied additive 0007 only to the isolated Neon branch through the connected SQL service. Local disposable PostgreSQL16 container is available for actual ORM/migration tests. No shared preview changes.
+
+### Owner queue — task 3 after Issue #8
+
+- Sequence: complete current catalogue/scanning/receipt/comparison fixes and local tests; then Issue #8 overflow/Settings/Feedback/About; then requested tab/header refinements. Build/commit hold remains effective.
+- Task 3: reduce empty header padding above title by one third; Bulgarian Technology caption Техника; grocery toolbar Магазини, Продукти, Обнови; first two equal widths, Refresh intrinsic label width plus 0.5 logical points while retaining accessible touch height. Clone row to Technology, replacing prior controls. Fuel toolbar Бензиностанции, Гориво, Обнови, with fuel dropdown Бензин 95, Бензин 98+, Дизел, Дизел +, Автогаз. Source reference Fuelo, no invented live prices.
+- Confirmed task 3 is clear; camera is native phone functionality, backend handles identification/validation/private receipt workflows. No redundant second camera implementation planned.
+
+## 16 November — feature/UI checks and preview004 cleanup complete; build authorized
+
+- Completed current catalogue/camera/receipt/comparison work, then Issue#8, then task3 in the owner's order. Browser scenario decodes actual synthetic camera frames/image EAN, submits unknown-code review, privately uploads a receipt, runs real Bulgarian OCR, confirms unit price, moderates, updates comparison, deletes privately and restores metadata cache. Permission-denial/manual fallback and private-session isolation pass. No JavaScript errors. Separate menu/preferences and320px/130% six-language toolbar checks pass.
+- Real isolated managed Auth signup/login/JWT/restore/logout passed. Source-backed data imported idempotently on local PostgreSQL and isolated Neon0007 only:1,000names/6groups/5,291localities/139branches/0prices/0barcodes. Shared preview remains unchanged. Initial environment-loader/TCP issue resolved via data parsing plus connected SQL service; no shell-sourced secret URI.
+- Backend suite79 passes in both SQLAlchemy2.0.44 and2.1.8 locally. Latest existing-main CI43734792143 atc91f356 also passed both version families; stable2.1.8 exists on PyPI. Fast-forwarded the branch to that README-only main commit without creating a new commit.
+- Applied cleanup effects and reviewed conditional items. Both uploaded patches are byte-identical SHA2560efb53858304f3456a4196addfd23b78d6690b382ec38cd1e4f2716ff9004f20. `cheapest: unknown` explicitly retained after owner correction. SQL scripts execute intact online/offline, artifact diagnostics warn, workers share API URL with a receipt opt-out, empty schema module/duplicate dependency/default React imports removed, smoke output sequence required, main router setup consolidated. Keep postal shim, active web dependencies, saved-list key and legacy bootstrap reference for documented reasons.
+- Consolidated active release notes in CHANGELOG; original details/handoff preserved under archive. Introduced mobile/preview.json as candidate metadata source; Expo/workflow/registry checks prevent numbering drift. Config inspection resolves Спестовник05,0.3.0/code5,minSdk29 without building.
+- Owner explicitly lifted the earlier build hold: build005 after all checks pass; do not request confirmation again. Preparing actual Android permission/camera/image-decoder/About checks before the first005 build. No005 PR/APK/deployment yet at this entry. User requested an immediate browser screenshot while the APK is not ready.
+
+## 16 November — Feedback moved into About
+
+- Latest owner instruction supersedes Issue #8's original top-level Feedback position: overflow now contains Scan, Receipts, Sign in, Settings and About. About contains the translated Feedback button; Back from Feedback returns to About. Existing unconfigured-channel message is preserved.
+- Updated browser regression to check nesting and Back navigation in Bulgarian and English. Preview005 remains the unreleased candidate; no published artifact was overwritten.
+
+## 16 November — preview005 build started on owner authorization
+
+- Owner confirmed to proceed after cleanup. Final TypeScript, npm model/cache/metadata checks, native smoke Python compilation, preview metadata consistency and git whitespace checks passed. Bulgarian/English browser menu regression passed including Feedback nested in About and Back navigation, with no JavaScript errors.
+- Preparing the feature commit/PR to run native Android build and exact-source backend CI. Local79-test matrix results are recorded above; Android005 compilation/runtime remain pending until CI completes. Earlier001–004 artifacts remain preserved.

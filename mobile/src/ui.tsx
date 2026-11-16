@@ -108,10 +108,12 @@ export function AutoFitLabel({
   label,
   style,
   baseSize = 14,
+  intrinsic = false,
 }: {
   label: string;
   style?: StyleProp<TextStyle>;
   baseSize?: number;
+  intrinsic?: boolean;
 }) {
   const { fontScale } = useUI();
   const { fontScale: systemScale } = useWindowDimensions();
@@ -120,6 +122,7 @@ export function AutoFitLabel({
   const desired = Math.max(11, baseSize * fontScale * systemScale);
   let fitted = desired;
   if (
+    !intrinsic &&
     Platform.OS === "web" &&
     typeof document !== "undefined" &&
     width > 0 &&
@@ -147,7 +150,7 @@ export function AutoFitLabel({
       {...(Platform.OS === "web"
         ? {}
         : {
-            adjustsFontSizeToFit: true,
+            adjustsFontSizeToFit: !intrinsic,
             minimumFontScale: Math.min(1, 11 / desired),
           })}
       style={[style, { fontSize: fitted, flexShrink: 1 }]}

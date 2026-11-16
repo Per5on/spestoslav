@@ -16,6 +16,7 @@ export async function api<T>(
       signal: controller.signal,
     });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
   } finally {
     clearTimeout(timer);

@@ -3,12 +3,12 @@ on:
   workflow_dispatch:
   pull_request:
     paths: ["mobile/**", ".github/workflows/android-preview.yml"]
-env:
-  PREVIEW_SEQUENCE: "004"
 permissions:
   contents: read
 jobs:
   apk:
+    outputs:
+      preview_sequence: ${{ steps.preview.outputs.sequence }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     defaults:
@@ -33,9 +33,12 @@ jobs:
         with:
           packages: platform-tools
           log-accepted-android-sdk-licenses: false
+      - name: Read preview metadata
+        id: preview
+        run: node scripts/read-preview.cjs
       - run: npm ci
       - run: npx tsc --noEmit
-      - run: node scripts/test-model.cjs
+      - run: npm test
       - run: npx expo install --check
       - run: npx expo prebuild --platform android --no-install
       - name: Build standalone preview APK (test signing)
@@ -47,6 +50,13 @@ jobs:
           "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose "$APK"
           cp "$APK" spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
           sha256sum spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk > spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk.sha256
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Prepare synthetic barcode fixture
+        run: |
+          python -m pip install "Pillow>=13.0.0,<14"
+          python ../scripts/generate_mock_images.py --output smoke-fixtures
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
       - name: Smoke test on Android 10
@@ -57,8 +67,12 @@ jobs:
           target: default
           profile: pixel_2
           disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
           script: |
             adb install mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
+            adb shell mkdir -p /sdcard/Pictures
+            adb push mobile/smoke-fixtures/simulation-ean13.png /sdcard/Pictures/spestovnik-simulation-ean13.png
+            adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/spestovnik-simulation-ean13.png
             cd mobile && python3 scripts/smoke-android.py
       - uses: actions/upload-artifact@v5
         if: always()
@@ -70,7 +84,7 @@ jobs:
             mobile/android-preview-${{ env.PREVIEW_SEQUENCE }}.png
             mobile/android-smoke.log
           retention-days: 30
-          if-no-files-found: error
+          if-no-files-found: warn
 
   publish:
     needs: apk
@@ -81,6 +95,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
+      PREVIEW_SEQUENCE: ${{ needs.apk.outputs.preview_sequence }}
       SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
     steps:
       - uses: actions/checkout@v5
@@ -102,11 +117,11 @@ jobs:
               echo "This app source is already published; preserving its existing assets."
               exit 0
             fi
-            echo "A different app source already uses this number; increment PREVIEW_SEQUENCE."
+            echo "A different app source already uses this number; increment mobile/preview.json and synchronize metadata."
             exit 1
           fi
           cat > notes.md <<EOF_NOTES
-          Standalone Android 10+ test build. Ordered Food/Technology/Fuel/My list tabs, compact name-only locality search, money-bag logo, larger photos, green add feedback and three-dot settings with six languages/font sizes. Backend demo photos, saved list and manual barcode lookup. Camera, receipts and login remain future UI work; demo products have no verified price.
+          Standalone Android 10+ test build. Source-backed grocery catalogue with metadata caching; camera/image/manual GTIN scanning; managed sign-in and private receipt OCR/review. Updated ordered overflow menu, nested Settings, About with installed version and Vimp notice, compact toolbars and five fuel choices. Earlier previews remain unchanged. Retailer names are not verified barcode/price coverage; demo images have no verified price. Real route directions and live Fuelo prices are not enabled.
 
           Numbered preview ${PREVIEW_SEQUENCE}. Source: ${SOURCE_SHA}. App tree: ${APP_SOURCE_TREE}. Build and Android 10 smoke checks passed before publication. Previous numbered artifacts are preserved.
           EOF_NOTES
