@@ -1,5 +1,10 @@
 # Ongoing project handoff
 
+## Latest owner instruction — 16 November 2026
+
+**Codex must implement [Issue #10](https://github.com/Per5on/spestoslav/issues/10) before final build confirmation.** This includes the shared toolbar 1pt label reduction and green-bordered wider “Обнови” button; backend-delivered “Обратна връзка” form with fixed non-editable email destination; and **three separately evidenced verification passes across backend, frontend, and Android 10 emulator**. Issue #10 includes today's barcode scanner commits and current PR #9 release gate. Do not claim real email delivery without provider evidence, do not bypass EAN13 native scan assertion, and preserve all earlier numbered releases.
+
+
 Start with [PROJECT_STATUS.md](PROJECT_STATUS.md) and the newest [ACTIVITY_LOG.md](ACTIVITY_LOG.md) entry. This is one continuing project; do not reread the old conversation each day.
 
 Current work is preview 005: catalogue/cache, camera/barcodes, private receipts/review/comparison, Issue #8 menu/Settings/About, task 3 toolbars/header/fuel types, then the preview004 cleanup review. The owner authorized building 005 **after all fixes and checks pass**. No earlier build hold should be interpreted as requiring a second confirmation after that condition is met.
