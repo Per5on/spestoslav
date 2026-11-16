@@ -65,7 +65,9 @@ jobs:
         with:
           api-level: 29
           arch: x86_64
-          target: default
+          # Expo Camera's static ML Kit barcode decoder requires Google Play Services.
+          # The plain AOSP `default` image lacks com.android.vending.
+          target: google_apis_playstore
           profile: pixel_2
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
