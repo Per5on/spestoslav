@@ -9,6 +9,8 @@ export function Button({
   disabled = false,
   layout,
   expanded,
+  labelSize = 14,
+  refreshOutline = false,
 }: {
   label: string;
   onPress: () => void;
@@ -16,6 +18,8 @@ export function Button({
   disabled?: boolean;
   layout?: "equal" | "snug";
   expanded?: boolean;
+  labelSize?: number;
+  refreshOutline?: boolean;
 }) {
   return (
     <Pressable
@@ -35,16 +39,18 @@ export function Button({
         layout === "snug" && {
           flexGrow: 0,
           flexShrink: 0,
-          paddingHorizontal: 0.25,
+          paddingHorizontal: refreshOutline ? 7 : 0.25,
           minWidth: 44,
         },
         primary && s.primary,
+        refreshOutline && { borderWidth: 1, borderColor: "#267133" },
         disabled && { opacity: 0.45 },
       ]}
     >
       <AutoFitLabel
         label={label}
         intrinsic={layout === "snug"}
+        baseSize={labelSize}
         style={{
           color: primary ? "#fff" : "#19562a",
           fontWeight: "600",
