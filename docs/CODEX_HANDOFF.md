@@ -1,3 +1,24 @@
+## Preview 006 code review notes — 16 November 2026
+
+Full targeted review: [PREVIEW_006_CODE_REVIEW.md](PREVIEW_006_CODE_REVIEW.md); discussed on [draft PR #13](https://github.com/Per5on/spestoslav/pull/13). Review covered backend/data, frontend, and security/build. It was targeted source inspection, **not** a full security audit or completed feature acceptance.
+
+**High-priority findings and work:**
+- **Product images:** shared Neon preview DB has 1,000 products but **0 product_images**. Verify image licensing/source URLs, populate approved image metadata, and test Android thumbnails and fallbacks.
+- **Petrol stations:** 7 fuel retailers but only **2 active fuel branches**. Validate/import real branches and ensure category/locality filtering returns them. Do not invent locations or live fuel prices.
+- **Store discovery:** `mobile/src/catalog/useCatalog.ts` fetches stores only when `localityId` exists. Verify no-locality UX and locality-specific coverage.
+- **Release gate:** green backend and Android 10 smoke CI on previous candidate is **not** proof of feature completeness; PR #13 remains draft and automatic publication blocked.
+
+**Medium-priority findings and work:**
+- `backend/app/main.py:96-148` locality search uses `LOWER(...) LIKE '%term%'`; measure real latency/query plans and consider suitable indexing/search strategy.
+- `mobile/src/api.ts` and `mobile/src/location/LocationPicker.tsx` allow 60-second request timeouts; catalog fallback pages are fetched sequentially in `mobile/src/catalog/cache.ts` and `useCatalog.ts`. Optimize with bounded timeouts, caching/snapshot and measured behavior.
+- `mobile/App.tsx` Settings has not been redesigned: black text/white background, compact font-height icons, thin padding, responsive two columns, accessible touch targets, six languages.
+- Feedback currently shows `feedbackPending`; implement sender/email/message form and backend-managed delivery to configured recipient with validation, rate limits, provider secrets and honest success/failure status.
+- Add explicit negative tests for expired/invalid sessions, cross-user receipt access, oversized image uploads and provider failures. **No security exploit was confirmed.**
+- Health/HTTP 200 checks do not prove nonempty stores, fuel coverage, images or price records; add release-level data completeness assertions.
+
+**Verification order:** backend sources and Render/Neon live data → backend/API performance and coverage fixes → frontend/settings/feedback fixes → three full code/integration, connections/sources, and Android 10 native/functional passes on the **same final commit**. Record run links, before/after counts and latency, screenshots and email-provider delivery evidence. Preserve Preview 005; do not merge or publish Preview 006 until all release criteria pass.
+
+
 # Ongoing project handoff
 
 ## Preview 006 implementation active — 16 November 2026
