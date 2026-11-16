@@ -97,7 +97,10 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
       const code = await decodeBarcodeImage(image.assets[0].uri);
       if (code) await find(code);
       else setNotice("invalidBarcode");
-    } catch {
+    } catch (error) {
+      // Keep the real native picker/decoder failure visible in CI logcat.
+      // Do not log the selected image URI or any user-owned media metadata.
+      console.warn("Image barcode scan failed:", error instanceof Error ? error.message : String(error));
       setNotice("cameraError");
     }
   }
