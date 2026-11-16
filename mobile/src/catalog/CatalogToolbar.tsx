@@ -35,6 +35,7 @@ export function CatalogToolbar({
     <View testID="catalog-toolbar" style={s.headingRow}>
       <Button
         layout="equal"
+        labelSize={13}
         label={fuel ? t("stations") : `${t("stores")} (${count})`}
         primary={fuel ? !fuelExpanded : view === "stores"}
         onPress={() => onView("stores")}
@@ -46,7 +47,7 @@ export function CatalogToolbar({
         expanded={fuel ? fuelExpanded : undefined}
         onPress={() => (fuel ? onFuel() : onView("products"))}
       />
-      <Button layout="snug" label={t("refresh")} onPress={onRefresh} />
+      <Button layout="snug" refreshOutline label={t("refresh")} onPress={onRefresh} />
     </View>
   );
 }
