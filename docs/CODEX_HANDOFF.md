@@ -1,5 +1,12 @@
 # Ongoing project handoff
 
+## Owner gate — await post-preview Actions result before Preview 006 work
+
+- Owner instruction (16 November 2026, 12:28 UTC): **first inspect the result of [Android run 43865608214](https://github.com/Per5on/spestoslav/actions/runs/43865608214) on `Test_postpreview-005`, then re-review the code, then implement the already documented Preview 006 features only if verification is successful.** If it fails, diagnose and fix the existing post-preview baseline before adding features. No automatic merge, build promotion, or release is authorized by an intermediate result.
+- At the time of recording: that run was **in_progress** at the Android 10 smoke test; its matching backend workflow 43865608258 **passed**. Newer head `9e8022c` had backend success (43865661833), but its Android workflow 43865662029 was also in progress. Check both the named run and **latest PR #11 head** before the decision: an earlier passing run does not validate a newer commit.
+- Record final CI status, failing step and diagnostic artifact or passing evidence in `docs/ACTIVITY_LOG.md` and PR #11. **Three final verification passes** and backend/frontend feature checks remain mandatory before any Preview 006 release.
+
+
 ## New Preview 006 work — 16 November 2026
 
 **Read [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md) before implementing Issue #10.** Owner reports empty stores, missing product photos/thumbnails, empty petrol stations, and slow location search; requests backend verification **first**, then frontend fixes. Settings in the three-dot menu must use black text on white, compact font-height icons/button shapes and optionally responsive two-column choices. All tasks stay on `Test_postpreview-005` / draft PR #11; three complete verification passes remain required. Published Preview 005 stays intact.
