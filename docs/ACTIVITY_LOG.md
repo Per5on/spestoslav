@@ -2,6 +2,13 @@
 
 Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; older entries are historical evidence, not current test/deployment claims.
 
+## 16 November 2026 — Preview 006 backlog and initial backend triage
+
+- Owner reported Settings visual requirements (black text/white background, compact button icons, optional two columns), missing stores/stations/images and slow locality search. Created `docs/PREVIEW_006_BACKLOG.md` with backend-first investigation, frontend follow-up and three-pass release gate. Linked it in Codex handoff.
+- Source review: `mobile/src/catalog/useCatalog.ts` initializes stores empty and fetches them **only if localityId exists**; fuel skips product loading. `LocationPicker.tsx` debounces 300ms but permits a 60-second timeout. These are code-level findings, not proof of live root cause.
+- Render service inspection: `spestoslav-api` is configured to deploy from `main`, not either feature branch; its health-check path remains blank. Recent application logs show successful HTTP 200 for paged grocery products and a fuel stores request, but HTTP 200 does **not** establish nonempty response bodies. Further response-count and latency checks are required before declaring backend healthy.
+- Preview 005 release remains published; do not modify its artifacts. The post-preview branch is experimental and not release-ready.
+
 ## 16 November 2026 — post-preview branch isolation (not a release)
 
 - Owner instructed: leave Preview 005 verification and realization pending on PR #9, and create separate source tree `Test_postpreview-005` for Issue #10 toolbar/feedback work. Opened draft PR #11 against Preview 005 branch; no application changes or numbered APK publication have yet occurred on the new branch.
