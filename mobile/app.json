@@ -1,17 +1,15 @@
 {
   "expo": {
-    "name": "Спестовник 04",
     "slug": "spestoslav",
-    "version": "0.2.1",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "android": {
       "package": "bg.spestoslav.preview",
-      "versionCode": 4,
-      "permissions": [],
+      "permissions": [
+        "android.permission.CAMERA"
+      ],
       "blockedPermissions": [
         "android.permission.RECORD_AUDIO",
-        "android.permission.CAMERA",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.SYSTEM_ALERT_WINDOW",
@@ -32,7 +30,23 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Разрешете камерата за баркодове и касови бележки.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Изберете снимка на баркод или касова бележка.",
+          "cameraPermission": "Снимайте касова бележка.",
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }

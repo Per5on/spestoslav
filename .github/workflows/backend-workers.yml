@@ -12,15 +12,19 @@ concurrency:
   group: backend-workers
   cancel-in-progress: false
 
+env:
+  API_BASE_URL: ${{ vars.API_BASE_URL || 'https://spestoslav-api.onrender.com' }}
+
 jobs:
   receipt-ocr:
+    # Preserve the existing schedule by default; operators can disable it explicitly.
+    if: github.event_name == 'workflow_dispatch' || vars.RECEIPT_OCR_ENABLED != 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 12
     permissions:
       contents: read
       id-token: write
     env:
-      API_BASE_URL: https://spestoslav-api.onrender.com
       OCR_LANGUAGES: bul+eng
     steps:
       - uses: actions/checkout@v5
@@ -37,7 +41,6 @@ jobs:
     timeout-minutes: 12
     env:
       FUELO_API_KEY: ${{ secrets.FUELO_API_KEY }}
-      API_BASE_URL: ${{ vars.API_BASE_URL }}
       COLLECTOR_API_KEY: ${{ secrets.COLLECTOR_API_KEY }}
     steps:
       - uses: actions/checkout@v5

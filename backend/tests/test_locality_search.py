@@ -57,7 +57,7 @@ def setup_function():
             Product(
                 id=product_id,
                 category_code="FOOD",
-                barcode="3800000000000",
+                barcode="3800000000003",
                 name="Test product",
                 normalized_name="test product",
             )
@@ -65,7 +65,7 @@ def setup_function():
         db.add(
             ProductBarcode(
                 product_id=product_id,
-                barcode="3800000000000",
+                barcode="3800000000003",
                 source="TEST",
                 verified=True,
             )
@@ -140,7 +140,7 @@ def test_postal_search_is_removed():
 
 
 def test_barcode_lookup():
-    response = client.get("/api/v1/products/barcode/3800000000000")
+    response = client.get("/api/v1/products/barcode/3800000000003")
     assert response.status_code == 200
     assert response.json()["name"] == "Test product"
 

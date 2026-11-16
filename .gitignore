@@ -11,3 +11,10 @@ mobile/dist/
 *.apk
 *.jks
 *.keystore
+
+# Generated native smoke diagnostics; numbered references live under docs/.
+mobile/android-smoke.log
+mobile/android-preview-*.png
+mobile/smoke-fixtures/
+
+mobile/android-smoke-window.xml

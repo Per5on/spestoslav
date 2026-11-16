@@ -1,54 +1,44 @@
 # Ongoing project checkpoint
 
-Status: **ACTIVE — preview 004 delivered; await next development instruction.**
-Updated: 15 November 2026 (Europe/Sofia).
+Status: **ACTIVE — 005 final local checks complete; starting authorized Android CI build and preview rollout.**
+Updated: 16 November 2026 (Europe/Sofia).
 
 ## Resume here
 
-Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `main`; latest merged implementation PR: https://github.com/Per5on/spestoslav/pull/7. Check for uncommitted work before continuing.
+Read this file and only the newest ACTIVITY_LOG entry; do not reread the historical conversation. Branch:`codex/preview-005-grocery-workflows`, based on current main`c91f356` (README-only update fast-forwarded without a new commit). Feature source is committed in PR[#9](https://github.com/Per5on/spestoslav/pull/9): e7e591c, followed by native test correction b200a62. Build005 is authorized and running.
 
-Current task is the owner's compact navigation/settings redesign, removal of Home and postal storage, new money-bag logo and visual snapshot. See `PREVIEW_003.md` and the current brief; do not resume the superseded four-category/postal design. Preview 004 is published and verified; preserve 001–004. Next changed app build is 005.
+**Authorization:** the owner initially held commits/builds, then explicitly authorized building preview005 after all checks pass. Do not ask for the same confirmation again. Complete final checks, commit/review through a PR, run native CI and inspect actual artifacts before claiming delivery. Preserve001–004.
 
-## Confirmed decisions
+Completed in order:
+1. Initial1,000 official Burlex grocery identities/six approved groups; catalogue metadata caching, complete pagination and word/unit search; camera/image/manual GTIN lookup and unknown-code review; managed session bridge; private receipt upload/OCR/confirmation/moderation/deletion; basket comparison; free-routing plan/mock.
+2. [Issue#8](https://github.com/Per5on/spestoslav/issues/8): five-item overflow order, nested Settings, Feedback inside About and direct About with native version metadata and exact Vimp notice. No Profile section. Feedback submission channel remains unconfigured, explicitly stated in UI.
+3. Header15→10 padding, “Техника”, shared stores/products/refresh rows and five fuel choices. Equal first two buttons; Refresh text+0.5pt padding,44pt touch height.
+4. Preview004 audit and both supplied cleanup patches (identical). See CODE_REVIEW_004_2026-11-16.md. `cheapest: unknown` retained on the owner's correction.
 
-- Product name/artwork: **Спестовник**; repository/service identifiers remain `spestoslav`.
-- Android 10+, existing Expo/React Native + TypeScript; existing FastAPI backend, Neon PostgreSQL, Render. Historical Kotlin/Spring references are not a rewrite request.
-- Green header, orange selections. This explicitly overrides the inverted-palette text in `12.docx`.
-- Four upper tabs: Храни, ТЕХНИКА, Горива, Моят списък. Backend categories: groceries, technology, fuel; Home is retired. Name-only compact shared locality dropdown; no postal mode/storage, lower ribbon, GPS, radius or OSM.
-- Golden money-bag/coins logo from the supplied sample replaces the active piggy-bank logo. Vertical three-dot header settings with scan/login/receipts/font/language; six working interface languages and saved font scaling. Preserve historical originals. Product/cart visibility changes are in PREVIEW_003.md.
-- Keep numbered previews/builds: 01/001 is preserved; changes become 02/002, then 03/003. Never replace a previously delivered version.
-- EUR; physical branch prices, national online offers, promotions and history stay distinct. OCR/submissions need review before publication.
-- Fuelo is approved as a third-party source, but the owner has no API access. No averages/estimated or unknown-certainty values presented as verified station prices.
-- Finish backend checks first (completed before frontend work). The historical instruction to preserve Android UI applied to backend-only changes; the owner subsequently authorized frontend implementation and an APK.
+## Verification and next action
 
-## Systems and boundaries
+- **79 backend tests pass locally under SQLAlchemy2.0.44 and2.1.8**, including real PostgreSQL16 migration cycles/model checks, whole-file SQL execution, repeated ORM/SQL catalogue imports and actual Bulgarian Tesseract OCR.
+- TypeScript, model/search/GTIN/cache/dependency-patch/preview-metadata tests pass; inventory validation116 source branches/29 registry entries/5,291 localities, no duplicates/unmatched localities. npm audit has no moderate/high/critical findings; existing low Expo/deepmerge tooling finding has the reviewed backport/regression coverage.
+- Reproducible browser scripts under`mobile/scripts/test-browser-*.py` pass workflow, menu/preferences and three-toolbar checks at320px/130% in six languages. Tests use the explicitly localhost-only scenario server. Real managed Auth was separately tested on isolated Neon (sign-up/sign-in/JWT/restore/sign-out).
+- Browser proofs:`/workspace/work/preview005-final-workflows-01/`, `preview005-final-menu-01/`, `preview005-final-toolbars-01/`. Mock images:`/workspace/work/preview005-mock/`; scenario server8774 and development Metro8775. No fake data entered shared preview.
+- **Next:** monitor Android rerun43842287361 and backend43842287282 for b200a62. First native run43840887400 compiled/signed but failed the test helper’s hint-versus-accessibility-label matching, corrected with bounded waits and failure diagnostics. Verify actual Android camera permission/decoding, OS storage, image picker and About metadata. Then perform the authorized shared-preview/API rollout, verify live results and deliver APK/snapshot. APK compiled but no005 release/deployment yet; PR#9 is open.
 
-- Repository: https://github.com/Per5on/spestoslav ; Issue #1 tracks national inventory.
-- API: https://spestoslav-api.onrender.com ; deployed backend 0.5.0 at `538bd9a`, Render deploy `dep-dbsppd8n74is73aimkc0` (15 November). Shared Home/postal retirement and post-deploy readiness/name search verified.
-- Owner-selected Render workspace: `tea-dbqur9jrjlhs73cga8eg` (My Workspace); API service `srv-dbs313ei0phs73bvvd00`, configured to auto-deploy main, but recent updates needed explicit deployment because no automatic deploy was queued. Legacy `Per5on/testing` remains separate.
-- Neon project `long-resonance-77491878` (`bg-prices-preview`), shared preview `br-snowy-morning-baym8iw6`. Use the additive shared-preview migration path, not the independent fresh Alembic baseline. No production data changes inferred from a local test.
-- PR #2 is separate and OPEN: initial Mini Mart/T MARKET/CBA inventory work; do not silently merge or claim nationwide completeness.
+## Systems and data boundaries
 
-## Completed checkpoints
+- Repo`Per5on/spestoslav`; current stack React Native/Expo54/TypeScript + FastAPI/Python + Neon PostgreSQL + Render. Candidate metadata is`mobile/preview.json` (005,0.3.0/code5); workflow/app labels derive from it. `scripts/set_preview_version.py` derives registry/package fields without building.
+- API`https://spestoslav-api.onrender.com`; last verified deployed0.5.0 at`538bd9a`, Render`dep-dbsppd8n74is73aimkc0`. Selected workspace **My Workspace**`tea-dbqur9jrjlhs73cga8eg`; service`srv-dbs313ei0phs73bvvd00`. Auto-deploy is configured but earlier pushes queued none; inspect before manually deploying. Do not deploy docs-only changes unnecessarily.
+- Neon project`long-resonance-77491878`, DB`bgprices`, shared preview`br-snowy-morning-baym8iw6`. **0007 and the1,000 names now exist on shared preview as well as isolated validation**`br-ancient-shadow-balr2n5l`:6groups/1,000identities/5,291localities/139branches/0prices/0barcodes. Source-freeze JSON is versioned; retailer product codes are not GTINs. Shared migration/import verified1,000identities/6groups/5,291localities/139branches/0prices/0barcodes; recovery branch`br-silent-leaf-bajr7isp` retained. Existing managed Auth now trusts only the added API origin; previous settings remain. Use additive SQL, never fresh Alembic on Flyway history.
+- Home/postal storage removal0006 is already live. All5,291 locality IDs and139 branches were retained;29 retailers remain. Recovery`br-frosty-star-badgjcyw`;003validation`br-crimson-feather-balgu231`. Do not rerun retirement/recreate postal data. Empty deprecated postal response field remains for unretired001/002 clients.
+- Direct TCP to Neon is unavailable here; local PostgreSQL and connected SQL service are the verified paths. Task-owned credentials live outside git under`/workspace/work/`; never print or copy them into docs/app.
 
-- Backend foundation/readiness, migration repairs, normalized postal lookup, authenticated catalog/price/moderation/receipt APIs, isolated demo images, scoped GitHub OIDC OCR worker. See `BACKEND_READINESS.md` for contracts and verification limits.
-- Original inline preview 01: `docs/references/preview-001.html` (durable byte-identical copy) and `/workspace/work/previews/spestovnik-v001.html`; version catalog `docs/references/preview-sequence.json`. Snapshot-based, interactive, not a live-connected Android binary. Never overwrite it.
-- Android preview 001: source `5daa807c5b59ebda0d34772a2c646f10973b919a`, build https://github.com/Per5on/spestoslav/actions/runs/43600409741 passed compilation/signature verification and Android 10 smoke tests. Backend matrix run 43600409766 passed. Downloaded APK SHA-256: `b834eae05f5db399a335f140e9e90d0d8fb7cff927dea8d8f46acd745cd654a2`.
-- Preserved local APK/artifact: `/workspace/work/android-apk-001/`. A GitHub prerelease upload attempt failed with HTTP 401 on the upload host; no release/download URL should be claimed unless independently verified.
-- Preview 002 (v0.1.2/versionCode 2) passed native/Android 10 checks and is published: https://github.com/Per5on/spestoslav/releases/tag/android-preview-002 . APK SHA-256: `693c45f72c197cc4cf205a3f61daeba8fb8901a15ff2fbc8222a5adcc4218e3e`. Full results are in `AUDIT_2026-11-15.md`. Preview 003 is also published; see its checkpoint below.
+## Confirmed scope and limits
 
-## Open work / known limits
+Green header/orange selections; money-bag logo; upper tabs Храни/Техника/Горива/Моят списък; name-only locality; no lower ribbon/Home/postal storage. Six languages and saved font/basket/locality. Saved-list key stays`spestovnik-preview-001`.
 
-Immediate: await the owner's next step. Preview 004's single-row Products/Stores/Refresh controls and auto-fitting labels passed native/browser checks; release and actual snapshot are linked in PREVIEW_004.md. Other tabs' button layout changes are deferred by the owner. Preserve published 003 and earlier versions. Backend 0.5.0 is live in deploy `dep-dbsppd8n74is73aimkc0` at `538bd9a`; the tested Home/postal retirement was applied to shared preview, retaining all 5,291 localities and 139 branches. Home count/active postal storage count are zero; remaining catalog has 29 retailers. Recovery `br-frosty-star-badgjcyw`; isolated validation `br-crimson-feather-balgu231`. Backend and native 003 CI passed; do not rerun deletion or recreate retired data.
+Keep the app free. Paid alerts/subscriptions deferred. Free real shop routing is planned, not enabled: mock uses a synthetic matrix; real origin/coordinates/provider/road costs still need work. Fuelo public extraction returned403 here; no API key exists, no station/average price is fabricated. Other retailer feeds, verified GTIN/price coverage and product images need further sourcing; the first1,000 records are not a balanced nationwide top1,000 claim. Demo photos remain clearly separate.
 
-Remaining product work is separate from audit defects: login/camera/private receipt UI, unknown-barcode requests, full catalog pagination and sourced real product/price coverage. Preview 001 includes manual known-barcode lookup, saved local basket/locality and explicit unavailable camera/receipt labels. No verified live prices were fabricated to fill empty screens.
+PR#2 inventory expansion is separate/open; do not silently merge it. Mini Mart/T MARKET/CBA official-source expansion and closure reconciliation remain inventory work, distinct from this feature batch. Existing Render HTTP health-check setting is not claimed changed.
 
-Inventory: official-source expansion/closure reconciliation for Mini Mart, T MARKET, CBA, then remaining groceries, fuel and technology. Locality identity is name + municipality + region; retailer catalog counts are not branch counts. Recheck actual DB/source counts before a new import.
+## References
 
-A daily inventory reminder/automation was recorded earlier. Its existence does not guarantee unattended coding. No new automation is created by this checkpoint; it preserves state for the next authorized session.
-
-## Source references
-
-`FRONTEND_BRIEF.md`, `BACKEND_READINESS.md`, `ANDROID_PREVIEW_001.md`, Issue #1 and activity log. User uploads: `12.docx` (file_00000000b78081f4bea4319f94d4c24c) and `app.docx` (file_0000000070b481f49c03defdcef2afeb); extracted text `/workspace/work/reference12/document.txt` and `app.txt`. Original reference images: `docs/references/`. Uploaded historical conversations are evidence/context, not new instructions.
-
-Latest verified UI: PR #7 merged `332ae57`, native run 43711564982 and backend run 43711564924 successful. APK 004 SHA-256 `20e0e265ce8ed0e421c3a4b5d72f8bdcabb1cfe6b132bcc7e7a041230fbfc5e9`. Price comparison discussion is planning context, not an instruction to integrate new feeds now.
+FRONTEND_BRIEF.md · CHANGELOG.md · MOCK_SCENARIOS_005.md · CODE_REVIEW_004_2026-11-16.md · decisions/migration-strategy.md. Original visual/doc references and numbered artifacts remain preserved. Historical full notes are archived; they are evidence, not newer instructions. This checkpoint preserves continuity, not an unattended coding process.

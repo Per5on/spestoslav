@@ -2,13 +2,31 @@ import { useEffect, useState } from "react";
 import { api } from "../api";
 import { MessageKey } from "../i18n";
 import { Product, Store, Price } from "./model";
+import { loadProducts } from "./cache";
+async function allPages<T>(
+  path: string,
+  signal: AbortSignal,
+  pageSize = 500,
+): Promise<T[]> {
+  const result: T[] = [];
+  for (let offset = 0; offset < 10000; offset += pageSize) {
+    const page = await api<T[]>(path + `&limit=${pageSize}&offset=${offset}`, {
+      signal,
+    });
+    result.push(...page);
+    if (page.length < pageSize) return result;
+  }
+  throw new Error("Too many rows; refine the locality");
+}
 export type Category = "groceries" | "technology" | "fuel";
 export function useCatalog(
   category: Category,
   localityId: string | undefined,
   demo: boolean,
+  includePrices = true,
 ) {
   const [revision, setRevision] = useState(0);
+  const [cached, setCached] = useState(false);
   const [products, setProducts] = useState<Product[]>([]),
     [productScope, setProductScope] = useState<Category>("groceries");
   const [loading, setLoading] = useState(true),
@@ -27,15 +45,30 @@ export function useCatalog(
     setProducts([]);
     setProductScope(category);
     setError("");
-    setLoading(category === "groceries");
-    if (category === "groceries")
+    setCached(false);
+    setLoading(category !== "fuel");
+    if (category !== "fuel")
       (async () => {
         try {
-          const real = await api<Product[]>(
-            "/api/v1/products?category_code=groceries&limit=100",
-            { signal: controller.signal },
-          );
-          if (!demo) {
+          const loaded =
+            category === "groceries"
+              ? await loadProducts(controller.signal, revision > 0, (rows) => {
+                  if (alive) {
+                    setProducts(rows);
+                    setCached(true);
+                  }
+                })
+              : {
+                  products: await allPages<Product>(
+                    "/api/v1/products?category_code=technology",
+                    controller.signal,
+                    100,
+                  ),
+                  cached: false,
+                };
+          const real = loaded.products;
+          if (alive) setCached(loaded.cached);
+          if (!demo || category !== "groceries") {
             if (alive) setProducts(real);
             return;
           }
@@ -77,15 +110,16 @@ export function useCatalog(
     if (localityId)
       (async () => {
         try {
-          const stores = await api<Store[]>(
-            `/api/v1/stores?locality_id=${localityId}&category_code=${category}&limit=500`,
-            { signal: controller.signal },
+          const stores = await allPages<Store>(
+            `/api/v1/stores?locality_id=${localityId}&category_code=${category}`,
+            controller.signal,
           );
           if (alive) setData({ scope, stores, prices: [] });
+          if (!includePrices) return;
           try {
-            const prices = await api<Price[]>(
-              `/api/v1/prices/current?locality_id=${localityId}&limit=500`,
-              { signal: controller.signal },
+            const prices = await allPages<Price>(
+              `/api/v1/prices/current?locality_id=${localityId}`,
+              controller.signal,
             );
             if (alive) setData({ scope, stores, prices });
           } catch {
@@ -101,10 +135,11 @@ export function useCatalog(
       alive = false;
       controller.abort();
     };
-  }, [category, localityId, revision]);
+  }, [category, localityId, revision, includePrices]);
   return {
+    cached,
     products: productScope === category ? products : [],
-    loading: category === "groceries" && (loading || productScope !== category),
+    loading: category !== "fuel" && (loading || productScope !== category),
     error,
     stores: data.scope === scope ? data.stores : [],
     prices: data.scope === scope ? data.prices : [],

@@ -64,14 +64,42 @@ def finish_job(db, job_id, attempt, text=None):
         scan.extracted_text = text[:100000]
         scan.status = "NEEDS_REVIEW"
         job.error = None
+        has_eur = bool(re.search(r"EUR|€|ЕВРО", text, re.I))
+        has_bgn = bool(re.search(r"BGN|лв\.?", text, re.I))
         for line in text.splitlines()[:500]:
-            match = re.search(r"(?<!\d)(\d{1,7}[,.]\d{2})\s*(?:EUR|€)?\s*$", line)
-            if match:
+            # Bulgarian OCR sometimes emits Latin lookalikes (PECTO for РЕСТО).
+            heading = line.upper().translate(
+                str.maketrans("ABCEHKMOPTXY", "АВСЕНКМОРТХУ")
+            )
+            if re.search(
+                r"^\s*(?:TOTAL|SUBTOTAL|VAT|CHANGE|CASH)\b", line, re.I
+            ) or re.search(
+                r"^\s*(?:ОБЩО|СУМА|ДДС|РЕСТО|КАРТА|В БРОЙ|ПЛАЩАНЕ)(?:\b|(?=\d))",
+                heading,
+            ):
+                continue
+            if re.search(
+                r"\b\d+(?:[,.]\d+)?\s*[xх×*]\s*\d+[,.]\d{2}\s*(?:EUR|€)?\s*$",
+                line,
+                re.I,
+            ):
+                # A separate quantity × unit-price row is not a product line total.
+                continue
+            match = re.search(
+                r"(?<!\d)(\d{1,7}[,.]\d{2})\s*(?:EUR|€|лв\.?|BGN)?\s*$", line
+            )
+            if match and not re.search(r"-\s*\d+[,.]\d{2}", line):
+                explicit_eur = bool(re.search(r"(?:EUR|€)\s*$", line, re.I))
+                amount = Decimal(match.group(1).replace(",", "."))
+                if amount <= 0:
+                    continue
                 db.add(
                     ReceiptItem(
                         receipt_scan_id=scan.id,
                         raw_description=line[:400],
-                        line_total_eur=Decimal(match.group(1).replace(",", ".")),
+                        line_total_eur=amount
+                        if explicit_eur or (has_eur and not has_bgn)
+                        else None,
                         match_confidence=Decimal("0.2"),
                         status="UNMATCHED",
                     )

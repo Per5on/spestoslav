@@ -1,3 +1,4 @@
+import { workflowMessages } from "./workflows/messages";
 export const languages = [
   { code: "bg", name: "Български" },
   { code: "en", name: "English" },
@@ -9,7 +10,7 @@ export const languages = [
 export type Language = (typeof languages)[number]["code"];
 const bg = {
   food: "Храни",
-  technology: "ТЕХНИКА",
+  technology: "Техника",
   fuel: "Горива",
   list: "Моят списък",
   tagline: "Сравнявай цените. Пести повече!",
@@ -75,7 +76,7 @@ const bg = {
   saveError: "Списъкът не може да се запази.",
   limit: "Списъкът може да съдържа най-много 100 различни продукта.",
   compareError: "Сравнението не е достъпно. Опитайте отново.",
-  invalidBarcode: "Въведете баркод с 8–14 цифри.",
+  invalidBarcode: "Невалиден баркод или контролна цифра.",
   unknownBarcode:
     "Непознат баркод. Идентификацията ще бъде налична след добавяне на вход в профил.",
   searchError: "Търсенето не е достъпно. Опитайте отново.",
@@ -83,14 +84,14 @@ const bg = {
   cancel: "Отказ",
   petrol: "Бензин 95",
   diesel: "Дизел",
-  lpg: "LPG",
+  lpg: "Автогаз",
   fuelPending: "Проверени цени за това гориво още не са налични.",
   demoMilk: "прясно мляко",
   demoOil: "слънчогледово олио",
   demoSugar: "захар",
 };
-export type MessageKey = keyof typeof bg;
-type Dictionary = Record<MessageKey, string>;
+export type MessageKey = keyof typeof bg | keyof typeof workflowMessages.bg;
+type Dictionary = Record<keyof typeof bg, string>;
 const en: Dictionary = {
   food: "Food",
   technology: "TECHNOLOGY",
@@ -159,7 +160,7 @@ const en: Dictionary = {
   saveError: "Your list could not be saved.",
   limit: "Your list can contain up to 100 different products.",
   compareError: "Comparison is unavailable. Please try again.",
-  invalidBarcode: "Enter a barcode with 8–14 digits.",
+  invalidBarcode: "Invalid barcode or check digit.",
   unknownBarcode:
     "Unknown barcode. Identification requests will be available after sign-in is added.",
   searchError: "Search is unavailable. Please try again.",
@@ -244,7 +245,7 @@ const de: Dictionary = {
   limit: "Ihre Liste kann bis zu 100 verschiedene Produkte enthalten.",
   compareError:
     "Der Vergleich ist nicht verfügbar. Bitte versuchen Sie es erneut.",
-  invalidBarcode: "Geben Sie einen Barcode mit 8–14 Ziffern ein.",
+  invalidBarcode: "Ungültiger Barcode oder Prüfziffer.",
   unknownBarcode:
     "Unbekannter Barcode. Identifizierungsanfragen folgen nach Einführung der Anmeldung.",
   searchError: "Die Suche ist nicht verfügbar. Bitte versuchen Sie es erneut.",
@@ -411,7 +412,7 @@ const fr: Dictionary = {
   saveError: "Votre liste n’a pas pu être enregistrée.",
   limit: "Votre liste peut contenir jusqu’à 100 produits différents.",
   compareError: "La comparaison est indisponible. Réessayez.",
-  invalidBarcode: "Saisissez un code-barres de 8 à 14 chiffres.",
+  invalidBarcode: "Code-barres ou chiffre de contrôle invalide.",
   unknownBarcode:
     "Code-barres inconnu. Les demandes d’identification seront disponibles après l’ajout de la connexion.",
   searchError: "La recherche est indisponible. Réessayez.",
@@ -428,7 +429,7 @@ const fr: Dictionary = {
 };
 const ru: Dictionary = {
   food: "Продукты",
-  technology: "ТЕХНИКА",
+  technology: "Техника",
   fuel: "Топливо",
   list: "Мой список",
   tagline: "Сравнивайте цены. Экономьте больше!",
@@ -492,7 +493,7 @@ const ru: Dictionary = {
   saveError: "Не удалось сохранить список.",
   limit: "В списке может быть не более 100 разных товаров.",
   compareError: "Сравнение недоступно. Повторите попытку.",
-  invalidBarcode: "Введите штрихкод из 8–14 цифр.",
+  invalidBarcode: "Неверный штрихкод или контрольная цифра.",
   unknownBarcode:
     "Неизвестный штрихкод. Запросы на идентификацию появятся после добавления входа.",
   searchError: "Поиск недоступен. Повторите попытку.",
@@ -506,11 +507,11 @@ const ru: Dictionary = {
   demoOil: "подсолнечное масло",
   demoSugar: "сахар",
 };
-export const messages: Record<Language, Dictionary> = {
-  bg,
-  en,
-  de,
-  es,
-  fr,
-  ru,
+export const messages: Record<Language, Record<MessageKey, string>> = {
+  bg: { ...bg, ...workflowMessages.bg },
+  en: { ...en, ...workflowMessages.en },
+  de: { ...de, ...workflowMessages.de },
+  es: { ...es, ...workflowMessages.es },
+  fr: { ...fr, ...workflowMessages.fr },
+  ru: { ...ru, ...workflowMessages.ru },
 };

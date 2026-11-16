@@ -1,3 +1,6 @@
+from datetime import datetime, timezone
+from uuid import UUID
+
 from fastapi import Depends, FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy import func, or_, select
@@ -5,6 +8,8 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
+from .grocery import GroceryGroup, GroceryIdentity
+from .barcodes import gtin_aliases
 from .models import (
     Category,
     Locality,
@@ -22,7 +27,7 @@ from .workflows import (
     ProductIdentificationRequest,
 )
 
-app = FastAPI(title="Спестослав API", version="0.5.0")
+app = FastAPI(title="Спестослав API", version="0.6.0")
 
 
 class CategoryResponse(BaseModel):
@@ -60,11 +65,15 @@ def readiness(db: Session = Depends(get_db)):
             select(CurrentPrice).limit(1),
             select(Promotion).limit(1),
             select(ReviewSubmission.id).limit(1),
-            select(ReceiptJob.id).limit(1),
+            select(
+                ReceiptJob.id, ReceiptJob.request_key, ReceiptJob.upload_fingerprint
+            ).limit(1),
             select(CollectionSource.code).limit(1),
             select(ProductImage.product_id).limit(1),
             select(NationalOffer.id).limit(1),
             select(ProductIdentificationRequest.id).limit(1),
+            select(GroceryGroup.code).limit(1),
+            select(GroceryIdentity.product_id).limit(1),
         ):
             db.execute(statement)
     except SQLAlchemyError:
@@ -152,10 +161,6 @@ def search_localities(
     ]
 
 
-from datetime import datetime, timezone
-from uuid import UUID
-
-
 class ProductLookupResponse(BaseModel):
     id: str
     category_code: str
@@ -200,19 +205,29 @@ class PromotionResponse(BaseModel):
 
 @app.get("/api/v1/products/barcode/{barcode}", response_model=ProductLookupResponse)
 def product_by_barcode(barcode: str, db: Session = Depends(get_db)):
-    product = db.scalar(
+    try:
+        aliases = gtin_aliases(barcode)
+    except ValueError:
+        raise HTTPException(422, "Invalid GTIN length or check digit") from None
+    products = db.scalars(
         select(Product)
-        .join(ProductBarcode, ProductBarcode.product_id == Product.id)
+        .join(Category, Category.code == Product.category_code)
+        .outerjoin(ProductBarcode, ProductBarcode.product_id == Product.id)
         .where(
-            ProductBarcode.barcode == barcode,
-            ProductBarcode.verified.is_(True),
             Product.active.is_(True),
+            Category.active.is_(True),
+            or_(
+                Product.barcode.in_(aliases),
+                (ProductBarcode.barcode.in_(aliases))
+                & ProductBarcode.verified.is_(True),
+            ),
         )
-    )
-    if product is None:
-        product = db.scalar(
-            select(Product).where(Product.barcode == barcode, Product.active.is_(True))
-        )
+        .distinct()
+        .limit(2)
+    ).all()
+    if len(products) > 1:
+        raise HTTPException(409, "Barcode identity conflict requires review")
+    product = products[0] if products else None
     if product is None:
         raise HTTPException(
             status_code=404, detail="Product not found for this barcode"
@@ -387,26 +402,48 @@ def active_promotions(
     ]
 
 
-from .write_api import router as write_router
+@app.get("/api/v1/grocery/groups")
+def grocery_groups(db: Session = Depends(get_db)):
+    rows = db.execute(
+        select(GroceryGroup, func.count(GroceryIdentity.product_id))
+        .outerjoin(GroceryIdentity, GroceryIdentity.group_code == GroceryGroup.code)
+        .group_by(GroceryGroup.code)
+        .order_by(GroceryGroup.sort_order, GroceryGroup.code)
+    ).all()
+    return [
+        {"code": g.code, "name_bg": g.name_bg, "name_en": g.name_en, "count": count}
+        for g, count in rows
+    ]
 
-app.include_router(write_router)
 
-from .receipts import router as receipt_router
+def include_routers(application):
+    from .write_api import router as write_router
+    from .receipts import router as receipt_router
+    from .catalog_api import router as catalog_router
+    from .demo_api import router as demo_router
+    from .worker_api import router as worker_router
+    from .mobile_auth import router as mobile_auth_router
+    from .limits import ReceiptUploadLimit
 
-app.include_router(receipt_router)
+    for router in (
+        write_router,
+        receipt_router,
+        catalog_router,
+        demo_router,
+        worker_router,
+        mobile_auth_router,
+    ):
+        application.include_router(router)
+    application.add_middleware(ReceiptUploadLimit)
 
-from .limits import ReceiptUploadLimit
 
-app.add_middleware(ReceiptUploadLimit)
+include_routers(app)
 
-from .catalog_api import router as catalog_router
 
-app.include_router(catalog_router)
-
-from .demo_api import router as demo_router
-
-app.include_router(demo_router)
-
-from .worker_api import router as worker_router
-
-app.include_router(worker_router)
+@app.middleware("http")
+async def private_response_headers(request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith(("/api/v1/auth/", "/api/v1/receipts")):
+        response.headers["Cache-Control"] = "no-store"
+        response.headers["Pragma"] = "no-cache"
+    return response

@@ -36,5 +36,6 @@
       "workflow": "https://github.com/Per5on/spestoslav/actions/runs/43711564982",
       "snapshot": "https://github.com/Per5on/spestoslav/releases/download/android-preview-004/android-preview-004.png"
     }
-  ]
+  ],
+  "metadata_source": "../../mobile/preview.json"
 }

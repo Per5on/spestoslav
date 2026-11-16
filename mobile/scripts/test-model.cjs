@@ -114,10 +114,51 @@ const i18nSource = ts.transpileModule(fs.readFileSync("src/i18n.ts", "utf8"), {
 const translations = { exports: {} };
 new Function("exports", "require", "module", i18nSource)(
   translations.exports,
-  require,
+  (name) =>
+    name === "./workflows/messages"
+      ? loadTS("src/workflows/messages.ts")
+      : require(name),
   translations,
 );
 const keys = Object.keys(translations.exports.messages.bg).sort();
 assert.equal(translations.exports.languages.length, 6);
 for (const value of Object.values(translations.exports.messages))
   assert.deepEqual(Object.keys(value).sort(), keys);
+
+function loadTS(path, dependencies = {}) {
+  const code = ts.transpileModule(fs.readFileSync(path, "utf8"), {
+    compilerOptions: { module: ts.ModuleKind.CommonJS },
+  }).outputText;
+  const m = { exports: {} };
+  new Function("exports", "require", "module", code)(
+    m.exports,
+    (name) => (name in dependencies ? dependencies[name] : require(name)),
+    m,
+  );
+  return m.exports;
+}
+const { validGTIN, scannedGTIN } = loadTS("src/workflows/barcode.ts");
+for (const value of [
+  "4006381333931",
+  "96385074",
+  "012345678905",
+  "04006381333931",
+])
+  assert.equal(validGTIN(value), true, value);
+for (const value of [
+  "4006381333932",
+  "12345",
+  "1234567890",
+  "https://example.com",
+  "3800000000000",
+])
+  assert.equal(validGTIN(value), false, value);
+assert.equal(scannedGTIN("4006381333931", "qr"), null);
+assert.equal(scannedGTIN("4006381333931", "ean13"), "4006381333931");
+console.log(
+  "Barcode checks passed: GTIN lengths/check digits, leading zeroes and rejected QR/PLU.",
+);
+assert(matchesProduct({id:'yogurt',name:'КИСЕЛО КРАВЕ МЛЯКО 3,6% 400ГР',category_code:'groceries'},'кисело мляко 400 г'));
+assert(matchesProduct({id:'milk',name:'Мляко',category_code:'groceries',package_quantity:'1.000',package_unit:'l'},'мляко 1л'));
+assert(!matchesProduct({id:'milk',name:'Мляко 2% 1Л',category_code:'groceries'},'мляко 3.6%'));
+console.log('Search checks passed: reordered words, Cyrillic/Latin units, separated quantities and decimal fat content.');
