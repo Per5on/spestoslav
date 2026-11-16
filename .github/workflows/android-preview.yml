@@ -57,6 +57,7 @@ jobs:
         run: |
           python -m pip install "Pillow>=13.0.0,<14"
           python ../scripts/generate_mock_images.py --output smoke-fixtures
+          python -c "from PIL import Image; Image.open('smoke-fixtures/simulation-ean13.png').convert('RGB').save('smoke-fixtures/simulation-ean13.jpg', quality=100, subsampling=0)"
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
       - name: Smoke test on Android 10
@@ -70,9 +71,9 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
           script: |
             adb install mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
-            adb shell mkdir -p /sdcard/Pictures
-            adb push mobile/smoke-fixtures/simulation-ean13.png /sdcard/Pictures/spestovnik-simulation-ean13.png
-            adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///sdcard/Pictures/spestovnik-simulation-ean13.png
+            adb shell mkdir -p /sdcard/Download
+            adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
+            adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
             cd mobile && python3 scripts/smoke-android.py
       - uses: actions/upload-artifact@v5
         if: always()

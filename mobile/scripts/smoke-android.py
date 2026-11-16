@@ -112,11 +112,18 @@ wait_text("Отказ", 15)
 time.sleep(2)
 assert not any("Камерата или снимката не е достъпна" in label(n) for n in nodes())
 tap("Отказ")
-# The only test image in Pictures contains a synthetic valid EAN. Decode through ML Kit.
+# The only fixture in Downloads contains a synthetic valid EAN. Decode through ML Kit.
 tap("Баркод от снимка")
-deadline=time.monotonic()+30
+deadline=time.monotonic()+45
+opened_downloads = False
 while time.monotonic()<deadline:
     options=nodes()
+    if not opened_downloads and any(label(n) == "No items" for n in options):
+        # AOSP Recent can omit adb-seeded media. Browse its real Downloads file.
+        tap("Show roots")
+        tap_node(wait_text("Downloads", 10))
+        opened_downloads = True
+        continue
     names=[n for n in options if "spestovnik-simulation-ean13" in label(n)]
     thumbs=[n for n in options if n.get("resource-id", "").endswith("id/icon_thumb")]
     if names or thumbs:

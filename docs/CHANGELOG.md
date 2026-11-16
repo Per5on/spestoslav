@@ -8,7 +8,7 @@ Version0.3.0/code5 is derived from `mobile/preview.json`. The owner authorized a
 
 - Initial 1,000 source-backed grocery identities in six approved groups, metadata-only catalogue cache, complete pagination and improved word/unit search. Retailer codes are not verified GTINs; no retailer price was invented or imported.
 - Camera/image/manual GTIN lookup, unknown-code review requests, managed account sessions and owner-scoped private receipt upload, OCR, confirmation and moderation. Current prices change only after approval.
-- Issue #8: exact six-item overflow order, nested Settings, Feedback entry and direct About with installed Android version metadata and `© 2026 Vimp. All rights reserved.` No Profile screen.
+- Issue #8 plus latest owner refinement: five-item overflow order, nested Settings, Feedback inside About and direct About with installed Android version metadata and `© 2026 Vimp. All rights reserved.` No Profile screen.
 - Task3: header padding15→10, “Техника”, shared Магазини/Продукти/Обнови row with equal left buttons and text+0.5pt Refresh; stations/fuel/refresh and five fuel choices.
 - Preview004 cleanup review covers CI, migrations, worker controls, metadata derivation, unused code and preserved compatibility. Real route directions and live Fuelo integration are not enabled.
 
