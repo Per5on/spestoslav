@@ -1,3 +1,15 @@
+## Current Preview007 build validation — 17 November
+
+Owner authorization to commit/build remains active; do not request it again. PR16 candidate3867e5e compiled/signed successfully in Android run44098576002, but native smoke failed finding Sofia after75seconds. Captured screen shows both location/catalogue network errors; APK has INTERNET permission and real HTTPS API URL. This failed candidate is preserved, not a release. Do not label it fully live.
+
+Follow-up changes: bounded safe-GET retries covering response body timeouts and cancellation, no automatic POST/upload replay; privacy-safe location error class logs; public-endpoint CI diagnostics. Unit/browser regression proves transient recovery without manual retry and bounded permanent failure/manual retry; functional mock suite still passes. New source needs exact-head CI/native rerun. Owner-approved007PR builds may run automatically on this same repository branch; publication remains blocked.
+
+Yahoo SMTP is blocked on the current Render Free service (official https://render.com/docs/free.md), regardless of password. Non-password settings saved, delivery explicitly disabled; owner decision pending on free HTTPS provider versus reviewed paid SMTP hosting. No upgrade or real email sent. Preserve private credentials; no password is needed in chat.
+
+Isolated Neon branch br-polished-unit-bafzpcnc validates additive0008 and1000technology identities; repeat compiled model upserts leave counts/product hashes identical. Grocery/store hashes match shared preview;139branches/1inactive preserved. Source-backed metadata only, no GTIN/price invention. Shared preview remains unchanged at1000groceries/0technology/0prices. New group index benchmark for4-record group:3buffer hits versus47sequential; tiny timing results noisy, not a general latency claim. Direct shell PostgreSQL unavailable; connector SQL transaction fallback used. Recovery/history retained; no inventory PR15 import, purge or deletion.
+
+Next: commit corrective source; inspect exact-head backend and Android results; fix any native failure without weakening assertions. API rollout remains pending (currently0.5.0, candidate snapshots/feedback404), along with real auth/storage/email/price verification and three final passes. Local evidence outside repo: preview007-native-attempt-01, preview007-network-regression-02, preview007-neon-validation-evidence.json. Preview007 is not yet fully live/ready; no publication.
+
 ## Latest owner instruction — build authorized, live readiness required
 
 On17November the owner explicitly authorized committing/building Preview007 and requires real connections, images, filtering and options to work. This supersedes earlier demands for a new build confirmation: do not ask again for build permission. It does not establish that live acceptance has passed. Commit/test the candidate; report live blockers accurately and do not label mocks as live. Yahoo SMTP selected; sender supplied privately in conversation; recipient unchanged. Credentials must be configured only as deployment secrets, never source/chat logs.

@@ -19,6 +19,7 @@ BODY = {
 def environment(monkeypatch):
     feedback._attempts.clear()
     for key in (
+        "FEEDBACK_DELIVERY_ENABLED",
         "FEEDBACK_SMTP_HOST",
         "FEEDBACK_SMTP_USER",
         "FEEDBACK_SMTP_PASSWORD",
@@ -31,6 +32,7 @@ def environment(monkeypatch):
 
 def configure(monkeypatch):
     for key, value in {
+        "FEEDBACK_DELIVERY_ENABLED": "true",
         "FEEDBACK_SMTP_HOST": "smtp.example.invalid",
         "FEEDBACK_SMTP_USER": "test-only",
         "FEEDBACK_SMTP_PASSWORD": "test-only-not-a-real-secret",
@@ -106,3 +108,16 @@ def test_provider_failure_and_preview_quota(monkeypatch):
         assert result.status_code == 503 and "private details" not in result.text
     result = client.post("/api/v1/feedback", json=BODY)
     assert result.status_code == 429 and result.headers["retry-after"] == "600"
+
+
+def test_configured_but_disabled_provider_never_attempts_delivery(monkeypatch):
+    configure(monkeypatch)
+    monkeypatch.setenv("FEEDBACK_DELIVERY_ENABLED", "false")
+
+    def forbidden(payload):
+        raise AssertionError("Disabled delivery must not send")
+
+    monkeypatch.setattr(feedback, "deliver", forbidden)
+    assert client.get("/api/v1/feedback/availability").json() == {"available": False}
+    assert client.post("/api/v1/feedback", json=BODY).status_code == 503
+    assert not feedback._attempts

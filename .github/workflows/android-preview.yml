@@ -12,7 +12,8 @@ permissions:
   contents: read
 jobs:
   apk:
-    if: github.event_name == 'workflow_dispatch' && inputs.confirm_build == true
+    # Owner explicitly authorized Preview007 test builds on17November; no release approval.
+    if: (github.event_name == 'workflow_dispatch' && inputs.confirm_build == true) || (github.event_name == 'pull_request' && github.head_ref == 'codex/preview-007' && github.event.pull_request.head.repo.full_name == github.repository)
     outputs:
       preview_sequence: ${{ steps.preview.outputs.sequence }}
     runs-on: ubuntu-latest
@@ -101,6 +102,9 @@ jobs:
             adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
             adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
             cd mobile && python3 scripts/smoke-android.py
+      - name: Capture public API diagnostics on native failure
+        if: failure()
+        run: python scripts/check-live-api.py --output android-network.json
       - uses: actions/upload-artifact@v5
         if: always()
         with:
@@ -111,6 +115,7 @@ jobs:
             mobile/android-preview-${{ env.PREVIEW_SEQUENCE }}.png
             mobile/android-smoke.log
             mobile/android-smoke-window.xml
+            mobile/android-network.json
           retention-days: 30
           if-no-files-found: warn
 

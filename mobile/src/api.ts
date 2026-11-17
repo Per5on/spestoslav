@@ -1,3 +1,4 @@
+import { fetchWithRetry } from "./network";
 export const SIMULATION_MODE = process.env.EXPO_PUBLIC_SIMULATION_MODE === "true";
 export const API_BASE_URL = (
   process.env.EXPO_PUBLIC_API_URL ?? "https://spestoslav-api.onrender.com"
@@ -11,21 +12,9 @@ export async function api<T>(
   options: RequestInit = {},
   timeoutMs = 20000,
 ): Promise<T> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  const cancel = () => controller.abort();
-  options.signal?.addEventListener("abort", cancel);
-  if (options.signal?.aborted) controller.abort();
-  try {
-    const response = await fetch(API_BASE_URL + path, {
-      ...options,
-      signal: controller.signal,
-    });
+  return fetchWithRetry<T>(API_BASE_URL + path, options, { timeoutMs }, async (response) => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     if (response.status === 204) return undefined as T;
     return (await response.json()) as T;
-  } finally {
-    clearTimeout(timer);
-    options.signal?.removeEventListener("abort", cancel);
-  }
+  });
 }

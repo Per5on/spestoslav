@@ -40,7 +40,7 @@ class Feedback(BaseModel):
 
 
 def configured():
-    return all(
+    return os.getenv("FEEDBACK_DELIVERY_ENABLED", "false").lower() == "true" and all(
         os.getenv(k)
         for k in (
             "FEEDBACK_SMTP_HOST",

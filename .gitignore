@@ -18,3 +18,4 @@ mobile/android-preview-*.png
 mobile/smoke-fixtures/
 
 mobile/android-smoke-window.xml
+mobile/android-network.json
