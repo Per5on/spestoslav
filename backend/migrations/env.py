@@ -3,7 +3,7 @@ import os
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 from app.db import Base, normalize_database_url
-from app import models, marketplace, workflows  # noqa: F401
+from app import models, marketplace, workflows, grocery, technology  # noqa: F401
 
 config = context.config
 if config.config_file_name:

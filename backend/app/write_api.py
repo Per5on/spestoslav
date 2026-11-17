@@ -48,19 +48,9 @@ class ProductInput(Input):
     def gtin_checksum(cls, value):
         if value is None:
             return value
-        if (
-            len(value) not in (8, 12, 13, 14)
-            or (
-                sum(
-                    int(n) * (3 if i % 2 == 0 else 1)
-                    for i, n in enumerate(reversed(value[:-1]))
-                )
-                + int(value[-1])
-            )
-            % 10
-        ):
-            raise ValueError("Invalid GTIN length or check digit")
-        return value
+        from .barcodes import validate_gtin
+        return validate_gtin(value)
+
 
 
 class PriceInput(Input):
@@ -415,6 +405,16 @@ def review(
         cache.status = "VERIFIED"
     else:
         cache.status = "REJECTED"
+    if cache.source == "RECEIPT":
+        from .marketplace import ReceiptItem
+        parts=(cache.source_reference or "").split(":")
+        if len(parts)==4 and parts[0]=="receipt" and parts[2]=="item":
+            try:
+                item=db.get(ReceiptItem, UUID(parts[3]))
+                if item and item.receipt_scan_id==UUID(parts[1]):
+                    item.status="VERIFIED" if payload.decision=="APPROVED" else "REJECTED"
+            except ValueError:
+                pass
     cache.reviewed_at = now
     row.reviewed_by = principal.subject
     row.review_note = payload.note + (
@@ -499,20 +499,27 @@ def ingest(
 
 @router.get("/products")
 def browse_products(
+    group_code: str | None = None,
     q: str = Query(default="", max_length=80),
     category_code: str | None = None,
     limit: int = Query(default=50, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
 ):
+    from .grocery import GroceryIdentity
+    from .technology import TechnologyIdentity
     statement = (
-        select(Product, ProductImage.image_url)
+        select(Product, ProductImage.image_url, GroceryIdentity, TechnologyIdentity)
+        .outerjoin(GroceryIdentity, GroceryIdentity.product_id == Product.id)
+        .outerjoin(TechnologyIdentity, TechnologyIdentity.product_id == Product.id)
         .outerjoin(ProductImage, ProductImage.product_id == Product.id)
         .join(Category, Category.code == Product.category_code)
         .where(Product.active.is_(True), Category.active.is_(True))
     )
     if category_code:
         statement = statement.where(Product.category_code == category_code)
+    if group_code:
+        statement = statement.where((GroceryIdentity.group_code == group_code) | (TechnologyIdentity.group_code == group_code))
     if q.strip():
         statement = statement.where(
             Product.normalized_name.contains(q.strip().casefold(), autoescape=True)
@@ -531,9 +538,15 @@ def browse_products(
             else None,
             "package_unit": p.package_unit,
             "barcode": p.barcode,
+            "fuel_type": p.variant if p.category_code == "fuel" and p.variant in {"petrol", "petrol98", "diesel", "dieselPlus", "lpg"} else None,
+            "group_code": identity.group_code if identity else None,
+            "source_url": identity.source_url if identity else None,
+            "source_product_code": identity.source_product_code if identity else None,
+            "catalog_observed_at": identity.observed_at if identity else None,
             "image_url": image_url,
         }
-        for p, image_url in rows
+        for p, image_url, grocery, technology in rows
+        for identity in [grocery or technology]
     ]
 
 
@@ -567,3 +580,20 @@ def receipt_for_review(
             ).all()
         ],
     }
+
+
+@router.get("/catalog/groceries")
+def grocery_snapshot(db: Session = Depends(get_db)):
+    # Public names/identities only. Never cache prices, receipts or credentials here.
+    from fastapi.responses import JSONResponse
+    from fastapi.encoders import jsonable_encoder
+    rows = browse_products(group_code=None, q="", category_code="groceries", limit=10000, offset=0, db=db)
+    return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})
+
+
+@router.get("/catalog/technology")
+def technology_snapshot(db: Session = Depends(get_db)):
+    from fastapi.responses import JSONResponse
+    from fastapi.encoders import jsonable_encoder
+    rows = browse_products(group_code=None, q="", category_code="technology", limit=10000, offset=0, db=db)
+    return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})

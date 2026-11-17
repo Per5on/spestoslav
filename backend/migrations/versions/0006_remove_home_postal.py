@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from alembic import op
+from migrations.sql_file import execute_sql_file
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
@@ -13,9 +14,7 @@ depends_on = None
 
 def upgrade():
     sql = Path(__file__).resolve().parents[1] / "sql" / "0006_remove_home_postal.sql"
-    for statement in sql.read_text().split(";"):
-        if statement.strip():
-            op.execute(statement)
+    execute_sql_file(sql)
 
 
 def downgrade():

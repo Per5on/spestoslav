@@ -65,7 +65,9 @@ class ReceiptJob(Base):
     attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     claimed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     error: Mapped[str | None] = mapped_column(String(300))
-    __table_args__ = (Index("ix_receipt_job_owner", "owner_subject"),)
+    request_key: Mapped[str | None] = mapped_column(String(100))
+    upload_fingerprint: Mapped[str | None] = mapped_column(String(64))
+    __table_args__ = (Index("ix_receipt_job_owner", "owner_subject"), Index("uq_receipt_upload_request", "owner_subject", "request_key", unique=True))
 
 
 class ProductIdentificationRequest(Base):

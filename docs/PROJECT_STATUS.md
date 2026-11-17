@@ -1,3 +1,9 @@
+## Active Preview007 API rollout — 17 November2026
+
+Backend-only branch `codex/preview-007-live-api` prepares tested API0.6 from application source48c7442. Local PostgreSQL/OCR suite87passed; all active API model columns match the isolated Neon clone after0008. One unused legacy user_submissions.locality_id column differs; no route uses it and no speculative change is applied. No mobile/native source or numbered APK/release changed here. App PR16 native run44105274182 passed Android10 after bounded safe-read retry correction; previous failed run44098576002 remains preserved.
+
+Read `PREVIEW_007_API_ROLLOUT.md`. Prepare backup and additive schema/catalogue sync before API deploy; preserve139stores/1inactive and grocery hashes; do not import inventory PR15's five addresses as part of this lane. SMTP delivery remains explicitly disabled because Render Free blocks Yahoo SMTP465/587; owner provider choice pending, no paid upgrade. Sample endpoint is opt-in client-side, labelled unverified, never priced/compared. Published005 and earlier APKs remain immutable. Existing app development continues in `/workspace/work/spestoslav-preview007`; this branch isolates service readiness from APK distribution.
+
 # Ongoing project checkpoint
 
 Status: **ACTIVE — preview 004 delivered; await next development instruction.**

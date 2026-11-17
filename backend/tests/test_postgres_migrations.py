@@ -168,3 +168,108 @@ def test_migrations_round_trip_match_models_and_offline_sql(monkeypatch):
         with engine.begin() as db:
             db.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
         engine.dispose()
+
+
+@pytest.mark.skipif(
+    not os.getenv("TEST_DATABASE_URL"), reason="Requires disposable PostgreSQL"
+)
+def test_grocery_orm_and_connected_sql_imports_keep_identical_ids(monkeypatch):
+    import importlib.util
+    from sqlalchemy.orm import sessionmaker
+    from app.grocery import GroceryIdentity
+    from app.models import Product
+
+    root = Path(__file__).resolve().parents[1]
+    spec = importlib.util.spec_from_file_location(
+        "grocery_import_pg", root.parent / "scripts/import_grocery_catalog.py"
+    )
+    importer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(importer)
+    engine = create_engine(normalize_database_url(os.environ["TEST_DATABASE_URL"]))
+    schema = "grocery_" + uuid.uuid4().hex
+    with engine.begin() as db:
+        db.execute(text(f'CREATE SCHEMA "{schema}"'))
+    scoped = make_url(engine.url).update_query_dict(
+        {"options": f"-csearch_path={schema}"}
+    )
+    scoped_engine = create_engine(scoped)
+    sessions = sessionmaker(bind=scoped_engine)
+    config = Config(str(root / "alembic.ini"))
+    config.set_main_option("script_location", str(root / "migrations"))
+    monkeypatch.setenv("DATABASE_URL", scoped.render_as_string(hide_password=False))
+    try:
+        command.upgrade(config, "head")
+        data = importer.load_catalog()
+        with sessions.begin() as db:
+            importer.import_catalog(db, data)
+        with sessions.begin() as db:
+            first = sorted(
+                str(x)
+                for x in db.scalars(
+                    __import__("sqlalchemy").select(GroceryIdentity.product_id)
+                )
+            )
+            product = db.get(Product, uuid.UUID(first[0]))
+            product.barcode = "4006381333931"
+        with scoped_engine.begin() as db:
+            for sql in importer.catalog_sql(data):
+                db.execute(text(sql))
+        with sessions.begin() as db:
+            importer.import_catalog(db, data)
+            second = sorted(
+                str(x)
+                for x in db.scalars(
+                    __import__("sqlalchemy").select(GroceryIdentity.product_id)
+                )
+            )
+            assert len(first) == 1000 and first == second
+            assert db.get(Product, uuid.UUID(first[0])).barcode == "4006381333931"
+        command.check(config)
+    finally:
+        scoped_engine.dispose()
+        with engine.begin() as db:
+            db.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
+        engine.dispose()
+
+
+@pytest.mark.skipif(
+    not os.getenv("TEST_DATABASE_URL"), reason="Requires disposable PostgreSQL"
+)
+def test_whole_sql_file_preserves_quoted_semicolons_and_dollar_bodies(
+    tmp_path, monkeypatch
+):
+    from io import StringIO
+    from alembic.migration import MigrationContext
+    from migrations import sql_file
+
+    engine = create_engine(normalize_database_url(os.environ["TEST_DATABASE_URL"]))
+    schema = "sqlfile_" + uuid.uuid4().hex
+    path = tmp_path / "literal.sql"
+    path.write_text(
+        "CREATE TABLE literal_test (value TEXT);\nINSERT INTO literal_test VALUES ('a;b :named');\nDO $$ BEGIN PERFORM 1; END $$;\n"
+    )
+    with engine.begin() as db:
+        db.execute(text(f'CREATE SCHEMA "{schema}"'))
+    try:
+        with engine.begin() as db:
+            db.execute(text(f'SET LOCAL search_path="{schema}"'))
+            online = MigrationContext.configure(db)
+            monkeypatch.setattr(sql_file.op, "get_context", lambda: online)
+            monkeypatch.setattr(sql_file.op, "get_bind", lambda: db)
+            sql_file.execute_sql_file(path)
+            assert db.scalar(text("SELECT value FROM literal_test")) == "a;b :named"
+        output = StringIO()
+        offline = MigrationContext.configure(
+            url="postgresql+psycopg://", opts={"as_sql": True, "output_buffer": output}
+        )
+        monkeypatch.setattr(sql_file.op, "get_context", lambda: offline)
+        sql_file.execute_sql_file(path)
+        assert (
+            "'a;b :named'" in output.getvalue()
+            and "DO $$ BEGIN PERFORM 1; END $$;" in output.getvalue()
+        )
+        assert "NULL" not in output.getvalue()
+    finally:
+        with engine.begin() as db:
+            db.execute(text(f'DROP SCHEMA "{schema}" CASCADE'))
+        engine.dispose()
