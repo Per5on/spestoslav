@@ -15,9 +15,9 @@ billa,BILLA,groceries,BILLA Ловеч – Бяло море,Ловеч,Лове
 billa,BILLA,groceries,BILLA Плевен – Цар Самуил,Плевен,Плевен,Плевен,ул. Цар Самуил 34,5800,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
 billa,BILLA,groceries,BILLA Бургас – Меден рудник,Бургас,Бургас,Бургас,"ж.к. Меден рудник, Зона А, 171",8011,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
 billa,BILLA,groceries,BILLA Стара Загора – Цар Симеон Велики,Стара Загора,Стара Загора,Стара Загора,бул. Цар Симеон Велики 218,6009,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Ботевград,Ботевград,Ботевград,Софийска,ул. Витоша 1А,,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#14,2026-11-14
+fantastico,Fantastico,groceries,Фантастико Ботевград,Ботевград,Ботевград,София,ул. Витоша 1А,,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#14,2026-11-14
 fantastico,Fantastico,groceries,Фантастико Кюстендил,Кюстендил,Кюстендил,Кюстендил,ул. Цар Освободител 231,2501,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#29,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Елин Пелин,Елин Пелин,Елин Пелин,Софийска,ул. Витоша 7,2100,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#41,2026-11-14
+fantastico,Fantastico,groceries,Фантастико Елин Пелин,Елин Пелин,Елин Пелин,София,ул. Витоша 7,2100,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#41,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Надежда 2,София,Столична,София (столица),бул. Ломско шосе 68,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Панайот Волов,София,Столична,София (столица),ул. Панайот Волов 2–4,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Гео Милев,София,Столична,София (столица),бул. Гео Милев 20,,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
@@ -139,3 +139,6 @@ t_market,T MARKET,groceries,T MARKET Бургас – Марагидик,Бур�
 t_market,T MARKET,groceries,T MARKET Бургас – Славейков,Бургас,Бургас,Бургас,"кв. „Славейков“, бл. 214",,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-14
 t_market,T MARKET,groceries,T MARKET Банско – Пирин,Банско,Банско,Благоевград,ул. Пирин 92 в-г,,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/rastem-i-se-razvivame-otkrihme-novi-magazini-v-bansko-i-teteven,2026-11-15
 t_market,T MARKET,groceries,T MARKET Тетевен – Марин Темелски,Тетевен,Тетевен,Ловеч,ул. Марин Темелски 3,,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/rastem-i-se-razvivame-otkrihme-novi-magazini-v-bansko-i-teteven,2026-11-15
+cba,CBA,groceries,CBA Банско – БГ МАРКЕТ 13,Банско,Банско,Благоевград,ул. Глазне № 39,,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16
+cba,CBA,groceries,CBA Благоевград – МАРКЕТ 10,Благоевград,Благоевград,Благоевград,ул. Катина и Николай Хайдукови № 27,,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16
+cba,CBA,groceries,CBA Благоевград – МАРКЕТ 2 Пазара,Благоевград,Благоевград,Благоевград,ул. Ал. Стамболийски № 30,,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16
