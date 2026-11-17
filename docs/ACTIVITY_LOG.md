@@ -67,3 +67,10 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 - Shared backend/data/scripts are identical to live 538bd9a; public readiness passed, no repeated migration/deployment. Updated stale checkpoint Home/postal/deployment wording.
 - Owner deferred other tab button layouts and asked about comparison/API complexity. Explained existing comparison foundation, need for reliable verified feeds and product matching, and retailer-by-retailer access uncertainty. Do not start new integrations without the next instruction.
 - ACTIVE, current requested refinement complete. Resume from this checkpoint and linked results, preserving all numbered artifacts.
+
+## 17 November — PR #15 reconciliation and compatibility
+
+- Owner explicitly requested closure/relocation/existing-record reconciliation and successful exact-commit CI. Isolated inventory worktree from c791beb4; merged current main39304dc locally and resolved seed conflict by preserving143rows in current13-column no-postal schema. Mobile and Android workflow remain identical to main; no006/007 UI work merged.
+- Fresh official HTTP200 checks: Mini Mart current357feed records, nine retained addresses, duplicate feedIDs75/118; HristoBotev75 still pending/inactive, not closure proof. T MARKET four confirmed closures absent from preview; seven alternative branches unchanged; verified new Банско and relocated Тетевен address, former address unspecified and not invented. Nine CBA directory affiliations/addresses checked.
+- Fresh read-only139branch baseline produces138unchanged,5insert candidates,1inactive history retained. Row-level snapshot/report/source excerpts committed as reproducible evidence; no shared data writes. Importer now has explicit current/legacy-preview modes, normalized duplicate/closed/pending rejection and bounded lock; tests exercise atomic/idempotent SQL on both schemas and complete139+5local replay with preserved history, second run no-op.
+- Next: inspect successful CI on final inventory commit, record its URL and compatibility state. Keep PR draft/import gate until reviewed preview import step. Preview007 build hold remains in force.

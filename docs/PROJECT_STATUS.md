@@ -1,3 +1,9 @@
+# Active inventory checkpoint — 17 November 2026
+
+Owner authorized PR #15 inventory reconciliation and successful exact-head CI. Dedicated worktree `/workspace/work/spestoslav-inventory`, branch `inventory/reconcile-pr2-pr12-20261117`. No shared import, merge, APK build or publication in scope. Read `INVENTORY_RECONCILIATION_2026-11-17.md` for exact row-level findings and importer tests. Preserve inactive Mini Mart history; no inferred closures or former relocation address. Main compatibility resolved without restoring retired postal/Home fields. Run/inspect final-head CI and record link in activity.
+
+Preview006/007 remains separate: uncommitted007 implementation in `/workspace/work/spestoslav-preview007`; its own PROJECT_STATUS is the current app checkpoint. No APK build until explicit owner confirmation. Older status below is historical.
+
 # Ongoing project checkpoint
 
 Status: **ACTIVE — preview 004 delivered; await next development instruction.**
