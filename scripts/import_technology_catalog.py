@@ -90,7 +90,8 @@ def import_catalog(db, data):
             raise ValueError("Existing product has a conflicting category")
         product.name = item["name"]
         product.normalized_name = item["name"].casefold()
-        product.brand = item.get("brand")
+        if item.get("brand") is not None:
+            product.brand = item["brand"]
         # Preserve existing barcode and active state on repeated imports.
         db.flush()
         row = db.get(TechnologyIdentity, identity)

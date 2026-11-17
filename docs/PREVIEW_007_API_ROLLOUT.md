@@ -15,3 +15,7 @@ Controlled sequence:
 Schema check: all runtime API model columns exist in the validation clone. The unused legacy user_submissions.locality_id column is absent; no actual route uses it, so retain the legacy table unchanged rather than adding or dropping speculative compatibility fields.
 
 Roll back application code only if necessary, respecting additive schema compatibility. Never delete recovery branches or existing user/receipt/store data as part of rollout. Record actual deploy/CI results separately so the tested source stays immutable.
+
+## Recheck correction — raw SQL literal transport
+
+The user requested a fresh check/build with email excluded. Exact source-vs-clone comparison found two percentage signs doubled by the old scratch compiler's DBAPI-oriented dialect. Corrected only in the isolated branch; shared preview remains untouched. Use versioned `scripts/prepare_preview_catalogue.py` (named literal compilation, standard-conforming backslashes, explicit defaults) and its raw-PostgreSQL round-trip/full1000-record tests, not the old scratch SQL directory. New output is `/workspace/work/preview007-import-reviewed-v2/`. All1000names/normalized names/brands/groups/source categories/URLs now match the freeze exactly. Missing upstream brands and omitted group aliases preserve existing verified metadata. No price/GTIN/station inferred.
