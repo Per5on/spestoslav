@@ -32,7 +32,7 @@ export function CatalogToolbar({
   const { t } = useUI();
   const fuel = category === "fuel";
   return (
-    <View testID="catalog-toolbar" style={s.headingRow}>
+    <View testID="catalog-toolbar" style={[s.headingRow, { alignItems: "stretch" }]}>
       <Button
         layout="equal"
         labelSize={13}
@@ -42,6 +42,7 @@ export function CatalogToolbar({
       />
       <Button
         layout="equal"
+        labelSize={13}
         label={t(fuel ? "fuelType" : "products")}
         primary={fuel ? fuelExpanded : view === "products"}
         expanded={fuel ? fuelExpanded : undefined}

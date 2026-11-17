@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Pressable } from "react-native";
 import { AutoFitLabel } from "./ui";
 import { s } from "./styles";
@@ -21,6 +21,7 @@ export function Button({
   labelSize?: number;
   refreshOutline?: boolean;
 }) {
+  const [focused, setFocused] = useState(false);
   return (
     <Pressable
       accessibilityRole="button"
@@ -28,6 +29,8 @@ export function Button({
       accessibilityState={{ disabled, expanded }}
       aria-expanded={expanded}
       onPress={onPress}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       style={[
         s.button,
         layout === "equal" && {
@@ -41,15 +44,18 @@ export function Button({
           flexShrink: 0,
           paddingHorizontal: refreshOutline ? 7 : 0.25,
           minWidth: 44,
+          maxWidth: "34%",
         },
         primary && s.primary,
-        refreshOutline && { borderWidth: 1, borderColor: "#267133" },
+        refreshOutline && { borderWidth: 1, borderColor: "#267133", outlineWidth: 0 },
+        refreshOutline && focused && { backgroundColor: "#dbead3" },
         disabled && { opacity: 0.45 },
       ]}
     >
       <AutoFitLabel
         label={label}
-        intrinsic={layout === "snug"}
+        intrinsic={layout === "snug" && !refreshOutline}
+        allowWrap={true}
         baseSize={labelSize}
         style={{
           color: primary ? "#fff" : "#19562a",

@@ -117,7 +117,7 @@ new Function("exports", "require", "module", i18nSource)(
   (name) =>
     name === "./workflows/messages"
       ? loadTS("src/workflows/messages.ts")
-      : require(name),
+      : name === "./experienceMessages" ? loadTS("src/experienceMessages.ts") : require(name),
   translations,
 );
 const keys = Object.keys(translations.exports.messages.bg).sort();
@@ -162,3 +162,12 @@ assert(matchesProduct({id:'yogurt',name:'КИСЕЛО КРАВЕ МЛЯКО 3,6%
 assert(matchesProduct({id:'milk',name:'Мляко',category_code:'groceries',package_quantity:'1.000',package_unit:'l'},'мляко 1л'));
 assert(!matchesProduct({id:'milk',name:'Мляко 2% 1Л',category_code:'groceries'},'мляко 3.6%'));
 console.log('Search checks passed: reordered words, Cyrillic/Latin units, separated quantities and decimal fat content.');
+
+const fontModule = { exports: {} };
+new Function("exports", ts.transpileModule(fs.readFileSync("src/font.ts", "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(fontModule.exports);
+for (const scale of [0.9, 1, 1.15, 1.3]) {
+  for (const base of [10, 13, 14, 16, 20, 28]) {
+    assert.equal(fontModule.exports.appFontSize(base, scale, 11), Math.max(11, base * scale) + 1);
+  }
+}
+console.log("Font settings: actual text +1pt at every saved scale; minimum readable size retained.");

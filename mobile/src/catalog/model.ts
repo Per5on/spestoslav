@@ -1,3 +1,4 @@
+export type Retailer = { code: string; name: string; category_code: string; website_url?: string | null };
 export type Product = {
   id: string;
   name: string;
@@ -7,6 +8,7 @@ export type Product = {
   package_quantity?: string | number | null;
   package_unit?: string | null;
   is_demo?: boolean;
+  fuel_type?: string | null;
   group_code?: string | null;
   source_url?: string | null;
   source_product_code?: string | null;

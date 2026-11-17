@@ -36,10 +36,9 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
     const controller = new AbortController();
     setLoading(true);
     setError(false);
-    setResults([]);
     let timeout: ReturnType<typeof setTimeout>;
     const timer = setTimeout(async () => {
-      timeout = setTimeout(() => controller.abort(), 60000);
+      timeout = setTimeout(() => controller.abort(), 12000);
       try {
         const response = await fetch(
           `${apiBaseUrl.replace(/\/$/, "")}/api/v1/localities?q=${encodeURIComponent(query.trim())}`,
@@ -92,9 +91,8 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
             autoCorrect={false}
             style={s.input}
           />
-          {loading ? (
-            <ActivityIndicator color="#19562a" />
-          ) : error ? (
+          {loading && <ActivityIndicator color="#19562a" />}
+          {error ? (
             <>
               <Text style={s.meta}>{t("locationUnavailable")}</Text>
               <Pressable

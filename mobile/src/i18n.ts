@@ -1,3 +1,4 @@
+import { experienceMessages } from "./experienceMessages";
 import { workflowMessages } from "./workflows/messages";
 export const languages = [
   { code: "bg", name: "Български" },
@@ -90,7 +91,7 @@ const bg = {
   demoOil: "слънчогледово олио",
   demoSugar: "захар",
 };
-export type MessageKey = keyof typeof bg | keyof typeof workflowMessages.bg;
+export type MessageKey = keyof typeof bg | keyof typeof workflowMessages.bg | keyof typeof experienceMessages.bg;
 type Dictionary = Record<keyof typeof bg, string>;
 const en: Dictionary = {
   food: "Food",
@@ -508,10 +509,10 @@ const ru: Dictionary = {
   demoSugar: "сахар",
 };
 export const messages: Record<Language, Record<MessageKey, string>> = {
-  bg: { ...bg, ...workflowMessages.bg },
-  en: { ...en, ...workflowMessages.en },
-  de: { ...de, ...workflowMessages.de },
-  es: { ...es, ...workflowMessages.es },
-  fr: { ...fr, ...workflowMessages.fr },
-  ru: { ...ru, ...workflowMessages.ru },
+  bg: { ...bg, ...workflowMessages.bg, ...experienceMessages.bg },
+  en: { ...en, ...workflowMessages.en, ...experienceMessages.en },
+  de: { ...de, ...workflowMessages.de, ...experienceMessages.de },
+  es: { ...es, ...workflowMessages.es, ...experienceMessages.es },
+  fr: { ...fr, ...workflowMessages.fr, ...experienceMessages.fr },
+  ru: { ...ru, ...workflowMessages.ru, ...experienceMessages.ru },
 };

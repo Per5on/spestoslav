@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
 from .grocery import GroceryGroup, GroceryIdentity
+from .technology import TechnologyGroup, TechnologyIdentity
 from .barcodes import gtin_aliases
 from .models import (
     Category,
@@ -74,6 +75,7 @@ def readiness(db: Session = Depends(get_db)):
             select(ProductIdentificationRequest.id).limit(1),
             select(GroceryGroup.code).limit(1),
             select(GroceryIdentity.product_id).limit(1),
+            select(TechnologyIdentity.product_id).limit(1),
         ):
             db.execute(statement)
     except SQLAlchemyError:
@@ -423,6 +425,7 @@ def include_routers(application):
     from .demo_api import router as demo_router
     from .worker_api import router as worker_router
     from .mobile_auth import router as mobile_auth_router
+    from .feedback import router as feedback_router
     from .limits import ReceiptUploadLimit
 
     for router in (
@@ -432,6 +435,7 @@ def include_routers(application):
         demo_router,
         worker_router,
         mobile_auth_router,
+        feedback_router,
     ):
         application.include_router(router)
     application.add_middleware(ReceiptUploadLimit)

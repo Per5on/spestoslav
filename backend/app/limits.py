@@ -9,18 +9,18 @@ class ReceiptUploadLimit:
         self.app = app
 
     async def __call__(self, scope, receive, send):
-        if (
-            scope["type"] != "http"
-            or scope["method"] != "POST"
-            or scope.get("path") != "/api/v1/receipts"
-        ):
+        path = scope.get("path")
+        maximum = {
+            "/api/v1/receipts": 9 * 1024 * 1024,
+            "/api/v1/feedback": 64 * 1024,
+        }.get(path)
+        if scope["type"] != "http" or scope["method"] != "POST" or maximum is None:
             return await self.app(scope, receive, send)
-        maximum = 9 * 1024 * 1024
         headers = dict(scope.get("headers", []))
         try:
             if int(headers.get(b"content-length", b"0")) > maximum:
                 return await JSONResponse(
-                    {"detail": "Receipt upload exceeds size limit"}, status_code=413
+                    {"detail": "Request exceeds size limit"}, status_code=413
                 )(scope, receive, send)
         except ValueError:
             return await JSONResponse(
@@ -33,7 +33,7 @@ class ReceiptUploadLimit:
             message = await receive()
             size += len(message.get("body", b""))
             if size > maximum:
-                raise HTTPException(413, "Receipt upload exceeds size limit")
+                raise HTTPException(413, "Request exceeds size limit")
             return message
 
         await self.app(scope, bounded_receive, send)

@@ -16,7 +16,8 @@ with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=['--no-sandbox']);page=browser.new_page(viewport={'width':390,'height':844});page.on('pageerror',lambda e:errors.append(str(e)));page.goto(args.base_url,wait_until='domcontentloaded')
  toolbar=page.get_by_test_id('catalog-toolbar');toolbar.wait_for(timeout=60000)
  assert page.get_by_role('tab').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')==['Храни','Техника','Горива','Моят списък']
- assert toolbar.get_by_role('button').evaluate_all('(els)=>els.map(e=>e.textContent)')==['Магазини (0)','Продукти','Обнови']
+ expect(toolbar.get_by_role('button').nth(0)).to_have_text('Магазини (3)',timeout=15000)
+ assert toolbar.get_by_role('button').evaluate_all('(els)=>els.map(e=>e.textContent)')==['Магазини (3)','Продукти','Обнови']
  def geometry():
   toolbar.wait_for(state="visible",timeout=20000)
   expect(toolbar.get_by_role("button")).to_have_count(3)
@@ -24,10 +25,10 @@ with sync_playwright() as p:
   assert abs(rects[0]['width']-rects[1]['width'])<1,rects
   assert max(r['y'] for r in rects)-min(r['y'] for r in rects)<1,rects
   assert rects[0]['x']<rects[1]['x']<rects[2]['x']
-  padding=buttons.nth(2).evaluate('(e)=>parseFloat(getComputedStyle(e).paddingLeft)+parseFloat(getComputedStyle(e).paddingRight)');assert abs(padding-.5)<.01,padding
+  padding=buttons.nth(2).evaluate('(e)=>parseFloat(getComputedStyle(e).paddingLeft)+parseFloat(getComputedStyle(e).paddingRight)');assert abs(padding-14)<.01,padding
   for i in range(3):
    box=buttons.nth(i).evaluate('(e)=>{let t=e.querySelector("[dir=auto]");return {font:parseFloat(getComputedStyle(t).fontSize),scroll:t.scrollWidth,width:t.clientWidth,height:e.getBoundingClientRect().height};}')
-   assert box['font']>=11,box
+   assert box['font']>=12,box
    assert box['scroll']<=box['width']+1,(page.evaluate('localStorage.getItem("spestovnik-preferences")'),buttons.nth(i).inner_text(),box)
    assert box['height']>=44,box
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')

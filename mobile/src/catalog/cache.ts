@@ -7,6 +7,7 @@ type Cache = { schema_version: 1; saved_at: number; products: Product[] };
 export function parseCatalogCache(
   raw: string | null,
   now = Date.now(),
+  category: "groceries" | "technology" = "groceries",
 ): Cache | null {
   if (!raw) return null;
   try {
@@ -27,7 +28,7 @@ export function parseCatalogCache(
           p &&
           typeof p.id === "string" &&
           typeof p.name === "string" &&
-          p.category_code === "groceries" &&
+          p.category_code === category &&
           !p.is_demo &&
           !ids.has(p.id) &&
           Boolean(ids.add(p.id)),
@@ -67,10 +68,12 @@ export async function loadProducts(
   signal: AbortSignal,
   force: boolean,
   onCached: (rows: Product[]) => void,
+  category: "groceries" | "technology" = "groceries",
 ) {
+  const key = KEY + (category === "groceries" ? "" : ":technology");
   let cached: Cache | null = null;
   try {
-    cached = parseCatalogCache(await AsyncStorage.getItem(KEY));
+    cached = parseCatalogCache(await AsyncStorage.getItem(key), Date.now(), category);
     if (cached && !signal.aborted) onCached(cached.products);
   } catch {}
   if (cached && !force && Date.now() - cached.saved_at < 6 * 60 * 60 * 1000)
@@ -81,7 +84,7 @@ export async function loadProducts(
       const snapshot = await api<{
         schema_version: number;
         products: Product[];
-      }>("/api/v1/catalog/groceries", { signal });
+      }>(`/api/v1/catalog/${category}`, { signal });
       if (snapshot.schema_version !== 1) throw new Error("Unknown catalogue");
       products = snapshot.products;
     } catch (e) {
@@ -89,7 +92,7 @@ export async function loadProducts(
       // Compatibility during the staged API rollout, without silently stopping at 100.
       for (let offset = 0; offset < 10000; offset += 100) {
         const page = await api<Product[]>(
-          `/api/v1/products?category_code=groceries&limit=100&offset=${offset}`,
+          `/api/v1/products?category_code=${category}&limit=100&offset=${offset}`,
           { signal },
         );
         products.push(...page);
@@ -104,10 +107,10 @@ export async function loadProducts(
       saved_at: Date.now(),
       products,
     });
-    const validated = parseCatalogCache(raw);
+    const validated = parseCatalogCache(raw, Date.now(), category);
     if (!validated) throw new Error("Invalid catalogue");
     try {
-      await AsyncStorage.setItem(KEY, JSON.stringify(validated));
+      await AsyncStorage.setItem(key, JSON.stringify(validated));
     } catch {}
     return { products: validated.products, cached: false };
   } catch (e) {

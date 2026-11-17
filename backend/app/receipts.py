@@ -111,7 +111,7 @@ class ReceiptStorage:
 
 
 @router.post("", status_code=202)
-async def upload_receipt(
+def upload_receipt(
     file: UploadFile = File(),
     branch_id: uuid.UUID | None = Form(default=None),
     principal=Depends(current_user),
@@ -122,8 +122,12 @@ async def upload_receipt(
         branch = db.get(StoreBranch, branch_id)
         if not branch or not branch.active:
             raise HTTPException(422, "Unknown or inactive branch")
-    data = await file.read(MAX_BYTES + 1)
-    await file.close()
+    # FastAPI runs this synchronous endpoint in its bounded worker pool.
+    # Image processing, boto3 and SQLAlchemy must not block the async event loop.
+    try:
+        data = file.file.read(MAX_BYTES + 1)
+    finally:
+        file.file.close()
     if len(data) > MAX_BYTES:
         raise HTTPException(413, "Receipt exceeds 8 MiB")
     try:

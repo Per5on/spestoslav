@@ -11,4 +11,6 @@ export type Screen =
   | "font"
   | "language"
   | "feedback"
+  | "terms"
+  | "privacy"
   | (typeof overflowMenu)[number]["id"];

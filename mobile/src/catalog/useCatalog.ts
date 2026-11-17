@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 import { MessageKey } from "../i18n";
-import { Product, Store, Price } from "./model";
+import { Product, Store, Price, Retailer } from "./model";
 import { loadProducts } from "./cache";
 async function allPages<T>(
   path: string,
@@ -25,6 +25,9 @@ export function useCatalog(
   demo: boolean,
   includePrices = true,
 ) {
+  const [chains, setChains] = useState<{ category: Category; rows: Retailer[] }>({ category, rows: [] });
+  const [chainLoading, setChainLoading] = useState(true);
+  const [chainError, setChainError] = useState(false);
   const [revision, setRevision] = useState(0);
   const [cached, setCached] = useState(false);
   const [products, setProducts] = useState<Product[]>([]),
@@ -47,42 +50,30 @@ export function useCatalog(
     setError("");
     setCached(false);
     setLoading(category !== "fuel");
-    if (category !== "fuel")
-      (async () => {
+    (async () => {
         try {
-          const loaded =
-            category === "groceries"
-              ? await loadProducts(controller.signal, revision > 0, (rows) => {
-                  if (alive) {
-                    setProducts(rows);
-                    setCached(true);
-                  }
-                })
-              : {
-                  products: await allPages<Product>(
-                    "/api/v1/products?category_code=technology",
-                    controller.signal,
-                    100,
-                  ),
-                  cached: false,
-                };
+          const loaded = category === "fuel" ? {
+            products: await allPages<Product>("/api/v1/products?category_code=fuel", controller.signal, 100), cached: false,
+          } : await loadProducts(controller.signal, revision > 0, rows => {
+            if (alive) setProducts(rows);
+          }, category);
           const real = loaded.products;
           if (alive) setCached(loaded.cached);
-          if (!demo || category !== "groceries") {
+          if (!demo || category === "fuel") {
             if (alive) setProducts(real);
             return;
           }
           try {
             const sample = await api<{ is_demo: boolean; products: Product[] }>(
-              "/api/v1/demo/catalog",
+              `/api/v1/demo/catalog?category_code=${category}`,
               { signal: controller.signal },
             );
             if (alive)
               setProducts([
-                ...real,
                 ...(sample.is_demo
                   ? sample.products.map((p) => ({ ...p, is_demo: true }))
                   : []),
+                ...real,
               ]);
           } catch {
             if (alive) {
@@ -136,8 +127,19 @@ export function useCatalog(
       controller.abort();
     };
   }, [category, localityId, revision, includePrices]);
+  useEffect(() => {
+    const controller = new AbortController();
+    setChainLoading(true); setChainError(false);
+    api<{ retailers: Retailer[] }>(`/api/v1/catalog?category_code=${category}`, { signal: controller.signal })
+      .then(result => { if (!controller.signal.aborted) setChains({ category, rows: result.retailers.filter(r => r.category_code === category) }); })
+      .catch(() => { if (!controller.signal.aborted) setChainError(true); })
+      .finally(() => { if (!controller.signal.aborted) setChainLoading(false); });
+    return () => controller.abort();
+  }, [category, revision]);
   return {
     cached,
+    retailers: chains.category === category ? chains.rows : [],
+    chainLoading, chainError,
     products: productScope === category ? products : [],
     loading: category !== "fuel" && (loading || productScope !== category),
     error,

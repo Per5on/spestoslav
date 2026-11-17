@@ -309,3 +309,41 @@ def test_real_bulgarian_ocr_keeps_only_product_totals(tmp_path):
         Decimal("3.00"),
     ]
     assert fixtures.client.get("/api/v1/prices/current").json()[0]["price_eur"] == 1.25
+
+
+def test_slow_receipt_storage_does_not_block_health(monkeypatch):
+    import asyncio
+    import threading
+    import httpx
+
+    as_user()
+    started, release = threading.Event(), threading.Event()
+    original_put = ReceiptStorage.put
+
+    def slow_put(self, *args):
+        started.set()
+        assert release.wait(3), "Test did not release simulated storage"
+        return original_put(self, *args)
+
+    monkeypatch.setattr(ReceiptStorage, "put", slow_put)
+
+    async def scenario():
+        async with httpx.AsyncClient(
+            transport=httpx.ASGITransport(app=app), base_url="http://local-test"
+        ) as client:
+            task = asyncio.create_task(client.post(
+                "/api/v1/receipts",
+                headers={"Idempotency-Key": "responsive-upload-001"},
+                files={"file": ("receipt.png", image(), "image/png")},
+            ))
+            try:
+                assert await asyncio.to_thread(started.wait, 2)
+                assert not task.done(), "Storage blocked the API event loop"
+                health = await asyncio.wait_for(client.get("/health"), timeout=1)
+                assert health.status_code == 200
+                assert not task.done()
+            finally:
+                release.set()
+            assert (await task).status_code == 202
+
+    asyncio.run(scenario())

@@ -1,3 +1,7 @@
+import { LegalDocument } from "./src/legal/LegalDocument";
+import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
+import { SettingsChoices } from "./src/navigation/SettingsChoices";
+import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -16,7 +20,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LocationPicker, Locality } from "./src/location/LocationPicker";
-import { api, API_BASE_URL } from "./src/api";
+import { api, API_BASE_URL, SIMULATION_MODE } from "./src/api";
 import {
   BasketItem,
   MAX_BASKET_ITEMS,
@@ -115,9 +119,10 @@ function Main() {
     [basket, setBasket] = useState<BasketItem[]>([]),
     [restored, setRestored] = useState(false);
   const [view, setView] = useState<"products" | "stores">("products"),
-    [demo, setDemo] = useState(true),
+    [demo, setDemo] = useState(false),
     [fuel, setFuel] = useState<FuelChoice>("petrol"),
     [fuelMenuOpen, setFuelMenuOpen] = useState(false);
+  const [appliedQuery, setAppliedQuery] = useState("");
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
     [pageSize, setPageSize] = useState(40),
@@ -205,6 +210,7 @@ function Main() {
       setGroup(null);
       setQuery("");
       setSelected([]);
+      setAppliedQuery("");
       setDraft([]);
       setSearchOpen(false);
     }
@@ -258,10 +264,12 @@ function Main() {
       : screen === "basket"
         ? "list"
         : screen;
+  const fuelProduct = catalog.products.find(p => p.fuel_type === fuel);
+  const hasFuelPrices = Boolean(fuelProduct && lowestPrice(fuelProduct, catalog.prices, catalog.stores) !== null);
   const visible = catalog.products.filter(
     (p) =>
       (!group || p.group_code === group) &&
-      (!selected.length || selected.includes(p.id)),
+      (selected.length ? selected.includes(p.id) : !appliedQuery || matchesProduct(p, appliedQuery)),
   );
   const groups = [
     ...new Set(
@@ -270,7 +278,7 @@ function Main() {
         .filter((c): c is string => Boolean(c)),
     ),
   ];
-  const groupNames: Record<string, MessageKey> = {"dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
+  const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
   const suggestions=catalog.products.filter(p=>matchesProduct(p,query)||displayName(p).toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)));
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
@@ -278,18 +286,7 @@ function Main() {
     const price = lowestPrice(p, catalog.prices, catalog.stores);
     return (
       <View key={p.id} style={s.card}>
-        {p.image_url ? (
-          <Image
-            accessibilityLabel={displayName(p)}
-            source={{ uri: p.image_url }}
-            style={s.photo}
-            resizeMode="contain"
-          />
-        ) : (
-          <View style={s.photo}>
-            <Ionicons name="cube-outline" size={48} color="#63816a" />
-          </View>
-        )}
+        <ProductThumbnail id={p.id} name={displayName(p)} uri={p.image_url} />
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
           <Text style={s.productName}>{displayName(p)}</Text>
@@ -385,7 +382,7 @@ function Main() {
           <CatalogToolbar
             category={category}
             view={view}
-            count={catalog.stores.length}
+            count={locality ? catalog.stores.length : catalog.retailers.length}
             fuelExpanded={fuelMenuOpen}
             onView={(next) => {
               setView(next);
@@ -411,7 +408,7 @@ function Main() {
                 style={s.button}
                 onPress={() =>
                   setScreen(
-                    screen === "font" || screen === "language"
+                    ["font", "language", "terms", "privacy"].includes(screen)
                       ? "settings"
                       : screen === "feedback"
                         ? "about"
@@ -422,9 +419,10 @@ function Main() {
                 <Ionicons name="arrow-back" color="#19562a" size={20} />
               </Pressable>
             )}
-            <Text style={s.heading}>{t(title)}</Text>
+            <Text style={[s.heading, ["settings", "language", "font", "terms", "privacy"].includes(screen) && { color: "#111" }]}>{t(title)}</Text>
           </View>
         )}
+        {SIMULATION_MODE && <Text style={s.notice}>{t("simulationNotice")}</Text>}
         {!!notice && (
           <Text accessibilityLiveRegion="polite" style={s.notice}>
             {t(notice)}
@@ -471,7 +469,7 @@ function Main() {
                 <Text style={s.meta}>
                   {t("selectedFuel")}: {t(fuel)}
                 </Text>
-                <Text style={s.notice}>{t("fuelPending")}</Text>
+                {!hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
               </>
             )}
             {category !== "fuel" && view === "products" ? (
@@ -482,8 +480,8 @@ function Main() {
                   style={s.input}
                   value={query}
                   onFocus={() => {
+                    if (!searchOpen) setDraft(selected);
                     setSearchOpen(true);
-                    setDraft(selected);
                   }}
                   onChangeText={(value) => {
                     setQuery(value);
@@ -530,22 +528,23 @@ function Main() {
                         onPress={() => {
                           setDraft([]);
                           setSelected([]);
+                          setAppliedQuery("");
                           setQuery("");
                         }}
                       />
                       <Button
-                        label={`${t("apply")} (${draft.length})`}
+                        label={`${t("apply")} (${draft.length || (query.trim() ? suggestions.length : 0)})`}
                         primary
                         onPress={() => {
                           setSelected(draft);
+                          setAppliedQuery(draft.length ? "" : query.trim());
                           setSearchOpen(false);
                         }}
                       />
                     </View>
                   </View>
                 )}
-                {category === "groceries" && (
-                  <Pressable
+                <Pressable
                     accessibilityRole="switch"
                     accessibilityState={{ checked: demo }}
                   aria-checked={demo}
@@ -558,8 +557,7 @@ function Main() {
                       size={22}
                     />
                     <Text style={[s.meta, { flex: 1 }]}>{t("demoToggle")}</Text>
-                  </Pressable>
-                )}
+                </Pressable>
                 {catalog.loading && <ActivityIndicator color="#19562a" />}
                 {!!catalog.error && (
                   <View style={{ gap: 8 }}>
@@ -572,15 +570,17 @@ function Main() {
                 )}
                 {!!groups.length && (
                   <View style={s.panel}>
-                    <Text style={s.meta}>{t("catalogGroup")}</Text>
+                    <Text style={s.meta}>{t(category === "technology" ? "productGroup" : "catalogGroup")}</Text>
                     <ScrollView horizontal>
                       <View style={s.row}>
                         <Button
-                          label={t("allGroceries")}
+                          label={t(category === "technology" ? "allProducts" : "allGroceries")}
                           primary={!group}
                           onPress={() => {
                             setGroup(null);
                             setSelected([]);
+                            setAppliedQuery("");
+                            setQuery("");
                           }}
                         />
                         {groups.map((code) => (
@@ -613,12 +613,21 @@ function Main() {
               </>
             ) : (
               <>
-                {!locality ? (
-                  <Text style={s.notice}>{t("selectLocation")}</Text>
-                ) : catalog.storeLoading ? (
-                  <ActivityIndicator color="#19562a" />
-                ) : null}
-                {catalog.stores.map((store) => (
+                {!locality ? <>
+                  <Text style={s.notice}>{t("chainCoverage")}</Text>
+                  {catalog.chainLoading && <ActivityIndicator color="#19562a" />}
+                  {catalog.chainError && <Text style={s.notice}>{t("storesError")}</Text>}
+                  {catalog.retailers.map(chain => <View key={chain.code} style={s.store}>
+                    <View style={{ flex: 1, gap: 5 }}>
+                      <Text style={s.productName}>{chain.name}</Text>
+                      {chain.website_url && <Text style={s.meta}>{chain.website_url}</Text>}
+                      <Text style={s.meta}>{t("chainOverview")}</Text>
+                    </View>
+                  </View>)}
+                </> : catalog.storeLoading ? <ActivityIndicator color="#19562a" /> : null}
+                {catalog.stores.map((store) => {
+                  const fuelQuote = fuelProduct && category === "fuel" ? lowestPrice(fuelProduct, catalog.prices, [store]) : null;
+                  return (
                   <View key={store.id} style={s.store}>
                     <View style={s.storeMark}>
                       <Ionicons
@@ -634,10 +643,10 @@ function Main() {
                     <View style={{ flex: 1, gap: 5 }}>
                       <Text style={s.productName}>{store.retailer_name}</Text>
                       <Text style={s.meta}>{store.address}</Text>
-                      <Text style={s.meta}>{t("noPrice")}</Text>
+                      <Text style={fuelQuote === null ? s.meta : s.price}>{fuelQuote === null ? t("noPrice") : `${fuelQuote.toFixed(2)} €/L`}</Text>
                     </View>
                   </View>
-                ))}
+                );})}
                 {locality &&
                   !catalog.storeLoading &&
                   !catalog.storeError &&
@@ -741,72 +750,22 @@ function Main() {
           />
         )}
         {screen === "settings" && (
-          <View style={s.panel}>
-            <Button label={t("font")} onPress={() => setScreen("font")} />
-            <Button
-              label={t("language")}
-              onPress={() => setScreen("language")}
-            />
-          </View>
+          <SettingsChoices items={[{ value: "font", label: t("font"), icon: "text-outline" }, { value: "language", label: t("language"), icon: "language-outline" }, { value: "terms", label: t("terms"), icon: "document-text-outline" }, { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" }]}
+            onSelect={value => setScreen(value as "font" | "language" | "terms" | "privacy")} />
         )}
-        {screen === "about" && (
-          <AboutScreen onFeedback={() => setScreen("feedback")} />
-        )}
-        {screen === "feedback" && (
-          <View style={s.panel}>
-            <Text style={s.meta}>{t("feedbackPending")}</Text>
-          </View>
-        )}
-        {screen === "language" && (
-          <View style={s.panel}>
-            {languages.map((l) => (
-              <Pressable
-                key={l.code}
-                accessibilityRole="radio"
-                accessibilityLabel={l.name}
-                accessibilityState={{ checked: language === l.code }}
-                aria-checked={language === l.code}
-                onPress={() => setLanguage(l.code as Language)}
-                style={[s.choice, language === l.code && s.selectedChoice]}
-              >
-                <Text style={[s.productName, { flex: 1 }]}>{l.name}</Text>
-                {language === l.code && (
-                  <Ionicons name="checkmark" color="#267133" size={23} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        )}
-        {screen === "font" && (
-          <View style={s.panel}>
-            {(
-              [
-                { scale: 0.9, label: "small" },
-                { scale: 1, label: "normal" },
-                { scale: 1.15, label: "large" },
-                { scale: 1.3, label: "extraLarge" },
-              ] as const
-            ).map((size) => (
-              <Pressable
-                key={size.scale}
-                accessibilityRole="radio"
-                accessibilityLabel={t(size.label)}
-                accessibilityState={{ checked: fontScale === size.scale }}
-                aria-checked={fontScale === size.scale}
-                onPress={() => setFontScale(size.scale)}
-                style={[s.choice, fontScale === size.scale && s.selectedChoice]}
-              >
-                <Text style={[s.productName, { flex: 1 }]}>
-                  {t(size.label)}
-                </Text>
-                {fontScale === size.scale && (
-                  <Ionicons name="checkmark" color="#267133" size={23} />
-                )}
-              </Pressable>
-            ))}
-            <Text style={s.meta}>{t("fontPreview")}</Text>
-          </View>
-        )}
+        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")} />}
+        {screen === "feedback" && <FeedbackScreen />}
+        {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
+        {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
+          selected={language} onSelect={value => setLanguage(value as Language)} />}
+        {screen === "font" && <View style={{ gap: 12 }}>
+          <SettingsChoices radio items={[
+            { value: "0.9", label: t("small") }, { value: "1", label: t("normal") },
+            { value: "1.15", label: t("large") }, { value: "1.3", label: t("extraLarge") },
+          ]} selected={String(fontScale)} onSelect={value => setFontScale(Number(value))} />
+          <Text style={{ color: "#111" }}>{t("fontPreview")}</Text>
+        </View>}
+
       </ScrollView>
       <Modal
         transparent

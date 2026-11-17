@@ -99,6 +99,9 @@ with fixtures.TestingSessionLocal.begin() as db:
                     )
                 )
 
+from preview007_fixtures import seed as seed_preview007
+seed_preview007(app, fixtures.TestingSessionLocal, root)
+
 users = {
     "alice": {"id": "alice", "email": "alice@example.invalid", "name": "Alice"},
     "bob": {"id": "bob", "email": "bob@example.invalid", "name": "Bob"},

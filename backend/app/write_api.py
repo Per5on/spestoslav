@@ -507,9 +507,11 @@ def browse_products(
     db: Session = Depends(get_db),
 ):
     from .grocery import GroceryIdentity
+    from .technology import TechnologyIdentity
     statement = (
-        select(Product, ProductImage.image_url, GroceryIdentity)
+        select(Product, ProductImage.image_url, GroceryIdentity, TechnologyIdentity)
         .outerjoin(GroceryIdentity, GroceryIdentity.product_id == Product.id)
+        .outerjoin(TechnologyIdentity, TechnologyIdentity.product_id == Product.id)
         .outerjoin(ProductImage, ProductImage.product_id == Product.id)
         .join(Category, Category.code == Product.category_code)
         .where(Product.active.is_(True), Category.active.is_(True))
@@ -517,7 +519,7 @@ def browse_products(
     if category_code:
         statement = statement.where(Product.category_code == category_code)
     if group_code:
-        statement = statement.where(GroceryIdentity.group_code == group_code)
+        statement = statement.where((GroceryIdentity.group_code == group_code) | (TechnologyIdentity.group_code == group_code))
     if q.strip():
         statement = statement.where(
             Product.normalized_name.contains(q.strip().casefold(), autoescape=True)
@@ -536,13 +538,15 @@ def browse_products(
             else None,
             "package_unit": p.package_unit,
             "barcode": p.barcode,
+            "fuel_type": p.variant if p.category_code == "fuel" and p.variant in {"petrol", "petrol98", "diesel", "dieselPlus", "lpg"} else None,
             "group_code": identity.group_code if identity else None,
             "source_url": identity.source_url if identity else None,
             "source_product_code": identity.source_product_code if identity else None,
             "catalog_observed_at": identity.observed_at if identity else None,
             "image_url": image_url,
         }
-        for p, image_url, identity in rows
+        for p, image_url, grocery, technology in rows
+        for identity in [grocery or technology]
     ]
 
 
@@ -584,4 +588,12 @@ def grocery_snapshot(db: Session = Depends(get_db)):
     from fastapi.responses import JSONResponse
     from fastapi.encoders import jsonable_encoder
     rows = browse_products(group_code=None, q="", category_code="groceries", limit=10000, offset=0, db=db)
+    return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})
+
+
+@router.get("/catalog/technology")
+def technology_snapshot(db: Session = Depends(get_db)):
+    from fastapi.responses import JSONResponse
+    from fastapi.encoders import jsonable_encoder
+    rows = browse_products(group_code=None, q="", category_code="technology", limit=10000, offset=0, db=db)
     return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})
