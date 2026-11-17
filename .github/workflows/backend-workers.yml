@@ -1,0 +1,48 @@
+name: Backend collection and receipt workers
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-workers
+  cancel-in-progress: false
+
+jobs:
+  receipt-ocr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      API_BASE_URL: https://spestoslav-api.onrender.com
+      OCR_LANGUAGES: bul+eng
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update -qq && sudo apt-get install -y tesseract-ocr tesseract-ocr-bul
+      - run: python -m pip install --upgrade pip
+      - run: pip install -r backend/requirements.txt
+      - run: python scripts/run_remote_receipt_worker.py --max-jobs 10
+  fuelo:
+    if: vars.FUELO_COLLECTION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      FUELO_API_KEY: ${{ secrets.FUELO_API_KEY }}
+      API_BASE_URL: ${{ vars.API_BASE_URL }}
+      COLLECTOR_API_KEY: ${{ secrets.COLLECTOR_API_KEY }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.txt
+      - run: python scripts/collect_fuelo.py --mapping data/fuelo_station_mappings.json

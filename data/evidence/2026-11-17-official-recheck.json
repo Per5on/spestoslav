@@ -1,0 +1,199 @@
+{
+  "checked_at": "2026-11-17",
+  "fetches": [
+    {
+      "key": "mini-current",
+      "url": "https://mini-mart.bg/nameri-magazin/",
+      "status": 200,
+      "bytes": 99220,
+      "sha256": "a67bdb52e6efe8d04a2efb15047282fef15dc0793d3bfe3b942d3dbea5c1de68"
+    },
+    {
+      "key": "mini-old",
+      "url": "https://mini-mart.bg/nameri-magazin-3/",
+      "status": 200,
+      "bytes": 177334,
+      "sha256": "5241597b4cf0ab225854a297937bb49e734c2f0af84e07b713a9e0872d7352b6"
+    },
+    {
+      "key": "t-closure",
+      "url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+      "status": 200,
+      "bytes": 82750,
+      "sha256": "6721ebd992ac4b66a430554bb4b36916133f4a5df099ff879b73e879589b74ad"
+    },
+    {
+      "key": "t-new",
+      "url": "https://tmarket.bg/article/rastem-i-se-razvivame-otkrihme-novi-magazini-v-bansko-i-teteven",
+      "status": 200,
+      "bytes": 80942,
+      "sha256": "499a6150cbd11d6b379199ce3cab98e204df00e19b16255e1fc247c831771cc1"
+    },
+    {
+      "key": "cba",
+      "url": "https://www.cba.bg/shops.php",
+      "status": 200,
+      "bytes": 163895,
+      "sha256": "b7373308f7a1e3db9f313a5acfdaaa25fd214287f5218711b24febbc52f903b6"
+    }
+  ],
+  "mini_current_feed": {
+    "url": "https://mini-mart.bg/wp-admin/admin-ajax.php?action=asl_load_stores",
+    "sha256": "33a615ef5d089df57dcc5d52431dc15d35ce48ee7340f1931238c865253ff23b",
+    "record_count": 357,
+    "reviewed_rows": [
+      {
+        "id": "65",
+        "city": "София",
+        "street": "улица „Ярослав Вешин“ 41"
+      },
+      {
+        "id": "66",
+        "city": "София",
+        "street": "булевард „Цар Борис III“ 7"
+      },
+      {
+        "id": "68",
+        "city": "София",
+        "street": "бул. „Витоша“ 99"
+      },
+      {
+        "id": "69",
+        "city": "София",
+        "street": "ул. проф. Христо Вакарелски 11"
+      },
+      {
+        "id": "72",
+        "city": "София",
+        "street": "улица „Вишнева“ 12, 1164 София"
+      },
+      {
+        "id": "75",
+        "city": "София",
+        "street": "Бул. Патриарх Евтимий 61"
+      },
+      {
+        "id": "76",
+        "city": "София",
+        "street": "бул. Княз Александър Дондуков 53"
+      },
+      {
+        "id": "77",
+        "city": "София",
+        "street": "ул. Алабин 1 / TELLUS Tower"
+      },
+      {
+        "id": "118",
+        "city": "София",
+        "street": "бул. Патриарх Евтимий 61"
+      },
+      {
+        "id": "133",
+        "city": "София",
+        "street": "ул. Георги С. Раковски 68"
+      }
+    ],
+    "pending_address": "бул. Христо Ботев 75",
+    "pending_still_absent": true,
+    "note": "75 and118 are duplicate locator records for Patriarch Evtimiy61; retain one physical branch. Feed absence is not closure proof."
+  },
+  "cba_directory_rows": [
+    {
+      "city": "Банско",
+      "name": "БГ МАРКЕТ 13",
+      "address": "БАНСКО, ул. Глазне № 39"
+    },
+    {
+      "city": "Благоевград",
+      "name": "\" МАРКЕТ 10\"",
+      "address": "ул. \"Катина и Николай Хайдукови\" №27"
+    },
+    {
+      "city": "Благоевград",
+      "name": "\" МАРКЕТ 2 - ПАЗАРА\"",
+      "address": "ул. \"Ал. Стамболийски\" № 30"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО 2\" МЕДЕН РУДНИК",
+      "address": "БУРГАС, ж.к. \"Меден рудник\", до бл.408"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО 3\"",
+      "address": "БУРГАС, ж.к. \"Зорница\", бл.47, вх.Е"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО 6\"",
+      "address": "БУРГАС, жк.Братя Миладинови блок 147, ул.Струма"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО 11\"",
+      "address": "БУРГАС, ж.к. \"Славейков\", бл.164"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО 12\"",
+      "address": "БУРГАС, ж.к.Лазур до бл.71"
+    },
+    {
+      "city": "БУРГАС",
+      "name": "\"БОЛЕРО АКВА\"",
+      "address": "БУРГАС, ж.к. \"Лазур\", бл. 163, вх. 1"
+    }
+  ],
+  "t_market": {
+    "closed_addresses": [
+      {
+        "retailer_code": "t_market",
+        "city": "Бургас",
+        "municipality": "Бургас",
+        "region": "Бургас",
+        "address": "ул. „Константин Величков“ № 34, ъгъл с ул. „Странджа“ № 2",
+        "closed_at": "2026-10-05",
+        "source_url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+        "source_checked_at": "2026-11-14",
+        "status": "CLOSED_NOT_PREVIOUSLY_INVENTORIED"
+      },
+      {
+        "retailer_code": "t_market",
+        "city": "София",
+        "municipality": "Столична",
+        "region": "София (столица)",
+        "address": "ж.к. Лозенец, ул. Персенк 22, бл. 34",
+        "closed_at": "2026-10-05",
+        "source_url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+        "source_checked_at": "2026-11-14",
+        "status": "CLOSED_NOT_PREVIOUSLY_INVENTORIED"
+      },
+      {
+        "retailer_code": "t_market",
+        "city": "София",
+        "municipality": "Столична",
+        "region": "София (столица)",
+        "address": "ж.к. Изток, ул. Атанас Далчев 2",
+        "closed_at": "2026-10-05",
+        "source_url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+        "source_checked_at": "2026-11-14",
+        "status": "CLOSED_NOT_PREVIOUSLY_INVENTORIED"
+      },
+      {
+        "retailer_code": "t_market",
+        "city": "София",
+        "municipality": "Столична",
+        "region": "София (столица)",
+        "address": "ж.к. Дружба 2, до бл. 311",
+        "closed_at": "2026-10-05",
+        "source_url": "https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas",
+        "source_checked_at": "2026-11-14",
+        "status": "CLOSED_NOT_PREVIOUSLY_INVENTORIED"
+      }
+    ],
+    "closure_notice_excerpt": "считано от 5 октомври 2026 г. преустановяваме предоставянето на услуги",
+    "relocation_excerpt": "В Тетевен преместихме магазина си на нов адрес – ул. „Марин Темелски“ № 3",
+    "former_teteven_address": "Not stated in the official article; no existing T MARKET branch in Teteven in preview. Do not invent or retire another address.",
+    "bansko_excerpt": "Нашият обект в Банско се намира на ул. „Пирин“ № 92 в-г"
+  }
+}

@@ -2,8 +2,8 @@ from logging.config import fileConfig
 import os
 from alembic import context
 from sqlalchemy import engine_from_config, pool
-from app.db import Base
-from app import models, marketplace  # noqa: F401
+from app.db import Base, normalize_database_url
+from app import models, marketplace, workflows  # noqa: F401
 
 config = context.config
 if config.config_file_name:
@@ -14,7 +14,7 @@ def database_url():
     url = os.getenv("DATABASE_URL")
     if not url:
         raise RuntimeError("DATABASE_URL must be set for Alembic migrations")
-    return url.replace("postgresql://", "postgresql+psycopg://", 1)
+    return normalize_database_url(url)
 
 def run_migrations_offline():
     context.configure(url=database_url(), target_metadata=target_metadata, literal_binds=True, dialect_opts={"paramstyle": "named"})

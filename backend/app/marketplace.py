@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Numeric, String, Text, UniqueConstraint, func
+from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Numeric, String, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from .db import Base
@@ -22,6 +22,7 @@ class CurrentPrice(Base):
     branch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("store_branches.id", ondelete="CASCADE"), nullable=False)
     price_eur: Mapped[Decimal] = mapped_column(Numeric(12,4), nullable=False)
     source: Mapped[str] = mapped_column(String(40), nullable=False)
+    observed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     verified_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     __table_args__ = (UniqueConstraint("product_id","branch_id",name="uq_current_price_product_branch"), CheckConstraint("price_eur > 0",name="ck_current_price_positive"))
@@ -39,7 +40,7 @@ class PriceCache(Base):
     collected_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     expires_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     reviewed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
-    __table_args__ = (CheckConstraint("submitted_price_eur > 0",name="ck_price_cache_positive"), CheckConstraint("status IN ('PENDING','VERIFIED','REJECTED','EXPIRED')",name="ck_price_cache_status"))
+    __table_args__ = (CheckConstraint("submitted_price_eur > 0",name="ck_price_cache_positive"), CheckConstraint("status IN ('PENDING','VERIFIED','REJECTED','EXPIRED')",name="ck_price_cache_status"), Index("ix_price_cache_status_collected", "status", "collected_at"))
 
 class Promotion(Base):
     __tablename__ = "promotions"

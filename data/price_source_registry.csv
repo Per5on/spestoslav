@@ -1,0 +1,2 @@
+source_code,category_code,source_kind,website_url,api_docs_url,source_checked_at,collection_status
+fuelo,fuel,AGGREGATOR,https://bg.fuelo.net/prices/date/,https://developers.fuelo.net/docs,2026-11-14,ADAPTER_READY_REQUIRES_API_KEY_AND_REVIEWED_STATION_MAPPING

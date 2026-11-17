@@ -1,0 +1,6 @@
+retailer_code,retailer_name,category_code,branch_name,city,municipality,region,address,latitude,longitude,source,source_url,source_checked_at
+t_market,T MARKET,groceries,T MARKET Банско – Пирин,Банско,Банско,Благоевград,ул. Пирин 92 в-г,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/rastem-i-se-razvivame-otkrihme-novi-magazini-v-bansko-i-teteven,2026-11-15
+t_market,T MARKET,groceries,T MARKET Тетевен – Марин Темелски,Тетевен,Тетевен,Ловеч,ул. Марин Темелски 3,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/rastem-i-se-razvivame-otkrihme-novi-magazini-v-bansko-i-teteven,2026-11-15
+cba,CBA,groceries,CBA Банско – БГ МАРКЕТ 13,Банско,Банско,Благоевград,ул. Глазне № 39,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16
+cba,CBA,groceries,CBA Благоевград – МАРКЕТ 10,Благоевград,Благоевград,Благоевград,ул. Катина и Николай Хайдукови № 27,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16
+cba,CBA,groceries,CBA Благоевград – МАРКЕТ 2 Пазара,Благоевград,Благоевград,Благоевград,ул. Ал. Стамболийски № 30,,,OFFICIAL_STORE_LOCATOR,https://www.cba.bg/shops.php,2026-11-16

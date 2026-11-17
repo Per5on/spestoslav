@@ -1,35 +1,44 @@
-# Спестослав
+# Спестовник
 
-Android-first price comparison app for Bulgaria.
+Android price comparison app for Bulgaria, using Expo/React Native + TypeScript, FastAPI, Neon PostgreSQL and Render. Bulgarian is the default language; four categories share one searchable locality selection.
 
-## Initial technology direction
-
-- Mobile: React Native + TypeScript (Expo workflow)
-- API: Python + FastAPI
-- Database: PostgreSQL on Neon
-- Hosting: Render
-- Source control: this repository
-
-Bulgarian is the default language; English is the first additional locale. The four top-level categories are Храни, Горива, Дом and Техника. Settlement selection is shared across categories.
+**Continue the ongoing project:** [current status](docs/PROJECT_STATUS.md), [activity log](docs/ACTIVITY_LOG.md), [confirmed frontend brief](docs/FRONTEND_BRIEF.md). Historical handoffs are linked from the status file. Keep numbered previews and APKs separate.
 
 ## Local development
 
-### API
+API:
 
 ```bash
 cd backend
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements-dev.txt
 uvicorn app.main:app --reload
 ```
 
-### Android app
+Android:
 
 ```bash
 cd mobile
-npm install
+npm ci
+npm run typecheck
+npm test
 npx expo start
 ```
 
-This is the initial scaffold, not a production-ready application. No credentials or production configuration are included. Do not treat sample UI content or future demo prices as verified live retailer prices.
+Use `npm ci` normally, including its reviewed dependency-patch postinstall hook. Patches preserve SDK 54 compatibility with fixed image parsing and protect config merging; they fail visibly if the locked dependency source changes. See [audit notes](docs/AUDIT_2026-11-15.md).
+
+The Android APK workflow generates the native project and builds a standalone, test-signed Android 10+ preview. [Preview 001](docs/ANDROID_PREVIEW_001.md) is preserved; [preview 002](docs/ANDROID_PREVIEW_002.md) contains audit fixes.
+
+## Verification
+
+```bash
+cd backend
+PYTHONPATH=. pytest -q
+cd ..
+python scripts/validate_inventory.py
+```
+
+Set `TEST_DATABASE_URL` to a disposable PostgreSQL database to include migration, concurrency and transaction checks. CI runs PostgreSQL 16 with SQLAlchemy 2.0 and 2.1. Never point test setup at the shared preview database.
+
+This is a preview app. Branch inventory and real price coverage remain incomplete. Demo photos are explicitly separate and have no asserted price. Camera, authentication and private receipt workflows are not yet connected in the Android UI. No server credentials belong in the app.
