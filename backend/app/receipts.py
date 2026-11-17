@@ -9,10 +9,21 @@ import uuid
 import boto3
 from botocore.exceptions import BotoCoreError, ClientError
 from botocore.config import Config
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, Form
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    UploadFile,
+    Form,
+    Header,
+    Query,
+    Response,
+)
 from PIL import Image, UnidentifiedImageError
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from .auth import current_user
 from .db import get_db
@@ -100,18 +111,23 @@ class ReceiptStorage:
 
 
 @router.post("", status_code=202)
-async def upload_receipt(
+def upload_receipt(
     file: UploadFile = File(),
     branch_id: uuid.UUID | None = Form(default=None),
     principal=Depends(current_user),
     db: Session = Depends(get_db),
+    idempotency_key: str | None = Header(default=None, min_length=8, max_length=100),
 ):
     if branch_id:
         branch = db.get(StoreBranch, branch_id)
         if not branch or not branch.active:
             raise HTTPException(422, "Unknown or inactive branch")
-    data = await file.read(MAX_BYTES + 1)
-    await file.close()
+    # FastAPI runs this synchronous endpoint in its bounded worker pool.
+    # Image processing, boto3 and SQLAlchemy must not block the async event loop.
+    try:
+        data = file.file.read(MAX_BYTES + 1)
+    finally:
+        file.file.close()
     if len(data) > MAX_BYTES:
         raise HTTPException(413, "Receipt exceeds 8 MiB")
     try:
@@ -124,6 +140,31 @@ async def upload_receipt(
             raise ValueError()
     except (UnidentifiedImageError, OSError, ValueError, Image.DecompressionBombError):
         raise HTTPException(422, "Upload a valid JPEG, PNG or WebP image") from None
+    # Strip EXIF/location and embedded metadata before private storage.
+    with Image.open(BytesIO(data)) as image:
+        cleaned = BytesIO()
+        sanitized = Image.new("RGB", image.size)
+        sanitized.paste(image.convert("RGB"))
+        sanitized.save(cleaned, format=format)
+        data = cleaned.getvalue()
+    if len(data) > MAX_BYTES:
+        raise HTTPException(413, "Processed receipt exceeds 8 MiB")
+    fingerprint = hashlib.sha256(data + str(branch_id).encode()).hexdigest()
+    if idempotency_key:
+        previous = db.execute(
+            select(ReceiptJob, ReceiptScan)
+            .join(ReceiptScan, ReceiptScan.id == ReceiptJob.scan_id)
+            .where(
+                ReceiptJob.owner_subject == principal.subject,
+                ReceiptJob.request_key == idempotency_key,
+            )
+        ).first()
+        if previous:
+            if previous[0].upload_fingerprint != fingerprint:
+                raise HTTPException(
+                    409, "Upload request key was already used for a different receipt"
+                )
+            return {"id": str(previous[1].id), "status": previous[1].status}
     key = (
         "receipts/"
         + hashlib.sha256(principal.subject.encode()).hexdigest()
@@ -143,13 +184,126 @@ async def upload_receipt(
     try:
         db.add(scan)
         db.flush()
-        db.add(ReceiptJob(scan_id=scan.id, owner_subject=principal.subject))
+        db.add(
+            ReceiptJob(
+                scan_id=scan.id,
+                owner_subject=principal.subject,
+                request_key=idempotency_key,
+                upload_fingerprint=fingerprint,
+            )
+        )
         db.commit()
+    except IntegrityError:
+        db.rollback()
+        storage.delete(key)
+        previous = (
+            db.execute(
+                select(ReceiptJob, ReceiptScan)
+                .join(ReceiptScan, ReceiptScan.id == ReceiptJob.scan_id)
+                .where(
+                    ReceiptJob.owner_subject == principal.subject,
+                    ReceiptJob.request_key == idempotency_key,
+                )
+            ).first()
+            if idempotency_key
+            else None
+        )
+        if previous and previous[0].upload_fingerprint == fingerprint:
+            return {"id": str(previous[1].id), "status": previous[1].status}
+        raise HTTPException(
+            409, "Concurrent upload; retry with the same request key"
+        ) from None
     except Exception:
         db.rollback()
         storage.delete(key)
         raise
     return {"id": str(scan.id), "status": scan.status}
+
+
+@router.get("")
+def own_receipts(
+    response: Response,
+    principal=Depends(current_user),
+    db: Session = Depends(get_db),
+    limit: int = Query(default=30, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    response.headers["Cache-Control"] = "no-store"
+    rows = (
+        db.execute(
+            select(ReceiptScan)
+            .join(ReceiptJob, ReceiptJob.scan_id == ReceiptScan.id)
+            .where(ReceiptJob.owner_subject == principal.subject)
+            .order_by(ReceiptScan.created_at.desc(), ReceiptScan.id)
+            .offset(offset)
+            .limit(limit)
+        )
+        .scalars()
+        .all()
+    )
+    return [
+        {
+            "id": str(scan.id),
+            "status": scan.status,
+            "created_at": scan.created_at,
+            "branch_id": str(scan.branch_id) if scan.branch_id else None,
+        }
+        for scan in rows
+    ]
+
+
+@router.get("/{scan_id}/image")
+def own_image(
+    scan_id: uuid.UUID, principal=Depends(current_user), db: Session = Depends(get_db)
+):
+    scan = db.scalar(
+        select(ReceiptScan)
+        .join(ReceiptJob, ReceiptJob.scan_id == ReceiptScan.id)
+        .where(ReceiptJob.owner_subject == principal.subject, ReceiptScan.id == scan_id)
+    )
+    if not scan:
+        raise HTTPException(404, "Receipt not found")
+    if scan.status == "DELETING":
+        raise HTTPException(410, "Receipt deletion is pending")
+    try:
+        data = ReceiptStorage().get(scan.image_storage_key)
+    except (BotoCoreError, ClientError, OSError, ValueError):
+        raise HTTPException(503, "Receipt storage unavailable") from None
+    return Response(
+        data,
+        media_type="image/"
+        + scan.image_storage_key.rsplit(".", 1)[-1].replace("jpg", "jpeg"),
+        headers={"Cache-Control": "no-store", "X-Content-Type-Options": "nosniff"},
+    )
+
+
+@router.delete("/{scan_id}", status_code=204)
+def remove_receipt(
+    scan_id: uuid.UUID, principal=Depends(current_user), db: Session = Depends(get_db)
+):
+    row = db.execute(
+        select(ReceiptJob, ReceiptScan)
+        .join(ReceiptScan, ReceiptScan.id == ReceiptJob.scan_id)
+        .where(ReceiptJob.owner_subject == principal.subject, ReceiptScan.id == scan_id)
+        .with_for_update()
+    ).first()
+    if not row:
+        raise HTTPException(404, "Receipt not found")
+    job, scan = row
+    if scan.status == "PROCESSING":
+        raise HTTPException(409, "Wait for receipt processing to finish")
+    # Persist a tombstone before touching external storage. A retry can finish
+    # deletion after an interruption without re-queuing OCR or exposing a broken image.
+    scan.status = "DELETING"
+    db.commit()
+    try:
+        ReceiptStorage().delete(scan.image_storage_key)
+    except (BotoCoreError, ClientError, OSError):
+        raise HTTPException(503, "Receipt storage unavailable") from None
+    db.execute(delete(ReceiptItem).where(ReceiptItem.receipt_scan_id == scan_id))
+    db.delete(job)
+    db.delete(scan)
+    db.commit()
 
 
 @router.get("/{scan_id}")
@@ -174,6 +328,7 @@ def receipt(
     return {
         "id": str(scan.id),
         "status": scan.status,
+        "branch_id": str(scan.branch_id) if scan.branch_id else None,
         "error": job.error,
         "extracted_text": scan.extracted_text,
         "items": [

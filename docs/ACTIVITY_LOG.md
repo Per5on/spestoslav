@@ -67,3 +67,25 @@ Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; olde
 - Shared backend/data/scripts are identical to live 538bd9a; public readiness passed, no repeated migration/deployment. Updated stale checkpoint Home/postal/deployment wording.
 - Owner deferred other tab button layouts and asked about comparison/API complexity. Explained existing comparison foundation, need for reliable verified feeds and product matching, and retailer-by-retailer access uncertainty. Do not start new integrations without the next instruction.
 - ACTIVE, current requested refinement complete. Resume from this checkpoint and linked results, preserving all numbered artifacts.
+
+## 17 November — backend-only Preview007 rollout prepared
+
+Backend-only branch `codex/preview-007-live-api` prepares tested API0.6 from application source48c7442. Local PostgreSQL/OCR suite87passed; all active API model columns match the isolated Neon clone after0008. One unused legacy user_submissions.locality_id column differs; no route uses it and no speculative change is applied. No mobile/native source or numbered APK/release changed here. App PR16 native run44105274182 passed Android10 after bounded safe-read retry correction; previous failed run44098576002 remains preserved.
+
+Read `PREVIEW_007_API_ROLLOUT.md`. Prepare backup and additive schema/catalogue sync before API deploy; preserve139stores/1inactive and grocery hashes; do not import inventory PR15's five addresses as part of this lane. SMTP delivery remains explicitly disabled because Render Free blocks Yahoo SMTP465/587; owner provider choice pending, no paid upgrade. Sample endpoint is opt-in client-side, labelled unverified, never priced/compared. Published005 and earlier APKs remain immutable. Existing app development continues in `/workspace/work/spestoslav-preview007`; this branch isolates service readiness from APK distribution.
+
+## 17 November — free HTTPS feedback adapter
+
+Owner selected free HTTPS instead of paid SMTP hosting, and confirmed account/key are not yet configured. Implemented Brevo HTTPS adapter with fixed recipient, server-only key, verified sender configuration, generic errors and explicit disabled state. Tests cover provider acceptance, rejection/rate-limit/unavailability/malformed201, missing credentials and no secret/recipient injection. Render FEEDBACK_PROVIDER saved asbrevo, delivery staysfalse. No email sent, no paid upgrade, no credentials logged. Official API/pricing docs retrieved successfully. Native APK48c7442/run44105274182 is signed, checksum verified and Android10passed; client contract unchanged by provider adapter.
+
+## 17 November — complete handoff task/result register
+
+Owner requested all tasks/results in handoff. Replaced CODEX_HANDOFF.md with a complete current register covering design decisions, inventory PR15, successful007APK/CI/SHA, failure/fix evidence,1000grocery/technology metadata, required chain/fuel setup, camera/barcode/receipts/comparison, cache/gallery/settings/privacy, freeHTTPS feedback decision, optimization/release/GooglePlay gates and exact next actions. Copied the checkpoint into all active/preserved app checkouts. Latest backend metadata code has98local PostgreSQL/OCR tests passed; it and this checkpoint require commit/exact-head CI. Shared preview remainsunchanged, API still0.5, no APK publication. Brevo account/key setup remainsowner action; no credentials recorded.
+
+## 17 November — verified handoff results finalized
+
+Complete CODEX_HANDOFF.md register updated with exact backend codef28fe642 CI44115959801 success (98local PostgreSQL/OCR tests), app48c7442 Android44105274182 success, artifact/SHA/size, first native failure and correction, all task statuses and explicit outstanding gates. Directory/fuel metadata trial ran twice on isolated br-polished-unit-bafzpcnc:1000technology,5fuel types,1active Techmart identity,139stores/1inactive,0prices. Shared preview remainsunchanged; no API rollout or publication. Owner selected freeBrevoHTTPS but has not yet configured account/sender/key; unavailable state remains intentional. Updated canonical handoff and copies in app/older checkout; keep projectACTIVE and resume shared-sync/backend-rollout checks without inventing live coverage.
+
+## 17 November — fresh error-miss audit; email excluded from build
+
+Owner authorizes rerun and APK build without email service. Feedback staysdisabled; no provider credentials needed/requested. Fresh98-test PostgreSQL/OCR baseline and TypeScript/mobile/legal checks passed. Exact clone-content audit caught two doubled-percent product names in scratch raw-SQL rendering; corrected via versioned renderer, with regression tests forpercent/apostrophe/backslash round trips and complete1000-row content/idempotence. Preserve unknown-brand/alias fields rather than erasing verified values. Shared preview untouched. Continue full checks, controlled non-email backend readiness and newAPK; record final CI/artifact evidence before delivery.

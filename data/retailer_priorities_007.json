@@ -1,0 +1,128 @@
+{
+  "observed_date": "2026-11-17",
+  "requested_coverage": {
+    "technology": [
+      "zora",
+      "technopolis",
+      "technomarket",
+      "techmart",
+      "vali",
+      "ardes",
+      "jar_computers"
+    ],
+    "fuel": [
+      "lukoil",
+      "petrol",
+      "shell",
+      "eko",
+      "omv",
+      "rompetrol"
+    ]
+  },
+  "retailers": [
+    {
+      "retailer_code": "zora",
+      "retailer_name": "Зора",
+      "category_code": "technology",
+      "official_website": "https://zora.bg/",
+      "store_locator_url": "https://zora.bg/stores",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "technopolis",
+      "retailer_name": "Technopolis",
+      "category_code": "technology",
+      "official_website": "https://www.technopolis.bg/",
+      "store_locator_url": "https://www.technopolis.bg/stores",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "technomarket",
+      "retailer_name": "Technomarket",
+      "category_code": "technology",
+      "official_website": "https://www.technomarket.bg/",
+      "store_locator_url": "https://www.technomarket.bg/magazini",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "techmart",
+      "retailer_name": "Techmart",
+      "category_code": "technology",
+      "official_website": "https://techmart.bg/",
+      "store_locator_url": "https://techmart.bg/store/store/list",
+      "collection_status": "LOCATOR_CONFIRMED_REQUIRES_BRANCH_IMPORT"
+    },
+    {
+      "retailer_code": "vali",
+      "retailer_name": "Вали",
+      "category_code": "technology",
+      "official_website": "https://www.vali.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    },
+    {
+      "retailer_code": "ardes",
+      "retailer_name": "Ardes",
+      "category_code": "technology",
+      "official_website": "https://ardes.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    },
+    {
+      "retailer_code": "jar_computers",
+      "retailer_name": "Jar Computers",
+      "category_code": "technology",
+      "official_website": "https://www.jarcomputers.com/",
+      "store_locator_url": "https://www.jarcomputers.com/stores/",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "lukoil",
+      "retailer_name": "LUKOIL",
+      "category_code": "fuel",
+      "official_website": "https://lukoil.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    },
+    {
+      "retailer_code": "petrol",
+      "retailer_name": "Petrol",
+      "category_code": "fuel",
+      "official_website": "https://www.petrol.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    },
+    {
+      "retailer_code": "shell",
+      "retailer_name": "Shell",
+      "category_code": "fuel",
+      "official_website": "https://www.shell.bg/",
+      "store_locator_url": "https://www.shell.bg/shell-service-stations/shell-station-locator.html",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "eko",
+      "retailer_name": "EKO",
+      "category_code": "fuel",
+      "official_website": "https://www.eko.bg/",
+      "store_locator_url": "https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/",
+      "collection_status": "LOCATOR_CONFIRMED"
+    },
+    {
+      "retailer_code": "omv",
+      "retailer_name": "OMV",
+      "category_code": "fuel",
+      "official_website": "https://www.omv.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    },
+    {
+      "retailer_code": "rompetrol",
+      "retailer_name": "Rompetrol",
+      "category_code": "fuel",
+      "official_website": "https://www.rompetrol.bg/",
+      "store_locator_url": "",
+      "collection_status": "NEEDS_LOCATOR_URL"
+    }
+  ]
+}

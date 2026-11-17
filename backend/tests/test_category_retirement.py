@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from alembic import command
 from alembic.config import Config
-from sqlalchemy import create_engine, text, select, func, inspect
+from sqlalchemy import create_engine, text, select, func, inspect, insert
 from sqlalchemy.engine import make_url
 from sqlalchemy.orm import sessionmaker
 from app.db import normalize_database_url
@@ -203,9 +203,11 @@ def test_retirement_removes_only_home_and_postal_data():
                 db.add_all([scan, other_scan])
                 db.flush()
                 food_scan_id = other_scan.id
+                # Seed the pre-0006 schema without fields introduced in later migrations.
+                db.execute(insert(ReceiptJob).values(id=uuid.uuid4(), scan_id=scan.id, owner_subject="test-user", attempts=0))
                 db.add_all(
                     [
-                        ReceiptJob(scan_id=scan.id, owner_subject="test-user"),
+
                         ReceiptItem(
                             receipt_scan_id=scan.id,
                             product_id=home.id,
