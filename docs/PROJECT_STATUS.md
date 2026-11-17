@@ -1,3 +1,7 @@
+## Feedback provider decision — free HTTPS selected
+
+Owner selected free HTTPS delivery and has not yet created/verified the Brevo account or saved its key. Brevo adapter is implemented/tested, fixed recipient and server-only credentials preserved. Production delivery stays disabled until private setup and actual delivery check; no Yahoo password or paid upgrade required. See FEEDBACK_SETUP.md. Native app run44105274182 passed; this backend-only provider change preserves its client contract.
+
 ## Active Preview007 API rollout — 17 November2026
 
 Backend-only branch `codex/preview-007-live-api` prepares tested API0.6 from application source48c7442. Local PostgreSQL/OCR suite87passed; all active API model columns match the isolated Neon clone after0008. One unused legacy user_submissions.locality_id column differs; no route uses it and no speculative change is applied. No mobile/native source or numbered APK/release changed here. App PR16 native run44105274182 passed Android10 after bounded safe-read retry correction; previous failed run44098576002 remains preserved.
