@@ -5,7 +5,7 @@ from sqlalchemy import select, func
 import test_locality_search as fixture
 from app.main import app
 from app.db import get_db
-from app.models import Product
+from app.models import Product, Retailer
 from app.technology import TechnologyIdentity
 from app.marketplace import CurrentPrice, ProductBarcode
 
@@ -32,6 +32,8 @@ def test_technology_1000_idempotent_provenance_and_snapshot():
         assert importer.import_catalog(db, data) == 1000
         target = db.scalar(select(Product).where(Product.category_code == "technology"))
         identity = target.id
+        assert db.get(Retailer, "techmart").website_url == "https://techmart.bg/"
+        db.get(Retailer, "techmart").active = False
         target.barcode = "4006381333931"
         target.active = False
     with fixture.TestingSessionLocal.begin() as db:
@@ -39,6 +41,7 @@ def test_technology_1000_idempotent_provenance_and_snapshot():
         assert db.scalar(select(func.count()).select_from(TechnologyIdentity)) == 1000
         assert db.get(Product, identity).barcode == "4006381333931"
         assert not db.get(Product, identity).active
+        assert not db.get(Retailer, "techmart").active
         assert (
             db.scalar(select(func.count()).select_from(ProductBarcode)) == 1
         )  # pre-existing synthetic fixture only

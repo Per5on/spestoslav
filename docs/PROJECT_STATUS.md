@@ -1,3 +1,7 @@
+## Latest handoff — complete task/result register
+
+Updated17November2026: read CODEX_HANDOFF.md for the full checklist, verified artifacts/CI, deployment state, blockers and next actions. Preview007APK48c7442 passed Android10 and checksum verification. Backend-only PR17 is prepared; latest local metadata suite98passed, fresh CI/shared sync/rollout still pending. Brevo freeHTTPS chosen; owner has not completed private account/sender/key setup, so delivery staysdisabled. No new shared catalogue/store import, API deployment or APK publication has occurred. Preserve existing releases and recovery branches; project remainsACTIVE.
+
 ## Feedback provider decision — free HTTPS selected
 
 Owner selected free HTTPS delivery and has not yet created/verified the Brevo account or saved its key. Brevo adapter is implemented/tested, fixed recipient and server-only credentials preserved. Production delivery stays disabled until private setup and actual delivery check; no Yahoo password or paid upgrade required. See FEEDBACK_SETUP.md. Native app run44105274182 passed; this backend-only provider change preserves its client contract.
