@@ -1,3 +1,11 @@
+## 17 November 2026 — authorized email-excluded recheck and build
+
+- Found two doubled-percent product names in isolated raw SQL transport. Fixed versioned renderer; regression tests round-trip all1000 identities twice and preserve existing aliases, brands, inactive flags and barcodes.100 PostgreSQL/OCR tests and both SQLAlchemy CI legs passed at557d900.
+- Retained recovery; applied guarded additive shared sync, replayed identical hash.1000groceries+1000technology+5fuel,139stores/1inactive unchanged,0prices. Inventory PR15 not imported.
+- Merged backend PR17 as9ba223de; Render deployment dep-dbua0l6k1f9s739t83d0 live, API0.6/ready verified. No automatic deploy was queued; public-Git-URL services require manual deployment per Render documentation.
+- Public snapshots, all nine HTTPS sample images/credits, required national chains, canonical Sofia filtering and rejection boundaries verified. Sofia:46grocery branches,0technology/fuel branches. Feedback deliberately unavailable; no provider/email transmission.
+- App5a1abb0 includes exact tested backend and actual decoded-image native assertions plus fivefuel choices. Backend CI44149787804 passed; Android44149787807 PASSED, actual decoded Food/Technology images, five fuel choices, camera and synthetic barcode decode. Artifact14360295033 downloaded, ZIP/APK checksums matched, screenshot inspected; APK75567529bytes/SHA25636cf2c5bb17d9021bc0bf7edd0989907f9017218fc6ea9b646b235a50e9312ba. Preserve previous successful/failed artifacts. Email intentionally excluded, no publication. Optional local Chromium live visual probe blocked by environment certificate trust; not counted as a pass, Android/Python HTTPS checks passed.
+
 # Project activity log
 
 Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; older entries are historical evidence, not current test/deployment claims.
