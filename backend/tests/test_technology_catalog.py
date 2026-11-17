@@ -1,13 +1,14 @@
-from pathlib import Path
 import importlib.util
+from pathlib import Path
+
 import pytest
-from sqlalchemy import select, func
 import test_locality_search as fixture
-from app.main import app
 from app.db import get_db
-from app.models import Product
-from app.technology import TechnologyIdentity
+from app.main import app
 from app.marketplace import CurrentPrice, ProductBarcode
+from app.models import Product, Retailer
+from app.technology import TechnologyIdentity
+from sqlalchemy import func, select
 
 spec = importlib.util.spec_from_file_location(
     "technology_import_test",
@@ -32,13 +33,22 @@ def test_technology_1000_idempotent_provenance_and_snapshot():
         assert importer.import_catalog(db, data) == 1000
         target = db.scalar(select(Product).where(Product.category_code == "technology"))
         identity = target.id
+        assert db.get(Retailer, "techmart").website_url == "https://techmart.bg/"
+        db.get(Retailer, "techmart").active = False
+        source_code = db.get(TechnologyIdentity, identity).source_product_code
+        next(
+            row for row in data["products"] if row["source_product_code"] == source_code
+        )["brand"] = None
+        target.brand = "Existing verified brand"
         target.barcode = "4006381333931"
         target.active = False
     with fixture.TestingSessionLocal.begin() as db:
         importer.import_catalog(db, data)
         assert db.scalar(select(func.count()).select_from(TechnologyIdentity)) == 1000
         assert db.get(Product, identity).barcode == "4006381333931"
+        assert db.get(Product, identity).brand == "Existing verified brand"
         assert not db.get(Product, identity).active
+        assert not db.get(Retailer, "techmart").active
         assert (
             db.scalar(select(func.count()).select_from(ProductBarcode)) == 1
         )  # pre-existing synthetic fixture only

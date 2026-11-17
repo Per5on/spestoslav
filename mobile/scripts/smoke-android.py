@@ -19,6 +19,16 @@ def label(n):
     return n.get("text") or n.get("content-desc", "")
 
 
+def wait_resource(resource, timeout=45):
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        matches = [n for n in nodes() if n.get("resource-id", "").endswith(resource)]
+        if matches:
+            return matches[0]
+        time.sleep(1)
+    raise AssertionError(f"Resource did not load after {timeout}s: {resource}")
+
+
 def bounds(n):
     return list(map(int, re.findall(r"\d+", n.get("bounds", ""))))
 
@@ -85,10 +95,24 @@ assert (
     < 4
 )
 assert bounds(stores)[0] < bounds(products)[0] < bounds(refresh)[0]
+# Check actual decoded remote images, not merely an Image view or an icon fallback.
+photos = next(n for n in nodes() if "Примерни снимки" in label(n))
+tap_node(photos)
+wait_resource("thumbnail-loaded-demo-milk")
+assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-milk") for n in nodes())
+tap("Техника")
+wait_resource("thumbnail-loaded-demo-laptop")
+assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-laptop") for n in nodes())
+tap("Храни")
+tap_node(next(n for n in nodes() if "Примерни снимки" in label(n)))
 for tab in ["Техника", "Горива", "Моят списък"]:
     tap(tab)
     assert any(label(n) == "София" for n in nodes())
 assert any("Списъкът е празен" in label(n) for n in nodes())
+tap("Горива");tap("Гориво")
+for grade in ("Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз"):
+    assert any(label(n) == grade for n in nodes()), grade
+tap("Бензин 95")
 tap("Отвори менюто")
 tap("Сканирай")
 wait_text("Търсене по баркод", 20)
@@ -180,5 +204,5 @@ with open(
 ) as f:
     f.write(subprocess.check_output(["adb", "exec-out", "screencap", "-p"]))
 print(
-    "Android 10 smoke passed: ordered tabs, no lower ribbon/Home, name-only locality, shared selection, list, three-dot menu and language choices."
+    "Android 10 smoke passed: ordered tabs, no lower ribbon/Home, name-only locality, shared selection, decoded food/technology images, five fuel grades, list, three-dot menu and language choices."
 )

@@ -11,7 +11,7 @@ import uuid
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "backend"))
 from app.db import SessionLocal
-from app.models import Category, Product
+from app.models import Category, Product, Retailer
 from app.technology import TechnologyGroup, TechnologyIdentity
 
 CATALOG = Path(__file__).resolve().parents[1] / "data/technology/essential-1000.json"
@@ -52,6 +52,19 @@ def import_catalog(db, data):
             )
         )
         db.flush()
+    retailer = db.get(Retailer, "techmart")
+    if retailer is None:
+        db.add(
+            Retailer(
+                code="techmart",
+                name="Techmart",
+                category_code="technology",
+                website_url="https://techmart.bg/",
+            )
+        )
+    elif retailer.category_code != "technology":
+        raise ValueError("Existing Techmart identity has a conflicting category")
+    # Existing retailer active state is retained; no branch or price is inferred.
     for group in data["groups"]:
         row = db.get(TechnologyGroup, group["code"])
         if row is None:
@@ -77,7 +90,8 @@ def import_catalog(db, data):
             raise ValueError("Existing product has a conflicting category")
         product.name = item["name"]
         product.normalized_name = item["name"].casefold()
-        product.brand = item.get("brand")
+        if item.get("brand") is not None:
+            product.brand = item["brand"]
         # Preserve existing barcode and active state on repeated imports.
         db.flush()
         row = db.get(TechnologyIdentity, identity)

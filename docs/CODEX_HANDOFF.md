@@ -1,3 +1,7 @@
+## Latest owner instruction: rerun checks and build without email
+
+Build authorized; email provider intentionally excluded from this preview and is NOT a build blocker. Keep FEEDBACK_DELIVERY_ENABLED=false. Preserve the provider adapter for later private setup; do not ask for keys now. Rerun and inspect actual tests/native artifacts, retain previous builds and report live data limitations. Source transport audit corrected two doubled-percent catalogue names on isolated validation only; versioned renderer/regressions now pass100PostgreSQL/OCR tests. API0.6readiness and catalogue sync must remain explicit; no live-price claims from metadata.
+
 # Спестовник — ongoing project handoff
 
 Updated: **17 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.

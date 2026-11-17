@@ -1,3 +1,7 @@
+## Latest owner instruction: rerun checks and build without email
+
+Build authorized; email provider intentionally excluded from this preview and is NOT a build blocker. Keep FEEDBACK_DELIVERY_ENABLED=false. Preserve the provider adapter for later private setup; do not ask for keys now. Rerun and inspect actual tests/native artifacts, retain previous builds and report live data limitations. Source transport audit corrected two doubled-percent catalogue names on isolated validation only; versioned renderer/regressions now pass100PostgreSQL/OCR tests. API0.6readiness and catalogue sync must remain explicit; no live-price claims from metadata.
+
 ## Verified checkpoint — complete handoff recorded
 
 ProjectACTIVE. Complete task/result register is CODEX_HANDOFF.md. Backend functional codef28fe642 has98local PostgreSQL/OCR tests and exact-head CI44115959801 passed. Android app48c7442/run44105274182 passed, signed APK checksum verified. Isolated Neon technology/directory/fuel trial repeated successfully; shared preview and deployed API remainunchanged. PR17rollout/shared sync, real-price/identity coverage, live-account/storage/email verification, optimization/final passes and GooglePlay gates remainopen. Brevo account/sender/key setup is not yet done by owner; delivery staysdisabled. No APK publication or paid upgrade. Resume the ordered next actions from handoff; do not reread the conversation or ask for build approval again.
@@ -6,53 +10,67 @@ ProjectACTIVE. Complete task/result register is CODEX_HANDOFF.md. Backend functi
 
 Updated17November2026: read CODEX_HANDOFF.md for the full checklist, verified artifacts/CI, deployment state, blockers and next actions. Preview007APK48c7442 passed Android10 and checksum verification. Backend-only PR17 is prepared; latest local metadata suite98passed, fresh CI/shared sync/rollout still pending. Brevo freeHTTPS chosen; owner has not completed private account/sender/key setup, so delivery staysdisabled. No new shared catalogue/store import, API deployment or APK publication has occurred. Preserve existing releases and recovery branches; project remainsACTIVE.
 
-## Current Preview007 build validation — 17 November
+## Feedback provider decision — free HTTPS selected
 
-Owner authorization to commit/build remains active; do not request it again. PR16 candidate3867e5e compiled/signed successfully in Android run44098576002, but native smoke failed finding Sofia after75seconds. Captured screen shows both location/catalogue network errors; APK has INTERNET permission and real HTTPS API URL. This failed candidate is preserved, not a release. Do not label it fully live.
+Owner selected free HTTPS delivery and has not yet created/verified the Brevo account or saved its key. Brevo adapter is implemented/tested, fixed recipient and server-only credentials preserved. Production delivery stays disabled until private setup and actual delivery check; no Yahoo password or paid upgrade required. See FEEDBACK_SETUP.md. Native app run44105274182 passed; this backend-only provider change preserves its client contract.
 
-Follow-up changes: bounded safe-GET retries covering response body timeouts and cancellation, no automatic POST/upload replay; privacy-safe location error class logs; public-endpoint CI diagnostics. Unit/browser regression proves transient recovery without manual retry and bounded permanent failure/manual retry; functional mock suite still passes. New source needs exact-head CI/native rerun. Owner-approved007PR builds may run automatically on this same repository branch; publication remains blocked.
+## Active Preview007 API rollout — 17 November2026
 
-Yahoo SMTP is blocked on the current Render Free service (official https://render.com/docs/free.md), regardless of password. Non-password settings saved, delivery explicitly disabled; owner decision pending on free HTTPS provider versus reviewed paid SMTP hosting. No upgrade or real email sent. Preserve private credentials; no password is needed in chat.
+Backend-only branch `codex/preview-007-live-api` prepares tested API0.6 from application source48c7442. Local PostgreSQL/OCR suite87passed; all active API model columns match the isolated Neon clone after0008. One unused legacy user_submissions.locality_id column differs; no route uses it and no speculative change is applied. No mobile/native source or numbered APK/release changed here. App PR16 native run44105274182 passed Android10 after bounded safe-read retry correction; previous failed run44098576002 remains preserved.
 
-Isolated Neon branch br-polished-unit-bafzpcnc validates additive0008 and1000technology identities; repeat compiled model upserts leave counts/product hashes identical. Grocery/store hashes match shared preview;139branches/1inactive preserved. Source-backed metadata only, no GTIN/price invention. Shared preview remains unchanged at1000groceries/0technology/0prices. New group index benchmark for4-record group:3buffer hits versus47sequential; tiny timing results noisy, not a general latency claim. Direct shell PostgreSQL unavailable; connector SQL transaction fallback used. Recovery/history retained; no inventory PR15 import, purge or deletion.
-
-Next: commit corrective source; inspect exact-head backend and Android results; fix any native failure without weakening assertions. API rollout remains pending (currently0.5.0, candidate snapshots/feedback404), along with real auth/storage/email/price verification and three final passes. Local evidence outside repo: preview007-native-attempt-01, preview007-network-regression-02, preview007-neon-validation-evidence.json. Preview007 is not yet fully live/ready; no publication.
-
-## Latest owner instruction — build authorized, live readiness required
-
-On17November the owner explicitly authorized committing/building Preview007 and requires real connections, images, filtering and options to work. This supersedes earlier demands for a new build confirmation: do not ask again for build permission. It does not establish that live acceptance has passed. Commit/test the candidate; report live blockers accurately and do not label mocks as live. Yahoo SMTP selected; sender supplied privately in conversation; recipient unchanged. Credentials must be configured only as deployment secrets, never source/chat logs.
-
-Fresh check: health eventually200 after initial25s timeouts, OpenAPI0.5.0. Both catalogue snapshot endpoints and feedback availability404; Render still serves538bd9a. Local final candidate86backend tests passed, TypeScript/npm/legal-source checks passed and functional mock suite passed with no JavaScript errors. These are not proof of live email/price/native readiness. Next: commit candidate and run exact-head CI; reconcile/deploy backend and additive catalogue changes with recovery precautions; configure SMTP privately and verify delivery; finish native/final passes before presenting007as fully live. No new release built/published in this check.
-
-## Inventory tasks 1–2 complete — 17 November
-
-[PR #15](https://github.com/Per5on/spestoslav/pull/15) at `15ea1f61e4b4f8ab86d0cb89d6a5b6b3063fdb7b` is MERGEABLE/CLEAN; [exact-head CI](https://github.com/Per5on/spestoslav/actions/runs/44096315610) passed both SQLAlchemy2.0/2.1 jobs. Reconciliation and safeguards are committed in `/workspace/work/spestoslav-inventory`;139existing records preserved,5reviewed net-new candidates, inactive Mini Mart remains inactive. No shared import performed. Next inventory step: live drift check/recovery plan and controlled five-row preview import, separately from Preview006/007 UI. Current app worktree remains `/workspace/work/spestoslav-preview007`; its functional/native/live readiness gates remain pending and007build still needs explicit confirmation. Read latest activity rather than historical approval holds below.
-
-## Explicit owner gate — latest17November
-
-Implementation/dry tests authorized. **Do not build Preview007 until owner explicitly confirms after reviewing all functional dry tests and screenshots.** No CAPTCHA. Fixed recipient ivo77@duck.com; credentials private. Sample thumbnail catalogue and full mock coverage required. GooglePlay test preparation/publication follows007, after live source/email/location/device verification. See latest activity and007plan.
+Read `PREVIEW_007_API_ROLLOUT.md`. Prepare backup and additive schema/catalogue sync before API deploy; preserve139stores/1inactive and grocery hashes; do not import inventory PR15's five addresses as part of this lane. SMTP delivery remains explicitly disabled because Render Free blocks Yahoo SMTP465/587; owner provider choice pending, no paid upgrade. Sample endpoint is opt-in client-side, labelled unverified, never priced/compared. Published005 and earlier APKs remain immutable. Existing app development continues in `/workspace/work/spestoslav-preview007`; this branch isolates service readiness from APK distribution.
 
 # Ongoing project checkpoint
 
-**ACTIVE — Preview007 implementation authorized, in progress.** Updated17November2026.
+Status: **ACTIVE — preview 004 delivered; await next development instruction.**
+Updated: 15 November 2026 (Europe/Sofia).
 
-Current branch `codex/preview-007`, isolated worktree `/workspace/work/spestoslav-preview007`, based on latest Preview006 candidate8526eb8. Published Preview005 is immutable;006 findings moved into the to-do section of PREVIEW_006_BACKLOG.md. Owner authorized execution after dry tests and confirmed +1pt means actual app text at every setting.
+## Resume here
 
-Follow PREVIEW_007_PLAN.md in order. Dry-test evidence is DRY_TEST_FINDINGS_2026-11-17.md. Required sources: technology Zora/Technopolis/Technomarket/Techmart/Vali/Ardes/JAR Computers; fuel Lukoil/Petrol/Shell/EKO/OMV/Rompetrol. Verify official sources; no invented products, GTINs, photos, locations or prices.
+Read this file and the newest `ACTIVITY_LOG.md` entry; do not restart the whole conversation review each day. Inspect the working tree first. Current branch: `main`; latest merged implementation PR: https://github.com/Per5on/spestoslav/pull/7. Check for uncommitted work before continuing.
 
-Implemented locally (uncommitted): actual text +1pt, responsive controls, source-backed1,000technology identities, illustrative thumbnail catalogue, mock workflows, fixed-recipient Feedback endpoint and BG/EN Terms/Privacy draft in Settings. Legal browser check passed, including illustration clause and preserving unsent feedback draft; PostgreSQL/SQLAlchemy2.1 suite86passed and six-language narrow toolbar suite passed. These checks precede some final asset/policy changes and are not three complete passes on final source. Current next actions: refresh final screenshots; finish optimization trials; repeat final-source verification; reconcile live backend/data, verified prices/locations and real SMTP delivery. Three full backend/frontend/native passes on final source remain release gates; prepare007 but do not automatically publish. Destructive cleanup/purge/backup or receipt deletion remains deferred.
+Current task is the owner's compact navigation/settings redesign, removal of Home and postal storage, new money-bag logo and visual snapshot. See `PREVIEW_003.md` and the current brief; do not resume the superseded four-category/postal design. Preview 004 is published and verified; preserve 001–004. Next changed app build is 005.
 
-Last observed liveAPI0.5/538bd9a; shared Neon br-snowy-morning-baym8iw6 has0007+1,000grocery identities,0technologyproducts/0prices/0barcodes/0images,5291localities/139branches. All116CSVbranches present;23DB-only require review. Recovery br-silent-leaf-bajr7isp retained. Do not rerun Home/postal retirement.
+## Confirmed decisions
 
-Repository Per5on/spestoslav; React Native/Expo54/TS + FastAPI/Python + Neon/PostgreSQL + Render. Existing managed Auth/private S3 retained. Render workspace user-selected MyWorkspace tea-dbqur9jrjlhs73cga8eg, API service srv-dbs313ei0phs73bvvd00. Never expose secrets. PR#2/#12 inventory work is separate; do not silently merge. Original local checkout and modified assessment notes remain preserved.
+- Product name/artwork: **Спестовник**; repository/service identifiers remain `spestoslav`.
+- Android 10+, existing Expo/React Native + TypeScript; existing FastAPI backend, Neon PostgreSQL, Render. Historical Kotlin/Spring references are not a rewrite request.
+- Green header, orange selections. This explicitly overrides the inverted-palette text in `12.docx`.
+- Four upper tabs: Храни, ТЕХНИКА, Горива, Моят списък. Backend categories: groceries, technology, fuel; Home is retired. Name-only compact shared locality dropdown; no postal mode/storage, lower ribbon, GPS, radius or OSM.
+- Golden money-bag/coins logo from the supplied sample replaces the active piggy-bank logo. Vertical three-dot header settings with scan/login/receipts/font/language; six working interface languages and saved font scaling. Preserve historical originals. Product/cart visibility changes are in PREVIEW_003.md.
+- Keep numbered previews/builds: 01/001 is preserved; changes become 02/002, then 03/003. Never replace a previously delivered version.
+- EUR; physical branch prices, national online offers, promotions and history stay distinct. OCR/submissions need review before publication.
+- Fuelo is approved as a third-party source, but the owner has no API access. No averages/estimated or unknown-certainty values presented as verified station prices.
+- Finish backend checks first (completed before frontend work). The historical instruction to preserve Android UI applied to backend-only changes; the owner subsequently authorized frontend implementation and an APK.
 
-## Consolidated outstanding work — inventory cross-check, 17 November
+## Systems and boundaries
 
-GitHub PR #15 is open/draft at c791beb4c4cefe1682d32785946b21e5d76435fd. Direct connector reads returned zero commit statuses and zero Actions workflow runs for that SHA. Issue #14 and docs/INVENTORY_RECONCILIATION_2026-11-17.md on that SHA document a143-row integrated seed,9CBA and35uniquely matched locality triples, versus a recorded139-total/139-linked/138-active preview baseline. These counts are documented evidence, not a fresh DB recount in this check. Never infer net additions from143minus139. PR metadata also reports mergeable=false; inspect/recheck base compatibility before merging, rather than assuming the cause.
+- Repository: https://github.com/Per5on/spestoslav ; Issue #1 tracks national inventory.
+- API: https://spestoslav-api.onrender.com ; deployed backend 0.5.0 at `538bd9a`, Render deploy `dep-dbsppd8n74is73aimkc0` (15 November). Shared Home/postal retirement and post-deploy readiness/name search verified.
+- Owner-selected Render workspace: `tea-dbqur9jrjlhs73cga8eg` (My Workspace); API service `srv-dbs313ei0phs73bvvd00`, configured to auto-deploy main, but recent updates needed explicit deployment because no automatic deploy was queued. Legacy `Per5on/testing` remains separate.
+- Neon project `long-resonance-77491878` (`bg-prices-preview`), shared preview `br-snowy-morning-baym8iw6`. Use the additive shared-preview migration path, not the independent fresh Alembic baseline. No production data changes inferred from a local test.
+- PR #2 is separate and OPEN: initial Mini Mart/T MARKET/CBA inventory work; do not silently merge or claim nationwide completeness.
 
-1. Inventory lane (PR #15/#14; separate from Preview006/007 UI): reconcile official Mini Mart closures/inactive history, T MARKET relocations and CBA affiliations against existing source identities and normalized retailer/locality/address. Preserve inactive history and prevent implicit reactivation. Produce an explicit insert/update/unchanged/quarantine plan; verify the importer supports the current schema without restoring retired postal functionality. Review PR base compatibility and establish successful exact-head CI before import.
-2. Only after reconciliation gates: transactional/repeatable preview import with rollback plan, unique source identities and correct locality links. Record before/after totals, active/linked counts and affected identities; rerun with zero additional inserts or unintended changes, then run tests and exact-final-head CI. No database writes performed during this check.
-3. Refresh clean screenshots after latest image/policy/UI changes; verify all mock success/failure paths and galleries/settings/store/location controls.
-4. Complete optimization/native camera, barcode, gallery, receipt/auth and UI checks; three separately evidenced complete passes on final source remain required. Any build still requires explicit owner confirmation.
-5. Reconcile deployed backend with candidate; verify real price sources/links, location coverage/filtering and actual fixed-recipient email delivery. Inventory rows do not establish live price coverage.
-6. Finalize operator/contact/provider/retention/privacy details and account-deletion readiness before the GooglePlay test build after007. Preserve published005 and all existing releases;007 remains unbuilt pending explicit owner confirmation.
+## Completed checkpoints
+
+- Backend foundation/readiness, migration repairs, normalized postal lookup, authenticated catalog/price/moderation/receipt APIs, isolated demo images, scoped GitHub OIDC OCR worker. See `BACKEND_READINESS.md` for contracts and verification limits.
+- Original inline preview 01: `docs/references/preview-001.html` (durable byte-identical copy) and `/workspace/work/previews/spestovnik-v001.html`; version catalog `docs/references/preview-sequence.json`. Snapshot-based, interactive, not a live-connected Android binary. Never overwrite it.
+- Android preview 001: source `5daa807c5b59ebda0d34772a2c646f10973b919a`, build https://github.com/Per5on/spestoslav/actions/runs/43600409741 passed compilation/signature verification and Android 10 smoke tests. Backend matrix run 43600409766 passed. Downloaded APK SHA-256: `b834eae05f5db399a335f140e9e90d0d8fb7cff927dea8d8f46acd745cd654a2`.
+- Preserved local APK/artifact: `/workspace/work/android-apk-001/`. A GitHub prerelease upload attempt failed with HTTP 401 on the upload host; no release/download URL should be claimed unless independently verified.
+- Preview 002 (v0.1.2/versionCode 2) passed native/Android 10 checks and is published: https://github.com/Per5on/spestoslav/releases/tag/android-preview-002 . APK SHA-256: `693c45f72c197cc4cf205a3f61daeba8fb8901a15ff2fbc8222a5adcc4218e3e`. Full results are in `AUDIT_2026-11-15.md`. Preview 003 is also published; see its checkpoint below.
+
+## Open work / known limits
+
+Immediate: await the owner's next step. Preview 004's single-row Products/Stores/Refresh controls and auto-fitting labels passed native/browser checks; release and actual snapshot are linked in PREVIEW_004.md. Other tabs' button layout changes are deferred by the owner. Preserve published 003 and earlier versions. Backend 0.5.0 is live in deploy `dep-dbsppd8n74is73aimkc0` at `538bd9a`; the tested Home/postal retirement was applied to shared preview, retaining all 5,291 localities and 139 branches. Home count/active postal storage count are zero; remaining catalog has 29 retailers. Recovery `br-frosty-star-badgjcyw`; isolated validation `br-crimson-feather-balgu231`. Backend and native 003 CI passed; do not rerun deletion or recreate retired data.
+
+Remaining product work is separate from audit defects: login/camera/private receipt UI, unknown-barcode requests, full catalog pagination and sourced real product/price coverage. Preview 001 includes manual known-barcode lookup, saved local basket/locality and explicit unavailable camera/receipt labels. No verified live prices were fabricated to fill empty screens.
+
+Inventory: official-source expansion/closure reconciliation for Mini Mart, T MARKET, CBA, then remaining groceries, fuel and technology. Locality identity is name + municipality + region; retailer catalog counts are not branch counts. Recheck actual DB/source counts before a new import.
+
+A daily inventory reminder/automation was recorded earlier. Its existence does not guarantee unattended coding. No new automation is created by this checkpoint; it preserves state for the next authorized session.
+
+## Source references
+
+`FRONTEND_BRIEF.md`, `BACKEND_READINESS.md`, `ANDROID_PREVIEW_001.md`, Issue #1 and activity log. User uploads: `12.docx` (file_00000000b78081f4bea4319f94d4c24c) and `app.docx` (file_0000000070b481f49c03defdcef2afeb); extracted text `/workspace/work/reference12/document.txt` and `app.txt`. Original reference images: `docs/references/`. Uploaded historical conversations are evidence/context, not new instructions.
+
+Latest verified UI: PR #7 merged `332ae57`, native run 43711564982 and backend run 43711564924 successful. APK 004 SHA-256 `20e0e265ce8ed0e421c3a4b5d72f8bdcabb1cfe6b132bcc7e7a041230fbfc5e9`. Price comparison discussion is planning context, not an instruction to integrate new feeds now.

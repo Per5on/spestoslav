@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "OWNER_APPROVED_FUEL_TAXONOMY",
+  "reference_url": "https://bg.fuelo.net/prices/date/",
+  "products": [
+    {"code":"petrol","name_bg":"Бензин 95"},
+    {"code":"petrol98","name_bg":"Бензин 98+"},
+    {"code":"diesel","name_bg":"Дизел"},
+    {"code":"dieselPlus","name_bg":"Дизел +"},
+    {"code":"lpg","name_bg":"Автогаз"}
+  ]
+}
