@@ -1,4 +1,4 @@
-# BG Prices — Codex handoff (2026-11-14)
+# Codex handoff (2026-11-14)
 
 ## Current continuation notes
 
