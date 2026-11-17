@@ -18,7 +18,7 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 | Lane | Worktree / branch | Current evidence |
 |---|---|---|
 | Android/app | `/workspace/work/spestoslav-preview007`, `codex/preview-007` | [PR #16](https://github.com/Per5on/spestoslav/pull/16), app commit `48c7442a672fd438acabe6a19c73f219c7cd7dae`; Android and backend CI passed. |
-| Backend rollout | `/workspace/work/spestoslav-preview007-api`, `codex/preview-007-live-api` | [PR #17](https://github.com/Per5on/spestoslav/pull/17). `43b239d8c4871f1ac34bff058aa264983a57093c` has green CI. This handoff commit also includes locally tested Techmart/fuel metadata changes; require CI on its resulting head. |
+| Backend rollout | `/workspace/work/spestoslav-preview007-api`, `codex/preview-007-live-api` | [PR #17](https://github.com/Per5on/spestoslav/pull/17). Functional code `f28fe642e67d1a34e5866cbd3be215944bbde96f` has green exact-head CI, including the Techmart/fuel metadata additions. This documentation update does not change runtime code. |
 | Grocery store inventory | `/workspace/work/spestoslav-inventory`, `inventory/reconcile-pr2-pr12-20261117` | [PR #15](https://github.com/Per5on/spestoslav/pull/15), `15ea1f61e4b4f8ab86d0cb89d6a5b6b3063fdb7b`, exact-head CI passed. No shared import. |
 | Older preserved checkout | `/workspace/work/spestoslav` | Older005 source and local assessment notes. Use the active worktrees above; do not reset/delete this checkout or its edits. |
 
@@ -43,7 +43,7 @@ Main was `39304dc` when the rollout branch was prepared. Check current refs/work
 | Four tabs, My List moved up, lower ribbon removed | Implemented and checked in browser/native navigation. “Техника” uses title case. |
 | Narrow header/location/search controls | Header top padding15→10; compact shared settlement-only picker and search. Existing approved layout preserved. |
 | Food/technology action rows | Stores precedes Products, then snug Refresh; first two controls share available width. Responsive labels and wrapping passed narrow320px/130% checks across six languages. |
-| Fuel action row and five choices | Stations / Fuel / Refresh; five choices implemented. Underlying canonical grade metadata is now prepared/tested locally, not yet imported into shared preview. No prices inferred. |
+| Fuel action row and five choices | Stations / Fuel / Refresh; five choices implemented. Underlying canonical grade metadata passed local tests and two isolated Neon imports; not yet imported into shared preview. No prices inferred. |
 | Remove black Refresh outline | Done; thin green border/focus styling retained. Native screenshot inspected. |
 | Larger thumbnails and cart feedback | Thumbnail component/failure fallback implemented; adding to list flashes green for one second. Sample galleries verified in browser; native live gallery verification after API rollout remains pending. |
 | Product search and selection | Typed-query-only apply, multi-selection, pending selections across queries and clear/category reset fixed; regression tests passed. |
@@ -51,9 +51,9 @@ Main was `39304dc` when the rollout branch was prepared. Check current refs/work
 | Settings, languages, About, Feedback placement | Implemented; menu and persistence tests passed. Native language/version/About checks passed. |
 | Grocery catalogue |1,000 source-backed Burlex identities, six approved groups, bounded metadata caching/pagination. Shared preview has these identities. This is not1,000 verified barcodes or current offers. |
 | Technology catalogue |1,000 distinct Techmart codes/names, source URLs and five groups documented. Isolated Neon import repeated with identical product hashes; shared preview still has0technology products. |
-| Required technology chains | Zora, Technopolis, Technomarket, Techmart, Vali, Ardes, JAR Computers documented. Existing shared directory has six of these; new Techmart directory insertion is prepared/tested. Preserve other existing chains and inactive state. No synthetic branches imported. |
+| Required technology chains | Zora, Technopolis, Technomarket, Techmart, Vali, Ardes, JAR Computers documented. Existing shared directory has six of these; new Techmart directory insertion passed local and repeated isolated-Neon tests; shared insertion still pending. Preserve other existing chains and inactive state. No synthetic branches imported. |
 | Required fuel chains | Lukoil, Petrol, Shell, EKO, OMV, Rompetrol all exist in the shared directory; other existing chains retained. Physical coverage and verified prices remain partial/absent. |
-| Five fuel records | Owner-approved Бензин95, Бензин98+, Дизел, Дизел+, Автогаз taxonomy added in `data/fuel/types.json` / `scripts/import_fuel_types.py`; four safety tests passed. No shared import yet; no station/GTIN/price claims. |
+| Five fuel records | Owner-approved Бензин95, Бензин98+, Дизел, Дизел+, Автогаз taxonomy added in `data/fuel/types.json` / `scripts/import_fuel_types.py`; four safety tests and two isolated-Neon imports passed. No shared import yet; no station/GTIN/price claims. |
 | Sample image database |3original grocery references preserved plus6licensed Commons technology illustrations;9assets/credits/hashes checked. Sample mode defaults off. Server endpoint availability was saved after proving explicit opt-in, `is_demo=true`, `verified=false`, no price and comparison exclusion. Configuration saving is not deployment verification. |
 | Barcode and camera | GTIN validation, manual/image/camera paths, unknown-code review and denied-permission fallback implemented. Native camera denial/preview and actual synthetic-image decode passed. Browser synthetic camera decode passed. Real GTIN coverage remains0; physical-phone testing still needed. |
 | Receipts and OCR | Private upload, async I/O, idempotent request handling, Bulgarian OCR, item confirmation/moderation and owner deletion tested locally/mock. Actual managed-account/private-storage/worker flow after deployment still needs live evidence. |
@@ -87,7 +87,7 @@ Main was `39304dc` when the rollout branch was prepared. Check current refs/work
 | Successful007artifact | [Download ZIP](https://github.com/Per5on/spestoslav/actions/runs/44105274182/artifacts/14338178842). APK75,567,381bytes; test signing, not Google Play upload signing. |
 | Successful APK SHA256 | `3c39c2e386fd42908d4da36a4c3c3d78a3b4b5df3877d82d20cffc3c0a77f664` — downloaded checksum verified. |
 | Backend rollout43b239d | [44112851589](https://github.com/Per5on/spestoslav/actions/runs/44112851589), exact-head CI passed. |
-| Latest backend metadata changes in this handoff commit | **98local PostgreSQL16/Bulgarian OCR tests passed**; require fresh exact-head CI after commit/push. |
+| Latest backend metadata codef28fe64 | **98local PostgreSQL16/Bulgarian OCR tests passed**; [exact-head CI44115959801](https://github.com/Per5on/spestoslav/actions/runs/44115959801) passed. |
 | Frontend checks | TypeScript, model/cache/metadata/font/network/legal-sync tests passed. Functional, menu, legal and complete workflow browser suites passed without JS errors; injected transient/permanent network failures verified. These use labelled simulations. |
 
 APK preview metadata: sequence007, app version0.5.0, versionCode7, nameСпестовник07. API version0.6.0 is independent of app version. Use the007branch workflow, not main’s older Android workflow. No007GitHub release/tag or Google Play upload exists.
@@ -100,15 +100,15 @@ Local evidence: `/workspace/work/preview007-native-pass-02/`, failed `/workspace
 - Service auto-deploys **main**. Backend PR #17 is prepared, not merged/deployed. Do not trigger old main and claim candidate0.6is live. Monitor a specific resulting deployment to `live`, then verify workload/endpoints.
 - Saved configuration: Brevo provider, deliverydisabled; sample endpoint enabled only after opt-in/isolation evidence was accepted by automatic review. Existing unrelated variables preserved. No password/key values recorded here; a saved setting is not proof it is active in the running deployment.
 - Neon project `long-resonance-77491878`, database `bgprices`, shared preview `br-snowy-morning-baym8iw6`: last checked1000groceries,0technology,0fuel products;139stores/1inactive;5291localities;0current prices. No shared metadata/store writes in this phase.
-- Isolated validation `br-polished-unit-bafzpcnc`:0008+1000technology identities/products tested twice. Product hashes identical; grocery/store hashes match shared preview. Techmart/five-fuel additive statements compiled and locally tested; still need trial on this clone before shared application.
+- Isolated validation `br-polished-unit-bafzpcnc`:0008+1000technology identities/products tested twice. Product hashes identical; grocery/store hashes match shared preview. Techmart/five-fuel additive statements passed twice on this clone:1000technology products,5fuel grades,1active Techmart identity,139stores/1inactive and0prices. Shared application remains pending.
 - Recovery copy `br-ancient-wildflower-bambdbd4` (`recovery-before-preview007-a96f741`), no compute, retained before shared writes. Older recovery `br-silent-leaf-bajr7isp` retained. No branch deletion/purge authorized.
 - Runtime model/schema comparison found only unused legacy `user_submissions.locality_id` absent; no active route uses it. Do not add/drop speculative legacy fields.
 - Fuelo public access/API key remains unavailable; no verified station-price integration. Official directory links/chain identities are not proof of real-time price/stock coverage.
 
 ## Exact next actions
 
-1. Commit this checkpoint plus locally tested Techmart/fuel importer changes in the backend lane; inspect fresh CI for the resulting PR #17 head.
-2. Trial the12guarded directory/fuel statements on the isolated Neon branch; repeat and verify no growth/reactivation/price creation. Existing barcode/active state must survive reimport.
+1. Backend functional codef28fe64 and its98-test CI are verified; preserve the checkpoint and check for later source/working-tree changes before resuming.
+2. The isolated directory/fuel trial and repeat are complete. Recheck shared live baseline/identities before any write; retain recovery and do not confuse isolated results with shared/deployed results.
 3. After successful CI/trials and live-baseline drift check, apply only the checked additive0008/technology/directory/fuel metadata transaction to the explicitly selected preview, with recovery retained. Preserve grocery/store hashes; no inventory PR #15 import, Home/postal rerun or purge. Verify counts, links and second-run no-op.
 4. Complete controlled backend-only rollout and verify API0.6.0, `/ready`, both1000-item snapshots, all requested chain identities, five fuel metadata choices, image URLs/credits, actual location filtering, managed sign-in and private receipt/worker connections. Do not claim success from a deploy trigger alone.
 5. Owner must privately finish Brevo account/sender/key setup (`FEEDBACK_BREVO_API_KEY` in Render). Until then keep `FEEDBACK_DELIVERY_ENABLED=false`. Then enable for a controlled synthetic message and verify provider acceptance plus recipient delivery; never print credentials.

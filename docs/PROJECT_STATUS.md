@@ -1,3 +1,7 @@
+## Verified checkpoint — complete handoff recorded
+
+ProjectACTIVE. Complete task/result register is CODEX_HANDOFF.md. Backend functional codef28fe642 has98local PostgreSQL/OCR tests and exact-head CI44115959801 passed. Android app48c7442/run44105274182 passed, signed APK checksum verified. Isolated Neon technology/directory/fuel trial repeated successfully; shared preview and deployed API remainunchanged. PR17rollout/shared sync, real-price/identity coverage, live-account/storage/email verification, optimization/final passes and GooglePlay gates remainopen. Brevo account/sender/key setup is not yet done by owner; delivery staysdisabled. No APK publication or paid upgrade. Resume the ordered next actions from handoff; do not reread the conversation or ask for build approval again.
+
 ## Latest handoff — complete task/result register
 
 Updated17November2026: read CODEX_HANDOFF.md for the full checklist, verified artifacts/CI, deployment state, blockers and next actions. Preview007APK48c7442 passed Android10 and checksum verification. Backend-only PR17 is prepared; latest local metadata suite98passed, fresh CI/shared sync/rollout still pending. Brevo freeHTTPS chosen; owner has not completed private account/sender/key setup, so delivery staysdisabled. No new shared catalogue/store import, API deployment or APK publication has occurred. Preserve existing releases and recovery branches; project remainsACTIVE.
