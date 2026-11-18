@@ -22,7 +22,6 @@ with sync_playwright() as p:
   expect(page.get_by_text(name,exact=True)).to_be_visible(timeout=15000)
  proof['seven_requested_chains_without_fabricated_local_availability']=True
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'technology-chains.png'))
- page.get_by_role('button',name='Изберете населено място',exact=True).click()
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia')
  page.get_by_text('София',exact=True).click()
  expect(page.get_by_text('Примерен обект · демонстрационен адрес',exact=True)).to_have_count(7)

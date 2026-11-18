@@ -20,6 +20,7 @@ const storage = {
 };
 const mockApi = {
   API_BASE_URL: "https://simulation.invalid",
+  httpStatus: error => Number(/^HTTP (\d{3})$/.exec(error.message)?.[1]) || null,
   api: async (path) => {
     calls++;
     if (fail) throw new Error("HTTP 503");

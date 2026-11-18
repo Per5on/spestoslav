@@ -253,3 +253,22 @@ Correction to earlier entries: the Yahoo SMTP path recorded on 17 November was a
 
 Next action: owner reviews the patch, applies it on a new branch (suggested `codex/preview-008`), reads exact-head backend CI (PostgreSQL) and the Android run, and verifies `/delete-user` against a throwaway real account before any claim of working account deletion. Legal text still needs the deletion procedure and the "approved prices stay anonymous" decision before public testing.
 
+
+## 18 November — Preview008 backend-first recheck
+
+- Rechecked [draft PR #19](https://github.com/Per5on/spestoslav/pull/19), backend CI [44287192549](https://github.com/Per5on/spestoslav/actions/runs/44287192549) and skipped Android runs [44287192548](https://github.com/Per5on/spestoslav/actions/runs/44287192548) and [44292063248](https://github.com/Per5on/spestoslav/actions/runs/44292063248). Changes remain uncommitted on top of `daa73ae`. The candidate workflow no longer contains a publish job.
+- Fixed two-character locality ranking and literal wildcard matching, corrected PostgreSQL receipt foreign-key order, tested provider deletion confirmation and duplicate registration status, then updated location input, app button styling, Settings, credits, auth retry and receipt feedback paths. Kept the existing thin green Refresh border and added green keyboard focus for browser pressables.
+- Disposable PostgreSQL 16 and Bulgarian OCR: 112 tests passed per SQLAlchemy family. Direct PostgreSQL account/locality checks: 16 passed per family with mocked identity provider. TypeScript, npm tests, Expo dependencies and simulated browser checks passed. Read-only public baseline probes returned HTTP 200 and the Neon Auth schema listed the deletion endpoint.
+- Android prebuild in a scratch directory confirmed versionCode 8, versionName 0.5.1, minSdk 29 and the camera permission. Android 10 device and end-to-end real account/private storage evidence are pending. No new commit, push, deployment, APK or release. Resume from the active local checkout and keep the release gate and feedback setting recorded in the handoff.
+
+## 18 November — pre-build optimization audit
+
+Checked local render and offline image paths, read-only live catalogue image counts, decoded all nine live samples, and verified the existing Preview007 package by checksum before measuring ABI entries. The handoff records the findings and proposed Android dry tests. No new build or code commit.
+
+## 18 November — optimization implementation and dry checks
+
+Applied menu and catalogue rendering changes, bundled sample thumbnails, added a bounded native image cache, and generated ABI and shrink configurations. Browser timings, offline decoding and Android bundle export are recorded in the handoff. The requested Android emulator run and signed package comparison require a capable test environment. No commit or release.
+
+## 18 November — Preview008 candidate commit checks
+
+Reconciled the two uploaded commits, verified rendered catalogue, Settings and About screens, and prepared an ARM phone APK lane with a separate x86_64 emulator smoke lane. Browser and backend checks passed. Continue by checking native CI on the candidate SHA and recording its signed artifact evidence.

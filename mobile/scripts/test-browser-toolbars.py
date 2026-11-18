@@ -21,7 +21,8 @@ with sync_playwright() as p:
  def geometry():
   toolbar.wait_for(state="visible",timeout=20000)
   expect(toolbar.get_by_role("button")).to_have_count(3)
-  buttons=toolbar.get_by_role('button');rects=[buttons.nth(i).bounding_box() for i in range(3)]
+  buttons=toolbar.get_by_role('button')
+  rects=buttons.evaluate_all('(els)=>els.map(e=>e.getBoundingClientRect().toJSON())')
   assert abs(rects[0]['width']-rects[1]['width'])<1,rects
   assert max(r['y'] for r in rects)-min(r['y'] for r in rects)<1,rects
   assert rects[0]['x']<rects[1]['x']<rects[2]['x']

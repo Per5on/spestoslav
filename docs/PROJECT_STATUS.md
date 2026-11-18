@@ -1,8 +1,16 @@
 # Спестовник — active project status
 
-Updated: 17 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
+Updated: 18 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
 
-## Current authorized task
+## Current work — Preview008
+
+Local, uncommitted changes are in `/workspace/work/spestoslav` on `codex/preview-008`, based on `daa73ae`. Reviewed [draft PR #19](https://github.com/Per5on/spestoslav/pull/19) and the open menu, toolbar and inventory issues. The backend matrix passed on the committed head. Android jobs were skipped by the workflow condition.
+
+The backend changes cover locality ranking, account and receipt deletion, and registration errors. The app changes cover shared location search, controls, Settings, About, session recovery and receipt state. Local backend, mobile, and simulated browser evidence is recorded in the handoff and activity log. Native acceptance and a real managed-account deletion remain open. No commit or deployment was made during the recheck.
+
+Optimization changes and browser dry results are recorded in the canonical handoff. Android prebuilds are configured. The original visual requests and the ABI-separated workflow were rechecked before the internal Preview008 candidate commit. Android 10 CI and physical ARM testing are separate gates.
+
+## Previous Preview007 authorization
 
 Recheck for missed errors and build Preview007 **without an email provider**. Build permission is granted. Email delivery stays disabled; do not ask for keys now. Preserve Preview005, previous APKs, reference images, inventory history and recovery branches. This is an internal test APK, not Google Play publication.
 
@@ -23,4 +31,4 @@ Recheck for missed errors and build Preview007 **without an email provider**. Bu
 - Email intentionally deferred until private Brevo setup and delivery test. No paid upgrade authorized.
 - PR15 inventory reconciliation remains separate: exact-head CI passed; proposed five-store import unapplied.
 - Optimization/header/ABI/R8 trial, three complete final-source passes, remaining privacy/operator publication details and Google Play preparation remain open. No speculative deletion/purge or bulk source replacement.
-- Review patch of 18 November (account deletion route, auth/receipt UX fixes, tests) is **unmerged and unverified in CI/PostgreSQL**; see [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md). It requires a new preview sequence for any APK.
+- Review patch of 18 November (account deletion route, auth/receipt UX fixes, tests) is unmerged. The Preview008 branch passed backend CI and the local follow-up passed direct PostgreSQL checks; see [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md). It requires a new preview sequence for any APK.

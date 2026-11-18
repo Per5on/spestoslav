@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Modal, ScrollView, Pressable, View } from "react-native";
+import { ActivityIndicator, Modal, ScrollView, View } from "react-native";
 import { LegalDocument } from "../legal/LegalDocument";
 import { Button } from "../Action";
 import { api } from "../api";
-import { Input, Text, useUI } from "../ui";
+import { Pressable, Input, Text, useUI } from "../ui";
 export function FeedbackScreen() {
   const { t } = useUI();
   const [privacyOpen, setPrivacyOpen] = useState(false);

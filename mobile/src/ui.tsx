@@ -12,6 +12,8 @@ import {
   TextInputProps,
   StyleSheet,
   Platform,
+  Pressable as NativePressable,
+  PressableProps,
   StyleProp,
   TextStyle,
   useWindowDimensions,
@@ -86,6 +88,30 @@ export function Text(props: TextProps) {
         props.style,
         { fontSize: appFontSize(style.fontSize ?? 14, fontScale, 11) },
         style.lineHeight ? { lineHeight: style.lineHeight * fontScale + 1 } : null,
+      ]}
+    />
+  );
+}
+export function Pressable({ style, onFocus, onBlur, ...props }: PressableProps) {
+  const [focused, setFocused] = useState(false);
+  return (
+    <NativePressable
+      {...props}
+      onFocus={(event) => {
+        setFocused(true);
+        onFocus?.(event);
+      }}
+      onBlur={(event) => {
+        setFocused(false);
+        onBlur?.(event);
+      }}
+      style={(state) => [
+        typeof style === "function" ? style(state) : style,
+        Platform.OS === "web" && {
+          outlineStyle: "solid",
+          outlineColor: "#267133",
+          outlineWidth: focused ? 2 : 0,
+        },
       ]}
     />
   );

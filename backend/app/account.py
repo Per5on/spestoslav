@@ -14,15 +14,15 @@ only the link to the person is removed.
 import uuid
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from botocore.exceptions import BotoCoreError, ClientError
 
 from .auth import Principal, current_user
 from .db import get_db
-from .marketplace import PriceCache, ReceiptItem, ReceiptScan
+from .marketplace import PriceCache, ReceiptScan
 from .mobile_auth import upstream
-from .receipts import ReceiptStorage
+from .receipts import ReceiptStorage, delete_receipt_rows
 from .workflows import ProductIdentificationRequest, ReceiptJob, ReviewSubmission
 
 router = APIRouter(prefix="/api/v1/account")
@@ -35,22 +35,22 @@ def _erase_receipts(db: Session, subject: str) -> None:
         .where(ReceiptJob.owner_subject == subject)
         .with_for_update()
     ).all()
+    if not rows:
+        return
     if any(scan.status == "PROCESSING" for _, scan in rows):
         raise HTTPException(409, "Wait for receipt processing to finish")
     # Tombstone first so an interrupted run never re-queues OCR or serves a broken image.
+    scans = [(scan.id, scan.image_storage_key) for _, scan in rows]
     for _, scan in rows:
         scan.status = "DELETING"
     db.commit()
-    storage = ReceiptStorage()
-    for _, scan in rows:
-        try:
-            storage.delete(scan.image_storage_key)
-        except (BotoCoreError, ClientError, OSError):
-            raise HTTPException(503, "Receipt storage unavailable") from None
-    for job, scan in rows:
-        db.execute(delete(ReceiptItem).where(ReceiptItem.receipt_scan_id == scan.id))
-        db.delete(job)
-        db.delete(scan)
+    try:
+        storage = ReceiptStorage()
+        for _, key in scans:
+            storage.delete(key)
+    except (BotoCoreError, ClientError, OSError):
+        raise HTTPException(503, "Receipt storage unavailable") from None
+    delete_receipt_rows(db, [scan_id for scan_id, _ in scans])
     db.commit()
 
 
@@ -96,7 +96,11 @@ def delete_account(
     _erase_receipts(db, principal.subject)
     _erase_contributions(db, principal.subject)
     try:
-        upstream("/delete-user", "POST", session=x_auth_session, payload={})
+        result, _ = upstream("/delete-user", "POST", session=x_auth_session, payload={})
+        if not isinstance(result, dict) or (
+            result.get("success") is not True or result.get("message") != "User deleted"
+        ):
+            raise HTTPException(502, "Identity provider did not confirm deletion")
     except HTTPException:
         # Private data is already erased and a retry is safe; never imply the account is gone.
         raise HTTPException(

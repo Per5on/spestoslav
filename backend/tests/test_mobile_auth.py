@@ -135,3 +135,23 @@ def test_provider_outage_fails_closed(monkeypatch):
         json={"email": "alice@example.invalid", "password": "simulation-password"},
     )
     assert r.status_code == 503 and r.headers["cache-control"] == "no-store"
+
+
+@pytest.mark.parametrize(
+    ("provider_code", "expected_status"),
+    [("USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL", 409), ("OTHER", 422)],
+)
+def test_registration_distinguishes_existing_account(provider, monkeypatch, provider_code, expected_status):
+    monkeypatch.setattr(
+        mobile_auth.httpx,
+        "request",
+        lambda *args, **kwargs: httpx.Response(
+            422, json={"code": provider_code, "message": "private provider payload"}
+        ),
+    )
+    response = client.post(
+        "/api/v1/auth/sign-up",
+        json={"email": "alice@example.invalid", "password": "simulation-password"},
+    )
+    assert response.status_code == expected_status
+    assert "private provider payload" not in response.text

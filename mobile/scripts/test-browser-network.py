@@ -33,12 +33,21 @@ with sync_playwright() as p:
 
     page.route(re.compile(r"/api/v1/localities\?"), recover)
     page.goto(args.base_url, wait_until="domcontentloaded")
-    page.get_by_role("button", name="Изберете населено място", exact=True).click(
-        timeout=60000
-    )
-    page.get_by_label("Търси населено място…", exact=True).fill("Sofia")
+    location = page.get_by_role("textbox", name="Търси населено място…", exact=True)
+    expect(location).to_have_count(1)
+    location.fill("S", timeout=60000)
+    page.wait_for_timeout(450)
+    assert calls[0] == 0
+    location.fill("So")
     expect(page.get_by_text("София", exact=True)).to_be_visible(timeout=15000)
     assert calls[0] == 2, calls
+    page.get_by_text("София", exact=True).click()
+    expect(location).to_have_value("София")
+    for tab in ("Техника", "Горива", "Моят списък", "Храни"):
+        page.get_by_role("tab", name=tab, exact=True).click()
+        expect(location).to_have_value("София")
+    expect(location).to_have_count(1)
+    proof["one_shared_location_field_searches_after_two_characters"] = True
     proof["transient_location_failure_recovers_without_manual_retry"] = True
     page.close()
     page = browser.new_page(viewport={"width": 390, "height": 844})
@@ -51,10 +60,9 @@ with sync_playwright() as p:
 
     page.route(re.compile(r"/api/v1/localities\?"), unavailable)
     page.goto(args.base_url, wait_until="domcontentloaded")
-    page.get_by_role("button", name="Изберете населено място", exact=True).click(
-        timeout=60000
+    page.get_by_role("textbox", name="Търси населено място…", exact=True).fill(
+        "So", timeout=60000
     )
-    page.get_by_label("Търси населено място…", exact=True).fill("Sofia")
     expect(
         page.get_by_text("Търсенето временно не е достъпно.", exact=True)
     ).to_be_visible(timeout=10000)

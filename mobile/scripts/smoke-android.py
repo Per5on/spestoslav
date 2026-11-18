@@ -59,6 +59,12 @@ sequence = os.environ.get("PREVIEW_SEQUENCE")
 if not sequence or not re.fullmatch(r"[0-9]{3}", sequence):
     raise RuntimeError("PREVIEW_SEQUENCE must be supplied from mobile/preview.json")
 
+def capture_visual(name):
+    Path(f"android-visual-{name}.png").write_bytes(
+        subprocess.check_output(["adb", "exec-out", "screencap", "-p"])
+    )
+
+
 def save_diagnostics():
     # Capture evidence even when an assertion fails, before the emulator exits.
     try:
@@ -81,10 +87,12 @@ order = ["Храни", "Техника", "Горива", "Моят списък"
 positions = [bounds(next(n for n in initial if label(n) == name))[0] for name in order]
 assert positions == sorted(positions)
 assert not any(label(n) == "Дом" or label(n) == "МЕСТОПОЛОЖЕНИЕ" for n in initial)
-tap("Изберете населено място")
-tap_node(next(n for n in nodes() if n.get("class") == "android.widget.EditText"))
+fields = [n for n in initial if n.get("resource-id", "").endswith("location-search")]
+assert len(fields) == 1 and fields[0].get("class") == "android.widget.EditText"
+tap_node(fields[0])
 adb("shell", "input", "text", "Sofia")
 tap_node(wait_text("София"))
+assert label(wait_resource("location-search")) == "София"
 toolbar = nodes()
 products = next(n for n in toolbar if label(n) == "Продукти")
 stores = next(n for n in toolbar if label(n).startswith("Магазини ("))
@@ -95,7 +103,8 @@ assert (
     < 4
 )
 assert bounds(stores)[0] < bounds(products)[0] < bounds(refresh)[0]
-# Check actual decoded remote images, not merely an Image view or an icon fallback.
+capture_visual("catalogue")
+# Verify actual decoding of the bundled samples in both catalogue categories.
 photos = next(n for n in nodes() if "Примерни снимки" in label(n))
 tap_node(photos)
 wait_resource("thumbnail-loaded-demo-milk")
@@ -107,7 +116,7 @@ tap("Храни")
 tap_node(next(n for n in nodes() if "Примерни снимки" in label(n)))
 for tab in ["Техника", "Горива", "Моят списък"]:
     tap(tab)
-    assert any(label(n) == "София" for n in nodes())
+    assert label(wait_resource("location-search")) == "София"
 assert any("Списъкът е празен" in label(n) for n in nodes())
 tap("Горива");tap("Гориво")
 for grade in ("Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз"):
@@ -159,6 +168,8 @@ else:
 wait_text("4006381333931",40)
 tap("Отвори менюто")
 tap("Настройки")
+wait_text("Език")
+capture_visual("settings")
 tap("Език")
 names = {"English", "Deutsch", "Español", "Français", "Русский"}
 seen = {label(n) for n in nodes()}
@@ -189,6 +200,9 @@ installed_code=re.search(r"versionCode=(\d+)",package).group(1)
 metadata=json.loads(Path("preview.json").read_text())
 assert installed_version==metadata["version"] and int(installed_code)==int(metadata["sequence"])
 wait_text(f"Версия {installed_version} ({installed_code})")
+wait_text("Лаптоп (примерна снимка)")
+assert not any("https://" in label(n) or "laptop:" in label(n) for n in nodes())
+capture_visual("about")
 tap("Отвори менюто");tap("Настройки");tap("Език");tap("English")
 tap("Open menu");tap("About")
 wait_text(f"Version {installed_version} ({installed_code})")

@@ -77,19 +77,25 @@ export function lowestPrice(
   now = Date.now(),
 ): number | null {
   if (product.is_demo) return null;
-  const ids = new Set(stores.map((s) => s.id));
-  const eligible = prices.filter(
-    (p) =>
-      p.product_id === product.id &&
-      ids.has(p.branch_id) &&
-      Number(p.price_eur) > 0 &&
-      Number.isFinite(Number(p.price_eur)) &&
-      (!p.expires_at || Date.parse(p.expires_at) > now),
-  );
-  return eligible.length
-    ? Math.min(...eligible.map((p) => Number(p.price_eur)))
-    : null;
+  return indexLowestPrices(prices, stores, now).products.get(product.id) ?? null;
 }
+
+export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.now()) {
+  const ids = new Set(stores.map(store => store.id));
+  const products = new Map<string, number>();
+  const branches = new Map<string, Map<string, number>>();
+  for (const row of prices) {
+    const price = Number(row.price_eur);
+    if (!ids.has(row.branch_id) || !Number.isFinite(price) || price <= 0 ||
+        (row.expires_at && !(Date.parse(row.expires_at) > now))) continue;
+    products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
+    const branch = branches.get(row.branch_id) ?? new Map<string, number>();
+    branch.set(row.product_id, Math.min(price, branch.get(row.product_id) ?? Infinity));
+    branches.set(row.branch_id, branch);
+  }
+  return { products, branches };
+}
+
 export function productName(p: Product) {
   return p.name.replace(/^Демо:\s*/i, "");
 }

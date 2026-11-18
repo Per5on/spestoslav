@@ -1,6 +1,6 @@
 # Account deletion (review patch, 18 November 2026)
 
-Status: **implemented and unit-tested with mocks; not verified against PostgreSQL CI or real Neon Auth.** Do not claim working account deletion, or GDPR compliance, from this document.
+Status: **verified locally with PostgreSQL and a mocked identity provider.** The live Neon Auth OpenAPI schema lists the deletion endpoint. An authenticated deletion against the live provider remains to be tested.
 
 ## Contract
 
@@ -8,7 +8,7 @@ Status: **implemented and unit-tested with mocks; not verified against PostgreSQ
 
 | Result | Meaning |
 |---|---|
-| 204 | Private data erased and the provider accepted `/delete-user`. |
+| 204 | Private data erased and the provider returned an explicit user-deleted result. |
 | 401 | Missing/invalid token. |
 | 403 | Session does not belong to the token's subject, or a service/admin identity called it. |
 | 409 | A receipt is being OCR-processed; retry shortly. Nothing was erased. |
@@ -26,7 +26,7 @@ Status: **implemented and unit-tested with mocks; not verified against PostgreSQ
 ## Owner decisions and checks still needed
 
 - **Policy:** reviewed (verified/rejected/expired) contributions are kept anonymously. Confirm this, then state it in `mobile/src/legal/policies.json` (the Terms/Privacy source) and re-render with `scripts/render_legal_documents.py`. This patch deliberately does not edit the legal text.
-- **Provider:** `/delete-user` is the Better-Auth-style path and is **assumed** to be exposed by Neon Auth for this project. Test with a throwaway real account. If it is unsupported or needs a fresh sign-in/password, the route returns 502 and the data erasure still works; adjust `app/account.py` accordingly.
+- **Provider:** The live schema lists `/delete-user`. Test the route with an authorized throwaway account to establish whether the branch requires fresh sign-in, password or email verification. The backend returns 502 after private data erasure if the provider does not confirm deletion.
 - **Identity match:** step 1 assumes the provider user id equals the JWT `sub`. If the first real test returns 403, check that assumption.
 - **Not covered:** server logs/backups (retention periods are an operator decision) and a receipt uploaded concurrently while deletion runs (it would be left for a retry).
 - **App:** Account screen offers "Delete account" with a confirmation; after a 502 the user stays signed in so they can retry.

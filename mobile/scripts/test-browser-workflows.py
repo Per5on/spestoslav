@@ -17,7 +17,7 @@ with sync_playwright() as p:
  context=browser.new_context(viewport={'width':390,'height':844},permissions=['camera']);page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)));calls=[];page.on('request',lambda r:calls.append(r.url))
  page.goto(args.base_url,wait_until='domcontentloaded')
  milk=page.get_by_role('button',name='Добави SIM Мляко 1 L',exact=True);milk.wait_for(timeout=120000)
- page.get_by_role('button',name='Изберете населено място',exact=True).click();page.get_by_label('Търси населено място…',exact=True).fill('Sofia');page.get_by_text('София',exact=True).click()
+ page.get_by_label('Търси населено място…',exact=True).fill('Sofia');page.get_by_text('София',exact=True).click()
  milk.click();milk.click();page.get_by_role('button',name='Добави SIM Олио 1 L',exact=True).click()
  page.get_by_role('tab',name='Моят списък',exact=True).click();page.get_by_role('button',name='Сравни цени',exact=True).click();expect(page.get_by_text('5.50 €',exact=False)).to_be_visible(timeout=15000)
  proof['complete_basket_comparison']=True

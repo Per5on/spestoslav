@@ -23,11 +23,17 @@ SESSION = {"X-Auth-Session": "signed.session"}
 @pytest.fixture(autouse=True)
 def database(tmp_path, monkeypatch):
     previous = dict(app.dependency_overrides)
+    if fixtures.engine.dialect.name == "sqlite":
+        with fixtures.engine.begin() as connection:
+            connection.exec_driver_sql("PRAGMA foreign_keys = ON")
     fixtures.setup_function()
     app.dependency_overrides[get_db] = fixtures.override_get_db
     monkeypatch.setenv("RECEIPT_STORAGE_DIR", str(tmp_path))
     yield
     fixtures.teardown_function()
+    if fixtures.engine.dialect.name == "sqlite":
+        with fixtures.engine.begin() as connection:
+            connection.exec_driver_sql("PRAGMA foreign_keys = OFF")
     app.dependency_overrides.clear()
     app.dependency_overrides.update(previous)
 
@@ -37,7 +43,7 @@ def provider(monkeypatch):
     monkeypatch.setenv(
         "NEON_AUTH_BASE_URL", "https://identity.example.invalid/bgprices/auth"
     )
-    state = {"session_user": "alice", "delete_status": 200, "calls": []}
+    state = {"session_user": "alice", "delete_status": 200, "delete_message": "User deleted", "calls": []}
 
     def request(method, url, **kwargs):
         path = url.split("/auth")[-1]
@@ -48,7 +54,11 @@ def provider(monkeypatch):
                 200, json={"user": {"id": state["session_user"]}}, request=req
             )
         if path == "/delete-user":
-            return httpx.Response(state["delete_status"], json={"success": True}, request=req)
+            return httpx.Response(
+                state["delete_status"],
+                json={"success": True, "message": state["delete_message"]},
+                request=req,
+            )
         raise AssertionError(path)
 
     monkeypatch.setattr(mobile_auth.httpx, "request", request)
@@ -191,3 +201,16 @@ def test_provider_failure_reports_502_after_data_erased_and_retry_succeeds(provi
     assert count(ReceiptJob, owner_subject="alice") == 0
     provider["delete_status"] = 200
     assert fixtures.client.delete("/api/v1/account", headers=SESSION).status_code == 204
+
+
+def test_provider_verification_email_does_not_confirm_deletion(provider, monkeypatch):
+    as_user()
+    provider["delete_message"] = "Verification email sent"
+
+    def unexpected_storage(*args):
+        pytest.fail("An account without receipts must not require storage")
+
+    monkeypatch.setattr("app.account.ReceiptStorage", unexpected_storage)
+    response = fixtures.client.delete("/api/v1/account", headers=SESSION)
+    assert response.status_code == 502
+    assert provider_calls(provider, "/delete-user")

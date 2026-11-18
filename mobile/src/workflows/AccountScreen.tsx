@@ -25,7 +25,7 @@ function deleteMessage(error: unknown): MessageKey {
   return "deleteAccountError";
 }
 export function AccountScreen() {
-  const { user, ready, signIn, signOut, deleteAccount } = useSession(),
+  const { user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount } = useSession(),
     { t } = useUI();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
@@ -86,6 +86,12 @@ export function AccountScreen() {
         </>
       ) : (
         <>
+          {restoreUnavailable && (
+            <>
+              <Text accessibilityRole="alert" style={s.notice}>{t("authUnavailable")}</Text>
+              <Button label={t("retry")} onPress={() => void retryRestore()} />
+            </>
+          )}
           <Text style={s.meta}>{t("accountPurpose")}</Text>
           <Input
             accessibilityLabel={t("email")}

@@ -7,14 +7,16 @@ import React, {
 } from "react";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
-import { api, API_BASE_URL, httpStatus } from "../api";
+import { api, ApiError, API_BASE_URL, httpStatus } from "../api";
 type User = { id: string; email: string; name: string };
 type Session = { session: string; access_token: string; user: User };
 type ContextValue = {
   user: User | null;
   ready: boolean;
   signIn: (email: string, password: string, register: boolean) => Promise<void>;
-  /** Resolves true when the server confirmed sign-out; the device is always signed out locally. */
+  restoreUnavailable: boolean;
+  retryRestore: () => Promise<void>;
+  /** Resolves true after the server revokes or rejects the session. */
   signOut: () => Promise<boolean>;
   /** Erases private data and the sign-in account. Rejects with the HTTP status in the error. */
   deleteAccount: () => Promise<void>;
@@ -47,8 +49,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     issued = useRef(0),
     generation = useRef(0);
   const pending = useRef<Promise<Session> | null>(null);
+  const mounted = useRef(false);
   const [user, setUser] = useState<User | null>(null),
-    [ready, setReady] = useState(false);
+    [ready, setReady] = useState(false),
+    [restoreUnavailable, setRestoreUnavailable] = useState(false);
   const memoryOnly = Platform.OS === "web";
   async function clear() {
     generation.current++;
@@ -58,7 +62,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     if (!memoryOnly) await SecureStore.deleteItemAsync(KEY);
   }
   async function refresh() {
-    if (!current.current) throw new Error("HTTP 401");
+    if (!current.current) throw new ApiError(401);
     const before = generation.current;
     const fresh = await api<Session>("/api/v1/auth/refresh", {
       method: "POST",
@@ -70,36 +74,44 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     setUser(fresh.user);
     return fresh;
   }
-  useEffect(() => {
-    let alive = true;
-    (async () => {
-      try {
-        const saved = memoryOnly ? null : await SecureStore.getItemAsync(KEY);
-        if (!alive || !saved) return;
-        // Wake a sleeping free-tier API first; the POST below is never retried by api().
-        await api("/ready", {}, 30000).catch(() => undefined);
-        const fresh = await retryTransient(() =>
-          api<Session>("/api/v1/auth/refresh", {
-            method: "POST",
-            headers: { "X-Auth-Session": saved },
-          }),
-        );
-        if (alive) {
-          current.current = fresh;
-          issued.current = Date.now();
-          setUser(fresh.user);
-        }
-      } catch (error) {
-        // Only a definite rejection forgets the stored session. An outage keeps it for the next launch.
-        const status = httpStatus(error);
-        if (status === 401 || status === 403)
-          await SecureStore.deleteItemAsync(KEY).catch(() => undefined);
-      } finally {
-        if (alive) setReady(true);
+  async function retryRestore() {
+    const before = ++generation.current;
+    setReady(false);
+    setRestoreUnavailable(false);
+    const isCurrent = () => mounted.current && before === generation.current;
+    try {
+      const saved = memoryOnly ? null : await SecureStore.getItemAsync(KEY);
+      if (!saved || !isCurrent()) return;
+      // Wake the free-tier API before exchanging the stored provider session.
+      await api("/ready", {}, 30000).catch(() => undefined);
+      if (!isCurrent()) return;
+      const fresh = await retryTransient(() =>
+        api<Session>("/api/v1/auth/refresh", {
+          method: "POST",
+          headers: { "X-Auth-Session": saved },
+        }),
+      );
+      if (isCurrent()) {
+        current.current = fresh;
+        issued.current = Date.now();
+        setUser(fresh.user);
       }
-    })();
+    } catch (error) {
+      if (!isCurrent()) return;
+      const status = httpStatus(error);
+      if (status === 401 || status === 403)
+        await SecureStore.deleteItemAsync(KEY).catch(() => undefined);
+      else
+        setRestoreUnavailable(true);
+    } finally {
+      if (isCurrent()) setReady(true);
+    }
+  }
+  useEffect(() => {
+    mounted.current = true;
+    void retryRestore();
     return () => {
-      alive = false;
+      mounted.current = false;
     };
   }, []);
   async function signIn(email: string, password: string, register: boolean) {
@@ -120,33 +132,37 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         /* Stay signed in for this run rather than orphaning a live server session. */
       }
     generation.current++;
+    setRestoreUnavailable(false);
     current.current = fresh;
     issued.current = Date.now();
     setUser(fresh.user);
   }
   async function signOut() {
+    const before = generation.current;
     const session = current.current?.session;
-    await clear().catch(() => undefined);
-    if (!session) return true;
-    try {
-      await api("/api/v1/auth/sign-out", {
-        method: "POST",
-        headers: { "X-Auth-Session": session },
-      });
-      return true;
-    } catch {
-      return false;
+    if (session) {
+      try {
+        await api("/api/v1/auth/sign-out", {
+          method: "POST",
+          headers: { "X-Auth-Session": session },
+        });
+      } catch (error) {
+        if (httpStatus(error) !== 401) return false;
+      }
     }
+    if (before === generation.current) await clear().catch(() => undefined);
+    return true;
   }
+
   async function deleteAccount() {
     const session = current.current?.session;
-    if (!session) throw new Error("HTTP 401");
+    if (!session) throw new ApiError(401);
     await request<void>(
       "/api/v1/account",
       { method: "DELETE", headers: { "X-Auth-Session": session } },
       60000,
     );
-    await clear();
+    await clear().catch(() => undefined);
   }
 
   async function request<T>(
@@ -154,7 +170,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     options: RequestInit = {},
     timeoutMs?: number,
   ) {
-    if (!current.current) throw new Error("HTTP 401");
+    if (!current.current) throw new ApiError(401);
     const before = generation.current;
     if (Date.now() - issued.current > 12 * 60 * 1000) {
       if (!pending.current)
@@ -169,7 +185,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       }
     }
     const fresh = current.current;
-    if (!fresh || before !== generation.current) throw new Error("HTTP 401");
+    if (!fresh || before !== generation.current) throw new ApiError(401);
     try {
       const result = await api<T>(
         path,
@@ -190,7 +206,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
   }
   return (
-    <Context.Provider value={{ user, ready, signIn, signOut, deleteAccount, request }}>
+    <Context.Provider value={{ user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount, request }}>
       {children}
     </Context.Provider>
   );

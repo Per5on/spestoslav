@@ -4,14 +4,13 @@ import {
   Alert,
   Image,
   Platform,
-  Pressable,
   View,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import { useSession } from "./session";
 import { Button } from "../Action";
-import { Text, useUI } from "../ui";
+import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
 import { s } from "../styles";
@@ -50,7 +49,7 @@ export function ReceiptsScreen({
     [branch, setBranch] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false),
-    [submitted, setSubmitted] = useState(false),
+    [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null),
     [note, setNote] = useState<
       "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed"
     >("");
@@ -104,11 +103,9 @@ export function ReceiptsScreen({
     }
   }
   useEffect(() => {
-    setSubmitted(false);
-  }, [selected?.id]);
-  useEffect(() => {
     setRows([]);
     setSelected(null);
+    setSubmittedReceipt(null);
     discard();
     if (session.user) void load();
   }, [session.user?.id]);
@@ -138,6 +135,7 @@ export function ReceiptsScreen({
         return;
       }
       discard();
+      setSubmittedReceipt(null);
       draftRef.current = asset;
       setDraft(asset);
       requestKey.current =
@@ -173,7 +171,7 @@ export function ReceiptsScreen({
         body: form,
       });
     } catch {
-      // Nothing was accepted: keep the draft and its idempotency key so retrying cannot duplicate.
+      // The outcome is unknown if the response was lost. Keep the draft and its request key.
       if (mounted.current) {
         setError(true);
         setBusy(false);
@@ -183,21 +181,20 @@ export function ReceiptsScreen({
     // From here the receipt exists on the server; a refresh problem must not look like a failed upload.
     if (!mounted.current) return;
     discard();
-    let refreshed = false;
-    try {
-      const detailed = await session.request<Receipt>(
-        "/api/v1/receipts/" + created.id,
-      );
-      if (mounted.current) setSelected(detailed);
-      refreshed = await load(true);
-    } catch {
-      refreshed = false;
-    }
+    setSelected(null);
+    setSubmittedReceipt(null);
+    const [detailResult, listResult] = await Promise.allSettled([
+      session.request<Receipt>("/api/v1/receipts/" + created.id),
+      load(true),
+    ]);
     if (mounted.current) {
-      if (!refreshed) setNote("receiptUploadedRefreshFailed");
+      if (detailResult.status === "fulfilled") setSelected(detailResult.value);
+      if (detailResult.status === "rejected" || listResult.status !== "fulfilled" || !listResult.value)
+        setNote("receiptUploadedRefreshFailed");
       setBusy(false);
     }
   }
+
   async function detail(id: string) {
     setBusy(true);
     setError(false);
@@ -310,7 +307,7 @@ export function ReceiptsScreen({
           else void load();
         }}
       />
-      {submitted && <Text style={s.notice}>{t("receiptSubmitted")}</Text>}
+      {submittedReceipt !== null && submittedReceipt === selected?.id && <Text style={s.notice}>{t("receiptSubmitted")}</Text>}
       {busy && <ActivityIndicator />}
       {error && (
         <Text accessibilityRole="alert" style={s.notice}>
@@ -343,7 +340,7 @@ export function ReceiptsScreen({
                     products={catalogue.products}
                     stores={stores}
                     onSubmitted={async () => {
-                      setSubmitted(true);
+                      setSubmittedReceipt(selected.id);
                       await detail(selected.id);
                     }}
                   />

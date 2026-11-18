@@ -48,7 +48,7 @@ export function CatalogToolbar({
         expanded={fuel ? fuelExpanded : undefined}
         onPress={() => (fuel ? onFuel() : onView("products"))}
       />
-      <Button layout="snug" refreshOutline label={t("refresh")} onPress={onRefresh} />
+      <Button layout="snug" compactRefresh label={t("refresh")} onPress={onRefresh} />
     </View>
   );
 }

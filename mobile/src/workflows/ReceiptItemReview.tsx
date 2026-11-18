@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { Product, Store, matchesProduct } from "../catalog/model";
-import { Input, Text, useUI } from "../ui";
+import { Pressable, Input, Text, useUI } from "../ui";
 import { Button } from "../Action";
 import { s } from "../styles";
 import { useSession } from "./session";

@@ -7,8 +7,15 @@ async function main(){
  let calls=0;
  global.fetch=async()=>{if(++calls===1)throw new TypeError('Network unavailable');return ok;};
  assert.equal(await fetchWithRetry('https://test.invalid',{}, {retryDelayMs:0}),ok);assert.equal(calls,2);
- calls=0;global.fetch=async()=>{calls++;return {status:503,ok:false};};
- assert.equal((await fetchWithRetry('https://test.invalid',{}, {retries:2,retryDelayMs:0})).status,503);assert.equal(calls,3);
+ calls=0;
+ let cancelledBodies=0;
+ global.fetch=async()=>{
+  const status=[502,503,504][calls++];
+  return {status,ok:false,body:{cancel:async()=>{cancelledBodies++;}}};
+ };
+ assert.equal((await fetchWithRetry('https://test.invalid',{}, {retries:2,retryDelayMs:0})).status,504);
+ assert.equal(calls,3);
+ assert.equal(cancelledBodies,2);
  for(const method of ['POST','PUT','PATCH','DELETE']){
   calls=0;global.fetch=async()=>{calls++;throw new TypeError('Network unavailable');};
   await assert.rejects(fetchWithRetry('https://test.invalid',{method},{retries:2,retryDelayMs:0}),TypeError);assert.equal(calls,1);

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_build:
-        description: "Owner explicitly confirmed the Preview007 build after dry-test review"
+        description: "Owner explicitly confirmed this internal preview build"
         type: boolean
         default: false
   pull_request:
@@ -14,10 +14,8 @@ jobs:
   apk:
     # Owner explicitly authorized Preview007 test builds on17November; no release approval.
     if: (github.event_name == 'workflow_dispatch' && inputs.confirm_build == true) || (github.event_name == 'pull_request' && github.head_ref == 'codex/preview-007' && github.event.pull_request.head.repo.full_name == github.repository)
-    outputs:
-      preview_sequence: ${{ steps.preview.outputs.sequence }}
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     defaults:
       run:
         working-directory: mobile
@@ -66,15 +64,13 @@ jobs:
       - run: npm test
       - run: npx expo install --check
       - run: npx expo prebuild --platform android --no-install
-      - name: Build standalone preview APK (test signing)
+        env:
+          SPESTOVNIK_DRY_ANDROID_SHRINK: "1"
+      - name: Build internal Android emulator APK
         working-directory: mobile/android
-        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a,x86_64
-      - name: Verify and name APK
         run: |
-          APK=android/app/build/outputs/apk/release/app-release.apk
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose "$APK"
-          cp "$APK" spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
-          sha256sum spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk > spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk.sha256
+          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
+          cp app/build/outputs/apk/release/app-release.apk ../android-smoke-x86_64.apk
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -97,11 +93,24 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
           script: |
-            adb install mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
+            adb install mobile/android-smoke-x86_64.apk
             adb shell mkdir -p /sdcard/Download
             adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
             adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
             cd mobile && python3 scripts/smoke-android.py
+      - name: Build phone preview APK (test signing)
+        working-directory: mobile/android
+        run: ./gradlew clean assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+      - name: Verify phone APK signature, ABIs and size
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release.apk
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose "$APK"
+          ABIS=$(unzip -Z1 "$APK" | awk -F/ '$1 == "lib" && $3 ~ /\.so$/ {print $2}' | sort -u)
+          test "$ABIS" = "$(printf '%s\n' arm64-v8a armeabi-v7a)"
+          DEST="spestovnik-preview-${PREVIEW_SEQUENCE}.apk"
+          cp "$APK" "$DEST"
+          sha256sum "$DEST" > "$DEST.sha256"
+          echo "Signed ARM phone APK: $(wc -c < "$DEST") bytes (arm64-v8a, armeabi-v7a)" >> "$GITHUB_STEP_SUMMARY"
       - name: Capture public API diagnostics on native failure
         if: failure()
         run: python scripts/check-live-api.py --output android-network.json
@@ -113,49 +122,9 @@ jobs:
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk.sha256
             mobile/android-preview-${{ env.PREVIEW_SEQUENCE }}.png
+            mobile/android-visual-*.png
             mobile/android-smoke.log
             mobile/android-smoke-window.xml
             mobile/android-network.json
           retention-days: 30
           if-no-files-found: warn
-
-  publish:
-    needs: apk
-    if: github.event_name == 'workflow_dispatch' && inputs.publish_release == true && github.ref_name != 'codex/preview-006' && github.ref_name != 'codex/preview-007'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-      PREVIEW_SEQUENCE: ${{ needs.apk.outputs.preview_sequence }}
-      SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-    steps:
-      - uses: actions/checkout@v5
-        with:
-          ref: ${{ env.SOURCE_SHA }}
-      - uses: actions/download-artifact@v5
-        with:
-          name: spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}
-          path: apk
-      - name: Publish a new numbered prerelease without replacing assets
-        shell: bash
-        run: |
-          APP_SOURCE_TREE="$(git rev-parse "${SOURCE_SHA}:mobile")"
-          cd apk
-          sha256sum -c "spestovnik-preview-${PREVIEW_SEQUENCE}.apk.sha256"
-          TAG="android-preview-${PREVIEW_SEQUENCE}"
-          if gh release view "$TAG" --json body --jq .body > previous-notes.md 2>/dev/null; then
-            if grep -Fq "App tree: ${APP_SOURCE_TREE}." previous-notes.md; then
-              echo "This app source is already published; preserving its existing assets."
-              exit 0
-            fi
-            echo "A different app source already uses this number; increment mobile/preview.json and synchronize metadata."
-            exit 1
-          fi
-          cat > notes.md <<EOF_NOTES
-          Standalone Android 10+ test build. Source-backed grocery catalogue with metadata caching; camera/image/manual GTIN scanning; managed sign-in and private receipt OCR/review. Updated ordered overflow menu, nested Settings, About with installed version and Vimp notice, compact toolbars and five fuel choices. Earlier previews remain unchanged. Retailer names are not verified barcode/price coverage; demo images have no verified price. Real route directions and live Fuelo prices are not enabled.
-
-          Numbered preview ${PREVIEW_SEQUENCE}. Source: ${SOURCE_SHA}. App tree: ${APP_SOURCE_TREE}. Build and Android 10 smoke checks passed before publication. Previous numbered artifacts are preserved.
-          EOF_NOTES
-          gh release create "$TAG" "spestovnik-preview-${PREVIEW_SEQUENCE}.apk" "spestovnik-preview-${PREVIEW_SEQUENCE}.apk.sha256" "android-preview-${PREVIEW_SEQUENCE}.png" --target "$SOURCE_SHA" --title "Спестовник — Android preview ${PREVIEW_SEQUENCE}" --notes-file notes.md --prerelease --latest=false
