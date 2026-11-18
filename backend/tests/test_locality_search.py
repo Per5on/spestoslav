@@ -51,6 +51,7 @@ def setup_function():
         )
 
         db.add(Category(code="FOOD", name_bg="Храни", name_en="Food"))
+        db.flush()
         db.add(Retailer(code="TEST", name="Test Market", category_code="FOOD"))
         product_id, branch_id = uuid.uuid4(), uuid.uuid4()
         db.add(
@@ -62,6 +63,7 @@ def setup_function():
                 normalized_name="test product",
             )
         )
+        db.flush()
         db.add(
             ProductBarcode(
                 product_id=product_id,
@@ -78,6 +80,7 @@ def setup_function():
                 address="Main street 1",
             )
         )
+        db.flush()
         db.add(
             CurrentPrice(
                 product_id=product_id,
@@ -131,6 +134,33 @@ def test_search_by_common_english_spelling():
     response = client.get("/api/v1/localities", params={"q": "Sofia"})
     assert response.status_code == 200
     assert response.json()[0]["name_latin"] == "Sofija"
+
+
+
+def test_two_character_prefix_ranks_before_contains_matches():
+    with TestingSessionLocal() as db:
+        for index in range(25):
+            db.add(
+                Locality(
+                    source="TEST",
+                    source_id=f"contains-{index}",
+                    name=f"Asova {index}",
+                    name_bg=f"Асова {index}",
+                    type="VILLAGE",
+                    on_map=True,
+                )
+            )
+        db.commit()
+    for query in ("Со", "So"):
+        response = client.get("/api/v1/localities", params={"q": query})
+        assert response.status_code == 200
+        assert len(response.json()) == 20
+        assert response.json()[0]["name_bg"] == "София"
+
+
+def test_locality_search_treats_sql_wildcards_literally():
+    for query in ("%%", "__"):
+        assert client.get("/api/v1/localities", params={"q": query}).json() == []
 
 
 def test_postal_search_is_removed():

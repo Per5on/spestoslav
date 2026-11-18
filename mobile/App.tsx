@@ -1,13 +1,13 @@
 import { LegalDocument } from "./src/legal/LegalDocument";
+import { sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
 import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  Modal,
-  Pressable,
+  Linking,
   ScrollView,
   View,
 } from "react-native";
@@ -27,15 +27,16 @@ import {
   Product,
   changeQuantity,
   restoreBasket,
-  lowestPrice,
+  indexLowestPrices,
   matchesProduct,
   productName,
 } from "./src/catalog/model";
 import { Category, useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
-import { Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/ui";
+import { Pressable, Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/ui";
 import { s } from "./src/styles";
-import { overflowMenu as menu, Screen } from "./src/navigation/menu";
+import { Screen } from "./src/navigation/menu";
+import { OverflowMenu } from "./src/navigation/OverflowMenu";
 import { AboutScreen } from "./src/navigation/AboutScreen";
 import {
   CatalogToolbar,
@@ -113,8 +114,7 @@ function Main() {
   const insets = useSafeAreaInsets();
   const contentRef = useRef<ScrollView>(null);
   const [category, setCategory] = useState<Category>("groceries"),
-    [screen, setScreen] = useState<Screen>("catalog"),
-    [menuOpen, setMenuOpen] = useState(false);
+    [screen, setScreen] = useState<Screen>("catalog");
   const [locality, setLocality] = useState<Locality | null>(null),
     [basket, setBasket] = useState<BasketItem[]>([]),
     [restored, setRestored] = useState(false);
@@ -135,7 +135,7 @@ function Main() {
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, demo);
+  const catalog = useCatalog(category, locality?.id, demo, true, screen === "catalog" || screen === "basket");
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
   }, [screen, category]);
@@ -265,31 +265,58 @@ function Main() {
         ? "list"
         : screen;
   const fuelProduct = catalog.products.find(p => p.fuel_type === fuel);
-  const hasFuelPrices = Boolean(fuelProduct && lowestPrice(fuelProduct, catalog.prices, catalog.stores) !== null);
-  const visible = catalog.products.filter(
-    (p) =>
-      (!group || p.group_code === group) &&
-      (selected.length ? selected.includes(p.id) : !appliedQuery || matchesProduct(p, appliedQuery)),
+  const [priceRevision, setPriceRevision] = useState(0);
+  useEffect(() => {
+    const now = Date.now();
+    let next = Infinity;
+    for (const row of catalog.prices) {
+      const expiry = row.expires_at ? Date.parse(row.expires_at) : NaN;
+      if (expiry > now) next = Math.min(next, expiry);
+    }
+    if (!Number.isFinite(next)) return;
+    const timer = setTimeout(() => setPriceRevision(v => v + 1), Math.min(next - now, 2147483647));
+    return () => clearTimeout(timer);
+  }, [catalog.prices, priceRevision]);
+  const priceIndex = useMemo(
+    () => indexLowestPrices(catalog.prices, catalog.stores),
+    [catalog.prices, catalog.stores, priceRevision],
   );
-  const groups = [
-    ...new Set(
-      catalog.products
-        .map((p) => p.group_code)
-        .filter((c): c is string => Boolean(c)),
-    ),
-  ];
+  const hasFuelPrices = Boolean(fuelProduct && priceIndex.products.has(fuelProduct.id));
+  const visible = useMemo(() => {
+    const ids = new Set(selected);
+    return catalog.products.filter(
+      p => (!group || p.group_code === group) &&
+        (ids.size ? ids.has(p.id) : !appliedQuery || matchesProduct(p, appliedQuery)),
+    );
+  }, [catalog.products, group, selected, appliedQuery]);
+  const groups = useMemo(() => [...new Set(
+    catalog.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
+  )], [catalog.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
-  const suggestions=catalog.products.filter(p=>matchesProduct(p,query)||displayName(p).toLocaleLowerCase(language).includes(query.trim().toLocaleLowerCase(language)));
+  const normalizedQuery = query.trim().toLocaleLowerCase(language);
+  const suggestions = searchOpen && normalizedQuery
+    ? catalog.products.filter(p => matchesProduct(p, query) ||
+        displayName(p).toLocaleLowerCase(language).includes(normalizedQuery))
+    : [];
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
-    const price = lowestPrice(p, catalog.prices, catalog.stores);
+    const credit = p.is_demo ? sampleCredit(p.id) : undefined;
+    const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
-        <ProductThumbnail id={p.id} name={displayName(p)} uri={p.image_url} />
+        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)} uri={p.image_url} />
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
           <Text style={s.productName}>{displayName(p)}</Text>
+          {credit && (
+            <Pressable accessibilityRole="link"
+              onPress={() => void Linking.openURL(credit.source_url).catch(() => undefined)}>
+              <Text style={[s.meta, { textDecorationLine: "underline" }]}>
+                {credit.author} · {credit.license}
+              </Text>
+            </Pressable>
+          )}
           <Text style={s.meta}>
             {p.package ||
               [p.package_quantity, p.package_unit].filter(Boolean).join(" ")}
@@ -313,7 +340,7 @@ function Main() {
       <StatusBar style="light" />
       <View testID="app-header" style={s.header}>
         <Image
-          source={require("./assets/money-bag-logo.png")}
+          source={require("./assets/header-logo.webp")}
           accessibilityLabel="Спестовник"
           style={s.logo}
           resizeMode="contain"
@@ -322,15 +349,10 @@ function Main() {
           <Text style={s.brand}>Спестовник</Text>
           <Text style={s.tagline}>{t("tagline")}</Text>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("openMenu")}
-          accessibilityState={{ expanded: menuOpen }}
-          style={s.settingsButton}
-          onPress={() => setMenuOpen(true)}
-        >
-          <Ionicons name="ellipsis-vertical" size={25} color="#fff" />
-        </Pressable>
+        <OverflowMenu top={insets.top + 54} onSelect={(next) => {
+          setScreen(next);
+          setNotice("");
+        }} />
       </View>
       <View style={s.tabs}>
         {tabs.map((tab) => (
@@ -626,7 +648,7 @@ function Main() {
                   </View>)}
                 </> : catalog.storeLoading ? <ActivityIndicator color="#19562a" /> : null}
                 {catalog.stores.map((store) => {
-                  const fuelQuote = fuelProduct && category === "fuel" ? lowestPrice(fuelProduct, catalog.prices, [store]) : null;
+                  const fuelQuote = fuelProduct && category === "fuel" ? priceIndex.branches.get(store.id)?.get(fuelProduct.id) ?? null : null;
                   return (
                   <View key={store.id} style={s.store}>
                     <View style={s.storeMark}>
@@ -767,42 +789,6 @@ function Main() {
         </View>}
 
       </ScrollView>
-      <Modal
-        transparent
-        visible={menuOpen}
-        animationType="fade"
-        onRequestClose={() => setMenuOpen(false)}
-      >
-        <View style={{ flex: 1 }}>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel={t("cancel")}
-            style={s.menuBackdrop}
-            onPress={() => setMenuOpen(false)}
-          />
-          <View
-            accessibilityRole="menu"
-            style={[s.menu, { top: insets.top + 54 }]}
-          >
-            {menu.map((item) => (
-              <Pressable
-                key={item.id}
-                accessibilityRole="menuitem"
-                accessibilityLabel={t(item.label)}
-                style={s.menuItem}
-                onPress={() => {
-                  setMenuOpen(false);
-                  setScreen(item.id);
-                  setNotice("");
-                }}
-              >
-                <Ionicons name={item.icon} color="#19562a" size={22} />
-                <Text style={s.menuText}>{t(item.label)}</Text>
-              </Pressable>
-            ))}
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }

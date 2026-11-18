@@ -108,17 +108,15 @@ def search_localities(
     # Bulgarian transliterations vary (e.g. София is commonly written Sofia,
     # while GeoNames stores Sofija). Search common "ia" -> "ija" variants too.
     latin_terms = {normalized, normalized.replace("ia", "ija")}
-    contains_patterns = [f"%{value}%" for value in latin_terms]
-    starts_with_patterns = [f"{value}%" for value in latin_terms]
-
-    text_matches = (
-        [func.lower(Locality.name).like(pattern) for pattern in contains_patterns]
-        + [
-            func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
-            for pattern in contains_patterns
-        ]
-        + [func.lower(func.coalesce(Locality.name_bg, "")).like(f"%{normalized}%")]
+    names_and_terms = (
+        (func.lower(Locality.name), latin_terms),
+        (func.lower(func.coalesce(Locality.name_latin, "")), latin_terms),
+        (func.lower(func.coalesce(Locality.name_bg, "")), {normalized}),
     )
+    matches = [(name, value) for name, terms in names_and_terms for value in terms]
+    contains = or_(*(name.contains(value, autoescape=True) for name, value in matches))
+    exact = or_(*(name == value for name, value in matches))
+    prefix = or_(*(name.startswith(value, autoescape=True) for name, value in matches))
 
     localities = db.scalars(
         select(Locality)
@@ -134,15 +132,11 @@ def search_localities(
             )
         )
         .where(Locality.on_map.is_(True))
-        .where(or_(*text_matches))
+        .where(contains)
         .order_by(
-            (func.lower(func.coalesce(Locality.name_bg, "")) == normalized).desc(),
-            or_(
-                *[
-                    func.lower(func.coalesce(Locality.name_latin, "")).like(pattern)
-                    for pattern in starts_with_patterns
-                ]
-            ).desc(),
+            exact.desc(),
+            prefix.desc(),
+            (Locality.type == "CITY").desc(),
             Locality.name_bg,
             Locality.name,
         )
@@ -426,6 +420,7 @@ def include_routers(application):
     from .worker_api import router as worker_router
     from .mobile_auth import router as mobile_auth_router
     from .feedback import router as feedback_router
+    from .account import router as account_router
     from .limits import ReceiptUploadLimit
 
     for router in (
@@ -436,6 +431,7 @@ def include_routers(application):
         worker_router,
         mobile_auth_router,
         feedback_router,
+        account_router,
     ):
         application.include_router(router)
     application.add_middleware(ReceiptUploadLimit)
@@ -447,7 +443,9 @@ include_routers(app)
 @app.middleware("http")
 async def private_response_headers(request, call_next):
     response = await call_next(request)
-    if request.url.path.startswith(("/api/v1/auth/", "/api/v1/receipts")):
+    if request.url.path.startswith(
+        ("/api/v1/auth/", "/api/v1/receipts", "/api/v1/account")
+    ):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response

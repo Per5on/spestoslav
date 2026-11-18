@@ -44,6 +44,15 @@ def upstream(path, method="GET", session=None, payload=None):
         if result.status_code >= 500:
             raise HTTPException(503, "Sign-in service unavailable")
         if result.status_code != 200:
+            if path == "/sign-up/email" and result.status_code == 422:
+                try:
+                    failure = result.json()
+                except ValueError:
+                    failure = None
+                code = failure.get("code") if isinstance(failure, dict) else None
+                if code == "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL":
+                    raise HTTPException(409, "Account already exists")
+                raise HTTPException(422, "Registration request was not accepted")
             code = (
                 result.status_code
                 if result.status_code in (400, 401, 403, 409, 429)

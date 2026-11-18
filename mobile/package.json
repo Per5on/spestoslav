@@ -1,13 +1,13 @@
 {
   "name": "spestoslav-mobile",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "main": "expo/AppEntry",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
     "typecheck": "tsc --noEmit",
-    "test": "node scripts/test-model.cjs && node scripts/test-cache.cjs && node scripts/test-preview-metadata.cjs && node scripts/test-network.cjs",
+    "test": "node scripts/test-model.cjs && node scripts/test-cache.cjs && node scripts/test-preview-metadata.cjs && node scripts/test-network.cjs && node scripts/test-errors.cjs",
     "build:android:preview": "expo prebuild --platform android && cd android && ./gradlew assembleRelease",
     "postinstall": "node scripts/patch-dependencies.cjs"
   },

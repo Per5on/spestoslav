@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Keyboard, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Text, Input, useUI } from "../ui";
+import { Pressable, Text, Input, useUI } from "../ui";
 import { fetchWithRetry } from "../network";
 import { filterLocalities } from "../catalog/model";
 export type Locality = {
@@ -20,15 +20,13 @@ type Props = {
 };
 export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
   const { t } = useUI();
-  const [query, setQuery] = useState(""),
+  const [query, setQuery] = useState<string | null>(null),
     [results, setResults] = useState<Locality[]>([]),
-    [open, setOpen] = useState(false),
     [loading, setLoading] = useState(false),
     [error, setError] = useState(false),
     [retry, setRetry] = useState(0);
   useEffect(() => {
-    if (!open || query.trim().length < 2) {
-      setResults([]);
+    if (query === null || query.trim().length < 2) {
       setLoading(false);
       setError(false);
       return;
@@ -67,37 +65,30 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
       controller.abort();
       clearTimeout(timer);
     };
-  }, [query, open, apiBaseUrl, retry]);
+  }, [query, apiBaseUrl, retry]);
   return (
     <View style={s.wrap}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={t("location")}
-        accessibilityState={{ expanded: open }}
-        onPress={() => setOpen(!open)}
-        style={s.trigger}
-      >
+      <View style={s.field}>
         <Ionicons name="location-outline" size={22} color="#19562a" />
-        <Text style={s.title}>
-          {selected?.name_bg || selected?.name || t("location")}
-        </Text>
-        <Ionicons
-          name={open ? "chevron-up" : "chevron-down"}
-          size={19}
-          color="#19562a"
+        <Input
+          testID="location-search"
+          accessibilityLabel={t("searchLocation")}
+          placeholder={t("location")}
+          value={query ?? (selected?.name_bg || selected?.name || "")}
+          maxLength={80}
+          onChangeText={(value) => {
+            setResults([]);
+            setLoading(value.trim().length >= 2);
+            setError(false);
+            setQuery(value);
+          }}
+          autoCorrect={false}
+          selectTextOnFocus
+          style={s.input}
         />
-      </Pressable>
-      {open && (
-        <View style={s.menu}>
-          <Input
-            accessibilityLabel={t("searchLocation")}
-            placeholder={t("searchLocation")}
-            value={query}
-            maxLength={80}
-            onChangeText={setQuery}
-            autoCorrect={false}
-            style={s.input}
-          />
+      </View>
+      {query !== null && query.trim().length >= 2 && (
+        <View>
           {loading && <ActivityIndicator color="#19562a" />}
           {error ? (
             <>
@@ -127,8 +118,8 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
                     region: l.region,
                   };
                   onSelect(clean);
-                  setOpen(false);
-                  setQuery("");
+                  setQuery(null);
+                  Keyboard.dismiss();
                 }}
               >
                 <Text style={s.optionTitle}>{l.name_bg || l.name}</Text>
@@ -140,7 +131,6 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
           )}
           {!loading &&
             !error &&
-            query.trim().length >= 2 &&
             !results.length && <Text style={s.meta}>{t("noLocations")}</Text>}
         </View>
       )}
@@ -149,34 +139,23 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
 }
 const s = StyleSheet.create({
   wrap: { gap: 8 },
-  trigger: {
+  field: {
     flexDirection: "row",
     alignItems: "center",
     gap: 9,
     paddingHorizontal: 12,
-    paddingVertical: 9,
-    minHeight: 44,
     borderRadius: 13,
     borderWidth: 1,
     borderColor: "#dae2d6",
-    backgroundColor: "#fff",
-  },
-  title: { flex: 1, fontSize: 15, fontWeight: "600", color: "#234b2d" },
-  menu: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#dae2d6",
-    borderRadius: 13,
-    gap: 8,
     backgroundColor: "#fff",
   },
   input: {
-    fontSize: 16,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: "#dae2d6",
-    borderRadius: 10,
-    color: "#233c2a",
+    flex: 1,
+    minHeight: 44,
+    paddingVertical: 8,
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#234b2d",
   },
   option: {
     paddingVertical: 10,

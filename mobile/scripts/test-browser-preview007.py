@@ -22,7 +22,6 @@ with sync_playwright() as p:
   expect(page.get_by_text(name,exact=True)).to_be_visible(timeout=15000)
  proof['seven_requested_chains_without_fabricated_local_availability']=True
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'technology-chains.png'))
- page.get_by_role('button',name='Изберете населено място',exact=True).click()
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia')
  page.get_by_text('София',exact=True).click()
  expect(page.get_by_text('Примерен обект · демонстрационен адрес',exact=True)).to_have_count(7)
@@ -39,6 +38,7 @@ with sync_playwright() as p:
  toolbar.get_by_role('button',name='Продукти',exact=True).click()
  page.get_by_role('switch').click()
  expect(page.get_by_role('img',name='Лаптоп (примерна снимка)',exact=True)).to_be_visible(timeout=20000)
+ expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_be_visible()
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()

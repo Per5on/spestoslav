@@ -242,3 +242,41 @@ Owner selected free HTTPS instead of paid SMTP hosting, and confirmed account/ke
 ## 17 November — fresh error-miss audit; email excluded from build
 
 Owner authorizes rerun and APK build without email service. Feedback staysdisabled; no provider credentials needed/requested. Fresh98-test PostgreSQL/OCR baseline and TypeScript/mobile/legal checks passed. Exact clone-content audit caught two doubled-percent product names in scratch raw-SQL rendering; corrected via versioned renderer, with regression tests forpercent/apostrophe/backslash round trips and complete1000-row content/idempotence. Preserve unknown-brand/alias fields rather than erasing verified values. Shared preview untouched. Continue full checks, controlled non-email backend readiness and newAPK; record final CI/artifact evidence before delivery.
+
+## 18 November — external review patch (no build, no CI yet)
+
+Reviewed branch `codex/preview-007` (app `5a1abb0`; backend unchanged from main). Offline evidence only: relative imports resolve, no new TypeScript diagnostics versus the unpatched branch (React/React Native types were not installed, so this is not a full typecheck), `test-network`, `test-cache`, `test-errors` and `test-preview-metadata` pass, and all six languages share the same 187 message keys. Backend tests were **not run** (no FastAPI/SQLAlchemy in the review sandbox).
+
+Changes: session restore warm-up and one transient retry; typed `ApiError`/`httpStatus`; specific auth, sign-out and delete-account messages; receipt upload separates "upload failed" from "refresh failed"; camera-denied and no-barcode notices; `submitted` flag resets per receipt; retried 5xx bodies cancelled; `signIn` no longer orphans a server session when SecureStore fails; new `DELETE /api/v1/account` (receipts and stored images erased, pending contributions deleted, reviewed ones unlinked, then provider `/delete-user`) with seven tests.
+
+Correction to earlier entries: the Yahoo SMTP path recorded on 17 November was abandoned; Brevo HTTPS is the chosen provider and delivery stays disabled. Entries above are preserved as history.
+
+Next action: owner reviews the patch, applies it on a new branch (suggested `codex/preview-008`), reads exact-head backend CI (PostgreSQL) and the Android run, and verifies `/delete-user` against a throwaway real account before any claim of working account deletion. Legal text still needs the deletion procedure and the "approved prices stay anonymous" decision before public testing.
+
+
+## 18 November — Preview008 backend-first recheck
+
+- Rechecked [draft PR #19](https://github.com/Per5on/spestoslav/pull/19), backend CI [44287192549](https://github.com/Per5on/spestoslav/actions/runs/44287192549) and skipped Android runs [44287192548](https://github.com/Per5on/spestoslav/actions/runs/44287192548) and [44292063248](https://github.com/Per5on/spestoslav/actions/runs/44292063248). Changes remain uncommitted on top of `daa73ae`. The candidate workflow no longer contains a publish job.
+- Fixed two-character locality ranking and literal wildcard matching, corrected PostgreSQL receipt foreign-key order, tested provider deletion confirmation and duplicate registration status, then updated location input, app button styling, Settings, credits, auth retry and receipt feedback paths. Kept the existing thin green Refresh border and added green keyboard focus for browser pressables.
+- Disposable PostgreSQL 16 and Bulgarian OCR: 112 tests passed per SQLAlchemy family. Direct PostgreSQL account/locality checks: 16 passed per family with mocked identity provider. TypeScript, npm tests, Expo dependencies and simulated browser checks passed. Read-only public baseline probes returned HTTP 200 and the Neon Auth schema listed the deletion endpoint.
+- Android prebuild in a scratch directory confirmed versionCode 8, versionName 0.5.1, minSdk 29 and the camera permission. Android 10 device and end-to-end real account/private storage evidence are pending. No new commit, push, deployment, APK or release. Resume from the active local checkout and keep the release gate and feedback setting recorded in the handoff.
+
+## 18 November — pre-build optimization audit
+
+Checked local render and offline image paths, read-only live catalogue image counts, decoded all nine live samples, and verified the existing Preview007 package by checksum before measuring ABI entries. The handoff records the findings and proposed Android dry tests. No new build or code commit.
+
+## 18 November — optimization implementation and dry checks
+
+Applied menu and catalogue rendering changes, bundled sample thumbnails, added a bounded native image cache, and generated ABI and shrink configurations. Browser timings, offline decoding and Android bundle export are recorded in the handoff. The requested Android emulator run and signed package comparison require a capable test environment. No commit or release.
+
+## 18 November — Preview008 candidate commit checks
+
+Reconciled the two uploaded commits, verified rendered catalogue, Settings and About screens, and prepared an ARM phone APK lane with a separate x86_64 emulator smoke lane. Browser and backend checks passed. Continue by checking native CI on the candidate SHA and recording its signed artifact evidence.
+
+## 18 November — stopped build and corrected Refresh and About
+
+Confirmed [run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) was cancelled with no Preview008 APK. Removed the Refresh border and focus outline and moved image credits to sample cards. Browser screenshots and functional tests verified both corrections. Wait for the owner to restart Android CI with corrected source.
+
+## 18 November — corrected Preview008 native smoke and ARM packaging retry
+
+Android 10 smoke passed on run 44307049747. The following ARM pack step hit React Native JNI codegen during Gradle clean. Changed the workflow to regenerate the Android project before assembling the phone APK. Exact-commit browser measurements and offline samples passed and are recorded in the handoff.

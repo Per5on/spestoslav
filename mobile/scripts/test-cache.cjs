@@ -20,6 +20,7 @@ const storage = {
 };
 const mockApi = {
   API_BASE_URL: "https://simulation.invalid",
+  httpStatus: error => Number(/^HTTP (\d{3})$/.exec(error.message)?.[1]) || null,
   api: async (path) => {
     calls++;
     if (fail) throw new Error("HTTP 503");
@@ -30,7 +31,7 @@ const mockApi = {
 };
 const code = ts.transpileModule(
   fs.readFileSync("src/catalog/cache.ts", "utf8"),
-  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: false } },
 ).outputText;
 const m = { exports: {} };
 new Function("exports", "require", "module", code)(

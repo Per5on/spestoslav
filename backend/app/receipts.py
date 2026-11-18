@@ -277,6 +277,14 @@ def own_image(
     )
 
 
+def delete_receipt_rows(db: Session, scan_ids: list[uuid.UUID]) -> None:
+    # The job and OCR items reference the scan. Delete them first on databases
+    # that enforce foreign keys.
+    db.execute(delete(ReceiptItem).where(ReceiptItem.receipt_scan_id.in_(scan_ids)))
+    db.execute(delete(ReceiptJob).where(ReceiptJob.scan_id.in_(scan_ids)))
+    db.execute(delete(ReceiptScan).where(ReceiptScan.id.in_(scan_ids)))
+
+
 @router.delete("/{scan_id}", status_code=204)
 def remove_receipt(
     scan_id: uuid.UUID, principal=Depends(current_user), db: Session = Depends(get_db)
@@ -289,7 +297,7 @@ def remove_receipt(
     ).first()
     if not row:
         raise HTTPException(404, "Receipt not found")
-    job, scan = row
+    _, scan = row
     if scan.status == "PROCESSING":
         raise HTTPException(409, "Wait for receipt processing to finish")
     # Persist a tombstone before touching external storage. A retry can finish
@@ -300,9 +308,7 @@ def remove_receipt(
         ReceiptStorage().delete(scan.image_storage_key)
     except (BotoCoreError, ClientError, OSError):
         raise HTTPException(503, "Receipt storage unavailable") from None
-    db.execute(delete(ReceiptItem).where(ReceiptItem.receipt_scan_id == scan_id))
-    db.delete(job)
-    db.delete(scan)
+    delete_receipt_rows(db, [scan_id])
     db.commit()
 
 

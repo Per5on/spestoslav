@@ -41,6 +41,6 @@ python scripts/validate_inventory.py
 
 Set `TEST_DATABASE_URL` to a disposable PostgreSQL database to include migration, concurrency and transaction checks. CI runs PostgreSQL 16 with SQLAlchemy 2.0 and 2.1. Never point test setup at the shared preview database.
 
-This is a preview app. Branch inventory and real price coverage remain incomplete. Demo photos are explicitly separate and have no asserted price. Camera, authentication and private receipt workflows are not yet connected in the Android UI. No server credentials belong in the app.
+This is a preview app. Branch inventory and real price coverage remain incomplete. Demo photos are explicitly separate and have no asserted price. Camera scanning, sign-in and private receipt workflows exist in the Preview007 Android UI but are not yet verified against a live account and physical device. No server credentials belong in the app.
 
 Release notes: [CHANGELOG](docs/CHANGELOG.md). Current candidate metadata: [mobile/preview.json](mobile/preview.json). Reproducible local scenarios: [MOCK_SCENARIOS_005](docs/MOCK_SCENARIOS_005.md).

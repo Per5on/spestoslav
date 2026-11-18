@@ -4,14 +4,13 @@ import {
   Alert,
   Image,
   Platform,
-  Pressable,
   View,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system/legacy";
 import { useSession } from "./session";
 import { Button } from "../Action";
-import { Text, useUI } from "../ui";
+import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
 import { s } from "../styles";
@@ -50,7 +49,10 @@ export function ReceiptsScreen({
     [branch, setBranch] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false),
-    [submitted, setSubmitted] = useState(false);
+    [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null),
+    [note, setNote] = useState<
+      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed"
+    >("");
   const mounted = useRef(true),
     requestKey = useRef(""),
     draftRef = useRef<ImagePicker.ImagePickerAsset | null>(null);
@@ -83,21 +85,27 @@ export function ReceiptsScreen({
         );
     };
   }, []);
-  async function load() {
-    setError(false);
-    setBusy(true);
+  async function load(quiet = false): Promise<boolean> {
+    if (!quiet) {
+      setError(false);
+      setNote("");
+      setBusy(true);
+    }
     try {
       const r = await session.request<Summary[]>("/api/v1/receipts");
       if (mounted.current) setRows(r);
+      return true;
     } catch {
-      if (mounted.current) setError(true);
+      if (mounted.current && !quiet) setError(true);
+      return false;
     } finally {
-      if (mounted.current) setBusy(false);
+      if (mounted.current && !quiet) setBusy(false);
     }
   }
   useEffect(() => {
     setRows([]);
     setSelected(null);
+    setSubmittedReceipt(null);
     discard();
     if (session.user) void load();
   }, [session.user?.id]);
@@ -106,11 +114,12 @@ export function ReceiptsScreen({
   }, [stores, branch]);
   async function pick(camera: boolean) {
     setError(false);
+    setNote("");
     try {
       if (camera) {
         const p = await ImagePicker.requestCameraPermissionsAsync();
         if (!p.granted) {
-          setError(true);
+          setNote("receiptCameraDenied");
           return;
         }
       }
@@ -126,6 +135,7 @@ export function ReceiptsScreen({
         return;
       }
       discard();
+      setSubmittedReceipt(null);
       draftRef.current = asset;
       setDraft(asset);
       requestKey.current =
@@ -138,6 +148,8 @@ export function ReceiptsScreen({
     if (!draft || busy) return;
     setBusy(true);
     setError(false);
+    setNote("");
+    let created: { id: string };
     try {
       const form = new FormData();
       if (Platform.OS === "web")
@@ -153,28 +165,36 @@ export function ReceiptsScreen({
           type: draft.mimeType ?? "image/jpeg",
         } as unknown as Blob);
       if (branch) form.append("branch_id", branch);
-      const created = await session.request<{ id: string }>(
-        "/api/v1/receipts",
-        {
-          method: "POST",
-          headers: { "Idempotency-Key": requestKey.current },
-          body: form,
-        },
-      );
-      if (mounted.current) {
-        discard();
-        const detail = await session.request<Receipt>(
-          "/api/v1/receipts/" + created.id,
-        );
-        setSelected(detail);
-        await load();
-      }
+      created = await session.request<{ id: string }>("/api/v1/receipts", {
+        method: "POST",
+        headers: { "Idempotency-Key": requestKey.current },
+        body: form,
+      });
     } catch {
-      if (mounted.current) setError(true);
-    } finally {
-      if (mounted.current) setBusy(false);
+      // The outcome is unknown if the response was lost. Keep the draft and its request key.
+      if (mounted.current) {
+        setError(true);
+        setBusy(false);
+      }
+      return;
+    }
+    // From here the receipt exists on the server; a refresh problem must not look like a failed upload.
+    if (!mounted.current) return;
+    discard();
+    setSelected(null);
+    setSubmittedReceipt(null);
+    const [detailResult, listResult] = await Promise.allSettled([
+      session.request<Receipt>("/api/v1/receipts/" + created.id),
+      load(true),
+    ]);
+    if (mounted.current) {
+      if (detailResult.status === "fulfilled") setSelected(detailResult.value);
+      if (detailResult.status === "rejected" || listResult.status !== "fulfilled" || !listResult.value)
+        setNote("receiptUploadedRefreshFailed");
+      setBusy(false);
     }
   }
+
   async function detail(id: string) {
     setBusy(true);
     setError(false);
@@ -287,11 +307,16 @@ export function ReceiptsScreen({
           else void load();
         }}
       />
-      {submitted && <Text style={s.notice}>{t("receiptSubmitted")}</Text>}
+      {submittedReceipt !== null && submittedReceipt === selected?.id && <Text style={s.notice}>{t("receiptSubmitted")}</Text>}
       {busy && <ActivityIndicator />}
       {error && (
         <Text accessibilityRole="alert" style={s.notice}>
           {t("receiptError")}
+        </Text>
+      )}
+      {note !== "" && (
+        <Text accessibilityRole="alert" style={s.notice}>
+          {t(note)}
         </Text>
       )}
       {selected && (
@@ -315,7 +340,7 @@ export function ReceiptsScreen({
                     products={catalogue.products}
                     stores={stores}
                     onSubmitted={async () => {
-                      setSubmitted(true);
+                      setSubmittedReceipt(selected.id);
                       await detail(selected.id);
                     }}
                   />

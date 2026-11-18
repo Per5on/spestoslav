@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Pressable } from "react-native";
-import { AutoFitLabel } from "./ui";
+import { Pressable, AutoFitLabel } from "./ui";
 import { s } from "./styles";
 export function Button({
   label,
@@ -10,7 +9,7 @@ export function Button({
   layout,
   expanded,
   labelSize = 14,
-  refreshOutline = false,
+  compactRefresh = false,
 }: {
   label: string;
   onPress: () => void;
@@ -19,12 +18,13 @@ export function Button({
   layout?: "equal" | "snug";
   expanded?: boolean;
   labelSize?: number;
-  refreshOutline?: boolean;
+  compactRefresh?: boolean;
 }) {
   const [focused, setFocused] = useState(false);
   return (
     <Pressable
       accessibilityRole="button"
+      focusOutline={false}
       disabled={disabled}
       accessibilityState={{ disabled, expanded }}
       aria-expanded={expanded}
@@ -42,19 +42,18 @@ export function Button({
         layout === "snug" && {
           flexGrow: 0,
           flexShrink: 0,
-          paddingHorizontal: refreshOutline ? 7 : 0.25,
+          paddingHorizontal: compactRefresh ? 7 : 0.25,
           minWidth: 44,
           maxWidth: "34%",
         },
         primary && s.primary,
-        refreshOutline && { borderWidth: 1, borderColor: "#267133", outlineWidth: 0 },
-        refreshOutline && focused && { backgroundColor: "#dbead3" },
+        focused && { backgroundColor: primary ? "#de7300" : "#dbead3" },
         disabled && { opacity: 0.45 },
       ]}
     >
       <AutoFitLabel
         label={label}
-        intrinsic={layout === "snug" && !refreshOutline}
+        intrinsic={layout === "snug" && !compactRefresh}
         allowWrap={true}
         baseSize={labelSize}
         style={{

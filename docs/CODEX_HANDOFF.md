@@ -1,4 +1,77 @@
-## Latest verified artifact — Preview007
+# Спестовник — ongoing project handoff
+
+Updated: **18 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+
+This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
+
+## Latest checkpoints (newest first)
+
+
+### Preview008 restarted on the corrected source — 18 November 2026
+
+- Corrected candidate `2b511f09ab1667fee6d2a81715067bd8a0dce021` is on draft PR #19. [Backend CI](https://github.com/Per5on/spestoslav/actions/runs/44307055281) passed. [Android workflow](https://github.com/Per5on/spestoslav/actions/runs/44307049747) is the internal run to inspect.
+- Repeated the browser responsiveness and offline sample checks on the corrected source. Median menu time at 4× CPU throttle was 21.0 ms, down from the 63.1 ms baseline. The p95 was 30.1 ms, down from 105.1 ms. All nine sample images decoded with API requests blocked. About contained no product links.
+- Acceptance gates are native visual smoke evidence and verification of the signed ARM package size against the 75,567,529-byte Preview007 APK. The same-device ARM responsiveness comparison remains open.
+- Android 10 smoke passed on run 44307049747. Its ARM package step failed during Gradle native clean because CMake referenced removed JNI codegen. The follow-up regenerates the Android project before compiling ARM. App source and smoke assertions are identical.
+
+
+
+### Preview008 stopped for visual corrections — 18 November 2026
+
+- At the owner's request, [Android run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) on commit `687b467` was cancelled. GitHub reports no Preview008 APK artifact.
+- Corrected two interpretation errors in the candidate. Refresh has no border in any state and shows keyboard focus through its background. About ends with Feedback and contains no product rows. Licensed sample image credits accompany the corresponding sample cards in the catalogue.
+- Reviewed new browser screenshots and checked computed Refresh border and outline widths, Settings, About content, location input, catalogue and sample credits. TypeScript, npm and browser suites passed. Corrections remain local. Wait for the owner to restart Android CI with the corrected source.
+
+
+
+### Preview008 candidate build commit — 18 November 2026
+
+- Rechecked the two GitHub uploads and draft PR #19. Its prior head `daa73ae` had no Preview008 APK artifact. This candidate keeps sequence 008 and version 0.5.1 for the first internal APK.
+- Phone package uses arm64-v8a and armeabi-v7a. Android 10 CI uses a separate internal x86_64 APK for the Play Services emulator. CI packages the phone APK after the smoke test and verifies its signature, native architectures and checksum. R8 and resource shrinking are enabled for both CI variants. There is no publication job.
+- All four original visual requests passed browser verification. Refresh and buttons use green focus styling, Settings uses rounded light-green options, About displays readable image credits, and location search uses a single shared field and queries after two characters. Reviewed actual catalogue, Settings and About screenshots. Android CI captures the same screens separately for inspection.
+- Local regression gates passed: 112 PostgreSQL/OCR tests on each SQLAlchemy family, TypeScript, npm, Expo compatibility and browser suites. Android 10 CI and measurement of the signed ARM package are separate gates. The requested mid-range physical ARM profile and real account deletion/receipt storage remain open.
+
+
+### Preview008 optimization implementation and dry tests — 18 November 2026
+
+- Applied local app changes on `codex/preview-008`: isolated overflow state and removed the modal fade, indexed prices by product and branch with expiration invalidation, skipped hidden search work, kept scoped catalogue data visible during refresh, and fetched stores and prices concurrently. Price applicability still depends on the visible locality's branches.
+- Bundled all nine opt-in sample thumbnails and their credits. Replaced the runtime header with a 25,788-byte WebP and added 59,266 bytes of WebP samples. Compared with the prior 1,008,792-byte runtime header this is a net source-asset reduction of 923,738 bytes. Launcher icon and original artwork are preserved. Added bounded, URL-versioned native thumbnail caching for supported HTTPS images. Shared production catalogue still has zero assigned real photos and source reuse permission remains open.
+- Same local Chromium setup, 16 opens per setting. Click to menu mount plus two animation frames at normal/4×/6× CPU throttle improved from medians of 36.1/63.1/91.1 ms to 21.0/22.2/31.3 ms. p95 went from 51.5/105.1/198.9 ms to 32.1/34.0/39.9 ms. A fresh browser context decoded all nine assets with app API requests blocked and showed About credits. TypeScript, unit checks, browser menu/layout/catalogue/network tests and mocked native thumbnail cache checks passed.
+- Generated Android Hermes bundle and the Android 10 prebuild configurations for ARM64, x86_64 and ARM64 with R8/resource shrinking. Opt-in flags are `SPESTOVNIK_DRY_ANDROID_ABI=arm64-v8a` (or `x86_64`) and `SPESTOVNIK_DRY_ANDROID_SHRINK=1`. The default distribution configuration keeps its existing ABI support.
+- Host is x86_64 and lacks Android emulator tooling and `/dev/kvm`. Available workspace storage was about 3.5 GB. The requested mid-range ARM, 8 GB RAM, 256 GB storage run and signed package-size measurements are pending. Use a matching device or an ARM-capable test host, repeat native menus, offline assets, cache and camera/receipt checks, and measure signed variants before changing default release packaging. No commit, push, deployment, or signed build.
+
+
+
+### Preview008 performance, image and package investigation — 18 November 2026
+
+- **Responsiveness.** Menu open is local. The overflow state lives in the top-level component, so opening it re-renders the catalogue, filters and groups up to 1,000 products, recreates the visible cards, and repeats per-card price/store scans. The native modal also fades. Local Chromium with a simulated catalogue, eight opens per setting, measured click to menu mount plus two animation frames at 33 ms median / 44 ms max at normal CPU and 67 ms / 91 ms at 4× throttle. These are browser smoke timings. Android frame profiling is pending. Separately, real catalogue snapshot reads returned 411 KB and 439 KB in 3.44 s and 3.12 s during the probe. A separate gzip probe transferred 42,850 and 55,131 bytes respectively. The app parses, validates and rewrites snapshots, resets visible data on some switches, and serializes stores then prices. Retried reads can extend loading during outages.
+- **Recommended app work.** First isolate overflow state, memoize catalogue render inputs, and index eligible prices once per locality. Keep the last valid scoped snapshot visible while revalidating and fetch only data needed by the active screen. Measure before virtualizing the larger lists. Profile menu fade separately from the time to the first frame and to interaction readiness.
+- **Images.** Shared Neon read-only counts and live catalogue snapshots agree on zero linked images for 1,000 groceries, 1,000 technology products and five fuel types (fuel count from Neon). The nine checked-in JPEGs belong to the server's opt-in sample catalogue. All nine public URLs returned HTTP 200 and fully decoded. A local browser decoded a sample with the API present and lost it when sample API requests were blocked. The mobile catalogue cache stores metadata and image URLs. The app has no guaranteed persistent thumbnail cache or bundled sample gallery.
+- **Recommended image work.** Bundle only the existing approved sample gallery for offline first use, preserve sample labels and credits, and keep those records separate from offers. A scratch 240 px WebP conversion of the nine files reduced 256,833 bytes to 59,266 bytes. Visually check that conversion on device. Three Techmart product pages exposed image URLs and their source images decoded over HTTPS. The originals weighed about 0.90–1.14 MB each and reuse permission is unverified. For real products, pilot a small set of manufacturer or retailer images with exact product-code matching, documented reuse permission and source attribution. Store versioned, resized files under an owned HTTPS origin and cache them on device by content version, with a bounded disk budget and eviction. Fresh offline devices can show bundled samples. Real thumbnails become available offline after downloading. Missing or expired files keep a placeholder.
+- **APK.** Downloaded and SHA-256 verified Preview007 before reading its APK ZIP directory. The signed universal APK was 75,567,529 bytes. Packaged native libraries by ABI used 18,103,152 bytes on arm64-v8a, 12,331,636 on armeabi-v7a and 19,517,112 on x86_64. DEX used 20,232,248 bytes. Removing both non-ARM64 library sets accounts for about 31.85 MB, implying about 43.72 MB before repackaging, signing and shrinking effects. A scratch header conversion from 1,008,792 bytes to 25,788 bytes shows a secondary saving. Preserve original icon and reference art.
+- **Dry-test gate.** Before any real commit or release build, compare a clean baseline and isolated changes with the same Android 10 and ARM64 target configuration. Measure menu and Settings first frame/settled times, p50 and p95, frame overruns, and cold versus warm tab/load times. Exercise fresh offline samples, warm offline real thumbnails, failed image recovery, and price/store separation. Size trial sequence is universal baseline, same-source ARM64-only and x86_64-only packages, then R8 and resource shrinking, then derived header assets. Compare signed APK bytes, per-device AAB download and installed sizes separately. Recheck camera, image barcode decoding, receipt picker, localization and permissions with shrinking enabled. Keep x86_64 for emulator verification and 32-bit support if required. Review the Kotlin reference on the same ABI, signing and measurement basis before claiming a threefold comparison. No app/configuration change, commit, database write or build was made in this investigation.
+
+
+### Preview008 recheck — 18 November 2026
+
+- Active checkout: `/workspace/work/spestoslav`, `codex/preview-008`, based on `daa73ae` ([draft PR #19](https://github.com/Per5on/spestoslav/pull/19)). The committed head passed [backend CI](https://github.com/Per5on/spestoslav/actions/runs/44287192549). The [PR Android run](https://github.com/Per5on/spestoslav/actions/runs/44287192548) and [latest manual run](https://github.com/Per5on/spestoslav/actions/runs/44292063248) were skipped. The Android workflow auto-builds Preview007 PRs only and requires `confirm_build: true` on manual dispatch.
+- Local backend changes prioritize exact and prefix locality names before substring matches, fix the foreign-key order for deleting receipt rows, require an explicit provider deletion confirmation, and map the provider's duplicate-registration response to HTTP 409. The deployed API still uses the earlier locality ranking. The live Neon Auth schema lists `/delete-user`; an authenticated real deletion has not been exercised.
+- Local app changes replace the location dropdown with one shared input that searches after two characters, keep green focus styling in place of black button outlines, give Settings light-green rounded options, and present image credits as titles with links. Session restore offers a retry after an outage, sign-out retains the session when server revocation could not be confirmed, receipt upload distinguishes an accepted upload from follow-up read failures, and submission feedback belongs to the selected receipt. Reviewed the existing typed errors, image and permission notices, and retry body disposal.
+- The local Android workflow is APK-only. No commits, pushes, deploys, APK builds, or publication were made during this recheck. Keep the review patch and this recheck separate from the verified Preview007 artifact below.
+- Evidence: 112 backend tests passed locally on each SQLAlchemy family with disposable PostgreSQL 16 and Bulgarian OCR. The 16 targeted tests passed against PostgreSQL directly on both families. TypeScript, npm tests, Expo dependency checks, simulated Chromium workflows and public API read probes passed. Android prebuild in a scratch directory produced versionCode 8, versionName 0.5.1, and minSdk 29. Browser evidence is under `/workspace/work/spest-browser-*`; the direct account provider checks used mocks.
+- Next gate: complete release-grade Android 10 checks on the final source and use an authorized throwaway account to verify real-provider deletion and private receipt storage. Account deletion during a concurrent upload and the retention/legal decisions in [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md) remain open. Keep feedback delivery disabled.
+
+
+### Review patch — 18 November 2026 (not yet built or verified in CI)
+
+Applied on top of Preview007 source `5a1abb0`; **no sequence/version bump and no build was made** (sequences are immutable; a build needs a new sequence and the owner's confirmation). Details: [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md) and the 18 November entry in [ACTIVITY_LOG.md](ACTIVITY_LOG.md).
+
+- App: session restore warms the API and retries once after cold starts; typed `ApiError` and specific sign-in/sign-out/delete messages in six languages; receipt upload no longer reports failure after a successful upload; clearer camera-denied and no-barcode messages; retried 5xx bodies are cancelled.
+- Backend: new `DELETE /api/v1/account` with tests (`tests/test_account_deletion.py`). Not run locally against PostgreSQL; the identity-provider `/delete-user` call is unverified against real Neon Auth.
+- Tests: `test-cache.cjs` pins `esModuleInterop`; new `test-errors.cjs` is part of `npm test`.
+
+
+### Latest verified artifact — Preview007
 
 - App/runtime source `5a1abb0a76ecc41da4c46c00f49dc3c5e22778e0`; backend CI44149787804 and Android44149787807 passed. Final native log explicitly confirms decoded Food/Technology images and five fuel choices, ordered tabs, shared location, camera permission denial/preview, synthetic barcode-image decoding, language/About metadata. No fatal app exception asserted. This is not three complete release passes.
 - [Download artifact ZIP](https://github.com/Per5on/spestoslav/actions/runs/44149787807/artifacts/14360295033). Signed test APK `spestovnik-preview-007.apk`,75567529bytes, SHA256 `36cf2c5bb17d9021bc0bf7edd0989907f9017218fc6ea9b646b235a50e9312ba`.
@@ -6,7 +79,7 @@
 - Optional local browser live visual aid was blocked by this environment's Chromium trust store (`ERR_CERT_AUTHORITY_INVALID`); no TLS validation was disabled and this is not counted as a passing browser/live test. Python HTTPS asset checks and actual Android gallery tests passed. Existing mock browser checks remain separate evidence.
 - No public release/tag or Google Play upload. Email intentionally disabled. Live-price/GTIN and successful real-account/private upload acceptance limitations below remain open.
 
-## Current recheck checkpoint — 17 November 2026
+### Current recheck checkpoint — 17 November 2026
 
 Live evidence: API0.6, readiness,1000+1000 snapshots, five fuel labels, nine HTTPS images and credits passed. Sofia filtering returns46 grocery branches and zero technology/fuel branches; no fabricated local availability. Disabled feedback503; unauthenticated account/receipt access401; synthetic invalid sign-in401 (not successful account acceptance). Email intentionally excluded.
 
@@ -17,15 +90,10 @@ Live evidence: API0.6, readiness,1000+1000 snapshots, five fuel labels, nine HTT
 - Found/fixed raw SQL transport doubling percent signs in two isolated trial product names. Versioned renderer now uses named-parameter dialect; tests cover all1000 source identities and repeated transport preserving existing flags/barcodes/aliases/brands. Shared import used corrected SQL only.
 - Actual shared sync is complete, repeatable, and contains no price or barcode inventions. Inventory PR15 remains separate.
 
-## Latest owner instruction: rerun checks and build without email
+### Latest owner instruction: rerun checks and build without email
 
 Build authorized; email provider intentionally excluded from this preview and is NOT a build blocker. Keep FEEDBACK_DELIVERY_ENABLED=false. Preserve the provider adapter for later private setup; do not ask for keys now. Rerun and inspect actual tests/native artifacts, retain previous builds and report live data limitations. Source transport audit corrected two doubled-percent catalogue names on isolated validation only; versioned renderer/regressions now pass100PostgreSQL/OCR tests. API0.6readiness and catalogue sync must remain explicit; no live-price claims from metadata.
 
-# Спестовник — ongoing project handoff
-
-Updated: **17 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
-
-This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 ## Current outcome and authorization
 

@@ -4,7 +4,7 @@ import { useCameraPermissions } from "./cameraPermissions";
 import { BarcodeCamera } from "./BarcodeCamera";
 import { decodeBarcodeImage } from "./scanImage";
 import * as ImagePicker from "expo-image-picker";
-import { api } from "../api";
+import { api, httpStatus } from "../api";
 import { Product } from "../catalog/model";
 import { Text, Input, useUI } from "../ui";
 import { Button } from "../Action";
@@ -27,6 +27,7 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
       | "searchError"
       | "cameraError"
       | "cameraDenied"
+      | "noBarcodeInImage"
       | "identificationSent"
       | "added"
     >(""),
@@ -67,7 +68,7 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
       if (mounted.current) setFound(product);
     } catch (e) {
       if (mounted.current && !abort.signal.aborted)
-        setNotice(String(e).includes("404") ? "unknownBarcode" : "searchError");
+        setNotice(httpStatus(e) === 404 ? "unknownBarcode" : "searchError");
     } finally {
       lock.current = false;
       if (mounted.current) setBusy(false);
@@ -96,7 +97,7 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
       if (image.canceled) return;
       const code = await decodeBarcodeImage(image.assets[0].uri);
       if (code) await find(code);
-      else setNotice("invalidBarcode");
+      else setNotice("noBarcodeInImage");
     } catch (error) {
       // Keep the real native picker/decoder failure visible in CI logcat.
       // Do not log the selected image URI or any user-owned media metadata.

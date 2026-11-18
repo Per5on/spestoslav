@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { api, API_BASE_URL } from "../api";
+import { api, API_BASE_URL, httpStatus } from "../api";
 import { Product } from "./model";
 const KEY = "spestovnik-catalog-v1:" + API_BASE_URL;
 const MAX_AGE = 7 * 24 * 60 * 60 * 1000;
@@ -11,58 +11,61 @@ export function parseCatalogCache(
 ): Cache | null {
   if (!raw) return null;
   try {
-    const value = JSON.parse(raw);
-    if (
-      value.schema_version !== 1 ||
-      !Number.isFinite(value.saved_at) ||
-      value.saved_at > now ||
-      now - value.saved_at > MAX_AGE ||
-      !Array.isArray(value.products) ||
-      value.products.length > 10000
-    )
-      return null;
-    const ids = new Set<string>();
-    if (
-      !value.products.every(
-        (p: Product) =>
-          p &&
-          typeof p.id === "string" &&
-          typeof p.name === "string" &&
-          p.category_code === category &&
-          !p.is_demo &&
-          !ids.has(p.id) &&
-          Boolean(ids.add(p.id)),
-      )
-    )
-      return null;
-    const fields = [
-      "id",
-      "name",
-      "category_code",
-      "brand",
-      "package_quantity",
-      "package_unit",
-      "barcode",
-      "group_code",
-      "source_url",
-      "source_product_code",
-      "catalog_observed_at",
-      "image_url",
-    ] as const;
-    return {
-      ...value,
-      products: value.products.map(
-        (p: Product) =>
-          Object.fromEntries(
-            fields
-              .filter((k) => k in p)
-              .map((k) => [k, (p as unknown as Record<string, unknown>)[k]]),
-          ) as Product,
-      ),
-    };
+    return validateCatalog(JSON.parse(raw), now, category);
   } catch {
     return null;
   }
+}
+function validateCatalog(value: Cache | null, now: number, category: "groceries" | "technology"): Cache | null {
+  if (
+    !value ||
+    value.schema_version !== 1 ||
+    !Number.isFinite(value.saved_at) ||
+    value.saved_at > now ||
+    now - value.saved_at > MAX_AGE ||
+    !Array.isArray(value.products) ||
+    value.products.length > 10000
+  )
+    return null;
+  const ids = new Set<string>();
+  if (
+    !value.products.every(
+      (p: Product) =>
+        p &&
+        typeof p.id === "string" &&
+        typeof p.name === "string" &&
+        p.category_code === category &&
+        !p.is_demo &&
+        !ids.has(p.id) &&
+        Boolean(ids.add(p.id)),
+    )
+  )
+    return null;
+  const fields = [
+    "id",
+    "name",
+    "category_code",
+    "brand",
+    "package_quantity",
+    "package_unit",
+    "barcode",
+    "group_code",
+    "source_url",
+    "source_product_code",
+    "catalog_observed_at",
+    "image_url",
+  ] as const;
+  return {
+    ...value,
+    products: value.products.map(
+      (p: Product) =>
+        Object.fromEntries(
+          fields
+            .filter((k) => k in p)
+            .map((k) => [k, (p as unknown as Record<string, unknown>)[k]]),
+        ) as Product,
+    ),
+  };
 }
 export async function loadProducts(
   signal: AbortSignal,
@@ -88,7 +91,7 @@ export async function loadProducts(
       if (snapshot.schema_version !== 1) throw new Error("Unknown catalogue");
       products = snapshot.products;
     } catch (e) {
-      if (!String(e).includes("404")) throw e;
+      if (httpStatus(e) !== 404) throw e;
       // Compatibility during the staged API rollout, without silently stopping at 100.
       for (let offset = 0; offset < 10000; offset += 100) {
         const page = await api<Product[]>(
@@ -102,16 +105,14 @@ export async function loadProducts(
       }
     }
     if (signal.aborted) throw new Error("Aborted");
-    const raw = JSON.stringify({
+    const now = Date.now();
+    const validated = validateCatalog({
       schema_version: 1,
-      saved_at: Date.now(),
+      saved_at: now,
       products,
-    });
-    const validated = parseCatalogCache(raw, Date.now(), category);
+    }, now, category);
     if (!validated) throw new Error("Invalid catalogue");
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(validated));
-    } catch {}
+    void AsyncStorage.setItem(key, JSON.stringify(validated)).catch(() => undefined);
     return { products: validated.products, cached: false };
   } catch (e) {
     if (cached && !signal.aborted)
