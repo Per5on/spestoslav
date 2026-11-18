@@ -2,9 +2,19 @@
 
 Updated: 18 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
 
-## Current work — Preview008
+## Current work — Pre-alpha 009
 
-Android run 44306415234 was cancelled at the owner’s request. Verified Refresh and About corrections are local. The owner will decide when to restart it.
+Added «Изтрий данни» with offline guest reset and authenticated cloud erasure. The owner authorized the internal APKs and AAB. The source, backend and browser checks passed, and the Android workflow runs the installed emulator APK before packaging the ARM APK and test-signed AAB. The daily summary and live-data limits are in the handoff.
+
+Added and verified the «Облик» preferences locally. The dedicated Neon thumbnail database is seeded and checked, and the API-to-database path passed in the local dry test. Render linkage and the live Brevo inbox test remain pending.
+
+Local branch `codex/pre-alpha-009` is based on verified Preview008. The candidate shows bundled sample photos by default with a persistent off switch. The feedback form reached a local authenticated TLS SMTP receiver through the actual API. Live inbox delivery awaits a verified Brevo sender and Render secret. Local evidence and the next device checks are in the handoff.
+
+## Preview008 and follow-up
+
+Locality search ordering is ready for backend review and deployment. Prefix matches appear first, with alphabetical ordering within both result groups. The app currently has no associated website or web deletion link.
+
+Preview008 passed Android 10 smoke and ARM packaging on run 44309388382. The verified internal APK is 43,321,725 bytes, 42.7% smaller than Preview007. Production AAB signing, real account/receipt acceptance, and physical ARM checks remain open.
 
 Local, uncommitted changes are in `/workspace/work/spestoslav` on `codex/preview-008`, based on `daa73ae`. Reviewed [draft PR #19](https://github.com/Per5on/spestoslav/pull/19) and the open menu, toolbar and inventory issues. The backend matrix passed on the committed head. Android jobs were skipped by the workflow condition.
 

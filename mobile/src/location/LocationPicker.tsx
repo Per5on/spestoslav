@@ -19,7 +19,7 @@ type Props = {
   onSelect: (value: Locality) => void;
 };
 export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
-  const { t } = useUI();
+  const { t, localStyle, color } = useUI();
   const [query, setQuery] = useState<string | null>(null),
     [results, setResults] = useState<Locality[]>([]),
     [loading, setLoading] = useState(false),
@@ -68,8 +68,8 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
   }, [query, apiBaseUrl, retry]);
   return (
     <View style={s.wrap}>
-      <View style={s.field}>
-        <Ionicons name="location-outline" size={22} color="#19562a" />
+      <View style={localStyle(s.field)}>
+        <Ionicons name="location-outline" size={22} color={color("#19562a")} />
         <Input
           testID="location-search"
           accessibilityLabel={t("searchLocation")}
@@ -89,7 +89,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
       </View>
       {query !== null && query.trim().length >= 2 && (
         <View>
-          {loading && <ActivityIndicator color="#19562a" />}
+          {loading && <ActivityIndicator color={color("#19562a")} />}
           {error ? (
             <>
               <Text style={s.meta}>{t("locationUnavailable")}</Text>

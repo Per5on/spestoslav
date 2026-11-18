@@ -8,11 +8,10 @@ import { api, httpStatus } from "../api";
 import { Product } from "../catalog/model";
 import { Text, Input, useUI } from "../ui";
 import { Button } from "../Action";
-import { s } from "../styles";
 import { useSession } from "./session";
 import { validGTIN } from "./barcode";
 export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
-  const { t } = useUI(),
+  const { t, styles: s } = useUI(),
     session = useSession();
   const [permission, requestPermission] = useCameraPermissions();
   const [camera, setCamera] = useState(false),

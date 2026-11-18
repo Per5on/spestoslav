@@ -13,7 +13,6 @@ import { Button } from "../Action";
 import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
-import { s } from "../styles";
 type Summary = {
   id: string;
   status: string;
@@ -42,7 +41,7 @@ export function ReceiptsScreen({
   const catalogue = useCatalog("groceries", localityId, false, false);
   const stores = catalogue.stores;
   const session = useSession(),
-    { t } = useUI();
+    { t, styles: s } = useUI();
   const [rows, setRows] = useState<Summary[]>([]),
     [selected, setSelected] = useState<Receipt | null>(null),
     [draft, setDraft] = useState<ImagePicker.ImagePickerAsset | null>(null),

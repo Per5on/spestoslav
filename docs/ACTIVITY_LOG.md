@@ -280,3 +280,23 @@ Confirmed [run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44
 ## 18 November — corrected Preview008 native smoke and ARM packaging retry
 
 Android 10 smoke passed on run 44307049747. The following ARM pack step hit React Native JNI codegen during Gradle clean. Changed the workflow to regenerate the Android project before assembling the phone APK. Exact-commit browser measurements and offline samples passed and are recorded in the handoff.
+
+## 18 November — verified Preview008 APK and reviewed AAB readiness
+
+Run 44309388382 passed. Verified artifact 14429854071, inspected native screenshots and compared APK bytes against Preview007. Rechecked the app, build and regression suite and recorded release/cleanup findings in the handoff. Next is a separate signed AAB lane and its Play internal testing gates.
+
+## 18 November — locality search ordering
+
+Updated the local API to sort starts-with matches first and keep both groups alphabetical. Passed the full 113-test backend suite and nine direct PostgreSQL locality tests. The app has no web deletion URL. Next action is to include the search change in the authorized backend rollout.
+
+## 18 November — Pre-alpha 009 images and feedback checks
+
+Verified all nine sample assets in the signed 008 APK. On local Pre-alpha 009, enabled first-launch visibility and verified offline decoding and persistent opt-out. Sent synthetic feedback end to end through the API and authenticated STARTTLS into a loopback mailbox. Live catalogue has zero real image links, and external delivery remains unavailable. Next action is to verify the gallery on the next authorized APK and exercise live delivery after configuring the sender.
+
+## 18 November — appearance, symbolic thumbnails and feedback routing
+
+Checked profile secret storage. Verified 14 symbolic assets and the API on local PostgreSQL before implementing the UI, then verified the separate Neon database. Tested the eight palettes and persistent Images and Dark mode switches. Brevo regression confirmed fixed delivery to ivo77@duck.com and different Reply-To addresses. Next wire the thumbnail DSN and verified Brevo sender/key in Render for live testing.
+
+## 18 November — Pre-alpha data deletion and daily consolidation
+
+Added a guest-capable local data reset and an authenticated cloud erasure route that retains the sign-in account. Backend, browser and Android prebuild lanes passed. Consolidated today’s actions in the handoff. Await the next APK build instruction and verify the live route with a disposable account before promising cloud erasure to users.

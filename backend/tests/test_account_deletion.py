@@ -214,3 +214,28 @@ def test_provider_verification_email_does_not_confirm_deletion(provider, monkeyp
     response = fixtures.client.delete("/api/v1/account", headers=SESSION)
     assert response.status_code == 502
     assert provider_calls(provider, "/delete-user")
+
+
+def test_data_deletion_rejects_guest_and_another_users_session(provider):
+    assert fixtures.client.delete("/api/v1/account/data", headers=SESSION).status_code == 401
+    as_user("bob")
+    assert upload("bob-kept-receipt", "red").status_code == 202
+    assert fixtures.client.delete("/api/v1/account/data", headers=SESSION).status_code == 403
+    assert count(ReceiptJob, owner_subject="bob") == 1
+    assert not provider_calls(provider, "/delete-user")
+
+
+def test_data_deletion_erases_own_data_without_deleting_profile(provider):
+    as_user()
+    assert upload("alice-private-receipt", "white").status_code == 202
+    seed_contributions()
+    for _ in range(2):
+        response = fixtures.client.delete("/api/v1/account/data", headers=SESSION)
+        assert response.status_code == 204
+        assert response.headers["cache-control"] == "no-store"
+    assert count(ReceiptJob, owner_subject="alice") == 0
+    assert count(ReviewSubmission, owner_subject="alice") == 0
+    assert count(ProductIdentificationRequest, owner_subject="alice") == 0
+    assert count(ReviewSubmission, owner_subject="bob") == 1
+    assert not provider_calls(provider, "/delete-user")
+    assert not list(Path(ReceiptStorage().directory).rglob("*.png"))

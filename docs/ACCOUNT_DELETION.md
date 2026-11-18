@@ -30,3 +30,9 @@ Status: **verified locally with PostgreSQL and a mocked identity provider.** The
 - **Identity match:** step 1 assumes the provider user id equals the JWT `sub`. If the first real test returns 403, check that assumption.
 - **Not covered:** server logs/backups (retention periods are an operator decision) and a receipt uploaded concurrently while deletion runs (it would be left for a retry).
 - **App:** Account screen offers "Delete account" with a confirmation; after a 502 the user stays signed in so they can retry.
+
+## Delete data in Pre-alpha 009
+
+«Настройки → Изтрий данни» clears the app’s saved list, preferences, locality, SecureStore session and app-owned ImagePicker cache. It works offline for anonymous sessions. The app has no persistent guest account or collected device identifier to match to server records. Existing public catalogue caches and photos picked from the device gallery are outside the action.
+
+With an active verified session, `DELETE /api/v1/account/data` calls the private receipt and contribution erase path. It expires local sign-in and the app requests server sign-out. Account identity remains available. The server erases private storage and data, unlinks approved catalogue contributions, and scrubs private descriptions and matching source references. A server failure still allows device reset and shows that server deletion was unconfirmed. This does not enumerate already-forwarded email, logs or backups. Feedback deletion requests go to the operator at ivo77@duck.com. Verify the live provider and storage with authorized test records. Concurrent writes from a different signed-in device remain an open check.

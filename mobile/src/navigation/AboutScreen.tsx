@@ -2,10 +2,9 @@ import { View } from "react-native";
 import * as Application from "expo-application";
 import { Text, useUI } from "../ui";
 import { Button } from "../Action";
-import { s } from "../styles";
 export const OWNER_NOTICE = "© 2026 Vimp. All rights reserved.";
 export function AboutScreen({ onFeedback }: { onFeedback: () => void }) {
-  const { t } = useUI();
+  const { t, styles: s } = useUI();
   // These are read from Android PackageInfo (versionName/versionCode), not config literals.
   const version = Application.nativeApplicationVersion,
     build = Application.nativeBuildVersion;

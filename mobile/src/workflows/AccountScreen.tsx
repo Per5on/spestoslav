@@ -5,7 +5,6 @@ import type { MessageKey } from "../i18n";
 import { useSession } from "./session";
 import { Button } from "../Action";
 import { Input, Text, useUI } from "../ui";
-import { s } from "../styles";
 
 /** Map the backend's distinct sign-in answers to specific, translated guidance. */
 export function authMessage(error: unknown, register: boolean): MessageKey {
@@ -26,7 +25,7 @@ function deleteMessage(error: unknown): MessageKey {
 }
 export function AccountScreen() {
   const { user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount } = useSession(),
-    { t } = useUI();
+    { t, styles: s } = useUI();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [register, setRegister] = useState(false),

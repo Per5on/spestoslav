@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   useRef,
 } from "react";
@@ -15,27 +16,41 @@ import {
   Pressable as NativePressable,
   PressableProps,
   StyleProp,
+  ImageStyle,
+  ViewStyle,
   TextStyle,
   useWindowDimensions,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Language, languages, messages, MessageKey } from "./i18n";
+import { preferencesKey } from "./localData";
 import { appFontSize } from "./font";
+import { appearanceColor, appearanceStyle, palettes } from "./appearance";
+import { s } from "./styles";
 type UI = {
   language: Language;
   setLanguage: (language: Language) => void;
   fontScale: number;
   setFontScale: (scale: number) => void;
+  palette: number;
+  setPalette: (palette: number) => void;
+  dark: boolean;
+  setDark: (dark: boolean) => void;
+  styles: typeof s;
+  color: (value: string, background?: boolean) => string;
+  localStyle: <T extends ViewStyle | TextStyle | ImageStyle>(value: T) => T;
   t: (key: MessageKey) => string;
 };
 const Context = createContext<UI | null>(null);
 export function UIProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("bg"),
     [fontScale, setFontScale] = useState(1),
-    [loaded, setLoaded] = useState(false);
+    [loaded, setLoaded] = useState(false),
+    [palette, setPalette] = useState(0),
+    [dark, setDark] = useState(false);
   useEffect(() => {
     let alive = true;
-    AsyncStorage.getItem("spestovnik-preferences")
+    AsyncStorage.getItem(preferencesKey)
       .then((raw) => {
         if (!raw || !alive) return;
         const saved = JSON.parse(raw);
@@ -43,6 +58,9 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
           setLanguage(saved.language);
         if ([0.9, 1, 1.15, 1.3].includes(saved.fontScale))
           setFontScale(saved.fontScale);
+        if (Number.isInteger(saved.palette) && saved.palette >= 0 && saved.palette < palettes.length)
+          setPalette(saved.palette);
+        if (typeof saved.dark === "boolean") setDark(saved.dark);
       })
       .catch(() => {})
       .finally(() => {
@@ -55,10 +73,18 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (loaded)
       AsyncStorage.setItem(
-        "spestovnik-preferences",
-        JSON.stringify({ language, fontScale }),
+        preferencesKey,
+        JSON.stringify({ language, fontScale, palette, dark }),
       ).catch(() => {});
-  }, [loaded, language, fontScale]);
+  }, [loaded, language, fontScale, palette, dark]);
+  const theme = useMemo(() => ({
+    styles: Object.fromEntries(Object.entries(s).map(([key, value]) =>
+      [key, appearanceStyle(StyleSheet.flatten(value), palette, dark)],
+    )) as typeof s,
+    color: (value: string, background = false) => appearanceColor(value, palette, dark, background),
+    localStyle: <T extends ViewStyle | TextStyle | ImageStyle>(value: T) =>
+      appearanceStyle(value, palette, dark),
+  }), [palette, dark]);
   return (
     <Context.Provider
       value={{
@@ -66,6 +92,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
         setLanguage,
         fontScale,
         setFontScale,
+        palette, setPalette, dark, setDark, ...theme,
         t: (key) => messages[language][key],
       }}
     >
@@ -79,13 +106,14 @@ export function useUI() {
   return value;
 }
 export function Text(props: TextProps) {
-  const { fontScale } = useUI();
+  const { fontScale, localStyle, dark } = useUI();
   const style = StyleSheet.flatten(props.style) || {};
   return (
     <NativeText
       {...props}
       style={[
-        props.style,
+        dark && { color: "#d4e4da" },
+        localStyle(style),
         { fontSize: appFontSize(style.fontSize ?? 14, fontScale, 11) },
         style.lineHeight ? { lineHeight: style.lineHeight * fontScale + 1 } : null,
       ]}
@@ -95,6 +123,7 @@ export function Text(props: TextProps) {
 export function Pressable({
   style, onFocus, onBlur, focusOutline = true, ...props
 }: PressableProps & { focusOutline?: boolean }) {
+  const { localStyle, color } = useUI();
   const [focused, setFocused] = useState(false);
   return (
     <NativePressable
@@ -108,10 +137,10 @@ export function Pressable({
         onBlur?.(event);
       }}
       style={(state) => [
-        typeof style === "function" ? style(state) : style,
+        localStyle(StyleSheet.flatten(typeof style === "function" ? style(state) : style) || {}),
         Platform.OS === "web" && {
           outlineStyle: "solid",
-          outlineColor: "#267133",
+          outlineColor: color("#267133"),
           outlineWidth: focused && focusOutline ? 2 : 0,
         },
       ]}
@@ -119,13 +148,15 @@ export function Pressable({
   );
 }
 export function Input(props: TextInputProps) {
-  const { fontScale } = useUI();
+  const { fontScale, localStyle, dark } = useUI();
   const style = StyleSheet.flatten(props.style) || {};
   return (
     <NativeInput
       {...props}
+      placeholderTextColor={props.placeholderTextColor ?? (dark ? "#a9beb1" : undefined)}
       style={[
-        props.style,
+        dark && { color: "#d4e4da" },
+        localStyle(style),
         { fontSize: appFontSize(style.fontSize ?? 16, fontScale, 16) },
       ]}
     />
@@ -146,7 +177,7 @@ export function AutoFitLabel({
   intrinsic?: boolean;
   allowWrap?: boolean;
 }) {
-  const { fontScale } = useUI();
+  const { fontScale, localStyle, dark } = useUI();
   const { fontScale: systemScale } = useWindowDimensions();
   const reference = useRef<React.ComponentRef<typeof NativeText>>(null);
   const [width, setWidth] = useState(0);
@@ -185,7 +216,7 @@ export function AutoFitLabel({
             adjustsFontSizeToFit: !intrinsic,
             minimumFontScale: Math.min(1, 12 / desired),
           })}
-      style={[style, { fontSize: fitted, flexShrink: 1 }]}
+      style={[dark && { color: "#d4e4da" }, localStyle(StyleSheet.flatten(style) || {}), { fontSize: fitted, flexShrink: 1 }]}
     >
       {label}
     </NativeText>

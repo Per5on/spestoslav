@@ -6,6 +6,10 @@ on:
         description: "Owner explicitly confirmed this internal preview build"
         type: boolean
         default: false
+      prepare_bundle:
+        description: "Also prepare and validate a test-signed Android App Bundle"
+        type: boolean
+        default: false
   pull_request:
     paths: ["mobile/**", ".github/workflows/android-preview.yml"]
 permissions:
@@ -71,6 +75,14 @@ jobs:
         run: |
           ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
           cp app/build/outputs/apk/release/app-release.apk ../android-smoke-x86_64.apk
+      - name: Verify emulator APK signature, ABI and size
+        run: |
+          APK=android-smoke-x86_64.apk
+          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose "$APK"
+          ABIS=$(unzip -Z1 "$APK" | awk -F/ '$1 == "lib" && $3 ~ /\.so$/ {print $2}' | sort -u)
+          test "$ABIS" = x86_64
+          sha256sum "$APK" > "$APK.sha256"
+          echo "Signed emulator APK: $(wc -c < "$APK") bytes (x86_64)" >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -98,13 +110,28 @@ jobs:
             adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
             adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
             cd mobile && python3 scripts/smoke-android.py
+      - uses: actions/upload-artifact@v5
+        with:
+          name: spestovnik-emulator-${{ env.PREVIEW_SEQUENCE }}-x86_64
+          path: |
+            mobile/android-smoke-x86_64.apk
+            mobile/android-smoke-x86_64.apk.sha256
+          retention-days: 30
+          if-no-files-found: error
       - name: Regenerate Android project for ARM phones
         run: npx expo prebuild --clean --platform android --no-install
         env:
           SPESTOVNIK_DRY_ANDROID_SHRINK: "1"
       - name: Build phone preview APK (test signing)
         working-directory: mobile/android
-        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
+        env:
+          PREPARE_BUNDLE: ${{ inputs.prepare_bundle }}
+        run: |
+          tasks=(assembleRelease)
+          if [[ "$PREPARE_BUNDLE" == true ]]; then
+            tasks+=(bundleRelease)
+          fi
+          ./gradlew "${tasks[@]}" --no-daemon -PreactNativeArchitectures=arm64-v8a,armeabi-v7a
       - name: Verify phone APK signature, ABIs and size
         run: |
           APK=android/app/build/outputs/apk/release/app-release.apk
@@ -115,6 +142,31 @@ jobs:
           cp "$APK" "$DEST"
           sha256sum "$DEST" > "$DEST.sha256"
           echo "Signed ARM phone APK: $(wc -c < "$DEST") bytes (arm64-v8a, armeabi-v7a)" >> "$GITHUB_STEP_SUMMARY"
+      - name: Validate test-signed ARM app bundle
+        if: inputs.prepare_bundle == true
+        run: |
+          BUNDLE=android/app/build/outputs/bundle/release/app-release.aab
+          jarsigner -verify "$BUNDLE"
+          keytool -printcert -jarfile "$BUNDLE" > bundle-certificate.txt
+          grep -F 'CN=Android Debug' bundle-certificate.txt
+          ABIS=$(unzip -Z1 "$BUNDLE" | awk -F/ '$1 == "base" && $2 == "lib" && $4 ~ /\.so$/ {print $3}' | sort -u)
+          test "$ABIS" = "$(printf '%s\n' arm64-v8a armeabi-v7a)"
+          curl --fail --location --retry 3 --output bundletool.jar https://github.com/google/bundletool/releases/download/1.18.3/bundletool-all-1.18.3.jar
+          echo "a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29  bundletool.jar" | sha256sum --check
+          java -jar bundletool.jar validate --bundle="$BUNDLE"
+          DEST="spestovnik-preview-${PREVIEW_SEQUENCE}-test-signed.aab"
+          cp "$BUNDLE" "$DEST"
+          sha256sum "$DEST" > "$DEST.sha256"
+          echo "Validated test-signed ARM app bundle: $(wc -c < "$DEST") bytes (arm64-v8a, armeabi-v7a)" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v5
+        if: inputs.prepare_bundle == true
+        with:
+          name: spestovnik-bundle-${{ env.PREVIEW_SEQUENCE }}-test-signed
+          path: |
+            mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}-test-signed.aab
+            mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}-test-signed.aab.sha256
+          retention-days: 30
+          if-no-files-found: error
       - name: Capture public API diagnostics on native failure
         if: failure()
         run: python scripts/check-live-api.py --output android-network.json

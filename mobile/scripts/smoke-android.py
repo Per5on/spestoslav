@@ -105,8 +105,6 @@ assert (
 assert bounds(stores)[0] < bounds(products)[0] < bounds(refresh)[0]
 capture_visual("catalogue")
 # Verify actual decoding of the bundled samples in both catalogue categories.
-photos = next(n for n in nodes() if "Примерни снимки" in label(n))
-tap_node(photos)
 wait_resource("thumbnail-loaded-demo-milk")
 assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-milk") for n in nodes())
 tap("Техника")
@@ -170,6 +168,14 @@ tap("Отвори менюто")
 tap("Настройки")
 wait_text("Език")
 capture_visual("settings")
+tap("Облик")
+wait_resource("appearance-screen")
+for index in range(1, 9):
+    wait_text(f"Цветова комбинация {index}", 10)
+tap("Тъмен режим")
+capture_visual("appearance-dark")
+tap("Тъмен режим")
+tap("Отвори менюто");tap("Настройки")
 tap("Език")
 names = {"English", "Deutsch", "Español", "Français", "Русский"}
 seen = {label(n) for n in nodes()}
@@ -201,12 +207,20 @@ metadata=json.loads(Path("preview.json").read_text())
 assert installed_version==metadata["version"] and int(installed_code)==int(metadata["sequence"])
 wait_text(f"Версия {installed_version} ({installed_code})")
 assert not any("https://" in label(n) or "Лаптоп" in label(n) for n in nodes())
+wait_text("Обратна връзка", 10)
 capture_visual("about")
 tap("Отвори менюто");tap("Настройки");tap("Език");tap("English")
 tap("Open menu");tap("About")
 wait_text(f"Version {installed_version} ({installed_code})")
 wait_text("© 2026 Vimp. All rights reserved.")
 tap("Open menu");tap("Settings");tap("Language");tap("Български")
+tap("Отвори менюто");tap("Настройки");tap("Изтрий данни")
+tap_node(next(n for n in nodes() if label(n) == "Изтрий данни" and n.get("clickable") == "true"))
+wait_text("Да изтрием ли запазените данни и да прекратим входа на това устройство?", 10)
+tap_node(next(n for n in nodes() if n.get("class") == "android.widget.Button" and label(n).casefold() == "изтрий данни"))
+wait_text("Данните на това устройство са изтрити.", 15)
+assert label(wait_resource("location-search")) != "София"
+capture_visual("guest-data-reset")
 tap("Храни")
 assert adb("shell", "pidof", "bg.spestoslav.preview").strip()
 logs = adb("logcat", "-d")
@@ -217,5 +231,5 @@ with open(
 ) as f:
     f.write(subprocess.check_output(["adb", "exec-out", "screencap", "-p"]))
 print(
-    "Android 10 smoke passed: ordered tabs, no lower ribbon/Home, name-only locality, shared selection, decoded food/technology images, five fuel grades, list, three-dot menu and language choices."
+    "Android 10 smoke passed: ordered tabs, single locality field, shared selection, bundled images, fuel grades, barcode, settings, appearance, About, language and guest data reset."
 )

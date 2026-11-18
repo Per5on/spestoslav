@@ -3,7 +3,6 @@ import { View } from "react-native";
 import { Product, Store, matchesProduct } from "../catalog/model";
 import { Pressable, Input, Text, useUI } from "../ui";
 import { Button } from "../Action";
-import { s } from "../styles";
 import { useSession } from "./session";
 export function ReceiptItemReview({
   receiptId,
@@ -20,7 +19,7 @@ export function ReceiptItemReview({
   stores: Store[];
   onSubmitted: () => Promise<void>;
 }) {
-  const { t } = useUI(),
+  const { t, styles: s } = useUI(),
     session = useSession();
   const [open, setOpen] = useState(false),
     [query, setQuery] = useState(""),

@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Pressable, AutoFitLabel } from "./ui";
-import { s } from "./styles";
+import { Pressable, AutoFitLabel, useUI } from "./ui";
 export function Button({
   label,
   onPress,
@@ -20,6 +19,7 @@ export function Button({
   labelSize?: number;
   compactRefresh?: boolean;
 }) {
+  const { styles: s } = useUI();
   const [focused, setFocused] = useState(false);
   return (
     <Pressable

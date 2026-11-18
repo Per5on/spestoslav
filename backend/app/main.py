@@ -115,8 +115,8 @@ def search_localities(
     )
     matches = [(name, value) for name, terms in names_and_terms for value in terms]
     contains = or_(*(name.contains(value, autoescape=True) for name, value in matches))
-    exact = or_(*(name == value for name, value in matches))
     prefix = or_(*(name.startswith(value, autoescape=True) for name, value in matches))
+    display_name = func.lower(func.coalesce(func.nullif(Locality.name_bg, ""), Locality.name))
 
     localities = db.scalars(
         select(Locality)
@@ -134,11 +134,10 @@ def search_localities(
         .where(Locality.on_map.is_(True))
         .where(contains)
         .order_by(
-            exact.desc(),
             prefix.desc(),
-            (Locality.type == "CITY").desc(),
-            Locality.name_bg,
+            display_name,
             Locality.name,
+            Locality.id,
         )
         .limit(20)
     ).all()
@@ -421,6 +420,7 @@ def include_routers(application):
     from .mobile_auth import router as mobile_auth_router
     from .feedback import router as feedback_router
     from .account import router as account_router
+    from .thumbnails import router as thumbnail_router
     from .limits import ReceiptUploadLimit
 
     for router in (
@@ -432,6 +432,7 @@ def include_routers(application):
         mobile_auth_router,
         feedback_router,
         account_router,
+        thumbnail_router,
     ):
         application.include_router(router)
     application.add_middleware(ReceiptUploadLimit)

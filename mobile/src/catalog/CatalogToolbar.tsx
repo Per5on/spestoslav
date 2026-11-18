@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 import { Button } from "../Action";
 import { useUI } from "../ui";
-import { s } from "../styles";
 import { Category } from "./useCatalog";
 export const fuelChoices = [
   "petrol",
@@ -29,7 +28,7 @@ export function CatalogToolbar({
   onFuel: () => void;
   onRefresh: () => void;
 }) {
-  const { t } = useUI();
+  const { t, styles: s } = useUI();
   const fuel = category === "fuel";
   return (
     <View testID="catalog-toolbar" style={[s.headingRow, { alignItems: "stretch" }]}>

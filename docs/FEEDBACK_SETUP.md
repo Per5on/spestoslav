@@ -7,3 +7,9 @@ Owner must create the free Brevo account, verify the sender they own, and privat
 Configuration: `FEEDBACK_PROVIDER=brevo`; `FEEDBACK_DELIVERY_ENABLED=false` until account/sender/key are ready for a controlled test. Required secrets: FEEDBACK_BREVO_API_KEY and FEEDBACK_FROM. Enable delivery only after confirming configuration, then verify one explicit synthetic support message with the recipient.201/messageId establishes provider acceptance, not inbox delivery. Failure, malformed acknowledgement, timeout or missing credentials never returns a success claim; UI shows unavailable/generic failure and does not automatically replay writes. Per-preview quota remains5attempts/10minutes.
 
 Owner confirmed account/key setup is not yet complete. Keep unavailable state honest and continue independent readiness work. Before GooglePlay testing, finalize processor/retention/operator details in the Terms/Privacy draft and actual delivery evidence. Never describe the app as fully live before these gates pass.
+
+## Pre-alpha integration result — 18 November 2026
+
+The app form submitted one synthetic message through the actual feedback API to a local SMTP receiver. The receiver verified authenticated STARTTLS, fixed recipient, supplied Reply-To and matching message body. The API returned 202 and the app displayed the acceptance message. The local receiver did not forward mail. The live availability endpoint still returns false. Use the existing Brevo HTTPS configuration with a verified sender and private Render key for the live inbox test.
+
+For each submission the user-entered address supplies Reply-To and the Brevo-verified address supplies From. All messages go to ivo77@duck.com. A two-user regression confirms the recipient stays fixed while Reply-To changes.

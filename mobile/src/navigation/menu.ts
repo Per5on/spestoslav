@@ -9,6 +9,8 @@ export type Screen =
   | "catalog"
   | "basket"
   | "font"
+  | "deleteData"
+  | "appearance"
   | "language"
   | "feedback"
   | "terms"

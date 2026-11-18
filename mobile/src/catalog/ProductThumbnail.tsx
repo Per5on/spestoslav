@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Image, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { s } from "../styles";
+import { useUI } from "../ui";
 import { sampleThumbnail } from "./samples";
 import { cachedThumbnail } from "./thumbnailCache";
 export function ProductThumbnail({ id, name, uri }: { id: string; name: string; uri?: string | null }) {
+  const { styles: s, color } = useUI();
   const [failed, setFailed] = useState(false);
   const [loadedUri, setLoadedUri] = useState<string | null>(null);
   const sample = sampleThumbnail(id);
@@ -27,6 +28,6 @@ export function ProductThumbnail({ id, name, uri }: { id: string; name: string; 
     else setFailed(true);
   }} /> :
     <View testID={`thumbnail-fallback-${id}`} style={s.photo}>
-      <Ionicons name="cube-outline" size={48} color="#63816a" />
+      <Ionicons name="cube-outline" size={48} color={color("#63816a")} />
     </View>;
 }

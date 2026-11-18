@@ -156,6 +156,22 @@ def test_brevo_https_fixed_recipient_and_no_secret_in_response(monkeypatch):
     assert "messageId" not in response.text
 
 
+def test_brevo_routes_replies_to_each_user_and_keeps_the_recipient(monkeypatch):
+    configure_brevo(monkeypatch)
+    messages = []
+
+    def post(url, **options):
+        messages.append(options["json"])
+        return httpx.Response(201, json={"messageId": "synthetic-provider-acceptance"})
+
+    monkeypatch.setattr(httpx, "post", post)
+    for reply_to in ("first@example.invalid", "second@example.invalid"):
+        assert client.post("/api/v1/feedback", json={**BODY, "email": reply_to}).status_code == 202
+    assert [m["replyTo"]["email"] for m in messages] == ["first@example.invalid", "second@example.invalid"]
+    assert all(m["sender"]["email"] == "verified@example.invalid" for m in messages)
+    assert all(m["to"] == [{"email": "ivo77@duck.com"}] for m in messages)
+
+
 @pytest.mark.parametrize(
     "status,body",
     [(400, {"error": "rejected"}), (429, {}), (503, {}), (201, {}), (201, [])],

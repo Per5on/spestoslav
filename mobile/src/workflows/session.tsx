@@ -7,7 +7,8 @@ import React, {
 } from "react";
 import { Platform } from "react-native";
 import * as SecureStore from "expo-secure-store";
-import { api, ApiError, API_BASE_URL, httpStatus } from "../api";
+import { api, ApiError, httpStatus } from "../api";
+import { sessionKey as KEY, type CloudErasure } from "../localData";
 type User = { id: string; email: string; name: string };
 type Session = { session: string; access_token: string; user: User };
 type ContextValue = {
@@ -20,6 +21,7 @@ type ContextValue = {
   signOut: () => Promise<boolean>;
   /** Erases private data and the sign-in account. Rejects with the HTTP status in the error. */
   deleteAccount: () => Promise<void>;
+  eraseServerData: () => Promise<CloudErasure>;
   request: <T>(
     path: string,
     options?: RequestInit,
@@ -27,8 +29,6 @@ type ContextValue = {
   ) => Promise<T>;
 };
 const Context = createContext<ContextValue | null>(null);
-const KEY =
-  "spestovnik-private-session-" + API_BASE_URL.replace(/[^a-zA-Z0-9._-]/g, "_");
 /** Network failures, timeouts and 5xx are transient; 4xx answers are final. */
 function transient(error: unknown) {
   const status = httpStatus(error);
@@ -50,6 +50,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     generation = useRef(0);
   const pending = useRef<Promise<Session> | null>(null);
   const mounted = useRef(false);
+  const pendingSave = useRef<Promise<void> | null>(null);
   const [user, setUser] = useState<User | null>(null),
     [ready, setReady] = useState(false),
     [restoreUnavailable, setRestoreUnavailable] = useState(false);
@@ -123,14 +124,19 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ email: email.trim(), password }),
       },
     );
+    if (!mounted.current) return;
     if (!memoryOnly)
       try {
-        await SecureStore.setItemAsync(KEY, fresh.session, {
+        pendingSave.current = SecureStore.setItemAsync(KEY, fresh.session, {
           keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
         });
+        await pendingSave.current;
       } catch {
         /* Stay signed in for this run rather than orphaning a live server session. */
+      } finally {
+        pendingSave.current = null;
       }
+    if (!mounted.current) return;
     generation.current++;
     setRestoreUnavailable(false);
     current.current = fresh;
@@ -152,6 +158,24 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
     if (before === generation.current) await clear().catch(() => undefined);
     return true;
+  }
+
+  async function eraseServerData(): Promise<CloudErasure> {
+    const inProgressSignIn = pendingSave.current;
+    const session = current.current?.session;
+    if (!session) {
+      await inProgressSignIn?.catch(() => undefined);
+      return restoreUnavailable || !ready || inProgressSignIn ? "unconfirmed" : "guest";
+    }
+    try {
+      await request<void>("/api/v1/account/data", {
+        method: "DELETE",
+        headers: { "X-Auth-Session": session },
+      }, 60000);
+      return await signOut() ? "deleted" : "unconfirmed";
+    } catch {
+      return "unconfirmed";
+    }
   }
 
   async function deleteAccount() {
@@ -206,7 +230,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
   }
   return (
-    <Context.Provider value={{ user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount, request }}>
+    <Context.Provider value={{ user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount, eraseServerData, request }}>
       {children}
     </Context.Provider>
   );

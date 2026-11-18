@@ -14,7 +14,13 @@ with sync_playwright() as p:
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(args.base_url,wait_until='domcontentloaded')
  page.get_by_role('tab',name='Техника',exact=True).wait_for(timeout=60000)
+ expect(page.get_by_role('switch')).to_have_attribute('aria-checked','true')
+ expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
+ page.get_by_role('switch').click()
+ expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_have_count(0)
+ page.reload()
  expect(page.get_by_role('switch')).to_have_attribute('aria-checked','false')
+ proof['sample_photos_visible_by_default_and_opt_out_persists']=True
  page.get_by_role('tab',name='Техника',exact=True).click()
  toolbar=page.get_by_test_id('catalog-toolbar')
  toolbar.get_by_role('button',name=re.compile('^Магазини')).click()

@@ -4,7 +4,62 @@ Updated: **18 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
+
+
+### 18 November 2026 — concise daily handoff and Pre-alpha 009 status
+
+| Area | Completed today |
+|---|---|
+| Preview008 recovery and release guard | Reconciled the uploaded review patch and draft PR #19, diagnosed why earlier Android jobs skipped, and removed the publication job. Preserved Preview007 and its numbered APK. |
+| Backend and app corrections | Corrected locality ranking and literal wildcard handling, PostgreSQL receipt deletion order, identity deletion confirmation, duplicate-registration and typed auth errors, cold-start recovery, failed sign-out, accepted receipt upload feedback, camera and barcode notices, receipt submission state, and retry response disposal. The later locality change sorts prefix matches first and both groups alphabetically. |
+| Visual changes | Implemented one shared locality text field with no dropdown control, rounded light-green Settings buttons, no Refresh border or focus outline, and an About screen ending at Feedback. Sample credits moved to the catalogue. Inspected native screenshots after correcting the initial visual interpretation. |
+| Performance and packaging | Isolated menu state, indexed prices, kept scoped catalogue results visible during refresh, and parallelized stores and prices. Browser median menu-open time at 4× CPU throttle fell from 63.1 to 21.0 ms. Split emulator x86_64 from the phone APK, applied R8 and resource shrinking, and used a smaller header asset. Cancelled the requested run, restarted with the corrections, and fixed JNI cleanup by regenerating the ARM project. Verified Android 10 smoke on x86_64 and a signed 43,321,725-byte ARM APK on [run 44309388382](https://github.com/Per5on/spestoslav/actions/runs/44309388382), 42.7% smaller than Preview007. |
+| AAB audit | Verified APK checksums, ABI contents and ARM64 16 KiB alignment. Identified unused demo strings, a test-only price wrapper, old workflow notices and a divergent local build command. A Play bundle needs its own release settings, upload signing and internal-track verification. |
+| Pre-alpha 009 images and appearance | Prepared local `codex/pre-alpha-009` from verified Preview008 `b4b11ba`, version 0.5.2 and Android version code 9. Verified all nine bundled sample images, enabled them by default and preserved opt-out. Added «Облик», eight palettes and persistent dark mode. Verified source, catalogue links, dimensions and API delivery of 14 MIT-licensed 160×140 symbols before app integration. Seeded and checked the distinct Neon database `spestovnik_thumbnails`. |
+| Profile data and feedback | Traced passwords to managed Neon Auth and verified the device only persists its session credential in Expo SecureStore. Exercised the feedback form and API through authenticated local STARTTLS. Confirmed Brevo HTTPS uses a verified From address, per-user Reply-To and fixed recipient `ivo77@duck.com`. No associated website or external deletion link exists. |
+| «Изтрий данни» | Added a separate Settings action and confirmation. Guests can clear their saved list, location, preferences and app-stored credentials and temporary picker files without network access. Signed-in users also request deletion of private server data and receipt storage with the session checked against the authenticated owner. The sign-in account stays available. The UI reports server deletion separately. Already-forwarded feedback is handled through the documented contact. |
+
+**Pre-alpha 009 verification and build.** The owner authorized internal APKs and AAB preparation. The final local pass returned 116 backend tests on each SQLAlchemy family and 19 targeted account and locality cases on PostgreSQL. Symbolic thumbnail linkage, dimensions, bytes, API cache versioning and seed replay passed. TypeScript, npm, Expo compatibility, browser catalogue/menu/toolbar/network/receipt/legal suites, appearance, and the three data reset paths passed. Android Hermes export and ARM64 prebuild passed. The Android workflow exercises the installed x86_64 APK, verifies both APK signatures and ABIs, and prepares an ARM AAB for bundletool validation with the Android debug certificate.
+
+**Resume point.** Inspect the exact-head Android run and retain checksums and native visual evidence for the new numbered artifacts. The live API still lacks the candidate account and thumbnail routes and reports feedback unavailable. On rollout verify data erasure with a throwaway account, confirm server log, backup and delivered-feedback retention, and wire the thumbnail connection and verified Brevo sender and key on Render. Physical ARM responsiveness and Play upload signing are separate checks.
+
 ## Latest checkpoints (newest first)
+
+
+### Pre-alpha appearance and symbolic thumbnails — 18 November 2026
+
+- Registration forwards credentials to managed Neon Auth. The account and password hash live with the identity provider. The native app persists the provider session in Expo SecureStore and keeps short-lived access tokens in memory. Browser sessions stay in memory. The app never persists the password. Colour, dark mode, image preferences and basket data use ordinary local storage. Brevo and database credentials belong in server-side Render configuration.
+- Rasterized 14 MIT-licensed Ionicons glyphs to 160×140 WebP files for the three catalogue categories and 11 product groups. Verified source/license, group linkage, dimensions, binary digests, API responses and repeatable seeding on local PostgreSQL before implementing app controls. Created separate Neon database `spestovnik_thumbnails` on the shared preview branch and verified all 14 digests and 13,600 bytes. No account or price data is stored there.
+- The candidate exposes a versioned public manifest and images. Wire `THUMBNAILS_DATABASE_URL` privately in Render when deploying the backend. Live application-to-Neon traffic is pending. The mobile uses confirmed product photo links first, then linked group symbols and category symbols, which carry a symbolic-image label for accessibility. Bundled sample images stay available offline.
+- «Настройки → Облик» has a default-on Images switch, eight palette choices, and a dark-mode switch. The catalogue switch uses the same preference. Browser integration verified image decoding and linkage, all eight palette choices, dark mode, opt-out, and persistence across reload. The full backend suite passed 114 tests, including a two-user Brevo Reply-To regression.
+- Feedback uses a verified Brevo From address, the current user's email as Reply-To, and fixed recipient `ivo77@duck.com`. The live availability endpoint still reports disabled. Live sending needs the verified sender and private Brevo key in Render. No APK build or deployment accompanied this change.
+
+
+
+### Pre-alpha 009 candidate — 18 November 2026
+
+- Local branch `codex/pre-alpha-009` is based on the verified Preview008 source `b4b11ba`. Candidate metadata is sequence 009, version 0.5.2. It includes the pending locality ordering change.
+- All nine sample WebPs were extracted from the signed Preview008 APK, matched to source hashes and decoded. Preview008 starts with sample photos hidden. Pre-alpha shows the three grocery and six technology samples by default and remembers opt-out. Dedicated browser tests decoded all nine with the API blocked and verified opt-out after reload. Samples retain their labels, attribution and comparison exclusion. The public grocery and technology catalogues still have zero image links across 2,000 real records.
+- The actual feedback form and API sent one synthetic message over authenticated STARTTLS to a loopback test mail receiver. Verified API 202, SMTP envelope recipient, Reply-To and message body. The broader browser tests, TypeScript, npm and 113 backend tests passed. The live API reported feedback delivery unavailable. Brevo HTTPS is the intended free Render route and still needs a verified sender and server-side key for a real inbox test.
+- No APK build, production change, external email or push was made. Next action is a device check of the pre-alpha sample gallery on the next authorized build and a single live feedback send once the sender and key are available in Render.
+
+
+
+### Locality search order and deletion access — 18 November 2026
+
+- Pending backend change puts starts-with matches ahead of other contains matches and sorts both groups alphabetically by the displayed settlement name. Cyrillic and Latin searches are covered. The existing app keeps the API order in its single search field. Local suite passed 113 tests, including nine locality tests exercised separately against PostgreSQL.
+- The app has no associated website or web deletion link. The in-app deletion control is available to signed-in users. The web deletion requirement remains open for Play publishing. No production deploy or APK build accompanied this checkpoint.
+
+
+
+### Verified Preview008 APK and AAB audit — 18 November 2026
+
+- [Android run 44309388382](https://github.com/Per5on/spestoslav/actions/runs/44309388382) passed Android 10 emulator smoke, ARM packaging and APK signature/ABI checks at `b4b11baa1c679ae817bb5c73b72e46ad4bc7f17c`. [Artifact 14429854071](https://github.com/Per5on/spestoslav/actions/runs/44309388382/artifacts/14429854071) contains the APK and native evidence. Independently checked the artifact ZIP digest and APK SHA-256 `34b2d4334b19a0d2792b390b5293d3f17c721fa0fe05a26e31ff1d68664fda83` and both ARM ABIs. APK 43,321,725 bytes, down 32,245,804 bytes (42.7%) from Preview007. Reinspected native screenshots.
+- Archive comparison: 19,517,112 bytes less from x86_64 exclusion. Packed DEX went from 20,232,248 to 8,533,376 bytes. Packed ARM native payload is 30,434,788 bytes across both ABIs. All ARM64 ELF load alignments and all stored native ZIP offsets met 16 KiB in the inspected APK. Some 32-bit ELF segments use 4 KiB. Verify the eventual Play-generated ARM64 splits and run on a 16 KiB device.
+- Rechecked TypeScript with unused locals/parameters enabled, mobile unit tests, mocked native thumbnail cache and 112 local PostgreSQL/OCR tests. Exact-head backend CI passed. Android smoke uses the x86_64 emulator APK. Physical ARM performance, real receipt/auth flows and Play install/upgrade remain open. Live API 0.6.0 does not yet expose `DELETE /api/v1/account`.
+- Safe cleanup candidates: six obsolete `demoError` translations, old preview workflow notices in the current lane, and the test-only `lowestPrice` wrapper once its tests directly exercise the production pricing index. Retain server sample endpoints for Preview007 clients and keep web barcode dependencies for browser tests. Replace the divergent local preview build command with a shared preview configuration. Gate or defer the retailer request on Receipts and test corrupted native cache entry recovery.
+- AAB next step is a separate release lane with the Play application ID, monotonic versionCode, upload-key signing and separate release inputs. Expo prebuild plus Gradle `bundleRelease` produces the bundle. Validate generated splits with bundletool, check download/installed sizes and test the AAB in Play internal testing after identity deletion and policy checks. Test Hermes bundle compression and launcher resource changes with cold-start baselines before adopting them. No app code, signing or publishing changes were made during this audit.
+
 
 
 ### Preview008 restarted on the corrected source — 18 November 2026
@@ -12,7 +67,7 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 - Corrected candidate `2b511f09ab1667fee6d2a81715067bd8a0dce021` is on draft PR #19. [Backend CI](https://github.com/Per5on/spestoslav/actions/runs/44307055281) passed. [Android workflow](https://github.com/Per5on/spestoslav/actions/runs/44307049747) is the internal run to inspect.
 - Repeated the browser responsiveness and offline sample checks on the corrected source. Median menu time at 4× CPU throttle was 21.0 ms, down from the 63.1 ms baseline. The p95 was 30.1 ms, down from 105.1 ms. All nine sample images decoded with API requests blocked. About contained no product links.
 - Acceptance gates are native visual smoke evidence and verification of the signed ARM package size against the 75,567,529-byte Preview007 APK. The same-device ARM responsiveness comparison remains open.
-- Android 10 smoke passed on run 44307049747. Its ARM package step failed during Gradle native clean because CMake referenced removed JNI codegen. The follow-up regenerates the Android project before compiling ARM. App source and smoke assertions are identical.
+- Android 10 smoke passed on run 44307049747. Its ARM package step failed during Gradle native clean because CMake referenced removed JNI codegen. [Retry 44309388382](https://github.com/Per5on/spestoslav/actions/runs/44309388382) at `b4b11ba` regenerates the Android project before compiling ARM. App source and smoke assertions are identical. Inspected the first run’s native screenshots for the single locality field, borderless Refresh, Settings and About.
 
 
 

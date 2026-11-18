@@ -14,7 +14,7 @@ only the link to the person is removed.
 import uuid
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Response
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from botocore.exceptions import BotoCoreError, ClientError
 
@@ -22,6 +22,7 @@ from .auth import Principal, current_user
 from .db import get_db
 from .marketplace import PriceCache, ReceiptScan
 from .mobile_auth import upstream
+from .models import PriceObservation
 from .receipts import ReceiptStorage, delete_receipt_rows
 from .workflows import ProductIdentificationRequest, ReceiptJob, ReviewSubmission
 
@@ -68,6 +69,19 @@ def _erase_contributions(db: Session, subject: str) -> None:
             db.delete(cache)
         else:
             submission.owner_subject = pseudonym
+            submission.request_key = uuid.uuid4().hex
+            submission.review_note = None
+            if cache.source_reference and cache.source in {"USER", "RECEIPT"}:
+                db.execute(update(PriceObservation).where(
+                    PriceObservation.source == cache.source,
+                    PriceObservation.source_reference == cache.source_reference,
+                    PriceObservation.product_id == cache.product_id,
+                    PriceObservation.branch_id == cache.branch_id,
+                    PriceObservation.price_eur == cache.submitted_price_eur,
+                    PriceObservation.collected_at == cache.collected_at,
+                ).values(source_reference=None))
+            cache.source_reference = None
+            cache.raw_product_description = None
     requests = db.scalars(
         select(ProductIdentificationRequest).where(
             ProductIdentificationRequest.owner_subject == subject
@@ -78,7 +92,29 @@ def _erase_contributions(db: Session, subject: str) -> None:
             db.delete(request)
         else:
             request.owner_subject = pseudonym
+            request.description = None
     db.commit()
+
+
+def _erase_user_data(db: Session, principal: Principal, session: str) -> None:
+    if principal.role != "user":
+        raise HTTPException(403, "Service and administrator identities cannot use this route")
+    data, _ = upstream("/get-session", session=session)
+    user = (data or {}).get("user") or {}
+    if user.get("id") != principal.subject:
+        raise HTTPException(403, "Session does not belong to this account")
+    _erase_receipts(db, principal.subject)
+    _erase_contributions(db, principal.subject)
+
+
+@router.delete("/data", status_code=204)
+def delete_user_data(
+    principal: Principal = Depends(current_user),
+    db: Session = Depends(get_db),
+    x_auth_session: str = Header(min_length=1, max_length=2048),
+):
+    _erase_user_data(db, principal, x_auth_session)
+    return Response(status_code=204, headers={"Cache-Control": "no-store"})
 
 
 @router.delete("", status_code=204)
@@ -87,14 +123,7 @@ def delete_account(
     db: Session = Depends(get_db),
     x_auth_session: str = Header(min_length=1, max_length=2048),
 ):
-    if principal.role != "user":
-        raise HTTPException(403, "Service and administrator identities cannot use this route")
-    data, _ = upstream("/get-session", session=x_auth_session)
-    user = (data or {}).get("user") or {}
-    if user.get("id") != principal.subject:
-        raise HTTPException(403, "Session does not belong to this account")
-    _erase_receipts(db, principal.subject)
-    _erase_contributions(db, principal.subject)
+    _erase_user_data(db, principal, x_auth_session)
     try:
         result, _ = upstream("/delete-user", "POST", session=x_auth_session, payload={})
         if not isinstance(result, dict) or (

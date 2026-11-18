@@ -2,11 +2,10 @@ import { useState } from "react";
 import { Modal, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Text, useUI } from "../ui";
-import { s } from "../styles";
 import { overflowMenu, Screen } from "./menu";
 
 export function OverflowMenu({ top, onSelect }: { top: number; onSelect: (screen: Screen) => void }) {
-  const { t } = useUI();
+  const { t, styles: s, color } = useUI();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
   return (
@@ -40,7 +39,7 @@ export function OverflowMenu({ top, onSelect }: { top: number; onSelect: (screen
                   onSelect(item.id);
                 }}
               >
-                <Ionicons name={item.icon} color="#19562a" size={22} />
+                <Ionicons name={item.icon} color={color("#19562a")} size={22} />
                 <Text style={s.menuText}>{t(item.label)}</Text>
               </Pressable>
             ))}

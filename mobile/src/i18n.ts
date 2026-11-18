@@ -91,7 +91,7 @@ const bg = {
   demoOil: "слънчогледово олио",
   demoSugar: "захар",
 };
-export type MessageKey = keyof typeof bg | keyof typeof workflowMessages.bg | keyof typeof experienceMessages.bg;
+export type MessageKey = keyof typeof bg | keyof typeof workflowMessages.bg | keyof typeof experienceMessages.bg | keyof typeof appearanceMessages.bg | keyof typeof deletionMessages.bg;
 type Dictionary = Record<keyof typeof bg, string>;
 const en: Dictionary = {
   food: "Food",
@@ -508,11 +508,111 @@ const ru: Dictionary = {
   demoOil: "подсолнечное масло",
   demoSugar: "сахар",
 };
+const appearanceMessages = {
+  "bg": {
+    "appearance": "Облик",
+    "appearanceImages": "Изображения",
+    "appearancePalette": "Цветова комбинация",
+    "appearanceDark": "Тъмен режим",
+    "symbolicImage": "Символично изображение"
+  },
+  "en": {
+    "appearance": "Appearance",
+    "appearanceImages": "Images",
+    "appearancePalette": "Color combination",
+    "appearanceDark": "Dark mode",
+    "symbolicImage": "Symbolic image"
+  },
+  "de": {
+    "appearance": "Darstellung",
+    "appearanceImages": "Bilder",
+    "appearancePalette": "Farbkombination",
+    "appearanceDark": "Dunkelmodus",
+    "symbolicImage": "Symbolisches Bild"
+  },
+  "es": {
+    "appearance": "Apariencia",
+    "appearanceImages": "Imágenes",
+    "appearancePalette": "Combinación de colores",
+    "appearanceDark": "Modo oscuro",
+    "symbolicImage": "Imagen simbólica"
+  },
+  "fr": {
+    "appearance": "Apparence",
+    "appearanceImages": "Images",
+    "appearancePalette": "Combinaison de couleurs",
+    "appearanceDark": "Mode sombre",
+    "symbolicImage": "Image symbolique"
+  },
+  "ru": {
+    "appearance": "Оформление",
+    "appearanceImages": "Изображения",
+    "appearancePalette": "Цветовая комбинация",
+    "appearanceDark": "Тёмный режим",
+    "symbolicImage": "Символическое изображение"
+  }
+};
+const deletionMessages = {
+  "bg": {
+    "deleteData": "Изтрий данни",
+    "deleteDataHelp": "Изтрийте списъка, настройките, населеното място и временните снимки от това устройство. При активен вход се изтриват и личните данни на сървъра, без да се закрива профилът. За вече изпратена обратна връзка пишете на ivo77@duck.com.",
+    "deleteDataConfirm": "Да изтрием ли запазените данни и да прекратим входа на това устройство?",
+    "deleteDataLocal": "Данните на това устройство са изтрити.",
+    "deleteDataDone": "Данните на устройството и личните данни на сървъра са изтрити.",
+    "deleteDataPartial": "Данните на устройството са изтрити. Изтриването на сървъра не е потвърдено. Влезте и опитайте отново.",
+    "deleteDataFailed": "Изтриването на устройството не е потвърдено. Опитайте отново."
+  },
+  "en": {
+    "deleteData": "Delete data",
+    "deleteDataHelp": "Erase this device’s list, preferences, locality and temporary photos. If signed in, private server data is erased while your profile stays open. For feedback you already sent, contact ivo77@duck.com.",
+    "deleteDataConfirm": "Erase your saved data and end sign-in on this device?",
+    "deleteDataLocal": "Data on this device was erased.",
+    "deleteDataDone": "Device data and private server data were erased.",
+    "deleteDataPartial": "Device data was erased. Server deletion could not be confirmed. Sign in and try again.",
+    "deleteDataFailed": "Device deletion could not be confirmed. Please try again."
+  },
+  "de": {
+    "deleteData": "Daten löschen",
+    "deleteDataHelp": "Liste, Einstellungen, Ort und temporäre Fotos auf diesem Gerät werden gelöscht. Bei Anmeldung werden auch private Serverdaten gelöscht. Das Profil bleibt bestehen. Kontakt für gesendetes Feedback: ivo77@duck.com.",
+    "deleteDataConfirm": "Gespeicherte Daten löschen und die Anmeldung auf diesem Gerät beenden?",
+    "deleteDataLocal": "Die Daten auf diesem Gerät wurden gelöscht.",
+    "deleteDataDone": "Gerätedaten und private Serverdaten wurden gelöscht.",
+    "deleteDataPartial": "Gerätedaten wurden gelöscht. Serverlöschung nicht bestätigt. Bitte anmelden und erneut versuchen.",
+    "deleteDataFailed": "Löschung auf dem Gerät nicht bestätigt. Bitte erneut versuchen."
+  },
+  "es": {
+    "deleteData": "Eliminar datos",
+    "deleteDataHelp": "Elimina la lista, preferencias, localidad y fotos temporales de este dispositivo. Si has iniciado sesión, también se eliminan los datos privados del servidor y se conserva el perfil. Para comentarios enviados: ivo77@duck.com.",
+    "deleteDataConfirm": "¿Eliminar los datos guardados y cerrar sesión en este dispositivo?",
+    "deleteDataLocal": "Se eliminaron los datos de este dispositivo.",
+    "deleteDataDone": "Se eliminaron los datos del dispositivo y los datos privados del servidor.",
+    "deleteDataPartial": "Se eliminaron los datos del dispositivo. No se confirmó el borrado en el servidor. Inicia sesión e inténtalo de nuevo.",
+    "deleteDataFailed": "No se confirmó el borrado en el dispositivo. Inténtalo de nuevo."
+  },
+  "fr": {
+    "deleteData": "Effacer les données",
+    "deleteDataHelp": "Efface la liste, les préférences, la localité et les photos temporaires de cet appareil. Si vous êtes connecté, les données privées du serveur sont aussi effacées et le profil est conservé. Avis déjà envoyés : ivo77@duck.com.",
+    "deleteDataConfirm": "Effacer les données enregistrées et fermer la session sur cet appareil ?",
+    "deleteDataLocal": "Les données de cet appareil ont été effacées.",
+    "deleteDataDone": "Les données de l’appareil et les données privées du serveur ont été effacées.",
+    "deleteDataPartial": "Les données de l’appareil ont été effacées. L’effacement serveur reste à confirmer. Reconnectez-vous et réessayez.",
+    "deleteDataFailed": "L’effacement sur l’appareil reste à confirmer. Réessayez."
+  },
+  "ru": {
+    "deleteData": "Удалить данные",
+    "deleteDataHelp": "Удаляет список, настройки, населённый пункт и временные фото на устройстве. При входе также удаляются личные данные на сервере, а профиль сохраняется. По отправленным сообщениям: ivo77@duck.com.",
+    "deleteDataConfirm": "Удалить сохранённые данные и завершить сеанс на этом устройстве?",
+    "deleteDataLocal": "Данные на устройстве удалены.",
+    "deleteDataDone": "Данные устройства и личные данные на сервере удалены.",
+    "deleteDataPartial": "Данные устройства удалены. Удаление на сервере не подтверждено. Войдите и повторите попытку.",
+    "deleteDataFailed": "Удаление на устройстве не подтверждено. Повторите попытку."
+  }
+};
 export const messages: Record<Language, Record<MessageKey, string>> = {
-  bg: { ...bg, ...workflowMessages.bg, ...experienceMessages.bg },
-  en: { ...en, ...workflowMessages.en, ...experienceMessages.en },
-  de: { ...de, ...workflowMessages.de, ...experienceMessages.de },
-  es: { ...es, ...workflowMessages.es, ...experienceMessages.es },
-  fr: { ...fr, ...workflowMessages.fr, ...experienceMessages.fr },
-  ru: { ...ru, ...workflowMessages.ru, ...experienceMessages.ru },
+  bg: { ...bg, ...workflowMessages.bg, ...experienceMessages.bg, ...appearanceMessages.bg, ...deletionMessages.bg },
+  en: { ...en, ...workflowMessages.en, ...experienceMessages.en, ...appearanceMessages.en, ...deletionMessages.en },
+  de: { ...de, ...workflowMessages.de, ...experienceMessages.de, ...appearanceMessages.de, ...deletionMessages.de },
+  es: { ...es, ...workflowMessages.es, ...experienceMessages.es, ...appearanceMessages.es, ...deletionMessages.es },
+  fr: { ...fr, ...workflowMessages.fr, ...experienceMessages.fr, ...appearanceMessages.fr, ...deletionMessages.fr },
+  ru: { ...ru, ...workflowMessages.ru, ...experienceMessages.ru, ...appearanceMessages.ru, ...deletionMessages.ru },
 };

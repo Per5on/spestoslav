@@ -136,7 +136,6 @@ def test_search_by_common_english_spelling():
     assert response.json()[0]["name_latin"] == "Sofija"
 
 
-
 def test_two_character_prefix_ranks_before_contains_matches():
     with TestingSessionLocal() as db:
         for index in range(25):
@@ -156,6 +155,39 @@ def test_two_character_prefix_ranks_before_contains_matches():
         assert response.status_code == 200
         assert len(response.json()) == 20
         assert response.json()[0]["name_bg"] == "София"
+
+
+def test_prefix_and_contains_groups_are_each_alphabetical():
+    with TestingSessionLocal() as db:
+        for latin, bulgarian, locality_type in (
+            ("Visoko", "Високо", "CITY"),
+            ("Sozopol", "Созопол", "CITY"),
+            ("Asovo", "Асово", "VILLAGE"),
+            ("Sovata", "Совата", "VILLAGE"),
+        ):
+            db.add(
+                Locality(
+                    source="TEST",
+                    source_id=latin,
+                    name=latin,
+                    name_latin=latin,
+                    name_bg=bulgarian,
+                    type=locality_type,
+                    on_map=True,
+                )
+            )
+        db.commit()
+
+    for query in ("Со", "SO"):
+        response = client.get("/api/v1/localities", params={"q": query})
+        assert response.status_code == 200
+        assert [row["name_bg"] for row in response.json()] == [
+            "Совата",
+            "Созопол",
+            "София",
+            "Асово",
+            "Високо",
+        ]
 
 
 def test_locality_search_treats_sql_wildcards_literally():

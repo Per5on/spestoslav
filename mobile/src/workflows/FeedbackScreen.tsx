@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Modal, ScrollView, View } from "react-native";
 import { LegalDocument } from "../legal/LegalDocument";
 import { Button } from "../Action";
-import { api } from "../api";
+import { api, httpStatus } from "../api";
 import { Pressable, Input, Text, useUI } from "../ui";
 export function FeedbackScreen() {
-  const { t } = useUI();
+  const { t, color } = useUI();
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const [name, setName] = useState(""), [phone, setPhone] = useState(""),
     [email, setEmail] = useState(""), [message, setMessage] = useState(""),
@@ -32,7 +32,7 @@ export function FeedbackScreen() {
       });
       if (r.status !== "accepted") throw new Error("Unaccepted feedback");
       setMessage(""); setNotice("feedbackAccepted");
-    } catch (e) { setNotice(String(e).includes("429") ? "feedbackWait" : "feedbackUnavailable"); }
+    } catch (e) { setNotice(httpStatus(e) === 429 ? "feedbackWait" : "feedbackUnavailable"); }
     finally { setBusy(false); }
   }
   const fields = [
@@ -41,17 +41,17 @@ export function FeedbackScreen() {
     { key: "feedbackEmail" as const, value: email, change: setEmail, limit: 254 },
     { key: "feedbackMessage" as const, value: message, change: setMessage, limit: 5000 },
   ];
-  return <View testID="feedback-screen" style={{ backgroundColor: "#fff", gap: 14 }}>
+  return <View testID="feedback-screen" style={{ backgroundColor: color("#fff", true), gap: 14 }}>
     {fields.map(f => <View key={f.key} style={{ gap: 4 }}>
       <Text style={{ color: "#606a73", fontSize: 13 }}>{t(f.key)}</Text>
       <Input accessibilityLabel={t(f.key)} value={f.value} onChangeText={f.change}
         editable={!busy} maxLength={f.limit} multiline={f.key === "feedbackMessage"}
         keyboardType={f.key === "feedbackEmail" ? "email-address" : f.key === "feedbackPhone" ? "phone-pad" : "default"}
         autoCapitalize={f.key === "feedbackEmail" ? "none" : "sentences"}
-        style={{ backgroundColor: "#fff", color: "#111", borderWidth: 1, borderColor: "#aaa", borderRadius: 3,
+        style={{ backgroundColor: color("#fff", true), color: "#111", borderWidth: 1, borderColor: "#aaa", borderRadius: 3,
           padding: 8, minHeight: f.key === "feedbackMessage" ? 110 : 44, textAlignVertical: "top" }} />
     </View>)}
-    {checking && <ActivityIndicator color="#267133" />}
+    {checking && <ActivityIndicator color={color("#267133")} />}
     {!checking && !available && <Text style={{ color: "#606a73" }}>{t("feedbackUnavailable")}</Text>}
     {notice && <Text accessibilityRole="alert" style={{ color: notice === "feedbackAccepted" ? "#267133" : "#8a4200" }}>{t(notice)}</Text>}
     <Text style={{ color: "#606a73", fontSize: 12 }}>{t("feedbackPrivacy")}</Text>
@@ -59,7 +59,7 @@ export function FeedbackScreen() {
       <Text style={{ color: "#19562a", textDecorationLine: "underline" }}>{t("privacy")}</Text>
     </Pressable>
     <Modal visible={privacyOpen} animationType="slide" onRequestClose={() => setPrivacyOpen(false)}>
-      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 44, backgroundColor: "#fff", gap: 12 }}>
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 44, backgroundColor: color("#fff", true), gap: 12 }}>
         <Button label={t("closeLegal")} onPress={() => setPrivacyOpen(false)} />
         <LegalDocument kind="privacy" />
       </ScrollView>
