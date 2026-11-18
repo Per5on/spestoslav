@@ -92,7 +92,9 @@ export function Text(props: TextProps) {
     />
   );
 }
-export function Pressable({ style, onFocus, onBlur, ...props }: PressableProps) {
+export function Pressable({
+  style, onFocus, onBlur, focusOutline = true, ...props
+}: PressableProps & { focusOutline?: boolean }) {
   const [focused, setFocused] = useState(false);
   return (
     <NativePressable
@@ -110,7 +112,7 @@ export function Pressable({ style, onFocus, onBlur, ...props }: PressableProps) 
         Platform.OS === "web" && {
           outlineStyle: "solid",
           outlineColor: "#267133",
-          outlineWidth: focused ? 2 : 0,
+          outlineWidth: focused && focusOutline ? 2 : 0,
         },
       ]}
     />

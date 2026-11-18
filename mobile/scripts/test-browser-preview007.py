@@ -38,6 +38,7 @@ with sync_playwright() as p:
  toolbar.get_by_role('button',name='Продукти',exact=True).click()
  page.get_by_role('switch').click()
  expect(page.get_by_role('img',name='Лаптоп (примерна снимка)',exact=True)).to_be_visible(timeout=20000)
+ expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_be_visible()
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()

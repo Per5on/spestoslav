@@ -24,6 +24,7 @@ export function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      focusOutline={false}
       disabled={disabled}
       accessibilityState={{ disabled, expanded }}
       aria-expanded={expanded}
@@ -46,7 +47,6 @@ export function Button({
           maxWidth: "34%",
         },
         primary && s.primary,
-        compactRefresh && { borderWidth: 1, borderColor: "#267133" },
         focused && { backgroundColor: primary ? "#de7300" : "#dbead3" },
         disabled && { opacity: 0.45 },
       ]}

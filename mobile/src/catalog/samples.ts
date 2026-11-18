@@ -14,7 +14,12 @@ const thumbnails: Record<string, ImageSourcePropType> = {
   smartphone: require("../../assets/thumbnails/smartphone.webp"),
 };
 
-export const sampleCredits = products.filter(row => row.source_url);
+const creditsById = new Map(products.filter(row => row.source_url)
+  .map(row => ["demo-" + row.code, row] as const));
+
+export function sampleCredit(id: string) {
+  return creditsById.get(id);
+}
 
 export const sampleProducts: Product[] = products.map(row => ({
   id: "demo-" + row.code,

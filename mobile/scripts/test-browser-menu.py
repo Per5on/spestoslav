@@ -18,8 +18,9 @@ with sync_playwright() as p:
  refresh = page.get_by_role('button', name='Обнови', exact=True)
  refresh.wait_for(timeout=60000)
  refresh.focus()
- assert refresh.evaluate("(el) => getComputedStyle(el).outlineColor") == "rgb(38, 113, 51)"
- assert refresh.evaluate("(el) => getComputedStyle(el).borderTopColor") == "rgb(38, 113, 51)"
+ assert refresh.evaluate("(el) => getComputedStyle(el).outlineWidth") == "0px"
+ assert refresh.evaluate("(el) => getComputedStyle(el).borderTopWidth") == "0px"
+ assert refresh.evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(219, 234, 211)"
  page.screenshot(path=str(args.output_dir/'catalogue-bg.png'))
  page.get_by_role('button',name='Отвори менюто',exact=True).click(timeout=60000)
  labels=page.get_by_role('menuitem').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
@@ -27,8 +28,9 @@ with sync_playwright() as p:
  page.screenshot(path=str(args.output_dir/'preview005-issue8-menu-bg.png'));page.get_by_role('menuitem',name='За приложението',exact=True).click()
  expect(page.get_by_test_id('about-screen')).to_be_visible();expect(page.get_by_text('© 2026 Vimp. All rights reserved.',exact=True)).to_be_visible()
  about = page.get_by_test_id('about-screen')
- expect(about.get_by_role('link', name='Лаптоп (примерна снимка)', exact=True)).to_be_visible()
- assert 'laptop:' not in about.inner_text() and 'https://' not in about.inner_text()
+ expect(about.get_by_role('link')).to_have_count(0)
+ assert 'Лаптоп' not in about.inner_text() and 'https://' not in about.inner_text()
+ expect(about.get_by_role('button')).to_have_count(1)
  page.screenshot(path=str(args.output_dir/'about-bg.png'))
  feedback = page.get_by_role('button',name='Обратна връзка',exact=True)
  light_green = feedback.evaluate("(el) => getComputedStyle(el).backgroundColor")
@@ -40,7 +42,7 @@ with sync_playwright() as p:
  assert font_choice.evaluate("(el) => getComputedStyle(el).borderTopWidth") == "0px"
  assert font_choice.evaluate("(el) => parseFloat(getComputedStyle(el).borderTopLeftRadius)") >= 12
  page.screenshot(path=str(args.output_dir/'settings-bg.png'))
- proof['green_focus_and_settings_buttons_without_black_borders'] = True
+ proof['borderless_refresh_and_settings_buttons'] = True
  font_choice.click();page.get_by_role('radio').nth(2).click();page.get_by_role('button',name='Назад',exact=True).click();expect(page.get_by_role('button',name='Език',exact=True)).to_be_visible();proof['nested_settings_and_back_navigation']=True
  page.get_by_role('button',name='Език',exact=True).click();page.get_by_role('radio',name='English',exact=True).click();page.get_by_role('button',name='Open menu',exact=True).click()
  labels=page.get_by_role('menuitem').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')

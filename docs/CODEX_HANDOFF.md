@@ -7,6 +7,14 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 ## Latest checkpoints (newest first)
 
 
+### Preview008 stopped for visual corrections — 18 November 2026
+
+- At the owner's request, [Android run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) on commit `687b467` was cancelled. GitHub reports no Preview008 APK artifact.
+- Corrected two interpretation errors in the candidate. Refresh has no border in any state and shows keyboard focus through its background. About ends with Feedback and contains no product rows. Licensed sample image credits accompany the corresponding sample cards in the catalogue.
+- Reviewed new browser screenshots and checked computed Refresh border and outline widths, Settings, About content, location input, catalogue and sample credits. TypeScript, npm and browser suites passed. Corrections remain local. Wait for the owner to restart Android CI with the corrected source.
+
+
+
 ### Preview008 candidate build commit — 18 November 2026
 
 - Rechecked the two GitHub uploads and draft PR #19. Its prior head `daa73ae` had no Preview008 APK artifact. This candidate keeps sequence 008 and version 0.5.1 for the first internal APK.

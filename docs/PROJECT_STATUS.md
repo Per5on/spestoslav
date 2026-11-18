@@ -4,6 +4,8 @@ Updated: 18 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — Preview008
 
+Android run 44306415234 was cancelled at the owner’s request. Verified Refresh and About corrections are local. The owner will decide when to restart it.
+
 Local, uncommitted changes are in `/workspace/work/spestoslav` on `codex/preview-008`, based on `daa73ae`. Reviewed [draft PR #19](https://github.com/Per5on/spestoslav/pull/19) and the open menu, toolbar and inventory issues. The backend matrix passed on the committed head. Android jobs were skipped by the workflow condition.
 
 The backend changes cover locality ranking, account and receipt deletion, and registration errors. The app changes cover shared location search, controls, Settings, About, session recovery and receipt state. Local backend, mobile, and simulated browser evidence is recorded in the handoff and activity log. Native acceptance and a real managed-account deletion remain open. No commit or deployment was made during the recheck.

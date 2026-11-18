@@ -1,4 +1,5 @@
 import { LegalDocument } from "./src/legal/LegalDocument";
+import { sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
 import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
@@ -6,6 +7,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Linking,
   ScrollView,
   View,
 } from "react-native";
@@ -299,6 +301,7 @@ function Main() {
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
+    const credit = p.is_demo ? sampleCredit(p.id) : undefined;
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
@@ -306,6 +309,14 @@ function Main() {
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
           <Text style={s.productName}>{displayName(p)}</Text>
+          {credit && (
+            <Pressable accessibilityRole="link"
+              onPress={() => void Linking.openURL(credit.source_url).catch(() => undefined)}>
+              <Text style={[s.meta, { textDecorationLine: "underline" }]}>
+                {credit.author} · {credit.license}
+              </Text>
+            </Pressable>
+          )}
           <Text style={s.meta}>
             {p.package ||
               [p.package_quantity, p.package_unit].filter(Boolean).join(" ")}

@@ -272,3 +272,7 @@ Applied menu and catalogue rendering changes, bundled sample thumbnails, added a
 ## 18 November — Preview008 candidate commit checks
 
 Reconciled the two uploaded commits, verified rendered catalogue, Settings and About screens, and prepared an ARM phone APK lane with a separate x86_64 emulator smoke lane. Browser and backend checks passed. Continue by checking native CI on the candidate SHA and recording its signed artifact evidence.
+
+## 18 November — stopped build and corrected Refresh and About
+
+Confirmed [run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) was cancelled with no Preview008 APK. Removed the Refresh border and focus outline and moved image credits to sample cards. Browser screenshots and functional tests verified both corrections. Wait for the owner to restart Android CI with corrected source.
