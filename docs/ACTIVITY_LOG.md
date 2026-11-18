@@ -242,3 +242,14 @@ Owner selected free HTTPS instead of paid SMTP hosting, and confirmed account/ke
 ## 17 November — fresh error-miss audit; email excluded from build
 
 Owner authorizes rerun and APK build without email service. Feedback staysdisabled; no provider credentials needed/requested. Fresh98-test PostgreSQL/OCR baseline and TypeScript/mobile/legal checks passed. Exact clone-content audit caught two doubled-percent product names in scratch raw-SQL rendering; corrected via versioned renderer, with regression tests forpercent/apostrophe/backslash round trips and complete1000-row content/idempotence. Preserve unknown-brand/alias fields rather than erasing verified values. Shared preview untouched. Continue full checks, controlled non-email backend readiness and newAPK; record final CI/artifact evidence before delivery.
+
+## 18 November — external review patch (no build, no CI yet)
+
+Reviewed branch `codex/preview-007` (app `5a1abb0`; backend unchanged from main). Offline evidence only: relative imports resolve, no new TypeScript diagnostics versus the unpatched branch (React/React Native types were not installed, so this is not a full typecheck), `test-network`, `test-cache`, `test-errors` and `test-preview-metadata` pass, and all six languages share the same 187 message keys. Backend tests were **not run** (no FastAPI/SQLAlchemy in the review sandbox).
+
+Changes: session restore warm-up and one transient retry; typed `ApiError`/`httpStatus`; specific auth, sign-out and delete-account messages; receipt upload separates "upload failed" from "refresh failed"; camera-denied and no-barcode notices; `submitted` flag resets per receipt; retried 5xx bodies cancelled; `signIn` no longer orphans a server session when SecureStore fails; new `DELETE /api/v1/account` (receipts and stored images erased, pending contributions deleted, reviewed ones unlinked, then provider `/delete-user`) with seven tests.
+
+Correction to earlier entries: the Yahoo SMTP path recorded on 17 November was abandoned; Brevo HTTPS is the chosen provider and delivery stays disabled. Entries above are preserved as history.
+
+Next action: owner reviews the patch, applies it on a new branch (suggested `codex/preview-008`), reads exact-head backend CI (PostgreSQL) and the Android run, and verifies `/delete-user` against a throwaway real account before any claim of working account deletion. Legal text still needs the deletion procedure and the "approved prices stay anonymous" decision before public testing.
+

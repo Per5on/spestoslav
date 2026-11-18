@@ -1,4 +1,21 @@
-## Latest verified artifact — Preview007
+# Спестовник — ongoing project handoff
+
+Updated: **17 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+
+This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
+
+## Latest checkpoints (newest first)
+
+### Review patch — 18 November 2026 (not yet built or verified in CI)
+
+Applied on top of Preview007 source `5a1abb0`; **no sequence/version bump and no build was made** (sequences are immutable; a build needs a new sequence and the owner's confirmation). Details: [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md) and the 18 November entry in [ACTIVITY_LOG.md](ACTIVITY_LOG.md).
+
+- App: session restore warms the API and retries once after cold starts; typed `ApiError` and specific sign-in/sign-out/delete messages in six languages; receipt upload no longer reports failure after a successful upload; clearer camera-denied and no-barcode messages; retried 5xx bodies are cancelled.
+- Backend: new `DELETE /api/v1/account` with tests (`tests/test_account_deletion.py`). Not run locally against PostgreSQL; the identity-provider `/delete-user` call is unverified against real Neon Auth.
+- Tests: `test-cache.cjs` pins `esModuleInterop`; new `test-errors.cjs` is part of `npm test`.
+
+
+### Latest verified artifact — Preview007
 
 - App/runtime source `5a1abb0a76ecc41da4c46c00f49dc3c5e22778e0`; backend CI44149787804 and Android44149787807 passed. Final native log explicitly confirms decoded Food/Technology images and five fuel choices, ordered tabs, shared location, camera permission denial/preview, synthetic barcode-image decoding, language/About metadata. No fatal app exception asserted. This is not three complete release passes.
 - [Download artifact ZIP](https://github.com/Per5on/spestoslav/actions/runs/44149787807/artifacts/14360295033). Signed test APK `spestovnik-preview-007.apk`,75567529bytes, SHA256 `36cf2c5bb17d9021bc0bf7edd0989907f9017218fc6ea9b646b235a50e9312ba`.
@@ -6,7 +23,7 @@
 - Optional local browser live visual aid was blocked by this environment's Chromium trust store (`ERR_CERT_AUTHORITY_INVALID`); no TLS validation was disabled and this is not counted as a passing browser/live test. Python HTTPS asset checks and actual Android gallery tests passed. Existing mock browser checks remain separate evidence.
 - No public release/tag or Google Play upload. Email intentionally disabled. Live-price/GTIN and successful real-account/private upload acceptance limitations below remain open.
 
-## Current recheck checkpoint — 17 November 2026
+### Current recheck checkpoint — 17 November 2026
 
 Live evidence: API0.6, readiness,1000+1000 snapshots, five fuel labels, nine HTTPS images and credits passed. Sofia filtering returns46 grocery branches and zero technology/fuel branches; no fabricated local availability. Disabled feedback503; unauthenticated account/receipt access401; synthetic invalid sign-in401 (not successful account acceptance). Email intentionally excluded.
 
@@ -17,15 +34,10 @@ Live evidence: API0.6, readiness,1000+1000 snapshots, five fuel labels, nine HTT
 - Found/fixed raw SQL transport doubling percent signs in two isolated trial product names. Versioned renderer now uses named-parameter dialect; tests cover all1000 source identities and repeated transport preserving existing flags/barcodes/aliases/brands. Shared import used corrected SQL only.
 - Actual shared sync is complete, repeatable, and contains no price or barcode inventions. Inventory PR15 remains separate.
 
-## Latest owner instruction: rerun checks and build without email
+### Latest owner instruction: rerun checks and build without email
 
 Build authorized; email provider intentionally excluded from this preview and is NOT a build blocker. Keep FEEDBACK_DELIVERY_ENABLED=false. Preserve the provider adapter for later private setup; do not ask for keys now. Rerun and inspect actual tests/native artifacts, retain previous builds and report live data limitations. Source transport audit corrected two doubled-percent catalogue names on isolated validation only; versioned renderer/regressions now pass100PostgreSQL/OCR tests. API0.6readiness and catalogue sync must remain explicit; no live-price claims from metadata.
 
-# Спестовник — ongoing project handoff
-
-Updated: **17 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
-
-This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 ## Current outcome and authorization
 

@@ -23,3 +23,4 @@ Recheck for missed errors and build Preview007 **without an email provider**. Bu
 - Email intentionally deferred until private Brevo setup and delivery test. No paid upgrade authorized.
 - PR15 inventory reconciliation remains separate: exact-head CI passed; proposed five-store import unapplied.
 - Optimization/header/ABI/R8 trial, three complete final-source passes, remaining privacy/operator publication details and Google Play preparation remain open. No speculative deletion/purge or bulk source replacement.
+- Review patch of 18 November (account deletion route, auth/receipt UX fixes, tests) is **unmerged and unverified in CI/PostgreSQL**; see [ACCOUNT_DELETION.md](ACCOUNT_DELETION.md). It requires a new preview sequence for any APK.

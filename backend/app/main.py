@@ -426,6 +426,7 @@ def include_routers(application):
     from .worker_api import router as worker_router
     from .mobile_auth import router as mobile_auth_router
     from .feedback import router as feedback_router
+    from .account import router as account_router
     from .limits import ReceiptUploadLimit
 
     for router in (
@@ -436,6 +437,7 @@ def include_routers(application):
         worker_router,
         mobile_auth_router,
         feedback_router,
+        account_router,
     ):
         application.include_router(router)
     application.add_middleware(ReceiptUploadLimit)
@@ -447,7 +449,9 @@ include_routers(app)
 @app.middleware("http")
 async def private_response_headers(request, call_next):
     response = await call_next(request)
-    if request.url.path.startswith(("/api/v1/auth/", "/api/v1/receipts")):
+    if request.url.path.startswith(
+        ("/api/v1/auth/", "/api/v1/receipts", "/api/v1/account")
+    ):
         response.headers["Cache-Control"] = "no-store"
         response.headers["Pragma"] = "no-cache"
     return response

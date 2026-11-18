@@ -1,28 +1,79 @@
 import React, { useState } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { Alert, Platform, View, ActivityIndicator } from "react-native";
+import { httpStatus } from "../api";
+import type { MessageKey } from "../i18n";
 import { useSession } from "./session";
 import { Button } from "../Action";
 import { Input, Text, useUI } from "../ui";
 import { s } from "../styles";
+
+/** Map the backend's distinct sign-in answers to specific, translated guidance. */
+export function authMessage(error: unknown, register: boolean): MessageKey {
+  const status = httpStatus(error);
+  if (status === null || status === 502 || status === 503 || status === 504)
+    return "authUnavailable";
+  if (status === 403) return "authVerifyEmail";
+  if (status === 409) return "authExists";
+  if (status === 429) return "authRateLimited";
+  if (status === 401 || (status === 400 && !register)) return "authRejected";
+  return "authError";
+}
+function deleteMessage(error: unknown): MessageKey {
+  const status = httpStatus(error);
+  if (status === 409) return "deleteAccountBusy";
+  if (status === 502) return "deleteAccountPartial";
+  return "deleteAccountError";
+}
 export function AccountScreen() {
-  const { user, ready, signIn, signOut } = useSession(),
+  const { user, ready, signIn, signOut, deleteAccount } = useSession(),
     { t } = useUI();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState(false);
+    [notice, setNotice] = useState<MessageKey | "">("");
   async function submit() {
     setBusy(true);
-    setError(false);
+    setNotice("");
     try {
       await signIn(email, password, register);
       setPassword("");
-    } catch {
-      setError(true);
+    } catch (error) {
+      setNotice(authMessage(error, register));
     } finally {
       setBusy(false);
     }
+  }
+  async function leave() {
+    setBusy(true);
+    setNotice("");
+    try {
+      if (!(await signOut())) setNotice("signOutPending");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function erase() {
+    setBusy(true);
+    setNotice("");
+    try {
+      await deleteAccount();
+      setNotice("deleteAccountDone");
+    } catch (error) {
+      setNotice(deleteMessage(error));
+    } finally {
+      setBusy(false);
+    }
+  }
+  function confirmErase() {
+    if (Platform.OS === "web") {
+      if (window.confirm(t("deleteAccountConfirm"))) void erase();
+      return;
+    }
+    Alert.alert(t("deleteAccount"), t("deleteAccountConfirm"), [
+      { text: t("cancel"), style: "cancel" },
+      { text: t("deleteAccount"), style: "destructive", onPress: () => void erase() },
+    ]);
   }
   if (!ready) return <ActivityIndicator />;
   return (
@@ -30,16 +81,8 @@ export function AccountScreen() {
       {user ? (
         <>
           <Text style={s.productName}>{user.email}</Text>
-          <Button
-            label={t("signOut")}
-            disabled={busy}
-            onPress={() => {
-              setBusy(true);
-              signOut()
-                .catch(() => setError(true))
-                .finally(() => setBusy(false));
-            }}
-          />
+          <Button label={t("signOut")} disabled={busy} onPress={leave} />
+          <Button label={t("deleteAccount")} disabled={busy} onPress={confirmErase} />
         </>
       ) : (
         <>
@@ -76,9 +119,9 @@ export function AccountScreen() {
           />
         </>
       )}
-      {error && (
+      {notice !== "" && (
         <Text accessibilityRole="alert" style={s.notice}>
-          {t("authError")}
+          {t(notice)}
         </Text>
       )}
     </View>

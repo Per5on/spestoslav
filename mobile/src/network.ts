@@ -38,6 +38,12 @@ export async function fetchWithRetry<T = Response>(
       const response = await fetch(url, { ...init, signal: controller.signal });
       if (![502, 503, 504].includes(response.status) || attempt === attempts)
         return await readResponse(response);
+      // Release the connection of a response we are about to retry past.
+      try {
+        await (response as unknown as { body?: { cancel?: () => Promise<void> } }).body?.cancel?.();
+      } catch {
+        /* Some React Native fetch implementations expose no cancellable body. */
+      }
     } catch (error) {
       const timeout = error instanceof Error && error.name === "AbortError";
       if (init.signal?.aborted || attempt === attempts ||

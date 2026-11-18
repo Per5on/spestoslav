@@ -30,7 +30,7 @@ const mockApi = {
 };
 const code = ts.transpileModule(
   fs.readFileSync("src/catalog/cache.ts", "utf8"),
-  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
+  { compilerOptions: { module: ts.ModuleKind.CommonJS, esModuleInterop: false } },
 ).outputText;
 const m = { exports: {} };
 new Function("exports", "require", "module", code)(

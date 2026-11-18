@@ -40,6 +40,7 @@ Authenticated user operations (Managed Neon Auth EdDSA JWT, issuer/signature/exp
 - `POST/GET /api/v1/product-identification-requests`: unknown-barcode requests, bounded valid GTINs, owner-scoped retrieval.
 - `POST /api/v1/receipts`: private JPEG/PNG/WebP upload (8 MiB, pixel cap, bounded request stream); returns 202.
 - `GET /api/v1/receipts/{id}`: owner-only status/text/unmatched candidate lines. Another user receives 404.
+- `DELETE /api/v1/account`: bearer token plus `X-Auth-Session`; erases the caller's receipts/images and contributions, then asks the identity provider to delete the account. 204 on success, 403 session/principal mismatch, 409 while OCR runs, 502 if only the provider step failed. Implemented and unit-tested with a mocked provider; not yet verified against PostgreSQL CI or real Neon Auth.
 - `POST /api/v1/receipts/{scan}/items/{item}/submit-price`: owner-confirmed product/branch/unit price enters pending review with server-generated receipt provenance.
 
 Administrator/collector operations:
