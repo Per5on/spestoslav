@@ -276,3 +276,7 @@ Reconciled the two uploaded commits, verified rendered catalogue, Settings and A
 ## 18 November — stopped build and corrected Refresh and About
 
 Confirmed [run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) was cancelled with no Preview008 APK. Removed the Refresh border and focus outline and moved image credits to sample cards. Browser screenshots and functional tests verified both corrections. Wait for the owner to restart Android CI with corrected source.
+
+## 18 November — corrected Preview008 native smoke and ARM packaging retry
+
+Android 10 smoke passed on run 44307049747. The following ARM pack step hit React Native JNI codegen during Gradle clean. Changed the workflow to regenerate the Android project before assembling the phone APK. Exact-commit browser measurements and offline samples passed and are recorded in the handoff.

@@ -7,6 +7,15 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 ## Latest checkpoints (newest first)
 
 
+### Preview008 restarted on the corrected source — 18 November 2026
+
+- Corrected candidate `2b511f09ab1667fee6d2a81715067bd8a0dce021` is on draft PR #19. [Backend CI](https://github.com/Per5on/spestoslav/actions/runs/44307055281) passed. [Android workflow](https://github.com/Per5on/spestoslav/actions/runs/44307049747) is the internal run to inspect.
+- Repeated the browser responsiveness and offline sample checks on the corrected source. Median menu time at 4× CPU throttle was 21.0 ms, down from the 63.1 ms baseline. The p95 was 30.1 ms, down from 105.1 ms. All nine sample images decoded with API requests blocked. About contained no product links.
+- Acceptance gates are native visual smoke evidence and verification of the signed ARM package size against the 75,567,529-byte Preview007 APK. The same-device ARM responsiveness comparison remains open.
+- Android 10 smoke passed on run 44307049747. Its ARM package step failed during Gradle native clean because CMake referenced removed JNI codegen. The follow-up regenerates the Android project before compiling ARM. App source and smoke assertions are identical.
+
+
+
 ### Preview008 stopped for visual corrections — 18 November 2026
 
 - At the owner's request, [Android run 44306415234](https://github.com/Per5on/spestoslav/actions/runs/44306415234) on commit `687b467` was cancelled. GitHub reports no Preview008 APK artifact.
