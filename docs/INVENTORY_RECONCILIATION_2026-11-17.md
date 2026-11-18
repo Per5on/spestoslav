@@ -53,3 +53,19 @@ Neon `bg-prices-preview`, `preview` branch queried 2026-11-17: **139 rows, 139 l
 
 ## Known unrelated work
 Open PR #9 (Preview 005), #11 (postpreview tests), #13 (Preview 006) should not be modified or merged as part of inventory reconciliation.
+
+## Official CBA expansion — 2026-11-18
+
+Added five distinct Blagoevgrad CBA-affiliated branches to `data/store_branches_seed.csv`, using the [official CBA directory](https://www.cba.bg/shops.php) (live listing checked 2026-11-18):
+
+| Listed store | Listed address |
+| --- | --- |
+| МАРКЕТ 3 - ЛИРАТА | ул. Братя Иванови №1 |
+| МАРКЕТ 4 - ОСВОБОЖДЕНИЕ | ул. Славянска №79 |
+| МАРКЕТ 6 - БУЛЕВАРДА | бул. Св. Св. Кирил и Методий №5 |
+| МАРКЕТ 7 - СТАДИОНА | ул. Трети Март №43 |
+| МАРКЕТ 8 - МАРИЦА-ЗАПАД | ул. Марица №22 |
+
+Validation after addition: **148 seed rows, 14 CBA**, current CSV schema **13 columns** (the earlier 14-column description elsewhere in this document is historical: the reconciliation branch was subsequently converted to 13 columns). **0 malformed CSV widths, 0 duplicate normalized retailer/city/municipality/region/address keys, 0 missing source URLs**. All **35** distinct (city, municipality, region) triples matched exactly one canonical locality in Neon preview. The five added CBA records were absent from the preview CBA rows checked before writing.
+
+**No Neon database changes**. The preview snapshot remains **139 total / 139 locality-linked / 138 active / 15 retailer codes**. Existing restrictions in this document remain: import is gated and owner authorization covers reconciliation, not a shared DB import. The directory proves listing at the time checked, not that a store is physically open at this moment. T MARKET officially announced on 2026-10-02 that the Teteven branch moved to ул. Марин Темелски №3; retain relocation verification before import.
