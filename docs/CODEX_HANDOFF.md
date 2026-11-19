@@ -2,6 +2,12 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, first execution
+
+- Confirmed draft PR #21 head `848601cb71f9486a2a21add2e462dcfd681b6c75` at start and latest Backend tests CI success for that head; Android preview historical skipped jobs predate manual-only workflow correction and do not imply a compilation failure. Read handoff, barcode implementation, product lookup route, SQL models and existing SQLite fixtures before making changes.
+- Added **endpoint-level barcode lookup contract regression tests** in `backend/tests/test_barcode_lookup_contract.py` at commit `ae50450040ffea404a3e871da1cca0ddb568836f`: invalid vs unknown vs verified GTIN, unverified secondary barcode exclusion, UPC-A padded alias resolution, collision returning 409, inactive product/category exclusion. This is test coverage, **not** camera/photo decoding implementation.
+- Tests are committed but **not yet confirmed passing CI** on this new head. Next run must inspect exact-head Backend tests workflow and fix any failure before claiming verification; then continue the existing backend-first barcode camera/photo and product lookup integration queue. No Android build, workflow dispatch, merge or deployment performed. Priorities unchanged.
+
 ### WORKFLOW INVESTIGATION RESULT — 19 November 2026
 
 - Reviewed `.github/workflows/android-preview.yml`, `.github/workflows/backend-tests.yml`, PR #21 and GitHub Actions run/job records. Five recent Android preview PR runs were marked **skipped**, while the five corresponding backend CI runs were **successful**. This is expected from the Android job's legacy `github.head_ref == 'codex/preview-007'` condition; it is not an Android build/test failure. Latest run 44565046164 also had `apk` skipped, with no steps executed.
