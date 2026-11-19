@@ -2,6 +2,15 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### OWNER-REQUESTED PROGRESS SAVE — 19 November 2026, 21:34 Europe/Sofia
+
+- **Current branch:** `chatgpt/pre-alpha-009.1`; authoritative Codex base `codex/pre-alpha-009`, kept untouched. Current scanner implementation/test commits: `3034e1265dc983096e864fc01d29f05c88c3d9ca`, `dac23f7388a6f2ac23e36fb3256254a64b863073`, `a746b9ab61c58a4e7b4867bdf5089a73bea12118`; earlier handoff commit `fffd327fdcb596efe8ff9c8025d84f7c5dc1eb73`.
+- **Completed:** Native photo scanner recognizes symbolic `EAN_13` / `UPC_A` identifiers and handles decoder exceptions as no-result. Added native photo barcode regression tests and wired them into the mobile test command. Previous backend barcode endpoint regression CI succeeded (`44587940167`). These are source/test changes, **not** evidence of Android device success.
+- **Unverified / pending:** Run `mobile` `npm test` and `npm run typecheck` or confirm exact-head mobile CI; fix any failures. Android 10 physical camera/photo validation remains pending. Verify live Render merchant-directory API, finish barcode acquisition and product lookup integration, then remaining frontend/search/group/fuel/menu/image/palette work, cleanup, P-LAST password recovery, and three independent final verification passes.
+- **Execution reliability:** The 21:30 Europe/Sofia autonomous task attempt recorded a **failed** automation status despite creating commits and a report. It was subsequently re-enabled, but the failure cause and message delivery are **not resolved**. Do not claim a healthy background runner solely because a schedule is enabled. Next run should inspect its recorded execution status and log any recurrence.
+- **Owner approval:** Before any Android APK/AAB build or workflow dispatch, provide authentic preliminary screenshots of every tab, the exact proposed commit SHA and verification evidence, and obtain explicit owner approval of both visuals and commit. No build, merge, deploy or release authorized.
+- **Resume point:** First verify the committed mobile barcode tests and TypeScript checks against the latest branch HEAD; then proceed with highest-priority unfinished backend tasks. Preserve priority order and branch separation. This entry records progress, not completion of pending checks.
+
 ### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, follow-up execution
 
 - Reviewed barcode image scanner (`mobile/src/workflows/scanImage.ts`), camera barcode validation, web scanner, existing tests, package test runner and prior CI. Prior barcode lookup CI run `44587940167` succeeded on `ae504500`; this does not prove mobile photo scanning works on-device.
