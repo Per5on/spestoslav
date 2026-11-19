@@ -2,6 +2,14 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, 22:34 Europe/Sofia
+
+- Resumed at owner-saved commit `f6dcc91b2e8f6be7013279e0758d7f71e20b2d71`; reviewed handoff, PR #21, backend CI, `mobile/src/workflows/scanImage.ts`, its regression tests and `mobile/package.json`. Backend CI `44599749455` passed at saved HEAD; this did **not** execute mobile tests.
+- **Found and corrected an unhandled malformed native scanner response:** rejected promises were handled, but a resolved `null` or non-array payload caused `rows.map` to throw. Added defensive array/row validation (commit `8eae0abd361cc419f46fb55e6db43e5584606463`) and regression cases for null, malformed payloads and mixed valid/invalid rows (commit `a0564458ba4738634c3d1e3f092270179221b1e1`).
+- **Closed a workflow coverage gap:** existing PR CI ran backend tests only, leaving mobile `npm test` and `npm run typecheck` unexecuted. Added `.github/workflows/mobile-checks.yml` with Node 22, locked `npm ci`, `npm test` and `npm run typecheck` for mobile-related PR changes (commit `8fd28734da9c9b71f4ca33d6c3742fc9b2bd4125`). This workflow does **not** build Android, dispatch Android workflows, deploy or publish.
+- **Verification status:** prior backend CI passed; backend run `44610214823` was in progress when checked. Mobile CI is newly configured but has **not yet been observed passing**. The local environment had Node and globally installed TypeScript but lacked the mobile dependency tree, and repository network access was unavailable; do not claim local mobile tests passed. Check the new PR mobile-source job and resolve any failures on next run. Android 10 live-device acceptance remains pending.
+- **Resume:** inspect exact-HEAD mobile-source CI and backend CI; if failed, repair first. Then continue backend merchant-directory live API/GTIN integration, followed by frontend work, P-LAST password work and three final passes in existing priority order. No APK/AAB build, Android build workflow dispatch, merge, deployment or release; screenshots and exact SHA require owner approval.
+
 ### OWNER-REQUESTED PROGRESS SAVE — 19 November 2026, 21:34 Europe/Sofia
 
 - **Current branch:** `chatgpt/pre-alpha-009.1`; authoritative Codex base `codex/pre-alpha-009`, kept untouched. Current scanner implementation/test commits: `3034e1265dc983096e864fc01d29f05c88c3d9ca`, `dac23f7388a6f2ac23e36fb3256254a64b863073`, `a746b9ab61c58a4e7b4867bdf5089a73bea12118`; earlier handoff commit `fffd327fdcb596efe8ff9c8025d84f7c5dc1eb73`.
