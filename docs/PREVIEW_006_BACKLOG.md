@@ -64,3 +64,12 @@
 - [ ] **Owner approval checkpoint:** summarize three pass results, ask for explicit confirmation to continue with builds; **wait**. Do not infer consent from older build approvals.
 
 **Baseline:** inspect `codex/preview-007` and latest `main` before touching implementation. The existing `codex/preview-006` backlog is a planning record, not proof that Preview007 code matches its older assumptions.
+
+
+### P0B — barcode recognition and verification (owner addition, 19 November 2026)
+- [ ] Reproduce failure with actual Android camera frames and uploaded barcode photos. Separate failure to **decode pixels**, **validate GTIN/EAN/UPC checksum and length**, **look up the product in the app database**, and **resolve an unknown GTIN against external sources**. Record reproducible fixtures and logs with no personal photos or secrets.
+- [ ] Audit Expo camera/photo picker integration, Android permissions, image URI handling, orientation/rotation, cropping, resolution, focus, contrast, MIME/size, local barcode decoder, asynchronous cancellation and API request paths. Preserve both camera and uploaded-photo flows.
+- [ ] Verify EAN-8, EAN-13, UPC-A and GTIN-14 handling (and any supported additional formats), including leading zeros and checksum; do not confuse a checksum-valid GTIN with a verified product identity.
+- [ ] Test existing `/api/v1/products/barcode/{barcode}` with known fixtures and unknown codes, category restrictions, aliases and actual Neon product barcode coverage. Handle 404 as an unknown product rather than an image decoding failure.
+- [ ] Evaluate **free** public product-lookup services (e.g. Open Food Facts for groceries) using their current official API terms, attribution, rate limits and coverage. If suitable, implement an optional **backend-side** lookup adapter with strict timeouts, caching, rate limiting, safe URL handling, source provenance, explicit unverified/unknown state and graceful offline fallback. Never claim an external result is verified price or guaranteed product identity.
+- [ ] Add automated unit/integration tests for image recognition, checksum, known/unknown codes, service outage, rate limiting and privacy. Verify real Android 10 camera and upload recognition during final three-way checks. No build until owner approval.
