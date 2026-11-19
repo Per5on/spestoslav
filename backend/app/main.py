@@ -328,8 +328,8 @@ def merchant_directory(
             branch_name=branch.branch_name,
             address=branch.address,
         )
-        for branch, retailer_name, category, name_bg, locality_name,
-            municipality, branch_region in rows
+        for (branch, retailer_name, category, name_bg, locality_name,
+             municipality, branch_region) in rows
     ]
 
 
