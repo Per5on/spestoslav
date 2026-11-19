@@ -22,7 +22,7 @@ export function AppearanceScreen({ images, onToggleImages }: Props) {
     <View testID="appearance-screen" style={s.panel}>
       {toggle("appearanceImages", images, onToggleImages)}
       <Text style={s.productName}>{t("appearancePalette")}</Text>
-      <View style={s.row}>
+      <View style={[s.row, { flexWrap: "wrap" }]}>
         {palettes.map((combination, index) => (
           <Pressable key={combination.header} accessibilityRole="radio"
             accessibilityLabel={`${t("appearancePalette")} ${index + 1}`}
