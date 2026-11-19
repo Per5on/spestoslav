@@ -2,6 +2,13 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, follow-up execution
+
+- Reviewed barcode image scanner (`mobile/src/workflows/scanImage.ts`), camera barcode validation, web scanner, existing tests, package test runner and prior CI. Prior barcode lookup CI run `44587940167` succeeded on `ae504500`; this does not prove mobile photo scanning works on-device.
+- Fixed native photo scanning to accept symbolic Android scanner formats such as `EAN_13` and `UPC_A` as well as integer formats; decoder exceptions now return a no-result outcome rather than crashing the scan UI. Commit `3034e1265dc983096e864fc01d29f05c88c3d9ca`.
+- Added device-free native photo barcode regression cases for integer/symbolic EAN/UPC, checksum rejection, QR rejection, no result and decoder failure (`mobile/scripts/test-barcode-image.cjs`), and wired into mobile `npm test`. Commits `dac23f7388a6f2ac23e36fb3256254a64b863073`, `a746b9ab61c58a4e7b4867bdf5089a73bea12118`.
+- **Verification pending:** This execution could not run installed mobile dependencies locally. Next run must inspect exact-head mobile CI or run `npm test`/`npm run typecheck` in an authorized non-build environment; fix failures before claiming success. Native Android 10 camera/photo device verification remains outstanding. No APK/AAB build, workflow dispatch, merge or deployment initiated. Existing priorities unchanged.
+
 ### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, first execution
 
 - Confirmed draft PR #21 head `848601cb71f9486a2a21add2e462dcfd681b6c75` at start and latest Backend tests CI success for that head; Android preview historical skipped jobs predate manual-only workflow correction and do not imply a compilation failure. Read handoff, barcode implementation, product lookup route, SQL models and existing SQLite fixtures before making changes.
