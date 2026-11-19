@@ -37,6 +37,11 @@ const scan = compile("scanImage.ts", (id) => {
   result = [];
   assert.equal(await scan.decodeBarcodeImage("file://photo"), null);
   result = null;
+  assert.equal(await scan.decodeBarcodeImage("file://null-result"), null);
+  result = [{ type: 32, data: null }, null, { type: 32, data: "4006381333931" }];
+  assert.equal(await scan.decodeBarcodeImage("file://mixed-results"), "4006381333931");
+  result = { unexpected: "not an array" };
+  assert.equal(await scan.decodeBarcodeImage("file://malformed-result"), null);
   // A rejected native image decoder must return no scan, not crash the UI.
   const broken = compile("scanImage.ts", (id) => id === "./barcode" ? barcode :
     { scanFromURLAsync: async () => { throw Error("Unreadable photo"); } });
