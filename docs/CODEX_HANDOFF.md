@@ -1,3 +1,11 @@
+## NEW OWNER DIRECTIVE — 19 November 2026: backend-first redesign; builds on hold
+
+**Authoritative TODO:** [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md), section "Owner change request — 19 November 2026". The section records the exact UI, images, palettes, merchant directory, cleanup, dependency audit, and 3-pass validation requirements. Apply against **latest** `main` and `codex/preview-007`; older Preview006 branch is a planning lane, not necessarily the implementation base. Do not start any build until the owner confirms after the three checks, notwithstanding previous Preview007 build approval.
+
+**Initial source review (not runtime verification):** `backend/app/catalog_api.py` already filters active retailers by active `StoreBranch.locality_id` in `/catalog`; `backend/app/models.py` has `StoreBranch.locality_id`, `address`, `active` and index `ix_branch_locality`. `mobile/src/catalog/useCatalog.ts` fetches `/api/v1/stores?locality_id=...&category_code=...` only with selected locality, and `/api/v1/catalog?category_code=...` for retailer directory. This supports a read-only, category/locality-address menu after contract/scale review; it does not establish national physical coverage. `codex/preview-007/mobile/App.tsx` still contains the product/store view toggle, five fuel selector and group chips; `mobile/src/i18n.ts` still labels list as `Моят списък`. Product images are sourced from backend `image_url` and must be changed with licensing/attribution review. No backend or frontend implementation, package deletion, CI run, or build has been performed for this new request yet.
+
+---
+
 ## Preview 006 code review notes — 16 November 2026
 
 Full targeted review: [PREVIEW_006_CODE_REVIEW.md](PREVIEW_006_CODE_REVIEW.md); discussed on [draft PR #13](https://github.com/Per5on/spestoslav/pull/13). Review covered backend/data, frontend, and security/build. It was targeted source inspection, **not** a full security audit or completed feature acceptance.
