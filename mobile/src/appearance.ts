@@ -9,6 +9,16 @@ export const palettes = [
   { header: "#31445a", accent: "#3e6c53", tint: "#e9edf3", ink: "#30455c" },
   { header: "#63411d", accent: "#8c4536", tint: "#f6eee1", ink: "#5a3817" },
   { header: "#334b26", accent: "#7350a3", tint: "#edf1e2", ink: "#344c26" },
+  // Owner-approved pairs (19 November); retain existing indices for saved preferences.
+  { header: "#b9ceac", accent: "#f2eee7", tint: "#f2eee7", ink: "#263e2d" },
+  { header: "#f8c7fb", accent: "#c181f3", tint: "#f8c7fb", ink: "#452873" },
+  { header: "#022f40", accent: "#38aecc", tint: "#e1f1ee", ink: "#022f40" },
+  { header: "#a29f61", accent: "#383615", tint: "#f6eee1", ink: "#383615" },
+  { header: "#f7da83", accent: "#073368", tint: "#f6eee1", ink: "#073368" },
+  { header: "#edede2", accent: "#ebbdd3", tint: "#edede2", ink: "#452873" },
+  { header: "#1B263B", accent: "#FF7F50", tint: "#e9edf3", ink: "#1B263B" },
+  { header: "#1B263B", accent: "#F4C7C3", tint: "#e9edf3", ink: "#1B263B" },
+  { header: "#806380", accent: "#ffc6ff", tint: "#efe9f8", ink: "#63411d" },
 ] as const;
 
 const greens = new Set(["#19562a", "#234b2d", "#267133", "#1a5228", "#263e2d", "#243d2b", "#283f2e"]);
