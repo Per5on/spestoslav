@@ -25,7 +25,9 @@ export async function decodeBarcodeImage(uri: string): Promise<string | null> {
   } catch {
     return null;
   }
-  const candidates = rows.map((row) => {
+  // Guard unexpected native bridge results as well as rejected decoder calls.
+  if (!Array.isArray(rows)) return null;
+  const candidates = rows.filter((row) => row && typeof row.data === "string").map((row) => {
     const type = normalizedImageBarcodeType(row.type);
     return { type, code: scannedGTIN(row.data, type) };
   });
