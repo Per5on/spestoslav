@@ -222,3 +222,34 @@ def test_current_prices_and_promotions():
     offers = client.get("/api/v1/promotions").json()
     assert len(offers) == 1
     assert offers[0]["promotional_price_eur"] == 0.99
+
+
+def test_merchant_directory_national_page_and_canonical_fields():
+    with TestClient(app) as client:
+        response = client.get("/api/v1/merchant-directory")
+    assert response.status_code == 200
+    rows = response.json()
+    assert len(rows) == 1
+    assert rows[0]["category_code"] == "FOOD"
+    assert rows[0]["retailer_name"] == "Test Market"
+    assert rows[0]["locality_name"] == "София"
+    assert rows[0]["region"] == "София (столица)"
+    assert rows[0]["address"] == "Main street 1"
+
+
+def test_merchant_directory_filters_pagination_and_inactive_rows():
+    with TestingSessionLocal() as db:
+        locality_id = db.query(Locality.id).first()[0]
+        db.add(Retailer(code="HIDDEN", name="Hidden Market", category_code="FOOD", active=False))
+        db.flush()
+        db.add(StoreBranch(
+            retailer_code="HIDDEN", locality_id=locality_id, address="Hidden 2"
+        ))
+        db.commit()
+    with TestClient(app) as client:
+        assert len(client.get("/api/v1/merchant-directory").json()) == 1
+        assert client.get("/api/v1/merchant-directory", params={"category_code": "fuel"}).json() == []
+        assert client.get("/api/v1/merchant-directory", params={"region": "other"}).json() == []
+        assert client.get("/api/v1/merchant-directory", params={"offset": 1}).json() == []
+        assert client.get("/api/v1/merchant-directory", params={"limit": 101}).status_code == 422
+        assert len(client.get("/api/v1/merchant-directory", params={"locality_id": str(locality_id)}).json()) == 1
