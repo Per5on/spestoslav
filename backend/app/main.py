@@ -253,6 +253,86 @@ def product_by_barcode(barcode: str, db: Session = Depends(get_db)):
     )
 
 
+class MerchantDirectoryEntry(BaseModel):
+    """One sourced, active physical merchant branch for directory browsing."""
+
+    id: str
+    category_code: str
+    retailer_code: str
+    retailer_name: str
+    locality_id: str
+    locality_name: str
+    municipality: str | None = None
+    region: str | None = None
+    branch_name: str | None = None
+    address: str
+
+
+@app.get("/api/v1/merchant-directory", response_model=list[MerchantDirectoryEntry])
+def merchant_directory(
+    locality_id: UUID | None = None,
+    region: str | None = Query(default=None, max_length=160),
+    category_code: str | None = Query(default=None, max_length=40),
+    limit: int = Query(default=100, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
+    """National, bounded pages; optional locality/region/category filters.
+
+    An unfiltered page is allowed for the all-merchants menu. Only real,
+    active branches with active retailers and categories are included.
+    """
+    stmt = (
+        select(
+            StoreBranch, Retailer.name, Retailer.category_code,
+            Locality.name_bg, Locality.name, Locality.municipality, Locality.region,
+        )
+        .join(Retailer, Retailer.code == StoreBranch.retailer_code)
+        .join(Category, Category.code == Retailer.category_code)
+        .join(Locality, Locality.id == StoreBranch.locality_id)
+        .where(
+            StoreBranch.active.is_(True),
+            Retailer.active.is_(True),
+            Category.active.is_(True),
+        )
+    )
+    if locality_id is not None:
+        stmt = stmt.where(StoreBranch.locality_id == locality_id)
+    if region:
+        stmt = stmt.where(Locality.region == region)
+    if category_code:
+        stmt = stmt.where(Retailer.category_code == category_code)
+    rows = db.execute(
+        stmt.order_by(
+            Retailer.category_code,
+            Locality.region,
+            Locality.municipality,
+            func.coalesce(Locality.name_bg, Locality.name),
+            Retailer.name,
+            StoreBranch.address,
+            StoreBranch.id,
+        )
+        .offset(offset)
+        .limit(limit)
+    ).all()
+    return [
+        MerchantDirectoryEntry(
+            id=str(branch.id),
+            category_code=category,
+            retailer_code=branch.retailer_code,
+            retailer_name=retailer_name,
+            locality_id=str(branch.locality_id),
+            locality_name=name_bg or locality_name,
+            municipality=municipality,
+            region=branch_region,
+            branch_name=branch.branch_name,
+            address=branch.address,
+        )
+        for branch, retailer_name, category, name_bg, locality_name,
+            municipality, branch_region in rows
+    ]
+
+
 @app.get("/api/v1/stores", response_model=list[StoreBranchResponse])
 def stores_for_locality(
     locality_id: UUID | None = None,
