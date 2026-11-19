@@ -2,6 +2,14 @@
 
 Append dated entries. Keep the current resume point in `PROJECT_STATUS.md`; older entries are historical evidence, not current test/deployment claims.
 
+## 16 November 2026 — Preview 006 code, connections and source checks; candidate build started
+
+- **Code:** CI backend run 43869099648 passed at `7b861b0`. Android run 43869099618 failed at Android 10 smoke/emulator startup (`adb` exit 255); APK artifact uploaded, but no passing native smoke proof. Do not count this as a green release gate.
+- **Connections:** Render `spestoslav-api` serves from `main`, not candidate branch. Recent request logs show HTTP 200 for product and fuel store endpoints, but response-body completeness and real-world performance remain unverified.
+- **Sources (shared Neon preview branch):** read-only SQL returned 29 retailers, 139 store branches, 1,000 products, 5,291 localities, **0 product_images**. By category: fuel 7 retailers/2 active branches, groceries 14/134, technology 8/2. Missing images are confirmed backend data deficiency; petrol station coverage is minimal. No production data was modified.
+- **Build initiation:** candidate metadata changed to `006` / `0.4.0` in `mobile/preview.json`, `mobile/package.json`, lockfile and preview registry. GitHub Actions Android run [43871290741](https://github.com/Per5on/spestoslav/actions/runs/43871290741) and backend run [43871290244](https://github.com/Per5on/spestoslav/actions/runs/43871290244) started at candidate SHA `452ef0c`. Automatic publication stays blocked on `codex/preview-006`.
+- **Release blocked** until data gaps, Settings, feedback email and location performance are fixed and three complete green verification passes are documented on final code.
+
 ## 16 November 2026 — Preview 006 backlog and initial backend triage
 
 - Owner reported Settings visual requirements (black text/white background, compact button icons, optional two columns), missing stores/stations/images and slow locality search. Created `docs/PREVIEW_006_BACKLOG.md` with backend-first investigation, frontend follow-up and three-pass release gate. Linked it in Codex handoff.

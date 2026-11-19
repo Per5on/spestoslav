@@ -1,4 +1,40 @@
+## NEW OWNER DIRECTIVE — 19 November 2026: backend-first redesign; builds on hold
+
+**Authoritative TODO:** [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md), section "Owner change request — 19 November 2026". The section records the exact UI, images, palettes, merchant directory, cleanup, dependency audit, and 3-pass validation requirements. Apply against **latest** `main` and `codex/preview-007`; older Preview006 branch is a planning lane, not necessarily the implementation base. Do not start any build until the owner confirms after the three checks, notwithstanding previous Preview007 build approval.
+
+**Initial source review (not runtime verification):** `backend/app/catalog_api.py` already filters active retailers by active `StoreBranch.locality_id` in `/catalog`; `backend/app/models.py` has `StoreBranch.locality_id`, `address`, `active` and index `ix_branch_locality`. `mobile/src/catalog/useCatalog.ts` fetches `/api/v1/stores?locality_id=...&category_code=...` only with selected locality, and `/api/v1/catalog?category_code=...` for retailer directory. This supports a read-only, category/locality-address menu after contract/scale review; it does not establish national physical coverage. `codex/preview-007/mobile/App.tsx` still contains the product/store view toggle, five fuel selector and group chips; `mobile/src/i18n.ts` still labels list as `Моят списък`. Product images are sourced from backend `image_url` and must be changed with licensing/attribution review. No backend or frontend implementation, package deletion, CI run, or build has been performed for this new request yet.
+
+---
+
+## Preview 006 code review notes — 16 November 2026
+
+Full targeted review: [PREVIEW_006_CODE_REVIEW.md](PREVIEW_006_CODE_REVIEW.md); discussed on [draft PR #13](https://github.com/Per5on/spestoslav/pull/13). Review covered backend/data, frontend, and security/build. It was targeted source inspection, **not** a full security audit or completed feature acceptance.
+
+**High-priority findings and work:**
+- **Product images:** shared Neon preview DB has 1,000 products but **0 product_images**. Verify image licensing/source URLs, populate approved image metadata, and test Android thumbnails and fallbacks.
+- **Petrol stations:** 7 fuel retailers but only **2 active fuel branches**. Validate/import real branches and ensure category/locality filtering returns them. Do not invent locations or live fuel prices.
+- **Store discovery:** `mobile/src/catalog/useCatalog.ts` fetches stores only when `localityId` exists. Verify no-locality UX and locality-specific coverage.
+- **Release gate:** green backend and Android 10 smoke CI on previous candidate is **not** proof of feature completeness; PR #13 remains draft and automatic publication blocked.
+
+**Medium-priority findings and work:**
+- `backend/app/main.py:96-148` locality search uses `LOWER(...) LIKE '%term%'`; measure real latency/query plans and consider suitable indexing/search strategy.
+- `mobile/src/api.ts` and `mobile/src/location/LocationPicker.tsx` allow 60-second request timeouts; catalog fallback pages are fetched sequentially in `mobile/src/catalog/cache.ts` and `useCatalog.ts`. Optimize with bounded timeouts, caching/snapshot and measured behavior.
+- `mobile/App.tsx` Settings has not been redesigned: black text/white background, compact font-height icons, thin padding, responsive two columns, accessible touch targets, six languages.
+- Feedback currently shows `feedbackPending`; implement sender/email/message form and backend-managed delivery to configured recipient with validation, rate limits, provider secrets and honest success/failure status.
+- Add explicit negative tests for expired/invalid sessions, cross-user receipt access, oversized image uploads and provider failures. **No security exploit was confirmed.**
+- Health/HTTP 200 checks do not prove nonempty stores, fuel coverage, images or price records; add release-level data completeness assertions.
+
+**Verification order:** backend sources and Render/Neon live data → backend/API performance and coverage fixes → frontend/settings/feedback fixes → three full code/integration, connections/sources, and Android 10 native/functional passes on the **same final commit**. Record run links, before/after counts and latency, screenshots and email-provider delivery evidence. Preserve Preview 005; do not merge or publish Preview 006 until all release criteria pass.
+
+
 # Ongoing project handoff
+
+## Preview 006 implementation active — 16 November 2026
+
+- Owner confirmed successful Test_postpreview-005 checks and authorized combining Issue #10 with [PREVIEW_006_BACKLOG.md](PREVIEW_006_BACKLOG.md), inspecting backend first and building the Preview 006 candidate. Dedicated branch `codex/preview-006` forked from green post-preview SHA `baa8e1a`; Preview 005 remains published and unchanged.
+- Development workflow deliberately **blocks automatic publication** on `codex/preview-006` until three new verification passes are recorded. First implementation: shared toolbar labels reduced by 1pt and visible green outlined `Обнови` with wider padding. Remaining Settings, email delivery, live stores/fuel/images/location fixes are **not yet complete**.
+- Before declaring Preview 006 ready: finish every backlog item, verify live Render/Neon data and API latency, test backend + frontend + Android 10 three times on final source, and only then explicitly promote the new numbered release. Do not mistake CI compilation for feature completeness.
+
 
 ## Owner gate — await post-preview Actions result before Preview 006 work
 

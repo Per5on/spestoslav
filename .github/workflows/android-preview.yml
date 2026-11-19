@@ -45,6 +45,12 @@ jobs:
             echo "Preview 005: independent pending verification on PR #9."
             echo "Preview 006: conditional owner decision after 3 full verification passes; fresh metadata/build required."
           } >> "$GITHUB_STEP_SUMMARY"
+      - name: Record Preview 006 development gate
+        if: github.head_ref == 'codex/preview-006' || github.ref_name == 'codex/preview-006'
+        run: |
+          echo "Preview 006 is a development candidate; automatic publication is blocked until three verification passes are complete."
+          echo "### Preview 006 development candidate" >> "$GITHUB_STEP_SUMMARY"
+          echo "Build/test only. No numbered release until three complete verification passes and final source review." >> "$GITHUB_STEP_SUMMARY"
       - name: Read preview metadata
         id: preview
         run: node scripts/read-preview.cjs
@@ -104,7 +110,7 @@ jobs:
 
   publish:
     needs: apk
-    if: (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository) && github.head_ref != 'Test_postpreview-005' && github.ref_name != 'Test_postpreview-005'
+    if: (github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository) && github.head_ref != 'Test_postpreview-005' && github.ref_name != 'Test_postpreview-005' && github.head_ref != 'codex/preview-006' && github.ref_name != 'codex/preview-006'
     runs-on: ubuntu-latest
     permissions:
       contents: write
