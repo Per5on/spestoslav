@@ -79,3 +79,12 @@
 - [ ] Product images **must not navigate to Wikimedia, image repositories, photo vaults, or any source website** when tapped. The image tap action is **only an in-app enlargement/lightbox**, with image centered and fitted to the available viewport, accessible close/back control, and no external URL navigation.
 - [ ] Avoid runtime product-image URLs pointing to Wikimedia or any other photo-vault host. Use approved, legally licensed imagery served from first-party app assets or controlled storage/CDN instead; maintain source, license, attribution and provenance separately in metadata as required, without making the product image itself a source link.
 - [ ] Apply the same behavior to Food, Technology and other product galleries, including cached/offline fallback, Android 10, screen readers and all supported languages. Verify with a UI regression test that tapping a thumbnail opens only the centered enlargement and never opens an external browser.
+
+
+### Verified live data checkpoint — 19 November 2026
+- [x] Queried existing Neon project `long-resonance-77491878`, branch `br-snowy-morning-baym8iw6`, database **`bgprices`** (not the outdated `bg-prices-preview` name). Read-only.
+- [x] Verified 2,005 products; **zero nonempty `products.barcode` values**; **zero `product_images` records**. These are data blockers for barcode-to-product matching and database-driven thumbnails, not proof of failed camera decoding.
+- [x] Verified active physical branches: groceries 134 / technology 2 / fuel 2, total 138; retailers: 14 / 9 / 7 respectively. No nationwide coverage claim.
+- [x] Backend merchant directory PR #20 automated backend tests passed for SQLAlchemy 2.0 and 2.1 on GitHub Actions run 44480474683. Deployed API has **not** been verified.
+- [x] Renamed comparison tab in six languages in frontend source commit `9272f282f3f63284c3dd97315322bc01fe5a8f16`; runtime verification pending.
+- [ ] Determine authoritative deployed Render service/workspace with owner confirmation where required; test deployed API and document deployed commit vs PR #20. Do not silently deploy.
