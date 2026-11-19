@@ -300,6 +300,73 @@ def stores_for_locality(
     ]
 
 
+class MerchantDirectoryEntry(BaseModel):
+    id: str
+    category_code: str
+    retailer_code: str
+    retailer_name: str
+    locality_id: str
+    locality_name: str
+    municipality: str | None = None
+    region: str | None = None
+    branch_name: str | None = None
+    address: str
+
+
+@app.get("/api/v1/merchant-directory", response_model=list[MerchantDirectoryEntry])
+def merchant_directory(
+    locality_id: UUID | None = None,
+    region: str | None = Query(default=None, max_length=160),
+    category_code: str | None = Query(default=None, max_length=40),
+    limit: int = Query(default=100, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
+    """Read-only, bounded physical-branch directory; never imply nationwide completeness."""
+    if locality_id is None and not region:
+        raise HTTPException(422, "Provide a canonical locality_id or region")
+    statement = (
+        select(StoreBranch, Retailer, Locality)
+        .join(Retailer, Retailer.code == StoreBranch.retailer_code)
+        .join(Locality, Locality.id == StoreBranch.locality_id)
+        .where(StoreBranch.active.is_(True), Retailer.active.is_(True))
+    )
+    if locality_id is not None:
+        statement = statement.where(StoreBranch.locality_id == locality_id)
+    else:
+        statement = statement.where(Locality.region == region)
+    if category_code:
+        statement = statement.where(Retailer.category_code == category_code)
+    rows = db.execute(
+        statement.order_by(
+            Retailer.category_code,
+            Locality.region,
+            Locality.municipality,
+            Locality.name_bg,
+            Retailer.name,
+            StoreBranch.address,
+            StoreBranch.id,
+        )
+        .offset(offset)
+        .limit(limit)
+    ).all()
+    return [
+        MerchantDirectoryEntry(
+            id=str(branch.id),
+            category_code=retailer.category_code,
+            retailer_code=retailer.code,
+            retailer_name=retailer.name,
+            locality_id=str(locality.id),
+            locality_name=locality.name_bg or locality.name,
+            municipality=locality.municipality,
+            region=locality.region,
+            branch_name=branch.branch_name,
+            address=branch.address,
+        )
+        for branch, retailer, locality in rows
+    ]
+
+
 @app.get("/api/v1/prices/current", response_model=list[CurrentPriceResponse])
 def current_prices(
     product_id: UUID | None = None,
