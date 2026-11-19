@@ -160,3 +160,39 @@ def test_current_prices_and_promotions():
     offers = client.get("/api/v1/promotions").json()
     assert len(offers) == 1
     assert offers[0]["promotional_price_eur"] == 0.99
+
+
+def test_merchant_directory_requires_location():
+    response = client.get("/api/v1/merchant-directory")
+    assert response.status_code == 422
+
+
+def test_merchant_directory_returns_canonical_hierarchy_and_address():
+    locality = client.get("/api/v1/localities", params={"q": "София"}).json()[0]
+    response = client.get(
+        "/api/v1/merchant-directory",
+        params={"locality_id": locality["id"], "category_code": "FOOD"},
+    )
+    assert response.status_code == 200
+    assert len(response.json()) == 1
+    branch = response.json()[0]
+    assert branch["category_code"] == "FOOD"
+    assert branch["retailer_name"] == "Test Market"
+    assert branch["locality_id"] == locality["id"]
+    assert branch["municipality"] == "Столична"
+    assert branch["region"] == "София (столица)"
+    assert branch["address"] == "Main street 1"
+
+
+def test_merchant_directory_filters_and_pages_without_inactive_branches():
+    locality_id = client.get("/api/v1/localities", params={"q": "София"}).json()[0]["id"]
+    with TestingSessionLocal.begin() as db:
+        db.add(StoreBranch(retailer_code="TEST", locality_id=uuid.UUID(locality_id),
+                           address="Closed street 2", active=False))
+    base = {"region": "София (столица)", "category_code": "FOOD"}
+    assert len(client.get("/api/v1/merchant-directory", params=base).json()) == 1
+    assert client.get("/api/v1/merchant-directory", params={**base, "offset": 1}).json() == []
+    assert client.get("/api/v1/merchant-directory",
+                      params={**base, "category_code": "technology"}).json() == []
+    assert client.get("/api/v1/merchant-directory",
+                      params={**base, "limit": 101}).status_code == 422
