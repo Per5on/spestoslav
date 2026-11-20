@@ -3,6 +3,7 @@ import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from ".
 import { LegalDocument } from "./src/legal/LegalDocument";
 import { sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
+import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
 import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
@@ -488,6 +489,7 @@ function Main({ initialNotice, onErase }: {
             {t(notice)}
           </Text>
         )}
+        {screen === "merchantDirectory" && <MerchantDirectoryScreen />}
         {screen === "catalog" && (
           <>
             {!!catalog.storeError && (
