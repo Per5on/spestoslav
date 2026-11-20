@@ -32,21 +32,21 @@ export function CatalogToolbar({
   const fuel = category === "fuel";
   return (
     <View testID="catalog-toolbar" style={[s.headingRow, { alignItems: "stretch" }]}>
-      <Button
+      {fuel && <Button
         layout="equal"
         labelSize={13}
         label={fuel ? t("stations") : `${t("stores")} (${count})`}
         primary={fuel ? !fuelExpanded : view === "stores"}
         onPress={() => onView("stores")}
-      />
-      <Button
+      />}
+      {fuel && <Button
         layout="equal"
         labelSize={13}
         label={t(fuel ? "fuelType" : "products")}
         primary={fuel ? fuelExpanded : view === "products"}
         expanded={fuel ? fuelExpanded : undefined}
         onPress={() => (fuel ? onFuel() : onView("products"))}
-      />
+      />}
       <Button layout="snug" compactRefresh label={t("refresh")} onPress={onRefresh} />
     </View>
   );
