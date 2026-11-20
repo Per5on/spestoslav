@@ -15,12 +15,12 @@ errors=[];proof={}
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,args=['--no-sandbox']);page=browser.new_page(viewport={'width':390,'height':844});page.on('pageerror',lambda e:errors.append(str(e)));page.goto(args.base_url,wait_until='domcontentloaded')
  toolbar=page.get_by_test_id('catalog-toolbar');toolbar.wait_for(timeout=60000)
- assert page.get_by_role('tab').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')==['Храни','Техника','Горива','Моят списък']
+ assert page.get_by_role('tab').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')==['Храни','Техника','Горива','Сравни цените']
  expect(toolbar.get_by_role('button')).to_have_count(1,timeout=15000)
  assert toolbar.get_by_role('button').evaluate_all('(els)=>els.map(e=>e.textContent)')==['Обнови']
  def geometry(fuel=False):
   toolbar.wait_for(state="visible",timeout=20000)
-  expect(toolbar.get_by_role("button")).to_have_count(3)
+  expect(toolbar.get_by_role("button")).to_have_count(3 if fuel else 1)
   buttons=toolbar.get_by_role('button')
   rects=buttons.evaluate_all('(els)=>els.map(e=>e.getBoundingClientRect().toJSON())')
   if fuel: assert abs(rects[0]['width']-rects[1]['width'])<1,rects
