@@ -148,6 +148,7 @@ function Main({ initialNotice, onErase }: {
     [pageSize, setPageSize] = useState(40),
     [suggestionLimit,setSuggestionLimit]=useState(40),
     [group, setGroup] = useState<string | null>(null),
+    [groupsExpanded, setGroupsExpanded] = useState(false),
     [selected, setSelected] = useState<string[]>([]),
     [draft, setDraft] = useState<string[]>([]);
   const [notice, setNotice] = useState<MessageKey | "">(initialNotice),
@@ -240,6 +241,7 @@ function Main({ initialNotice, onErase }: {
     }
     if (category !== id) {
       setGroup(null);
+      setGroupsExpanded(false);
       setQuery("");
       setSelected([]);
       setAppliedQuery("");
@@ -644,7 +646,7 @@ function Main({ initialNotice, onErase }: {
                             setQuery("");
                           }}
                         />
-                        {groups.map((code) => (
+                        {(groupsExpanded ? groups : groups.slice(0, 4).concat(group && !groups.slice(0, 4).includes(group) ? [group] : [])).map((code) => (
                           <Button
                             key={code}
                             label={
@@ -657,6 +659,13 @@ function Main({ initialNotice, onErase }: {
                             }}
                           />
                         ))}
+                        {groups.length > 4 && (
+                          <Button
+                            label={groupsExpanded ? "−" : "⋯"}
+                            primary={groupsExpanded}
+                            onPress={() => setGroupsExpanded((expanded) => !expanded)}
+                          />
+                        )}
                     </View>
                   </View>
                 )}
