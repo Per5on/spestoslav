@@ -670,6 +670,8 @@ function Main({ initialNotice, onErase }: {
                         {groups.length > 4 && (
                           <Button
                             label={groupsExpanded ? "−" : "⋯"}
+                            accessibilityLabel={t(groupsExpanded ? "hideExtraGroups" : "showAllGroups")}
+                            expanded={groupsExpanded}
                             primary={groupsExpanded}
                             onPress={() => setGroupsExpanded((expanded) => !expanded)}
                           />
