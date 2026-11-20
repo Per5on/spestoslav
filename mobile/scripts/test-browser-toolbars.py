@@ -34,6 +34,21 @@ with sync_playwright() as p:
    assert box['height']>=44,box
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
  geometry()
+ # When the fixture contains more than four groups, overflow must expose
+ # an accessible name and reflect its expanded/collapsed state.
+ group_choices=page.get_by_test_id('category-group-choices')
+ if group_choices.count():
+  more=group_choices.get_by_role('button',name='Покажи всички групи')
+  if more.count():
+   assert more.get_attribute('aria-expanded')=='false'
+   more.click()
+   less=group_choices.get_by_role('button',name='Скрий допълнителните групи')
+   expect(less).to_be_visible()
+   assert less.get_attribute('aria-expanded')=='true'
+   less.click()
+   expect(more).to_be_visible()
+   assert more.get_attribute('aria-expanded')=='false'
+ proof['group_overflow_accessibility_checked_if_fixture_supports_it']=True
  padding=page.get_by_test_id('app-header').evaluate('(e)=>parseFloat(getComputedStyle(e).paddingTop)');assert padding==10,padding;proof['header_padding_reduced_15_to_10']=True
  page.get_by_role('tab',name='Техника',exact=True).click();geometry();assert toolbar.get_by_role('button').count()==1
  page.get_by_role('tab',name='Горива',exact=True).click();geometry(fuel=True)
