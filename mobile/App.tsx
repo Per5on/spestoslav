@@ -642,8 +642,10 @@ function Main({ initialNotice, onErase }: {
                           onPress={() => {
                             setGroup(null);
                             setSelected([]);
+                            setDraft([]);
                             setAppliedQuery("");
                             setQuery("");
+                            setSearchOpen(false);
                           }}
                         />
                         {(groupsExpanded ? groups : groups.slice(0, 4).concat(group && !groups.slice(0, 4).includes(group) ? [group] : [])).map((code) => (
@@ -654,8 +656,14 @@ function Main({ initialNotice, onErase }: {
                             }
                             primary={group === code}
                             onPress={() => {
+                              // A group switch must not inherit a search filter from
+                              // another group, which can otherwise hide every result.
                               setGroup(code);
                               setSelected([]);
+                              setDraft([]);
+                              setAppliedQuery("");
+                              setQuery("");
+                              setSearchOpen(false);
                             }}
                           />
                         ))}
