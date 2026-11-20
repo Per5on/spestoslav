@@ -53,7 +53,21 @@ with sync_playwright() as p:
  page.get_by_role('tab',name='Техника',exact=True).click();geometry();assert toolbar.get_by_role('button').count()==1
  page.get_by_role('tab',name='Горива',exact=True).click();geometry(fuel=True)
  assert toolbar.get_by_role('button').evaluate_all('(els)=>els.map(e=>e.textContent)')==['Бензиностанции','Гориво','Обнови']
- toolbar.get_by_role('button',name='Гориво',exact=True).click();expect(page.get_by_test_id('fuel-type-menu')).to_be_visible()
+ # The compact Fuel selector must toggle predictably and Stations must dismiss it.
+ toolbar.get_by_role('button',name='Гориво',exact=True).click()
+ expect(page.get_by_test_id('fuel-type-menu')).to_be_visible()
+ assert toolbar.get_by_role('button',name='Гориво',exact=True).get_attribute('aria-expanded')=='true'
+ toolbar.get_by_role('button',name='Гориво',exact=True).click()
+ expect(page.get_by_test_id('fuel-type-menu')).not_to_be_visible()
+ assert toolbar.get_by_role('button',name='Гориво',exact=True).get_attribute('aria-expanded')=='false'
+ toolbar.get_by_role('button',name='Гориво',exact=True).click()
+ expect(page.get_by_test_id('fuel-type-menu')).to_be_visible()
+ toolbar.get_by_role('button',name='Бензиностанции',exact=True).click()
+ expect(page.get_by_test_id('fuel-type-menu')).not_to_be_visible()
+ assert toolbar.get_by_role('button',name='Гориво',exact=True).get_attribute('aria-expanded')=='false'
+ toolbar.get_by_role('button',name='Гориво',exact=True).click()
+ expect(page.get_by_test_id('fuel-type-menu')).to_be_visible()
+ proof['fuel_selector_toggle_and_stations_dismissal']=True
  assert page.get_by_test_id('fuel-type-menu').get_by_role('radio').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')==['Бензин 95','Бензин 98+','Дизел','Дизел +','Автогаз']
  page.get_by_role('radio',name='Бензин 98+',exact=True).click();expect(page.get_by_test_id('fuel-type-menu')).not_to_be_visible();expect(page.get_by_text('Избрано гориво: Бензин 98+',exact=True)).to_be_visible();page.screenshot(path=str(args.output_dir/'preview005-task3-fuel.png'))
  proof['food_tech_refresh_only_and_five_fuels']=True
