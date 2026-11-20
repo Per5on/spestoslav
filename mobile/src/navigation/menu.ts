@@ -1,4 +1,5 @@
 export const overflowMenu = [
+  { id: "merchantDirectory", label: "merchantDirectory", icon: "storefront-outline" },
   { id: "scan", label: "scan", icon: "scan-outline" },
   { id: "receipts", label: "receipts", icon: "receipt-outline" },
   { id: "login", label: "login", icon: "person-outline" },
