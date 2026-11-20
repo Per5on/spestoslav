@@ -631,8 +631,7 @@ function Main({ initialNotice, onErase }: {
                 {!!groups.length && (
                   <View style={s.panel}>
                     <Text style={s.meta}>{t(category === "technology" ? "productGroup" : "catalogGroup")}</Text>
-                    <ScrollView horizontal>
-                      <View style={s.row}>
+                    <View testID="category-group-choices" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                         <Button
                           label={t(category === "technology" ? "allProducts" : "allGroceries")}
                           primary={!group}
@@ -656,8 +655,7 @@ function Main({ initialNotice, onErase }: {
                             }}
                           />
                         ))}
-                      </View>
-                    </ScrollView>
+                    </View>
                   </View>
                 )}
                 {visible.slice(0, pageSize).map(productCard)}
