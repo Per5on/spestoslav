@@ -2,6 +2,13 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### OWNER HOLD / RESUMPTION CHECKPOINT — 20 November 2026
+
+- Owner directed **hold** on the separately created `chatgpt/pre-alpha-009.1-hardening` branch and uploaded incremental bundle/auth patch. Do not import, cherry-pick, execute, merge or modify that hardening work unless owner resumes it. Continue existing `chatgpt/pre-alpha-009.1` development priorities unchanged.
+- **Exact source checkpoint** `445531539fe27a5e9d77a894ea4687fc2c99a690`: backend CI `44712248700` **success** and mobile source checks `44712248684` **success**. This closes the previously pending mobile test/typecheck CI verification at that SHA; does not establish live API or Android device acceptance.
+- **Live Render verification blocked by workspace selection:** connected Render account reports no selected workspace and requires explicit owner workspace choice before service inspection. Do not guess a workspace or claim the deployed API has been verified. Continue read-only repository/backend integration inspection and other authorized tasks in the meantime.
+- **Next ordered work:** live API readiness/merchant directory when access is confirmed; barcode camera/photo/GTIN identity and database lookup including zero-barcode coverage behavior; frontend completion; cleanup; P-LAST password management; three independent full final passes on the same exact candidate SHA; genuine screenshots of all tabs and explicit owner build approval. No Android build/dispatch, merge, deployment or release authorized.
+
 ### MANDATORY PRE-BUILD CHECK GATE — 20 November 2026 (owner reaffirmed)
 
 - **No build-candidate commit approval or APK/AAB workflow dispatch until ALL gates below are evidenced on the final exact SHA.** Routine source/test commits may continue on `chatgpt/pre-alpha-009.1`; this is not permission to build, merge, deploy or release.
