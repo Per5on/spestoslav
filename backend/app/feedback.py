@@ -3,19 +3,18 @@
 import os
 import re
 import smtplib
-import time
-from collections import deque
 from email.message import EmailMessage
-from threading import Lock
 
 import httpx
 from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from .ratelimit import SlidingWindow
+
 router = APIRouter(prefix="/api/v1/feedback")
 RECIPIENT = "ivo77@duck.com"
-_attempts: deque[float] = deque()
-_lock = Lock()
+# Global bounded quota for this single-instance preview; no spoofable IP headers.
+_attempts = SlidingWindow(5, 600)
 
 
 class Feedback(BaseModel):
@@ -130,14 +129,7 @@ def send(payload: Feedback, response: Response):
     response.headers["Cache-Control"] = "no-store"
     if not configured():
         raise HTTPException(503, "Feedback is temporarily unavailable")
-    now = time.monotonic()
-    # Global bounded quota for this single-instance preview; no spoofable IP headers.
-    with _lock:
-        while _attempts and _attempts[0] <= now - 600:
-            _attempts.popleft()
-        if len(_attempts) >= 5:
-            raise HTTPException(429, "Please try later", headers={"Retry-After": "600"})
-        _attempts.append(now)
+    _attempts.hit()
     try:
         deliver(payload)
     except (OSError, ValueError, smtplib.SMTPException, httpx.HTTPError):
