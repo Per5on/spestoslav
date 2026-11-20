@@ -24,7 +24,13 @@ with sync_playwright() as p:
  page.screenshot(path=str(args.output_dir/'catalogue-bg.png'))
  page.get_by_role('button',name='Отвори менюто',exact=True).click(timeout=60000)
  labels=page.get_by_role('menuitem').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
- assert labels==['Сканирай','Касови бележки','Вход','Настройки','За приложението'],labels
+ assert labels==['Търговски обекти','Сканирай','Касови бележки','Вход','Настройки','За приложението'],labels
+ page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()
+ expect(page.get_by_test_id('merchant-directory')).to_be_visible()
+ expect(page.get_by_role('menu')).not_to_be_visible()
+ page.get_by_role('button',name='Назад',exact=True).click()
+ expect(page.get_by_test_id('catalog-toolbar')).to_be_visible()
+ page.get_by_role('button',name='Отвори менюто',exact=True).click()
  page.screenshot(path=str(args.output_dir/'preview005-issue8-menu-bg.png'));page.get_by_role('menuitem',name='За приложението',exact=True).click()
  expect(page.get_by_test_id('about-screen')).to_be_visible();expect(page.get_by_text('© 2026 Vimp. All rights reserved.',exact=True)).to_be_visible()
  about = page.get_by_test_id('about-screen')
@@ -46,7 +52,7 @@ with sync_playwright() as p:
  font_choice.click();page.get_by_role('radio').nth(2).click();page.get_by_role('button',name='Назад',exact=True).click();expect(page.get_by_role('button',name='Език',exact=True)).to_be_visible();proof['nested_settings_and_back_navigation']=True
  page.get_by_role('button',name='Език',exact=True).click();page.get_by_role('radio',name='English',exact=True).click();page.get_by_role('button',name='Open menu',exact=True).click()
  labels=page.get_by_role('menuitem').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
- assert labels==['Scan','Receipts','Sign in','Settings','About'],labels
+ assert labels==['Merchant directory','Scan','Receipts','Sign in','Settings','About'],labels
  page.get_by_role('menuitem',name='About',exact=True).click();expect(page.get_by_role('menu')).not_to_be_visible();expect(page.get_by_text('About',exact=True)).to_be_visible();expect(page.get_by_text('© 2026 Vimp. All rights reserved.',exact=True)).to_be_visible();page.screenshot(path=str(args.output_dir/'preview005-issue8-about-en.png'))
  page.get_by_role('button',name='Feedback',exact=True).click();page.get_by_role('button',name='Back',exact=True).click();expect(page.get_by_test_id('about-screen')).to_be_visible()
  page.reload();page.get_by_role('button',name='Open menu',exact=True).wait_for(timeout=20000);page.get_by_role('button',name='Open menu',exact=True).click();page.get_by_role('menuitem',name='Settings',exact=True).click();page.get_by_role('button',name='Font size',exact=True).click();expect(page.get_by_role('radio').nth(2)).to_have_attribute('aria-checked','true');proof['english_and_preferences_persist']=True
