@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { Pressable, Text, useUI } from "../ui";
 import { groupMerchantDirectory, loadMerchantDirectory, type MerchantDirectoryEntry } from "./merchantDirectory";
 
