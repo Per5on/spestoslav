@@ -2,6 +2,14 @@
 
 **Latest ChatGPT branch handoff amendment: 19 November 2026 (Europe/Sofia).** This date applies to `chatgpt/pre-alpha-009.1` only; `codex/pre-alpha-009` remains separately owned and unchanged. See the 19 November NOTE immediately below. The older 18 November update heading further down is historical Codex baseline context, not the date of this amendment.
 
+### MANDATORY PRE-BUILD CHECK GATE — 20 November 2026 (owner reaffirmed)
+
+- **No build-candidate commit approval or APK/AAB workflow dispatch until ALL gates below are evidenced on the final exact SHA.** Routine source/test commits may continue on `chatgpt/pre-alpha-009.1`; this is not permission to build, merge, deploy or release.
+- **Verified now:** Draft PR #21 head `24750c28f9773d19c54eef09a4c0ae18f6951d15`; backend tests run `44610316564` and mobile source checks run `44610316576` both succeeded on that exact head. Mobile CI includes tests and TypeScript checks, **not** a device build or native device acceptance.
+- **Live data finding:** Read-only Neon `bgprices` query shows 2,005 products and **zero populated `products.barcode` values**. This prevents claiming real barcode-product lookup coverage. Verify whether separate `product_barcodes` identities have real validated records before making any wider barcode coverage claim.
+- **Unfinished required gates:** (1) live deployed API readiness and merchant-directory integration against real Neon data; (2) camera and photo barcode decoding plus valid identity/product lookup, including Android 10 device acceptance and empty-coverage behavior; (3) complete all queued frontend tab/search/group/fuel/menu/imagery/language/palette requirements; (4) cleanup, dependency/security review; (5) P-LAST password change and forgot-password recovery with security tests; (6) **three separately evidenced independent full verification passes** against final SHA, rerun after any changes; (7) authentic screenshots of **every** app tab and exact candidate SHA presented to owner for explicit approval before any build.
+- **Current status:** NOT READY FOR BUILD. Neither backend/mobile CI success nor this handoff update closes the remaining acceptance gates. Do not mark any as passed without reproducible evidence and links.
+
 ### AUTONOMOUS DEVELOPMENT CHECKPOINT — 19 November 2026, 22:34 Europe/Sofia
 
 - Resumed at owner-saved commit `f6dcc91b2e8f6be7013279e0758d7f71e20b2d71`; reviewed handoff, PR #21, backend CI, `mobile/src/workflows/scanImage.ts`, its regression tests and `mobile/package.json`. Backend CI `44599749455` passed at saved HEAD; this did **not** execute mobile tests.
