@@ -155,3 +155,34 @@ def test_registration_distinguishes_existing_account(provider, monkeypatch, prov
     )
     assert response.status_code == expected_status
     assert "private provider payload" not in response.text
+
+
+def test_existing_short_password_reaches_provider_but_new_one_is_rejected(provider):
+    body = {"email": "alice@example.invalid", "password": "short"}
+    assert client.post("/api/v1/auth/sign-in", json=body).status_code == 200
+    assert client.post("/api/v1/auth/sign-up", json=body).status_code == 422
+
+
+def test_sign_in_attempts_are_limited_per_account_before_the_provider(provider):
+    body = {"email": "Alice@Example.invalid", "password": "wrong-password"}
+    for _ in range(10):
+        assert client.post("/api/v1/auth/sign-in", json=body).status_code == 200
+    sent = len(provider)
+    r = client.post("/api/v1/auth/sign-in", json=dict(body, email="ALICE@example.invalid"))
+    assert r.status_code == 429 and r.headers["retry-after"] == "600"
+    assert r.headers["cache-control"] == "no-store"
+    assert len(provider) == sent  # case variants share one bucket; no provider call
+    other = dict(body, email="bob@example.invalid")
+    assert client.post("/api/v1/auth/sign-in", json=other).status_code == 200
+
+
+def test_total_sign_in_volume_is_capped(provider, monkeypatch):
+    monkeypatch.setattr(mobile_auth, "_total", mobile_auth.SlidingWindow(3, 60))
+    codes = [
+        client.post(
+            "/api/v1/auth/sign-in",
+            json={"email": f"user{i}@example.invalid", "password": "x"},
+        ).status_code
+        for i in range(4)
+    ]
+    assert codes == [200, 200, 200, 429]
