@@ -35,17 +35,17 @@ export function CatalogToolbar({
       {fuel && <Button
         layout="equal"
         labelSize={13}
-        label={fuel ? t("stations") : `${t("stores")} (${count})`}
-        primary={fuel ? !fuelExpanded : view === "stores"}
+        label={t("stations")}
+        primary={!fuelExpanded}
         onPress={() => onView("stores")}
       />}
       {fuel && <Button
         layout="equal"
         labelSize={13}
-        label={t(fuel ? "fuelType" : "products")}
-        primary={fuel ? fuelExpanded : view === "products"}
-        expanded={fuel ? fuelExpanded : undefined}
-        onPress={() => (fuel ? onFuel() : onView("products"))}
+        label={t("fuelType")}
+        primary={fuelExpanded}
+        expanded={fuelExpanded}
+        onPress={onFuel}
       />}
       <Button layout="snug" compactRefresh label={t("refresh")} onPress={onRefresh} />
     </View>
