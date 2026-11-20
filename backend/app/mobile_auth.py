@@ -4,24 +4,46 @@ Only the provider's signed session cookie is returned, never a service key.
 Native clients store it in OS secure storage and exchange it for short-lived JWTs.
 """
 
+import hashlib
 import os
 import re
+from typing import Annotated
 
 import httpx
 from fastapi import APIRouter, Header, HTTPException, Response
 from pydantic import BaseModel, Field
 from .auth import auth_base_url
+from .ratelimit import SlidingWindow
 
 router = APIRouter(prefix="/api/v1/auth")
 COOKIE = "__Secure-neon-auth.session_token"
 
 
-class Credentials(BaseModel):
-    email: str = Field(
-        min_length=3, max_length=254, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
-    )
+Email = Annotated[
+    str, Field(min_length=3, max_length=254, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+]
+
+
+class SignIn(BaseModel):
+    email: Email
+    # Length rules apply to new passwords only; the provider judges existing ones.
+    password: str = Field(min_length=1, max_length=128)
+
+
+class Credentials(SignIn):
     password: str = Field(min_length=8, max_length=128)
     name: str = Field(default="Спестовник", min_length=1, max_length=100)
+
+
+# All sign-ins reach the provider from this server's address, so cap both one
+# account's guesses and the total, or one attacker could lock everyone out.
+_per_email = SlidingWindow(10, 600)
+_total = SlidingWindow(300, 60)
+
+
+def throttle(email):
+    _per_email.hit(hashlib.sha256(email.lower().encode()).hexdigest())
+    _total.hit()
 
 
 def upstream(path, method="GET", session=None, payload=None):
@@ -85,7 +107,8 @@ def session_result(data, cookie, response):
 
 
 @router.post("/sign-in")
-def sign_in(payload: Credentials, response: Response):
+def sign_in(payload: SignIn, response: Response):
+    throttle(payload.email)
     data, cookie = upstream(
         "/sign-in/email",
         "POST",
@@ -96,6 +119,7 @@ def sign_in(payload: Credentials, response: Response):
 
 @router.post("/sign-up")
 def sign_up(payload: Credentials, response: Response):
+    throttle(payload.email)
     data, cookie = upstream("/sign-up/email", "POST", payload=payload.model_dump())
     return session_result(data, cookie, response)
 
