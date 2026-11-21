@@ -13,10 +13,13 @@
 - [x] Rename Облик to Тема. Remove the image switches, ignore legacy hide preferences, bundle small WebP defaults, and keep Dark mode reachable above the palettes.
 - [x] Obtain acknowledgment and verify installed Android 10 smoke, ARM APK, and test-signed AAB for the 010 build.
 - [ ] Complete physical-device and live API/data acceptance, including the deployed merchant directory.
-- [ ] Audit missing Food and Technology thumbnails. Pilot licensed, exact-identity 160 × 140 WebPs and verify decoding, cache behavior, and size.
-- [ ] Extend basket comparison with current per-merchant item prices and line subtotals. Verify complete totals, missing and expired prices, price timestamps, and responsive merchant cards.
-- [ ] Size Храни group buttons to their labels using the same content-width principle as Техника. Verify short and long translations at narrow widths.
-- [ ] In both Храни and Техника, make the horizontal ⋯ open a pop-up menu matching the header's vertical ⋮ interaction. Close on selection, outside tap, or Back, and preserve the chosen group.
+- [x] Audit missing Food and Technology thumbnails. Pilot licensed, exact-identity 160 × 140 WebPs and verify decoding, cache behavior, and size.
+- [x] Extend basket comparison with current per-merchant item prices and line subtotals. Verify complete totals, missing and expired prices, price timestamps, and responsive merchant cards.
+- [x] Size Храни group buttons to their labels using the same content-width principle as Техника. Verify short and long translations at narrow widths.
+- [x] In both Храни and Техника, make the horizontal ⋯ open a pop-up menu matching the header's vertical ⋮ interaction. Close on selection, outside tap, or Back, and preserve the chosen group.
+- [x] Remove palettes 2, 3, 4, 5, 7, 8, 10, 14 and 17. Verify retained and removed saved selections.
+- [ ] Extend photo coverage beyond the seven-record representative pilot with documented reuse rights and product matching.
+- [ ] Obtain approval of the exact 10.5 candidate before APK/AAB dispatch and verify the installed Android build. Locally verified feature scope and live rollout limits are in the handoff.
 
 [Accepted itemized comparison layout sample with simulated prices](references/itemized-comparison-preview.png)
 

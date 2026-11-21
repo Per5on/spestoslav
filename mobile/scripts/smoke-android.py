@@ -56,7 +56,7 @@ def wait_text(text, timeout=75):
 
 
 sequence = os.environ.get("PREVIEW_SEQUENCE")
-if not sequence or not re.fullmatch(r"[0-9]{3}", sequence):
+if not sequence or not re.fullmatch(r"[0-9]+(?:\.[0-9]+)?", sequence):
     raise RuntimeError("PREVIEW_SEQUENCE must be supplied from mobile/preview.json")
 
 def capture_visual(name):
@@ -170,7 +170,7 @@ assert not any(label(n) == "Изображения" for n in nodes())
 tap("Тъмен режим")
 capture_visual("appearance-dark")
 tap("Тъмен режим")
-for index in range(1, 9):
+for index in (1, 6, 9, 11, 12, 13, 15, 16):
     wait_text(f"Цветова комбинация {index}", 10)
 tap("Отвори менюто");tap("Настройки")
 tap("Език")
@@ -201,6 +201,7 @@ package=adb("shell","dumpsys","package","bg.spestoslav.preview")
 installed_version=re.search(r"versionName=(\S+)",package).group(1)
 installed_code=re.search(r"versionCode=(\d+)",package).group(1)
 metadata=json.loads(Path("preview.json").read_text())
+assert sequence == metadata.get("label", metadata["sequence"])
 assert installed_version==metadata["version"] and int(installed_code)==int(metadata["sequence"])
 wait_text(f"Версия {installed_version} ({installed_code})")
 assert not any("https://" in label(n) or "Лаптоп" in label(n) for n in nodes())

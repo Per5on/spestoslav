@@ -457,8 +457,8 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
     categories = {p.category_code for p in products}
     if len(categories) != 1:
         raise HTTPException(422, "Compare one category per basket")
-    branches = db.scalars(
-        select(StoreBranch)
+    branches = db.execute(
+        select(StoreBranch, Retailer.name)
         .join(Retailer, Retailer.code == StoreBranch.retailer_code)
         .where(
             StoreBranch.locality_id == payload.locality_id,
@@ -467,7 +467,7 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
             Retailer.category_code == next(iter(categories)),
         )
     ).all()
-    branch_ids = [b.id for b in branches]
+    branch_ids = [branch.id for branch, _ in branches]
     now = datetime.now(timezone.utc)
     prices = db.scalars(
         select(CurrentPrice).where(
@@ -477,7 +477,11 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
             (CurrentPrice.expires_at.is_(None)) | (CurrentPrice.expires_at > now),
         )
     ).all()
-    values = {(p.branch_id, p.product_id): p.price_eur for p in prices}
+    by_branch = {}
+    for price in prices:
+        by_branch.setdefault(price.branch_id, {})[price.product_id] = (
+            price.price_eur, price.verified_at,
+        )
     promotions = db.scalars(
         select(Promotion).where(
             Promotion.branch_id.in_(branch_ids),
@@ -488,45 +492,48 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
         )
     ).all()
     for promotion in promotions:
-        key = (promotion.branch_id, promotion.product_id)
-        values[key] = min(
-            values.get(key, promotion.promotional_price_eur),
-            promotion.promotional_price_eur,
-        )
-    quotes = []
+        values = by_branch.setdefault(promotion.branch_id, {})
+        previous = values.get(promotion.product_id)
+        if previous is None or promotion.promotional_price_eur < previous[0]:
+            # Verified promotions have a validity window but no verification timestamp.
+            values[promotion.product_id] = (promotion.promotional_price_eur, None)
 
-    def quote(scope, identity, retailer, product_prices):
-        missing = [
-            str(i.product_id)
-            for i in payload.items
-            if i.product_id not in product_prices
-        ]
-        total = (
-            None
-            if missing
-            else sum(
-                (i.quantity * product_prices[i.product_id] for i in payload.items),
-                Decimal("0"),
-            )
-        )
+    def quote(scope, branch, retailer, retailer_name, product_prices):
+        items = []
+        missing = []
+        total = Decimal("0")
+        for item in payload.items:
+            product_id = str(item.product_id)
+            price, verified_at = product_prices.get(item.product_id, (None, None))
+            subtotal = None if price is None else item.quantity * price
+            if subtotal is None:
+                missing.append(product_id)
+            else:
+                total += subtotal
+            items.append({
+                "product_id": product_id,
+                "quantity": item.quantity,
+                "unit_price_eur": str(price) if price is not None else None,
+                "subtotal_eur": str(subtotal) if subtotal is not None else None,
+                "verified_at": (verified_at if verified_at.tzinfo else verified_at.replace(tzinfo=timezone.utc))
+                if verified_at is not None else None,
+            })
         return {
             "price_scope": scope,
-            "branch_id": str(identity) if identity else None,
+            "branch_id": str(branch.id) if branch else None,
+            "branch_address": branch.address if branch else None,
             "retailer_code": retailer,
+            "retailer_name": retailer_name,
             "complete": not missing,
             "missing_product_ids": missing,
-            "total_eur": str(total) if total is not None else None,
+            "total_eur": None if missing else str(total),
+            "items": items,
         }
 
-    for branch in branches:
-        quotes.append(
-            quote(
-                "BRANCH",
-                branch.id,
-                branch.retailer_code,
-                {p: price for (b, p), price in values.items() if b == branch.id},
-            )
-        )
+    quotes = [
+        quote("BRANCH", branch, branch.retailer_code, retailer_name, by_branch.get(branch.id, {}))
+        for branch, retailer_name in branches
+    ]
     if payload.include_online:
         offers = db.scalars(
             national_rows(db).where(NationalOffer.product_id.in_(product_ids))
@@ -534,10 +541,10 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
         online = {}
         for offer in offers:
             online.setdefault(offer.retailer_code, {})[offer.product_id] = (
-                offer.price_eur
+                offer.price_eur, offer.verified_at,
             )
         for retailer, product_prices in online.items():
-            quotes.append(quote("NATIONAL_ONLINE", None, retailer, product_prices))
+            quotes.append(quote("NATIONAL_ONLINE", None, retailer, None, product_prices))
     quotes.sort(
         key=lambda q: (
             not q["complete"],
@@ -548,6 +555,7 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
     )
     return {
         "currency": "EUR",
+        "quoted_at": now,
         "quotes": quotes,
         "cheapest": quotes[0] if quotes and quotes[0]["complete"] else None,
         "shipping_and_travel_included": False,

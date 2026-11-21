@@ -1,10 +1,11 @@
+import { BasketComparison, type Comparison } from "./src/catalog/BasketComparison";
 import { contrastingInk } from "./src/appearance";
 import { CategoryGroups } from "./src/catalog/CategoryGroups";
 import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { groceryThumbnail, sampleCredit, technologyThumbnail } from "./src/catalog/samples";
+import { groceryThumbnail, referencePhoto, sampleCredit, technologyThumbnail } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -59,15 +60,6 @@ const tabs = [
   { id: "fuel", label: "fuel", icon: "car-outline" },
   { id: "basket", label: "list", icon: "list-outline" },
 ] as const;
-type Comparison = {
-  quotes: {
-    branch_id: string | null;
-    retailer_code: string;
-    complete: boolean;
-    total_eur: string | null;
-  }[];
-  cheapest: unknown;
-};
 function AddButton({
   name,
   onAdd,
@@ -316,13 +308,17 @@ function Main({ initialNotice, onErase }: {
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
-    const credit = p.is_demo ? sampleCredit(p.id) : undefined;
-    const illustration = p.category_code === "technology" ? technologyThumbnail(p.id, p.group_code) : undefined;
+    const reference = referencePhoto(p);
+    const credit = p.is_demo ? sampleCredit(p.id) : reference?.credit;
+    const technology = p.category_code === "technology";
+    const fallback = reference?.source ?? (technology
+      ? technologyThumbnail(p.id, p.group_code) : groceryThumbnail(p.group_code));
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
         <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)} uri={p.image_url}
-          illustration={illustration} fallback={groceryThumbnail(p.group_code)} />
+          illustration={technology && p.is_demo ? fallback : undefined} fallback={fallback}
+          fallbackLabel={reference ? t("representativePhoto") : undefined} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -725,22 +721,8 @@ function Main({ initialNotice, onErase }: {
               onPress={compare}
             />
             {comparison && (
-              <View style={s.panel}>
-                <Text style={s.productName}>
-                  {t(comparison.cheapest ? "quotes" : "incomplete")}
-                </Text>
-                {comparison.quotes.map((q, i) => (
-                  <Text key={i} style={s.meta}>
-                    {catalog.stores.find((store) => store.id === q.branch_id)
-                      ?.retailer_name || q.retailer_code}
-                    :{" "}
-                    {q.complete && q.total_eur !== null
-                      ? `${Number(q.total_eur).toFixed(2)} €`
-                      : t("missingPrices")}
-                  </Text>
-                ))}
-                <Text style={s.meta}>{t("travelExcluded")}</Text>
-              </View>
+              <BasketComparison key={comparison.quoted_at ?? comparisonKey}
+                comparison={comparison} basket={basket} stores={catalog.stores} />
             )}
           </>
         )}

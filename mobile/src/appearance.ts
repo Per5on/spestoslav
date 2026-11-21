@@ -1,24 +1,21 @@
 import type { ImageStyle, TextStyle, ViewStyle } from "react-native";
 
-export const palettes = [
-  { header: "#195b27", accent: "#ff8500", tint: "#edf3e5", ink: "#19562a" },
-  { header: "#174679", accent: "#855600", tint: "#e8f0fb", ink: "#163d6b" },
-  { header: "#452873", accent: "#94413e", tint: "#efe9f8", ink: "#492b73" },
-  { header: "#195651", accent: "#9b482a", tint: "#e1f1ee", ink: "#164741" },
-  { header: "#712c3d", accent: "#865219", tint: "#f9e8ed", ink: "#692a39" },
-  { header: "#31445a", accent: "#3e6c53", tint: "#e9edf3", ink: "#30455c" },
-  { header: "#63411d", accent: "#8c4536", tint: "#f6eee1", ink: "#5a3817" },
-  { header: "#334b26", accent: "#7350a3", tint: "#edf1e2", ink: "#344c26" },
-  { header: "#b9ceac", accent: "#f2eee7", tint: "#f2eee7", ink: "#202820" },
-  { header: "#f8c7fb", accent: "#c181f3", tint: "#f8e9fa", ink: "#202820" },
-  { header: "#022f40", accent: "#38aecc", tint: "#e0f3f7", ink: "#202820" },
-  { header: "#a29f61", accent: "#383615", tint: "#efeedf", ink: "#202820" },
-  { header: "#f7da83", accent: "#073368", tint: "#faf0d8", ink: "#202820" },
-  { header: "#edede2", accent: "#ebbdd3", tint: "#ebbdd3", ink: "#202820" },
-  { header: "#1B263B", accent: "#FF7F50", tint: "#fff0e8", ink: "#202820" },
-  { header: "#1B263B", accent: "#F4C7C3", tint: "#F4C7C3", ink: "#202820" },
-  { header: "#806380", accent: "#ffc6ff", tint: "#ffc6ff", ink: "#202820" },
-] as const;
+// Keys retain the original zero-based IDs stored in user preferences.
+export const palettes: Readonly<Record<number, {
+  header: string;
+  accent: string;
+  tint: string;
+  ink: string;
+}>> = {
+  0: { header: "#195b27", accent: "#ff8500", tint: "#edf3e5", ink: "#19562a" },
+  5: { header: "#31445a", accent: "#3e6c53", tint: "#e9edf3", ink: "#30455c" },
+  8: { header: "#b9ceac", accent: "#f2eee7", tint: "#f2eee7", ink: "#202820" },
+  10: { header: "#022f40", accent: "#38aecc", tint: "#e0f3f7", ink: "#202820" },
+  11: { header: "#a29f61", accent: "#383615", tint: "#efeedf", ink: "#202820" },
+  12: { header: "#f7da83", accent: "#073368", tint: "#faf0d8", ink: "#202820" },
+  14: { header: "#1B263B", accent: "#FF7F50", tint: "#fff0e8", ink: "#202820" },
+  15: { header: "#1B263B", accent: "#F4C7C3", tint: "#F4C7C3", ink: "#202820" },
+};
 
 export function contrastingInk(background: string) {
   const value = background.slice(1);

@@ -54,6 +54,11 @@ const bg = {
     "Примерните продукти нямат проверени цени и не участват в сравнението.",
   incomplete: "Няма пълна оферта за целия списък",
   quotes: "Сравнение по обекти",
+  quoteTime: "Проверка",
+  bestBasket: "Най-ниска обща цена",
+  packagePrice: "За 1 бр.",
+  priceVerified: "Потвърдено",
+  basketTotal: "Общо за кошницата",
   missingPrices: "липсват цени",
   travelExcluded: "Доставката и пътуването не са включени.",
   barcode: "Търсене по баркод",
@@ -139,6 +144,11 @@ const en: Dictionary = {
     "Sample products have no verified prices and cannot be compared.",
   incomplete: "No complete offer for the whole list",
   quotes: "Compare stores",
+  quoteTime: "Checked",
+  bestBasket: "Lowest basket total",
+  packagePrice: "Per pack",
+  priceVerified: "Verified",
+  basketTotal: "Basket total",
   missingPrices: "missing prices",
   travelExcluded: "Delivery and travel are not included.",
   barcode: "Barcode lookup",
@@ -222,6 +232,11 @@ const de: Dictionary = {
     "Beispielprodukte haben keine geprüften Preise und können nicht verglichen werden.",
   incomplete: "Kein vollständiges Angebot für die ganze Liste",
   quotes: "Geschäfte vergleichen",
+  quoteTime: "Geprüft",
+  bestBasket: "Niedrigster Gesamtpreis",
+  packagePrice: "Je Packung",
+  priceVerified: "Bestätigt",
+  basketTotal: "Gesamtsumme",
   missingPrices: "Preise fehlen",
   travelExcluded: "Lieferung und Fahrt sind nicht enthalten.",
   barcode: "Barcodesuche",
@@ -310,6 +325,11 @@ const es: Dictionary = {
     "Los productos de ejemplo no tienen precios verificados y no se pueden comparar.",
   incomplete: "No hay una oferta completa para toda la lista",
   quotes: "Comparar tiendas",
+  quoteTime: "Consulta",
+  bestBasket: "Menor total",
+  packagePrice: "Por paquete",
+  priceVerified: "Verificado",
+  basketTotal: "Total de la cesta",
   missingPrices: "faltan precios",
   travelExcluded: "No se incluyen la entrega ni el desplazamiento.",
   barcode: "Buscar por código de barras",
@@ -394,6 +414,11 @@ const fr: Dictionary = {
     "Les produits exemples ne disposent pas de prix vérifiés et ne peuvent pas être comparés.",
   incomplete: "Aucune offre complète pour toute la liste",
   quotes: "Comparer les magasins",
+  quoteTime: "Comparaison",
+  bestBasket: "Total le plus bas",
+  packagePrice: "Par paquet",
+  priceVerified: "Vérifié",
+  basketTotal: "Total du panier",
   missingPrices: "prix manquants",
   travelExcluded: "La livraison et les déplacements ne sont pas inclus.",
   barcode: "Recherche par code-barres",
@@ -478,6 +503,11 @@ const ru: Dictionary = {
     "У примеров товаров нет проверенных цен, поэтому они не участвуют в сравнении.",
   incomplete: "Нет полного предложения для всего списка",
   quotes: "Сравнение магазинов",
+  quoteTime: "Проверка",
+  bestBasket: "Наименьшая сумма",
+  packagePrice: "За упаковку",
+  priceVerified: "Подтверждено",
+  basketTotal: "Итого за корзину",
   missingPrices: "нет цен",
   travelExcluded: "Доставка и дорога не включены.",
   barcode: "Поиск по штрихкоду",
@@ -519,37 +549,43 @@ const appearanceMessages = {
     "appearance": "Тема",
     "appearancePalette": "Цветова комбинация",
     "appearanceDark": "Тъмен режим",
-    "symbolicImage": "Символично изображение"
+    "symbolicImage": "Символично изображение",
+    "representativePhoto": "Примерна снимка"
   },
   "en": {
     "appearance": "Theme",
     "appearancePalette": "Color combination",
     "appearanceDark": "Dark mode",
-    "symbolicImage": "Symbolic image"
+    "symbolicImage": "Symbolic image",
+    "representativePhoto": "Representative photo"
   },
   "de": {
     "appearance": "Farbschema",
     "appearancePalette": "Farbkombination",
     "appearanceDark": "Dunkelmodus",
-    "symbolicImage": "Symbolisches Bild"
+    "symbolicImage": "Symbolisches Bild",
+    "representativePhoto": "Beispielfoto"
   },
   "es": {
     "appearance": "Tema",
     "appearancePalette": "Combinación de colores",
     "appearanceDark": "Modo oscuro",
-    "symbolicImage": "Imagen simbólica"
+    "symbolicImage": "Imagen simbólica",
+    "representativePhoto": "Foto representativa"
   },
   "fr": {
     "appearance": "Thème",
     "appearancePalette": "Combinaison de couleurs",
     "appearanceDark": "Mode sombre",
-    "symbolicImage": "Image symbolique"
+    "symbolicImage": "Image symbolique",
+    "representativePhoto": "Photo indicative"
   },
   "ru": {
     "appearance": "Тема",
     "appearancePalette": "Цветовая комбинация",
     "appearanceDark": "Тёмный режим",
-    "symbolicImage": "Символическое изображение"
+    "symbolicImage": "Символическое изображение",
+    "representativePhoto": "Пример фотографии"
   }
 };
 const deletionMessages = {

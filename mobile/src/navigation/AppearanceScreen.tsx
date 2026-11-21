@@ -16,19 +16,22 @@ export function AppearanceScreen() {
       </Pressable>
       <Text style={s.productName}>{t("appearancePalette")}</Text>
       <View style={s.row}>
-        {palettes.map((combination, index) => (
-          <Pressable key={`${combination.header}/${combination.accent}`} accessibilityRole="radio"
-            accessibilityLabel={`${t("appearancePalette")} ${index + 1}`}
-            accessibilityState={{ checked: index === palette }} aria-checked={index === palette}
-            onPress={() => setPalette(index)}
-            style={[s.button, { paddingHorizontal: 8, alignItems: "center", width: "22%", minWidth: 60 }]}>
-            <View style={{ flexDirection: "row", borderRadius: 10, overflow: "hidden", height: 18, width: 44 }}>
-              <View style={{ flex: 1, backgroundColor: combination.header }} />
-              <View style={{ flex: 1, backgroundColor: combination.accent }} />
-            </View>
-            <Text style={s.meta}>{index === palette ? "✓" : String(index + 1)}</Text>
-          </Pressable>
-        ))}
+        {Object.entries(palettes).map(([key, combination]) => {
+          const index = Number(key);
+          return (
+            <Pressable key={key} accessibilityRole="radio"
+              accessibilityLabel={`${t("appearancePalette")} ${index + 1}`}
+              accessibilityState={{ checked: index === palette }} aria-checked={index === palette}
+              onPress={() => setPalette(index)}
+              style={[s.button, { paddingHorizontal: 8, alignItems: "center", width: "22%", minWidth: 60 }]}>
+              <View style={{ flexDirection: "row", borderRadius: 10, overflow: "hidden", height: 18, width: 44 }}>
+                <View style={{ flex: 1, backgroundColor: combination.header }} />
+                <View style={{ flex: 1, backgroundColor: combination.accent }} />
+              </View>
+              <Text style={s.meta}>{index === palette ? "✓" : String(index + 1)}</Text>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );

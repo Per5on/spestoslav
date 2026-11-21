@@ -319,3 +319,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Run 44922323093 verified the emulator APK but stopped before installation at ADB unlock (exit 255). Replaced the runner startup step with explicit AVD discovery and bounded readiness and unlock retries. Syntax and local simulated retry/crash checks passed. Wait for approval of the new exact SHA before starting Android CI.
 
 - Confirmed [Android run 44923545071](https://github.com/Per5on/spestoslav/actions/runs/44923545071) passed on approved source `2d19a0c`. Recorded the artifacts and live-test pending status. Queued product-matched WebPs and itemized comparison with a proposed merchant-card layout.
+
+- Prepared preview 10.5 with itemized comparison, pop-up group menus, palette removals and 7 product-linked representative photo references. Backend 117 tests per leg, six browser suites and source/preflight checks passed. Await exact-commit build approval. Live deploy and device acceptance are pending.

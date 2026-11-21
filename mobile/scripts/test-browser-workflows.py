@@ -1,3 +1,4 @@
+import re
 import os,json
 from pathlib import Path
 
@@ -19,7 +20,20 @@ with sync_playwright() as p:
  milk=page.get_by_role('button',name='Добави SIM Мляко 1 L',exact=True);milk.wait_for(timeout=120000)
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia');page.get_by_text('София',exact=True).click()
  milk.click();milk.click();page.get_by_role('button',name='Добави SIM Олио 1 L',exact=True).click()
- page.get_by_role('tab',name='Сравни цените',exact=True).click();page.get_by_role('button',name='Сравни цени',exact=True).click();expect(page.get_by_text('5.50 €',exact=False)).to_be_visible(timeout=15000)
+ page.get_by_role('tab',name='Сравни цените',exact=True).click()
+ page.get_by_role('button',name='Сравни цени',exact=True).click()
+ comparison=page.get_by_test_id("basket-comparison")
+ cheapest=comparison.get_by_role("button",name=re.compile(r"Симулация A: 5,50"))
+ expect(cheapest).to_have_attribute("aria-expanded","true")
+ expect(comparison.get_by_text("SIM Мляко 1 L ×2",exact=True)).to_be_visible()
+ expect(comparison.get_by_text("2,50",exact=False)).to_be_visible()
+ expect(comparison.get_by_text("Общо за кошницата",exact=False)).to_be_visible()
+ comparison.get_by_role("button",name=re.compile(r"Симулация B: 6,20")).click()
+ expect(comparison.get_by_text("2,20",exact=False)).to_be_visible()
+ comparison.get_by_role("button",name=re.compile(r"Симулация C: липсват цени")).click()
+ expect(comparison.get_by_text("липсват цени",exact=True)).to_have_count(2)
+ cheapest.click()
+ page.screenshot(path=str(args.output_dir/"itemized-comparison.png"),full_page=True)
  proof['complete_basket_comparison']=True
  def menu(name):
   page.get_by_role('button',name='Отвори менюто',exact=True).click();page.get_by_role('menuitem',name=name,exact=True).click()

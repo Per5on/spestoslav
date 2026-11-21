@@ -58,7 +58,7 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
           setLanguage(saved.language);
         if ([0.9, 1, 1.15, 1.3].includes(saved.fontScale))
           setFontScale(saved.fontScale);
-        if (Number.isInteger(saved.palette) && saved.palette >= 0 && saved.palette < palettes.length)
+        if (Number.isInteger(saved.palette) && Object.hasOwn(palettes, saved.palette))
           setPalette(saved.palette);
         if (typeof saved.dark === "boolean") setDark(saved.dark);
       })

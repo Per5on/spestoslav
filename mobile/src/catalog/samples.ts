@@ -67,3 +67,28 @@ const defaultGroceryImage = require("../../../data/symbolic-thumbnails/groceries
 export function groceryThumbnail(group?: string | null): ImageSourcePropType {
   return group && Object.hasOwn(groceryImages, group) ? groceryImages[group] : defaultGroceryImage;
 }
+
+const banana = require("../../assets/produce/banana.webp");
+const carrot = require("../../assets/produce/carrot.webp");
+const lemon = require("../../assets/produce/lemon.webp");
+const galaxyA17 = require("../../assets/technology/galaxy-a17.webp");
+const producePhotos: Record<string, ImageSourcePropType> = {
+  "81590": banana, "88590": banana,
+  "81078": carrot, "89078": carrot,
+  "81581": lemon, "88581": lemon,
+};
+const galaxyCredit = {
+  author: "Captainmorlypogi1959",
+  license: "CC BY-SA 4.0 · cropped/resized WebP",
+  source_url: "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_A17_5G_2026.jpg",
+};
+
+export function referencePhoto(product: Product): { source: ImageSourcePropType; credit?: typeof galaxyCredit } | undefined {
+  const code = product.source_product_code ?? "";
+  if (product.category_code === "technology" && code === "43832") {
+    return { source: galaxyA17, credit: galaxyCredit };
+  }
+  if (product.category_code === "groceries" && product.group_code === "produce" && Object.hasOwn(producePhotos, code)) {
+    return { source: producePhotos[code] };
+  }
+}

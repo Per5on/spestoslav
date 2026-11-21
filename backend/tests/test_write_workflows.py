@@ -496,7 +496,16 @@ def test_basket_comparison_never_ranks_an_incomplete_basket_as_cheapest():
     )
     assert response.status_code == 200, response.text
     # Valid verified promotional price 0.99, two packages.
-    assert Decimal(response.json()["cheapest"]["total_eur"]) == Decimal("1.98")
+    result = response.json()
+    assert datetime.fromisoformat(result["quoted_at"]).tzinfo is not None
+    quote = result["cheapest"]
+    assert quote["retailer_name"] == "Test Market"
+    assert quote["branch_address"] == "Main street 1"
+    assert Decimal(quote["total_eur"]) == Decimal("1.98")
+    line, = quote["items"]
+    assert (line["product_id"], line["quantity"], line["verified_at"]) == (product_id, 2, None)
+    assert Decimal(line["unit_price_eur"]) == Decimal("0.99")
+    assert Decimal(line["subtotal_eur"]) == Decimal("1.98")
     response = fixtures.client.post(
         "/api/v1/baskets/compare",
         json={
@@ -507,3 +516,7 @@ def test_basket_comparison_never_ranks_an_incomplete_basket_as_cheapest():
     assert response.json()["cheapest"] is None
     assert response.json()["quotes"][0]["total_eur"] is None
     assert response.json()["quotes"][0]["missing_product_ids"] == [other_id]
+    assert response.json()["quotes"][0]["items"][1] == {
+        "product_id": other_id, "quantity": 1,
+        "unit_price_eur": None, "subtotal_eur": None, "verified_at": None,
+    }

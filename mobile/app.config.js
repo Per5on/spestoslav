@@ -2,6 +2,8 @@ const base = require("./app.json").expo;
 const preview = require("./preview.json");
 if (!/^[0-9]{3}$/.test(preview.sequence) || Number(preview.sequence) < 1)
   throw new Error("Invalid preview sequence");
+if (preview.label !== undefined && !/^\d+(?:\.\d+)?$/.test(preview.label))
+  throw new Error("Invalid preview label");
 if (!/^\d+\.\d+\.\d+$/.test(preview.version))
   throw new Error("Invalid app version");
 // Local dry builds can vary one packaging setting at a time.
@@ -12,7 +14,7 @@ if (dryAbi && !["arm64-v8a", "x86_64", "armeabi-v7a"].includes(dryAbi))
 
 module.exports = {
   ...base,
-  name: `Спестовник ${String(Number(preview.sequence)).padStart(2, "0")}`,
+  name: `Спестовник ${preview.label ?? String(Number(preview.sequence)).padStart(2, "0")}`,
   version: preview.version,
   android: { ...base.android, versionCode: Number(preview.sequence) },
   plugins: base.plugins.map(plugin => {

@@ -65,6 +65,20 @@ with sync_playwright() as p:
  names=page.get_by_role('button',name=re.compile('^Добави ')).evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
  assert names and all('телевизор' in name.casefold() for name in names),names
  proof['query_only_filter_without_explicit_checkboxes']=True
+ # The representative images are local assets and are tied to catalogue IDs.
+ def verify_catalogue_image(category, tab, code, query):
+  page.get_by_role('tab',name=tab,exact=True).click()
+  snapshot=page.request.get(args.api_url + '/api/v1/catalog/' + category).json()['products']
+  product=next(row for row in snapshot if row['source_product_code']==code)
+  search=page.get_by_label('Търси продукт…',exact=True)
+  search.fill(query)
+  page.get_by_role('button',name=re.compile('^Приложи')).click()
+  img=page.get_by_test_id('thumbnail-loaded-'+product['id'])
+  expect(img).to_be_visible(timeout=20000)
+  expect(img).to_have_accessible_name(re.compile('Примерна снимка$'))
+ verify_catalogue_image('groceries','Храни','81590','банани')
+ verify_catalogue_image('technology','Техника','43832','SM-A176B GALAXY A17 5G 4/128GB Black')
+ proof['product_matched_webp_pilot']=True
  # Original grocery photos and a visible one-second green add acknowledgement.
  page.get_by_role('tab',name='Храни',exact=True).click()
  expect(page.get_by_role('img',name='прясно мляко',exact=True)).to_be_visible()
