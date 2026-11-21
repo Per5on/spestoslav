@@ -4,9 +4,7 @@ Updated: 21 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — Pre-alpha 010
 
-Internal Android candidate on `codex/pre-alpha-010`, directly based on Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Candidate sequence 010, app version 0.5.3 and Android version code 10. The [009 build](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed Android 10 smoke, ARM signing/ABI checks and test-signed AAB validation. Both local PostgreSQL/SQLAlchemy test legs, Bulgarian OCR, mobile tests, TypeScript, and Expo dependency checks passed for 010 preparation. The owner paused builds and [run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) was cancelled. Wait for explicit authorization before starting another Android build. Live managed-account, private storage, thumbnail and feedback acceptance remain rollout work.
-
-The 010 feature queue is implemented and its three pre-build checks are documented in the [handoff](CODEX_HANDOFF.md). Review the [TODO](PREVIEW_006_BACKLOG.md) and [browser dry-run captures](references/pre-alpha-010-dry-run.jpg). The first build stopped at the native Dark mode assertion. The Theme and always-visible thumbnail revision passed the pre-build checks. The Theme candidate build stopped during emulator unlock before app installation. A workflow-only correction is ready for acknowledgment of its exact commit. No build, workflow dispatch, or deployment until separately authorized.
+**Internal 010 build successful. Live testing pending.** [Run 44923545071](https://github.com/Per5on/spestoslav/actions/runs/44923545071) at `2d19a0c984215cd052e6e7ad341c5aa938605592` passed Android 10 emulator smoke, ARM phone APK verification, and test-signed AAB validation. App version 0.5.3 and Android version code 10. Physical-device and live API/data acceptance remain open. Next work is product-matched Food/Technology WebPs and itemized merchant basket comparison. See the [handoff and proposed layout](CODEX_HANDOFF.md) and [TODO](PREVIEW_006_BACKLOG.md).
 
 ## Baseline — Pre-alpha 009
 

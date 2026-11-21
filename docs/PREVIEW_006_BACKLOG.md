@@ -11,8 +11,10 @@
 - [x] After frontend, remove demonstrated obsolete code, then audit and remove unused dependencies.
 - [x] Record three checks and a successful dry run for the candidate. See the handoff and visual evidence below.
 - [x] Rename Облик to Тема. Remove the image switches, ignore legacy hide preferences, bundle small WebP defaults, and keep Dark mode reachable above the palettes.
-- [ ] Obtain owner acknowledgment of the revised candidate commit before another APK/AAB build.
-- [ ] Verify installed Android smoke and real merchant-directory integration after separately authorized build and backend rollout.
+- [x] Obtain acknowledgment and verify installed Android 10 smoke, ARM APK, and test-signed AAB for the 010 build.
+- [ ] Complete physical-device and live API/data acceptance, including the deployed merchant directory.
+- [ ] Audit missing Food and Technology thumbnails. Pilot licensed, exact-identity 160 × 140 WebPs and verify decoding, cache behavior, and size.
+- [ ] Extend basket comparison with current per-merchant item prices and line subtotals. Verify complete totals, missing and expired prices, price timestamps, and responsive merchant cards.
 
 [Browser dry-run screenshots](references/pre-alpha-010-dry-run.jpg) · [Verification and next actions](CODEX_HANDOFF.md#21-november-2026--codex-pre-alpha-010)
 
