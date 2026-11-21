@@ -16,6 +16,8 @@ export function MerchantDirectoryScreen() {
     const controller = new AbortController();
     setLoading(true);
     setFailed(false);
+    setRows([]);
+    setExpanded(null);
     loadMerchantDirectory(controller.signal)
       .then(data => { if (!controller.signal.aborted) setRows(data); })
       .catch(() => { if (!controller.signal.aborted) setFailed(true); })
