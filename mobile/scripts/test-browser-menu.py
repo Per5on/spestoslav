@@ -25,9 +25,29 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Отвори менюто',exact=True).click(timeout=60000)
  labels=page.get_by_role('menuitem').evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
  assert labels==['Търговски обекти','Сканирай','Касови бележки','Вход','Настройки','За приложението'],labels
+ # Simulate verified-directory API responses locally: first a branch, then a failure.
+ # This tests refresh clearing stale content without contacting the live API.
+ directory_calls=[0]
+ def directory_response(route):
+  directory_calls[0]+=1
+  if directory_calls[0]==1:
+   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-1','category_code':'groceries','retailer_code':'fixture','retailer_name':'Fixture Retailer','locality_id':'fixture-town','locality_name':'Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Fixture Address'}]))
+  else:
+   route.fulfill(status=503,content_type='application/json',body='{"error":"simulated failure"}')
+ page.route('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()
- expect(page.get_by_test_id('merchant-directory')).to_be_visible()
+ directory=page.get_by_test_id('merchant-directory')
+ expect(directory).to_be_visible()
  expect(page.get_by_role('menu')).not_to_be_visible()
+ directory.get_by_role('button',name='Fixture Town (1)').click()
+ expect(directory.get_by_text('Fixture Retailer')).to_be_visible()
+ directory.get_by_role('button',name='Обнови',exact=True).click()
+ expect(directory.get_by_role('alert')).to_be_visible()
+ expect(directory.get_by_text('Fixture Retailer')).to_have_count(0)
+ expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
+ assert directory_calls[0]>=2,directory_calls
+ proof['merchant_directory_refresh_discards_stale_rows_on_failure']=True
+ page.unroute('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('button',name='Назад',exact=True).click()
  expect(page.get_by_test_id('catalog-toolbar')).to_be_visible()
  page.get_by_role('button',name='Отвори менюто',exact=True).click()
