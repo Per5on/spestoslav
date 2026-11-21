@@ -315,3 +315,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Next action is owner acknowledgment of the exact candidate commit. Keep Android dispatch and backend rollout on hold.
 
 - Follow-up for 010: renamed Theme, removed both image switches, bundled grocery fallbacks and moved Dark mode above palettes after the prior native smoke failure. Repeated the backend matrix, mobile checks, six browser suites and Android configuration preflight. Await revised commit acknowledgment before dispatch.
+
+- Run 44922323093 verified the emulator APK but stopped before installation at ADB unlock (exit 255). Replaced the runner startup step with explicit AVD discovery and bounded readiness and unlock retries. Syntax and local simulated retry/crash checks passed. Wait for approval of the new exact SHA before starting Android CI.

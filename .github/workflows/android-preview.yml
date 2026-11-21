@@ -94,22 +94,59 @@ jobs:
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
       - name: Smoke test on Android 10
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          arch: x86_64
-          # Expo Camera's static ML Kit barcode decoder requires Google Play Services.
-          # The plain AOSP `default` image lacks com.android.vending.
-          target: google_apis_playstore
-          profile: pixel_2
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
-          script: |
-            adb install mobile/android-smoke-x86_64.apk
-            adb shell mkdir -p /sdcard/Download
-            adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
-            adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
-            cd mobile && python3 scripts/smoke-android.py
+        shell: bash
+        env:
+          ANDROID_AVD_HOME: ${{ runner.temp }}/spestovnik-avd
+          ANDROID_SERIAL: emulator-5554
+        run: |
+          # Expo Camera's static ML Kit barcode decoder needs the Play Store image.
+          image='system-images;android-29;google_apis_playstore;x86_64'
+          sdkmanager emulator "$image"
+          mkdir -p "$ANDROID_AVD_HOME"
+          printf 'no\n' | avdmanager create avd --force --name test --device pixel_2 \
+            --package "$image" --path "$ANDROID_AVD_HOME/test.avd"
+          emulator="$ANDROID_HOME/emulator/emulator"
+          "$emulator" -list-avds | grep -Fx test
+
+          adb start-server
+          "$emulator" -avd test -port 5554 -no-window -gpu swiftshader_indirect \
+            -no-snapshot -noaudio -no-boot-anim -camera-back emulated > android-emulator.log 2>&1 &
+          emulator_pid=$!
+          cleanup() {
+            if kill -0 "$emulator_pid" 2>/dev/null; then
+              timeout 10s adb -s "$ANDROID_SERIAL" emu kill >/dev/null 2>&1 ||
+                kill "$emulator_pid" 2>/dev/null || true
+            fi
+          }
+          trap cleanup EXIT
+
+          deadline=$((SECONDS + 300))
+          while kill -0 "$emulator_pid" 2>/dev/null && (( SECONDS < deadline )); do
+            if [[ "$(timeout 5s adb shell getprop sys.boot_completed 2>/dev/null)" == 1 ]] &&
+              timeout 5s adb shell service check input 2>/dev/null | grep -Fq 'Service input: found'; then
+              if timeout 10s adb shell input keyevent 82; then
+                echo "Android input service ready and unlock succeeded"
+                break
+              fi
+              echo "Android unlock failed during startup, retrying"
+            fi
+            sleep 2
+          done
+          if ! kill -0 "$emulator_pid" 2>/dev/null || (( SECONDS >= deadline )); then
+            echo "::error::Android emulator did not complete startup and unlock"
+            adb devices -l
+            tail -n 100 android-emulator.log
+            exit 1
+          fi
+
+          for setting in window_animation_scale transition_animation_scale animator_duration_scale; do
+            adb shell settings put global "$setting" 0.0
+          done
+          adb install android-smoke-x86_64.apk
+          adb shell mkdir -p /sdcard/Download
+          adb push smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
+          adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
+          python3 scripts/smoke-android.py
       - uses: actions/upload-artifact@v5
         with:
           name: spestovnik-emulator-${{ env.PREVIEW_SEQUENCE }}-x86_64
@@ -182,5 +219,6 @@ jobs:
             mobile/android-smoke.log
             mobile/android-smoke-window.xml
             mobile/android-network.json
+            mobile/android-emulator.log
           retention-days: 30
           if-no-files-found: warn
