@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Image, type ImageSourcePropType } from "react-native";
-import { useUI } from "../ui";
+import { Image, Modal, View, useWindowDimensions, type ImageSourcePropType } from "react-native";
+import { Pressable, Text, useUI } from "../ui";
 import { sampleThumbnail } from "./samples";
 import { cachedThumbnail } from "./thumbnailCache";
 
@@ -8,22 +8,20 @@ type Props = {
   id: string;
   name: string;
   uri?: string | null;
-  illustration?: ImageSourcePropType;
   fallback: ImageSourcePropType;
-  fallbackLabel?: string;
 };
 
 export function ProductThumbnail(props: Props) {
   return <Thumbnail key={props.uri ?? ""} {...props} />;
 }
 
-function Thumbnail({ id, name, uri, illustration, fallback, fallbackLabel }: Props) {
+function Thumbnail({ id, name, uri, fallback }: Props) {
   const { styles: s, t } = useUI();
   const sample = sampleThumbnail(id);
   const [resolved, setResolved] = useState<string>();
   const [loaded, setLoaded] = useState<string>();
   useEffect(() => {
-    if (illustration || sample || !uri) return;
+    if (sample || !uri) return;
     let active = true;
     const pending = cachedThumbnail(uri);
     void (pending ?? Promise.resolve(uri)).then(
@@ -31,16 +29,43 @@ function Thumbnail({ id, name, uri, illustration, fallback, fallbackLabel }: Pro
       () => { if (active) setResolved(uri); },
     );
     return () => { active = false; };
-  }, [illustration, sample, uri]);
+  }, [sample, uri]);
   const remote = resolved ? { uri: resolved } : undefined;
-  const source = illustration ?? sample ?? remote ?? fallback;
-  const symbolic = source === illustration || source === fallback;
+  const source = sample ?? remote ?? fallback;
+  const representative = !sample && !remote;
   const imageKey = resolved ?? id;
-  return <Image key={imageKey}
-    testID={`thumbnail-${loaded === imageKey ? "loaded" : "loading"}-${id}`}
-    accessibilityLabel={symbolic ? `${name} · ${fallbackLabel ?? t("symbolicImage")}` : name}
-    source={source} style={[s.photo, { backgroundColor: "#fff" }]} resizeMode="contain" onLoad={() => setLoaded(imageKey)}
-    onError={() => {
-      if (resolved) setResolved(resolved === uri ? undefined : uri ?? undefined);
-    }} />;
+  const photoName = representative ? `${name} · ${t("representativePhoto")}` : name;
+  const [enlarged, setEnlarged] = useState(false);
+  const { height } = useWindowDimensions();
+  const close = () => setEnlarged(false);
+  const handleError = () => {
+    if (resolved) setResolved(resolved === uri ? undefined : uri ?? undefined);
+  };
+  return (
+    <>
+      <Pressable accessibilityRole="button" accessibilityLabel={`${t("enlargePhoto")}: ${photoName}`}
+        testID={`thumbnail-${loaded === imageKey ? "loaded" : "loading"}-${id}`}
+        onPress={() => setEnlarged(true)}>
+        <Image key={imageKey} accessibilityLabel={photoName}
+          source={source} style={[s.photo, { backgroundColor: "#fff" }]}
+          resizeMode="contain" onLoad={() => setLoaded(imageKey)} onError={handleError} />
+      </Pressable>
+      {enlarged && (
+        <Modal transparent visible onRequestClose={close}>
+          <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "rgba(0,0,0,0.65)" }}>
+            <View testID="thumbnail-viewer" accessibilityViewIsModal
+              style={[s.panel, { width: "92%", maxWidth: 640 }]}>
+              <Text style={s.productName}>{photoName}</Text>
+              <Image accessibilityLabel={photoName} source={source} resizeMode="contain"
+                style={{ width: "100%", height: height * 0.55, backgroundColor: "#fff" }}
+                onError={handleError} />
+              <Pressable accessibilityRole="button" style={s.button} onPress={close}>
+                <Text style={s.productName}>{t("closePhoto")}</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+      )}
+    </>
+  );
 }

@@ -101,6 +101,9 @@ assert bounds(search)[0] < bounds(refresh)[0]
 assert not any(label(n) == "Продукти" or label(n).startswith("Магазини (") for n in toolbar)
 capture_visual("catalogue")
 # Verify actual decoding of the bundled samples in both catalogue categories.
+tap_node(wait_resource("thumbnail-loaded-demo-milk"))
+wait_resource("thumbnail-viewer")
+adb("shell", "input", "keyevent", "4")
 wait_resource("thumbnail-loaded-demo-milk")
 assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-milk") for n in nodes())
 tap("Техника")

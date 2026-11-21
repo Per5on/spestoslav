@@ -6,9 +6,15 @@ const thumbnails: Record<string, ImageSourcePropType> = {
   milk: require("../../assets/thumbnails/milk.webp"),
   oil: require("../../assets/thumbnails/oil.webp"),
   sugar: require("../../assets/thumbnails/sugar.webp"),
+  laptop: require("../../assets/thumbnails/laptop.webp"),
+  washer: require("../../assets/thumbnails/washer.webp"),
+  tv: require("../../assets/thumbnails/tv.webp"),
+  kettle: require("../../assets/thumbnails/kettle.webp"),
+  headphones: require("../../assets/thumbnails/headphones.webp"),
+  smartphone: require("../../assets/thumbnails/smartphone.webp"),
 };
 
-const creditsById = new Map(products.filter(row => row.category_code === "groceries" && row.source_url)
+const creditsById = new Map(products.filter(row => row.source_url)
   .map(row => ["demo-" + row.code, row] as const));
 
 export function sampleCredit(id: string) {
@@ -27,50 +33,12 @@ export function sampleThumbnail(id: string): ImageSourcePropType | undefined {
   return id.startsWith("demo-") ? thumbnails[id.slice(5)] : undefined;
 }
 
-const technologyImages = {
-  laptop: require("../../assets/technology/laptop.webp"),
-  washer: require("../../assets/technology/washer.webp"),
-  tv: require("../../assets/technology/tv.webp"),
-  kettle: require("../../assets/technology/kettle.webp"),
-  headphones: require("../../assets/technology/headphones.webp"),
-  smartphone: require("../../assets/technology/smartphone.webp"),
-  "smart-home": require("../../assets/technology/smart-home.webp"),
-  technology: require("../../assets/technology/technology.webp"),
-} satisfies Record<string, ImageSourcePropType>;
-
-const technologyGroups: Record<string, keyof typeof technologyImages> = {
-  mobile: "smartphone",
-  "major-appliances": "washer",
-  "small-appliances": "kettle",
-  "tv-computing": "tv",
-  "smart-home-mobility": "smart-home",
-};
-
-export function technologyThumbnail(id: string, group?: string | null): ImageSourcePropType {
-  const sample = id.startsWith("demo-") ? id.slice(5) : "";
-  return Object.hasOwn(technologyImages, sample)
-    ? technologyImages[sample as keyof typeof technologyImages]
-    : technologyImages[technologyGroups[group ?? ""] ?? "technology"];
-}
-
-
-const groceryImages: Record<string, ImageSourcePropType> = {
-  "bakery-breakfast": require("../../assets/grocery-symbols/bakery-breakfast.webp"),
-  "dairy-eggs": require("../../assets/grocery-symbols/dairy-eggs.webp"),
-  "meat-fish": require("../../assets/grocery-symbols/meat-fish.webp"),
-  pantry: require("../../assets/grocery-symbols/pantry.webp"),
-  produce: require("../../assets/grocery-symbols/produce.webp"),
-  "spices-drinks": require("../../assets/grocery-symbols/spices-drinks.webp"),
-};
-const defaultGroceryImage = require("../../assets/grocery-symbols/groceries.webp");
-
-export function groceryThumbnail(group?: string | null): ImageSourcePropType {
-  return group && Object.hasOwn(groceryImages, group) ? groceryImages[group] : defaultGroceryImage;
-}
-
 const banana = require("../../assets/produce/banana.webp");
 const carrot = require("../../assets/produce/carrot.webp");
 const lemon = require("../../assets/produce/lemon.webp");
+const bread = require("../../assets/produce/bread.webp");
+const meat = require("../../assets/produce/meat.webp");
+const pepper = require("../../assets/produce/pepper.webp");
 const galaxyA17 = require("../../assets/technology/galaxy-a17.webp");
 const producePhotos: Record<string, ImageSourcePropType> = {
   "81590": banana, "88590": banana,
@@ -91,4 +59,40 @@ export function referencePhoto(product: Product): { source: ImageSourcePropType;
   if (product.category_code === "groceries" && product.group_code === "produce" && Object.hasOwn(producePhotos, code)) {
     return { source: producePhotos[code] };
   }
+}
+
+
+const technologyExamples: Record<string, string> = {
+  mobile: "smartphone",
+  "major-appliances": "washer",
+  "small-appliances": "kettle",
+  "tv-computing": "laptop",
+  "smart-home-mobility": "tv",
+};
+
+const groceryExamples: Record<string, ImageSourcePropType> = {
+  "dairy-eggs": thumbnails.milk,
+  "bakery-breakfast": bread,
+  "meat-fish": meat,
+  pantry: thumbnails.sugar,
+  produce: banana,
+  "spices-drinks": pepper,
+};
+
+export function groupPhoto(product: Product): { source: ImageSourcePropType; credit?: typeof galaxyCredit } {
+  const group = product.group_code ?? "";
+  if (product.category_code === "technology") {
+    const example = technologyExamples[group] ?? "laptop";
+    const credit = sampleCredit("demo-" + example);
+    return { source: thumbnails[example], credit: credit?.source_url
+      ? { author: credit.author, license: credit.license + " · resized WebP", source_url: credit.source_url }
+      : undefined };
+  }
+  return {
+    source: groceryExamples[group] ?? thumbnails.oil,
+    credit: group === "spices-drinks" ? {
+      author: "Eliška Jindříšková", license: "CC BY-SA 4.0 · resized WebP",
+      source_url: "https://commons.wikimedia.org/wiki/File:Ground_black_pepper.jpg",
+    } : undefined,
+  };
 }

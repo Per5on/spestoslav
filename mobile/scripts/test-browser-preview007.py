@@ -16,6 +16,14 @@ with sync_playwright() as p:
  page.get_by_role('tab',name='Техника',exact=True).wait_for(timeout=60000)
  expect(page.get_by_role('switch')).to_have_count(0)
  expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
+ page.get_by_test_id('thumbnail-loaded-demo-milk').click()
+ viewer=page.get_by_test_id('thumbnail-viewer')
+ expect(viewer.get_by_role('img',name='прясно мляко',exact=True)).to_be_visible()
+ assert viewer.get_by_role('img').bounding_box()['height']>250
+ page.screenshot(path=str(args.output_dir/'thumbnail-zoom.png'))
+ viewer.get_by_role('button',name='Затвори снимката',exact=True).click()
+ expect(viewer).to_have_count(0)
+ proof['thumbnail_enlarges_and_closes_in_app']=True
  page.evaluate("""() => {
   const key = 'spestovnik-preview-001';
   const state = JSON.parse(localStorage.getItem(key) || '{}');
@@ -24,7 +32,7 @@ with sync_playwright() as p:
  page.reload()
  expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
  proof['thumbnails_visible_with_legacy_opt_out']=True
- expect(page.get_by_role("img", name=re.compile("Символично изображение$")).first).to_be_visible(timeout=15000)
+ expect(page.get_by_role("img", name=re.compile("Примерна снимка$")).first).to_be_visible(timeout=15000)
  page.get_by_role('tab',name='Техника',exact=True).click()
  toolbar=page.get_by_test_id('catalog-toolbar')
  page.get_by_role('button',name='Отвори менюто',exact=True).click()
@@ -35,6 +43,16 @@ with sync_playwright() as p:
  expect(directory.get_by_role('heading',name='София',exact=True)).to_have_count(3)
  proof['seven_requested_chains_with_recorded_addresses']=True
  page.screenshot(path=str(args.output_dir/'merchant-directory.png'))
+ route_pattern='**/api/v1/merchant-directory?*'
+ page.route(route_pattern,lambda route:route.fulfill(status=404,json={'detail':'Not Found'}))
+ directory.get_by_role('button',name='Обнови',exact=True).click()
+ expect(directory.get_by_text('Запазен списък с обекти',exact=False)).to_be_visible()
+ expect(directory.get_by_text('ул. Краков 2Б',exact=False)).to_be_visible()
+ page.screenshot(path=str(args.output_dir/'merchant-snapshot.png'))
+ page.unroute(route_pattern)
+ directory.get_by_role('button',name='Обнови',exact=True).click()
+ expect(directory.get_by_text('Запазен списък с обекти',exact=False)).to_have_count(0)
+ proof['directory_404_uses_dated_snapshot_and_recovers']=True
  page.get_by_role('tab',name='Техника',exact=True).click()
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia')
  page.get_by_text('София',exact=True).first.click()
@@ -48,7 +66,7 @@ with sync_playwright() as p:
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'fuel.png'))
  page.get_by_role('tab',name='Техника',exact=True).click()
  expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible(timeout=20000)
- expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_have_count(0)
+ expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True).first).to_be_visible()
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()

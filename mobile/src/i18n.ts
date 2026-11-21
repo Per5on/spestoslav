@@ -15,6 +15,7 @@ const bg = {
   fuel: "Горива",
   list: "Сравни цените",
   merchants: "Търговски обекти",
+  directorySnapshot: "Запазен списък с обекти · данни до",
   moreGroups: "Още групи",
   tagline: "Сравнявай цените. Пести повече!",
   settings: "Настройки",
@@ -105,6 +106,7 @@ const en: Dictionary = {
   fuel: "Fuel",
   list: "Compare prices",
   merchants: "Merchant directory",
+  directorySnapshot: "Saved merchant directory · records checked through",
   moreGroups: "More groups",
   tagline: "Compare prices. Save more!",
   settings: "Settings",
@@ -193,6 +195,7 @@ const de: Dictionary = {
   fuel: "Kraftstoff",
   list: "Preise vergleichen",
   merchants: "Geschäfte",
+  directorySnapshot: "Gespeichertes Verzeichnis · geprüft bis",
   moreGroups: "Weitere Gruppen",
   tagline: "Preise vergleichen. Mehr sparen!",
   settings: "Einstellungen",
@@ -285,6 +288,7 @@ const es: Dictionary = {
   fuel: "Combustible",
   list: "Comparar precios",
   merchants: "Directorio de comercios",
+  directorySnapshot: "Directorio guardado · datos comprobados hasta",
   moreGroups: "Más grupos",
   tagline: "Compara precios. ¡Ahorra más!",
   settings: "Ajustes",
@@ -374,6 +378,7 @@ const fr: Dictionary = {
   fuel: "Carburants",
   list: "Comparer les prix",
   merchants: "Annuaire des commerces",
+  directorySnapshot: "Annuaire enregistré · données vérifiées jusqu’au",
   moreGroups: "Plus de groupes",
   tagline: "Comparez les prix. Économisez plus !",
   settings: "Paramètres",
@@ -464,6 +469,7 @@ const ru: Dictionary = {
   fuel: "Топливо",
   list: "Сравнить цены",
   merchants: "Торговые точки",
+  directorySnapshot: "Сохранённый список · данные проверены до",
   moreGroups: "Другие группы",
   tagline: "Сравнивайте цены. Экономьте больше!",
   settings: "Настройки",
@@ -550,42 +556,54 @@ const appearanceMessages = {
     "appearancePalette": "Цветова комбинация",
     "appearanceDark": "Тъмен режим",
     "symbolicImage": "Символично изображение",
-    "representativePhoto": "Примерна снимка"
+    "representativePhoto": "Примерна снимка",
+    "enlargePhoto": "Увеличи снимката",
+    "closePhoto": "Затвори снимката"
   },
   "en": {
     "appearance": "Theme",
     "appearancePalette": "Color combination",
     "appearanceDark": "Dark mode",
     "symbolicImage": "Symbolic image",
-    "representativePhoto": "Representative photo"
+    "representativePhoto": "Representative photo",
+    "enlargePhoto": "Enlarge photo",
+    "closePhoto": "Close photo"
   },
   "de": {
     "appearance": "Farbschema",
     "appearancePalette": "Farbkombination",
     "appearanceDark": "Dunkelmodus",
     "symbolicImage": "Symbolisches Bild",
-    "representativePhoto": "Beispielfoto"
+    "representativePhoto": "Beispielfoto",
+    "enlargePhoto": "Foto vergrößern",
+    "closePhoto": "Foto schließen"
   },
   "es": {
     "appearance": "Tema",
     "appearancePalette": "Combinación de colores",
     "appearanceDark": "Modo oscuro",
     "symbolicImage": "Imagen simbólica",
-    "representativePhoto": "Foto representativa"
+    "representativePhoto": "Foto representativa",
+    "enlargePhoto": "Ampliar foto",
+    "closePhoto": "Cerrar foto"
   },
   "fr": {
     "appearance": "Thème",
     "appearancePalette": "Combinaison de couleurs",
     "appearanceDark": "Mode sombre",
     "symbolicImage": "Image symbolique",
-    "representativePhoto": "Photo indicative"
+    "representativePhoto": "Photo indicative",
+    "enlargePhoto": "Agrandir la photo",
+    "closePhoto": "Fermer la photo"
   },
   "ru": {
     "appearance": "Тема",
     "appearancePalette": "Цветовая комбинация",
     "appearanceDark": "Тёмный режим",
     "symbolicImage": "Символическое изображение",
-    "representativePhoto": "Пример фотографии"
+    "representativePhoto": "Пример фотографии",
+    "enlargePhoto": "Увеличить фото",
+    "closePhoto": "Закрыть фото"
   }
 };
 const deletionMessages = {

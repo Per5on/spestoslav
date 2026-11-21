@@ -5,7 +5,7 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { groceryThumbnail, referencePhoto, sampleCredit, technologyThumbnail } from "./src/catalog/samples";
+import { groupPhoto, referencePhoto, sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -314,17 +314,13 @@ function Main({ initialNotice, onErase }: {
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
-    const reference = referencePhoto(p);
-    const credit = p.is_demo ? sampleCredit(p.id) : reference?.credit;
-    const technology = p.category_code === "technology";
-    const fallback = reference?.source ?? (technology
-      ? technologyThumbnail(p.id, p.group_code) : groceryThumbnail(p.group_code));
+    const reference = referencePhoto(p) ?? groupPhoto(p);
+    const credit = p.is_demo ? sampleCredit(p.id) : reference.credit;
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
-        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)} uri={p.image_url}
-          illustration={technology && p.is_demo ? fallback : undefined} fallback={fallback}
-          fallbackLabel={reference ? t("representativePhoto") : undefined} />
+        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
+          uri={p.image_url} fallback={reference.source} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}

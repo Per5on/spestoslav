@@ -323,3 +323,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Prepared preview 10.5 with itemized comparison, pop-up group menus, palette removals and 7 product-linked representative photo references. Backend 117 tests per leg, six browser suites and source/preflight checks passed. Await exact-commit build approval. Live deploy and device acceptance are pending.
 
 - Final 10.5 change: unified Food and Technology thumbnail framing and disambiguated duplicate catalogue names. Repeated full PostgreSQL, browser and mobile/preflight checks. Await exact-SHA build approval.
+
+- 10.5 regression check: reproduced live merchant-directory HTTP 404. Verified the dated 116-address fallback and recovery to fixture live data. Added tap-to-enlarge and representative group photos. Repeated backend, mobile, browser and Android configuration checks. Await exact-SHA approval.
