@@ -60,6 +60,9 @@ with sync_playwright() as p:
  expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
  recovered_locality=directory.get_by_role('button',name='Recovered Fixture Town (1)')
  expect(recovered_locality).to_have_attribute('aria-expanded','false')
+ # Recovery must not implicitly expand a previously expanded locality.
+ expect(directory.get_by_text('Recovered Fixture Retailer',exact=True)).to_have_count(0)
+ expect(directory.get_by_text('Recovered Fixture Address',exact=True)).to_have_count(0)
  recovered_locality.click()
  expect(recovered_locality).to_have_attribute('aria-expanded','true')
  expect(directory.get_by_text('Recovered Fixture Retailer')).to_be_visible()
