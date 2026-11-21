@@ -4,7 +4,7 @@ export const s = StyleSheet.create({
   header: {
     backgroundColor: "#195b27",
     paddingHorizontal: 16,
-    paddingTop: 15,
+    paddingTop: 10,
     paddingBottom: 16,
     flexDirection: "row",
     alignItems: "center",

@@ -1,6 +1,8 @@
 # Backend readiness and frontend contract — 14 November 2026
 
-This pass fixes the confirmed failures and adds the missing backend workflows described in the user-provided `app.docx`. Frontend implementation is a subsequent task; no files under `mobile/` were changed. Current visual decisions and the unmodified reference assets are in `FRONTEND_BRIEF.md`.
+> **Current checkpoint — 16 November:** deployed backend remains 0.5.0 / `538bd9a` until the 005 rollout is verified. Current source adds migration0007, catalogue/cache, native-session bridge and receipt improvements; local PostgreSQL/OCR tests pass but this is not evidence of deployment. The owner authorized building 005 after final checks. Follow PROJECT_STATUS.md for the live rollout state. Sections explicitly dated 14 November below are historical audit evidence, including the postal preparation later retired by0006.
+
+This historical pass fixed the confirmed failures and adds the missing backend workflows described in the user-provided `app.docx`. At that historical checkpoint frontend implementation was subsequent; the later 003–005 frontend work is tracked in CHANGELOG.md. Current visual decisions and the unmodified reference assets are in `FRONTEND_BRIEF.md`.
 
 ## Confirmed fixes
 
@@ -71,11 +73,11 @@ The documented station response has **no reliable reported-versus-estimated flag
 
 ## Database paths and rollout
 
-Fresh application databases use Alembic through 0005. The shared Flyway preview uses only the explicit additive `scripts/migrations/preview_backend_workflows.sql`; never run the independent Alembic baseline against it. No Flyway history or missing legacy V5/V6 scripts were invented. Existing branch inventory/prices are preserved.
+Fresh application databases use the independent Alembic chain through **0007** in the current, uncommitted branch. The shared Flyway preview does not run that baseline: it received the earlier additive `scripts/migrations/preview_backend_workflows.sql` and the tested Home/postal retirement SQL from `backend/migrations/sql/0006_remove_home_postal.sql`. Migration 0007 is currently applied **only to isolated validation**, not shared preview. Never replay a fresh Alembic/Flyway baseline on that database. No missing legacy V5/V6 scripts were invented. Existing branch inventory is preserved.
 
 Neon project: `long-resonance-77491878`. Shared preview: `br-snowy-morning-baym8iw6`. Isolated validation branch: `br-autumn-breeze-baas5auz`. Managed Auth and a private receipts bucket were provisioned on the isolated branch and then prepared on shared preview.
 
-Render target (owner-confirmed workspace): `tea-dbqur9jrjlhs73cga8eg`, service `srv-dbs313ei0phs73bvvd00` (`spestoslav-api`). The service auto-deploys `main`; backend code on a PR is not yet deployed merely because its tests pass. The separate legacy `Per5on/testing` service was not changed.
+Render target (owner-confirmed workspace): `tea-dbqur9jrjlhs73cga8eg`, service `srv-dbs313ei0phs73bvvd00` (`spestoslav-api`). The service is configured to auto-deploy `main`, but recent rollouts required explicit deploys when no automatic deploy was queued; backend code on a PR is not deployed merely because tests pass. The separate legacy `Per5on/testing` service was not changed.
 
 Before publishing new routes: apply the additive script, configure the variables in `backend/.env.example`, verify readiness, and enable the approved OIDC receipt worker on Render. Keep `FUELO_COLLECTION_ENABLED` off until a key and reviewed mappings exist. An empty production catalog is not solved by inserting demonstration prices; real data enters through authenticated catalog/collection/review APIs. Demo product photos are isolated from all live price tables.
 

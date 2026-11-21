@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Text, Input, useUI } from "../ui";
+import { fetchWithRetry } from "../network";
 import { filterLocalities } from "../catalog/model";
 export type Locality = {
   id: string;
@@ -36,22 +37,28 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
     const controller = new AbortController();
     setLoading(true);
     setError(false);
-    setResults([]);
-    let timeout: ReturnType<typeof setTimeout>;
     const timer = setTimeout(async () => {
-      timeout = setTimeout(() => controller.abort(), 60000);
       try {
-        const response = await fetch(
+        const rows = await fetchWithRetry<Locality[]>(
           `${apiBaseUrl.replace(/\/$/, "")}/api/v1/localities?q=${encodeURIComponent(query.trim())}`,
           { signal: controller.signal },
+          { timeoutMs: 20000, retries: 2 },
+          async (response) => {
+            if (!response.ok) {
+              const failure = new Error("Location search unavailable");
+              failure.name = `HTTP${response.status}`;
+              throw failure;
+            }
+            return (await response.json()) as Locality[];
+          },
         );
-        if (!response.ok) throw Error("Location search unavailable");
-        const rows: Locality[] = await response.json();
         if (!cancelled) setResults(filterLocalities(rows, query));
-      } catch {
-        if (!cancelled) setError(true);
+      } catch (failure) {
+        if (!cancelled) {
+          console.warn("Location search unavailable", failure instanceof Error ? failure.name : "UnknownError");
+          setError(true);
+        }
       } finally {
-        clearTimeout(timeout);
         if (!cancelled) setLoading(false);
       }
     }, 300);
@@ -59,7 +66,6 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
       cancelled = true;
       controller.abort();
       clearTimeout(timer);
-      clearTimeout(timeout);
     };
   }, [query, open, apiBaseUrl, retry]);
   return (
@@ -92,9 +98,8 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
             autoCorrect={false}
             style={s.input}
           />
-          {loading ? (
-            <ActivityIndicator color="#19562a" />
-          ) : error ? (
+          {loading && <ActivityIndicator color="#19562a" />}
+          {error ? (
             <>
               <Text style={s.meta}>{t("locationUnavailable")}</Text>
               <Pressable

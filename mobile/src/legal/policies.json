@@ -1,0 +1,139 @@
+{
+  "version": "2026-11-17-draft.1",
+  "status": "draft",
+  "developer": "Ivaylo Yovchev",
+  "contact": "ivo77@duck.com",
+  "scope": "European Union (EU)",
+  "terms": {
+    "bg": [
+      {
+        "title": "1. Приложение и контакт",
+        "body": "Спестовник е приложение за информация, сравнение на цени и лични списъци. Разработчик и лице за контакт за този проект: Ivaylo Yovchev; ел. поща: ivo77@duck.com. Настоящият проект е предназначен за потребители в Европейския съюз. Конкретните данни за оператора, държавата на установяване и приложимите задължителни национални изисквания се потвърждават преди публичното разпространение. Политиката за поверителност е част от този документ."
+      },
+      {
+        "title": "2. Цени и наличности",
+        "body": "Приложението не е магазин и не сключва покупката вместо Вас. Цените могат да зависят от обект, населено място, дата, разфасовка, вариант, членство, доставка и други условия. Проверявайте точния продукт и крайната цена при търговеца. Показан източник или включена верига не означава пълно покритие, текуща наличност или партньорство. Непроверени или липсващи цени не трябва да се представят като потвърдени оферти. Запазеният каталог не гарантира офлайн актуалност на цените."
+      },
+      {
+        "title": "3. Примерни снимки и симулации",
+        "body": "Примерните снимки дават само визуална представа за вида продукт. Не е необходимо да съвпадат с действителната марка, модел, цвят, опаковка, размер или съдържание. Снимката сама по себе си не доказва идентичност, съвместимост, качество, наличност или цена. Примерните продукти и симулираните цени са обозначени и не са реални оферти. Те не се използват за публикуване на действителни цени. Правата върху чужди изображения остават при техните автори; източници и лицензи са посочени при примерната галерия/в „За приложението“."
+      },
+      {
+        "title": "4. Камера, баркодове и касови бележки",
+        "body": "Камерата и избраните снимки се използват след Ваше действие и разрешение на устройството. Разпознаването на баркод или текст може да сгреши. Проверявайте продукта, магазина, количеството и единичната цена. Качена бележка не се публикува автоматично. Само отделно потвърдена от Вас цена може да бъде изпратена за проверка. Личните бележки, изображения и профилни данни не са публична ценова информация."
+      },
+      {
+        "title": "5. Разумно използване",
+        "body": "Не изпращайте чужди лични данни без основание, пароли, кодове за достъп, пълни платежни данни, незаконно съдържание или подвеждащи оферти. Не заобикаляйте ограниченията за достъп и не използвайте услугата за спам. Изпращането на обратна връзка е по Ваш избор; телефонът е незадължителен. Не се добавят CAPTCHA проверки или автоматично съгласие за маркетинг."
+      },
+      {
+        "title": "6. Промени, сигурност и потребителски права",
+        "body": "Полагаме разумни грижи за точността и работата на услугата, но достъпът може да бъде временно ограничен при грешки, поддръжка или проблем при доставчик. Никоя система не е напълно защитена от риск. Тези условия не ограничават права по GDPR или задължителните потребителски права по правото на ЕС и приложимото национално право. Не се изключва отговорност, която законът не позволява да бъде изключена. При съществени промени документът се обновява; когато е необходимо съгласие, то се иска отделно и предварително."
+      }
+    ],
+    "en": [
+      {
+        "title": "1. Service and contact",
+        "body": "Spestovnik provides price information, comparison and personal shopping lists. Developer and project contact: Ivaylo Yovchev; email: ivo77@duck.com. This draft is intended for users in the European Union. Final operator identity, member state of establishment and mandatory national contact/registration requirements must be confirmed before public distribution. The Privacy Policy forms part of this document."
+      },
+      {
+        "title": "2. Prices and availability",
+        "body": "The app is not the retailer and does not conclude a purchase on your behalf. Prices may depend on branch, location, date, package, variant, membership, delivery and other conditions. Confirm the exact item and checkout price with the retailer. A listed source or chain does not establish complete coverage, current stock or a partnership. Missing or unverified prices must not be presented as verified offers. A cached catalogue does not guarantee offline price freshness."
+      },
+      {
+        "title": "3. Illustrative photographs and simulations",
+        "body": "Sample photographs illustrate a product category only. They need not depict the actual brand, model, colour, package, size or contents. A photograph alone does not prove identity, compatibility, quality, availability or price. Sample products and simulated prices are labelled and are not real offers; they do not publish actual prices. Third-party image rights remain with their authors; sources and licences are recorded in the sample gallery/About credits."
+      },
+      {
+        "title": "4. Camera, barcodes and receipts",
+        "body": "Camera and chosen images are used following your action and device permission. Barcode recognition and OCR can be wrong. Check the product, branch, quantity and unit price. Uploading a receipt does not automatically publish it. Only a separately confirmed price may be submitted for review. Personal receipts, photographs and account information are not public price data."
+      },
+      {
+        "title": "5. Responsible use",
+        "body": "Do not submit other people’s personal data without a lawful basis, passwords, access codes, full payment details, unlawful content or misleading offers. Do not bypass access restrictions or use the service for spam. Feedback is optional and its phone field is optional. No CAPTCHA or automatic marketing consent is introduced."
+      },
+      {
+        "title": "6. Changes, security and consumer rights",
+        "body": "We take reasonable care over accuracy and operation, but errors, maintenance or provider failures may temporarily interrupt the service. No system is entirely risk-free. These terms do not restrict GDPR rights or mandatory EU and national consumer protections, or exclude liability that cannot lawfully be excluded. Material changes will be reflected in an updated document; where consent is required it must be requested separately in advance."
+      }
+    ]
+  },
+  "privacy": {
+    "bg": [
+      {
+        "title": "1. Администратор, обхват и контакт",
+        "body": "Този проект на политика описва обработването за Спестовник от Ivaylo Yovchev като разработчик/оператор на проекта и лице за контакт: ivo77@duck.com. Преди публично тестване се потвърждават окончателната самоличност на администратора, държавата на установяване и необходимите контактни/регистрационни данни. Политиката е съобразена с Регламент (ЕС) 2016/679 (GDPR); не се ограничава до българско гражданство. Приложимите права зависят от обработването и закона, не само от избрания език."
+      },
+      {
+        "title": "2. Какви данни се обработват",
+        "body": "Профил: въведени име и ел. поща, данни за вход и сесия. Устройство: избран език, размер на шрифта, личен списък, избрано населено място и кеш на публичния каталог. Камера/галерия: само поисканото сканиране и избраното от Вас изображение. Бележки: изображение, извлечен текст, редове, предложени цени и състояние на проверката. Обратна връзка: име, ел. поща, незадължителен телефон, текст и технически данни за изпращането. Хостингът и доставчиците могат да обработват IP адрес, час, статус и технически журнални записи за работа и сигурност. Списъкът се пази локално, но при изрично сравнение избраните продукти, количества и населено място се изпращат до API за изчисляване; не се изпращат автоматично на търговците. При сканиране приложението не качва камерните кадри или снимката за баркод; изпраща разпознатия код за търсене. Качването на касова бележка е отделно действие."
+      },
+      {
+        "title": "3. Цели и правни основания",
+        "body": "Данните, необходими за поисканите функции — профил, списък, сканиране, лични бележки и отговор на запитване — се обработват за предоставяне на услугата/действия по Ваше искане, когато е приложим чл. 6, пар. 1, б. „б“ GDPR. За сигурност, предотвратяване на злоупотреби и техническа поддръжка се прилага необходимият легитимен интерес по б. „е“, след оценка на интересите и правата Ви. Законовите задължения се изпълняват на съответното правно основание. Бъдещи незадължителни дейности, които изискват съгласие, започват само след отделно информирано съгласие. Разрешението на камерата не е общо съгласие за други цели. Не продаваме личните Ви данни и не използваме съобщения/бележки за маркетинг или обучение на модели в текущия проект."
+      },
+      {
+        "title": "4. Чувствителна информация и ограничаване на достъпа",
+        "body": "Не са необходими пароли в съобщения, платежни кодове, пълни номера на карти, документи за самоличност или специални категории данни. Бележката може да съдържа такива данни или информация за здраве, покупки и лоялност; преди качване покрийте ненужното съдържание. Вградените метаданни на каченото изображение се отстраняват, но видимият текст не се анонимизира автоматично. Бележките се предоставят само на собственика и ограничената обработка/проверка, необходима за услугата. След изрично потвърждение и проверка може да се публикува отделна ценова информация за продукт/обект, а не личната бележка, изображение или име на подателя."
+      },
+      {
+        "title": "5. Имейл услуга и външни доставчици",
+        "body": "Формата изпраща до фиксирания служебен получател ivo77@duck.com чрез сървърно конфигуриран доставчик. Вашата ел. поща служи за отговор; телефонът не е задължителен. Съобщението и необходимите адресни/технически данни преминават през услугите за изпращане, получаване и евентуално препращане на пощата. Това не е услуга с гарантирано криптиране от край до край. Не поставяйте тайни или ненужни чувствителни данни в нея. Приемане от пощенския сървър не доказва прочитане или окончателно доставяне. Хостинг/API: Render; база, удостоверяване и свързано частно съхранение: Neon и съответните инфраструктурни доставчици. Конкретният SMTP доставчик, местоположенията, договорите и механизмите за международни трансфери се потвърждават преди публичното тестване. Обработването извън ЕИП изисква приложим законен механизъм по GDPR; не се твърди, че всички данни остават в ЕС без проверка. При отваряне на външни източници или зареждане на външно хоствани изображения съответният доставчик може да получи IP адрес и технически заглавки. Това не разрешава споделяне на лични бележки, профили или съдържание на съобщения. Текущите примерни миниатюри се обслужват от нашия бекенд, а не се зареждат директно от Wikimedia на устройството."
+      },
+      {
+        "title": "6. Сигурност, камера и местоположение",
+        "body": "Използват се HTTPS/TLS, контрол на достъпа и частно сървърно съхранение. Ключовете за поща, съхранение, администрация и доставчици остават в сървърни тайни и не трябва да се публикуват в приложението, хранилището, екранни снимки или журнали. Сесията се пази в защитеното хранилище на Android, когато се използва нативното приложение; публичният кеш не е място за токени, лични бележки или цени. Не се обещава абсолютна защита. Текущата версия използва избрано населено място, а не точно GPS местоположение, и не обхожда автоматично галерията. Бъдещ достъп до GPS/маршрути изисква отделна оценка и ясно разрешение."
+      },
+      {
+        "title": "7. Срокове и изтриване",
+        "body": "Настройките и локалният списък остават на устройството до промяна/изчистване; публичният каталожен кеш има технически срок. Профилните данни се пазят докато са необходими за профила и приложимите законни задължения. Личните бележки остават до изтриването им или отпадане на необходимостта; текущата обработка може да изисква кратко изчакване и повторение на заявката за изтриване. Съобщенията се пазят само за отговора, приключването на случая и необходимата законна защита, а не безсрочно по подразбиране. Конкретните срокове за пощата, журналите и резервните копия и процесът за изтриване на профил се потвърждават преди публичен тест. Изчистването на приложението не изтрива автоматично сървърния профил, оригиналните снимки в галерията или пощенските копия. Изтриването на бележка не означава непременно изтриване на вече проверена обезличена ценова история."
+      },
+      {
+        "title": "8. Вашите права и заявления",
+        "body": "При условията на GDPR можете да поискате достъп, корекция, изтриване, ограничаване, преносимост и да възразите срещу определено обработване. Когато основанието е съгласие, можете да го оттеглите за бъдещото обработване без неблагоприятно засягане на предишната законосъобразност. Пишете на ivo77@duck.com; може да е нужно разумно потвърждение на самоличността без ненужни документи. По правило се отговаря в рамките на един месец; приложимите законови изключения и удължавания се съобщават. Можете да подадете жалба до компетентния надзорен орган, включително в държавата на обичайното Ви пребиваване, работа или предполагаемо нарушение. Списък: https://www.edpb.europa.eu/about-edpb/about-edpb/members_en . Няма решения с правни или подобни значими последици, основани единствено на автоматизирана обработка в текущия проект."
+      },
+      {
+        "title": "9. Непълнолетни, промени и контакт",
+        "body": "Услугата не е предназначена за умишлено събиране на данни от деца. Когато местното право изисква родителско разрешение, то трябва да бъде осигурено; не се твърди, че приложението проверява възраст. При съмнение за неправомерно обработване се свържете с оператора. Не се добавят рекламни проследяващи инструменти или маркетингови съгласия чрез този документ. При промяна на цели, доставчици или права политиката се актуализира. Официален текст на GDPR: https://eur-lex.europa.eu/eli/reg/2016/679/oj ."
+      }
+    ],
+    "en": [
+      {
+        "title": "1. Controller, scope and contact",
+        "body": "This draft describes processing for Spestovnik by Ivaylo Yovchev as developer/project operator and contact: ivo77@duck.com. Final controller identity, member state of establishment and necessary contact/registration details must be confirmed before public testing. The policy follows Regulation (EU) 2016/679 (GDPR); it is not limited to Bulgarian citizenship. Applicable rights depend on processing and law, not merely the interface language."
+      },
+      {
+        "title": "2. Data processed",
+        "body": "Account: supplied name/email and authentication/session information. Device: language, font size, shopping list, selected locality and public catalogue cache. Camera/gallery: the requested scan and image you explicitly select. Receipts: image, extracted text, lines, proposed prices and review status. Feedback: name, email, optional phone, message and delivery metadata. Hosting and service providers may process IP addresses, timestamps, status and technical logs needed for operation and security. Lists are stored locally, but an explicit comparison sends relevant product IDs, quantities and locality to the API for calculation; these are not automatically sent to retailers. The barcode flow does not upload camera frames or the selected barcode image; it sends the decoded code for lookup. Receipt upload is a separate action."
+      },
+      {
+        "title": "3. Purposes and legal bases",
+        "body": "Data necessary for requested account, list, scanning, private receipt and support functions is processed to provide the service or take requested steps where GDPR Article6(1)(b) applies. Necessary security, abuse prevention and technical maintenance rely on legitimate interests under Article6(1)(f), subject to a balancing assessment. Legal obligations use the applicable legal basis. Future optional processing requiring consent starts only after separate informed consent. Device camera permission is not blanket consent for other purposes. The current project does not sell personal data or use receipts/messages for marketing or model training."
+      },
+      {
+        "title": "4. Sensitive information and access",
+        "body": "Messages do not require passwords, payment codes, full card numbers, identity documents or special-category data. Receipts may reveal payment, health, purchase or loyalty information; cover unnecessary content before uploading. Embedded image metadata is stripped, but visible text is not automatically anonymised. Private receipts are available to their owner and the restricted processing/review necessary to provide the service. After explicit confirmation and review, separate product/branch price information may be published, not the private receipt, image or sender’s name."
+      },
+      {
+        "title": "5. Email and external providers",
+        "body": "The form sends to the fixed service recipient ivo77@duck.com through a server-configured provider. Your email is used for replies; phone is optional. Message content and necessary addressing/technical metadata pass through sending, receiving and any forwarding services. This is not a guaranteed end-to-end encrypted email service: do not include secrets or unnecessary sensitive data. Mail-server acceptance does not establish reading or final delivery. Hosting/API: Render; database, authentication and connected private storage: Neon and relevant infrastructure providers. The actual SMTP provider, processing locations, contracts and international-transfer mechanisms must be confirmed before public testing. Transfers outside the EEA require an applicable GDPR mechanism; EU-only storage is not asserted without verification. Opening external source links or loading externally hosted images may disclose an IP address and technical headers to that provider. This does not authorise sharing private receipts, accounts or messages. Current sample thumbnails are served by our backend rather than loaded directly from Wikimedia on the device."
+      },
+      {
+        "title": "6. Security, camera and location",
+        "body": "HTTPS/TLS, access controls and private server storage are used. Mail, storage, administration and provider credentials remain deployment secrets and must not be exposed in the app, repository, screenshots or logs. Native Android sessions use secure device storage; public caches are not for tokens, private receipts or prices. Absolute security is not guaranteed. The current app uses a selected locality, not precise GPS, and does not automatically scan the gallery. Future GPS/routing access needs a separate assessment and clear permission."
+      },
+      {
+        "title": "7. Retention and deletion",
+        "body": "Local preferences/lists remain until changed or cleared; public catalogue caches have technical expiry. Account data is kept while necessary for the account and applicable legal obligations. Private receipts remain until deletion or no longer needed; in-flight processing may briefly delay deletion and require retry. Feedback is retained only for responding, resolving the case and necessary lawful defence, not indefinitely by default. Exact mail/log/backup periods and account-deletion procedures must be confirmed before public testing. Clearing the app does not automatically delete the server account, original gallery photos or mailbox copies. Deleting a receipt does not necessarily remove already approved de-identified price history."
+      },
+      {
+        "title": "8. Rights and requests",
+        "body": "Subject to GDPR conditions, you can request access, rectification, erasure, restriction and portability, and object to certain processing. Consent, where relied on, can be withdrawn for future processing without affecting earlier lawfulness. Contact ivo77@duck.com; proportionate identity confirmation may be necessary without unnecessary documents. Requests are normally answered within one month; applicable exceptions/extensions will be explained. You may complain to a competent supervisory authority, including where you habitually reside, work or allege an infringement. Authority list: https://www.edpb.europa.eu/about-edpb/about-edpb/members_en . The current project does not make decisions with legal or similarly significant effects based solely on automated processing."
+      },
+      {
+        "title": "9. Minors, changes and contact",
+        "body": "The service is not intended to knowingly collect children’s data. Where local law requires parental authorisation it must be obtained; the app is not represented as age-verifying. Contact the operator about suspected inappropriate processing. This document does not introduce advertising trackers or marketing consent. Changes to purposes, providers or rights require policy updates. Official GDPR text: https://eur-lex.europa.eu/eli/reg/2016/679/oj ."
+      }
+    ]
+  }
+}

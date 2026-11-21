@@ -18,6 +18,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Language, languages, messages, MessageKey } from "./i18n";
+import { appFontSize } from "./font";
 type UI = {
   language: Language;
   setLanguage: (language: Language) => void;
@@ -83,8 +84,8 @@ export function Text(props: TextProps) {
       {...props}
       style={[
         props.style,
-        { fontSize: Math.max(11, (style.fontSize ?? 14) * fontScale) },
-        style.lineHeight ? { lineHeight: style.lineHeight * fontScale } : null,
+        { fontSize: appFontSize(style.fontSize ?? 14, fontScale, 11) },
+        style.lineHeight ? { lineHeight: style.lineHeight * fontScale + 1 } : null,
       ]}
     />
   );
@@ -97,7 +98,7 @@ export function Input(props: TextInputProps) {
       {...props}
       style={[
         props.style,
-        { fontSize: Math.max(16, (style.fontSize ?? 16) * fontScale) },
+        { fontSize: appFontSize(style.fontSize ?? 16, fontScale, 16) },
       ]}
     />
   );
@@ -108,18 +109,24 @@ export function AutoFitLabel({
   label,
   style,
   baseSize = 14,
+  intrinsic = false,
+  allowWrap = false,
 }: {
   label: string;
   style?: StyleProp<TextStyle>;
   baseSize?: number;
+  intrinsic?: boolean;
+  allowWrap?: boolean;
 }) {
   const { fontScale } = useUI();
   const { fontScale: systemScale } = useWindowDimensions();
   const reference = useRef<React.ComponentRef<typeof NativeText>>(null);
   const [width, setWidth] = useState(0);
-  const desired = Math.max(11, baseSize * fontScale * systemScale);
+  useEffect(() => setWidth(0), [label, baseSize, fontScale, systemScale]);
+  const desired = appFontSize(baseSize, fontScale, 11) * systemScale;
   let fitted = desired;
   if (
+    !intrinsic &&
     Platform.OS === "web" &&
     typeof document !== "undefined" &&
     width > 0 &&
@@ -133,7 +140,7 @@ export function AutoFitLabel({
       const measured = context.measureText(label).width;
       if (measured > 0)
         fitted = Math.max(
-          11,
+          12,
           Math.min(desired, (desired * (width - 1)) / measured),
         );
     }
@@ -142,13 +149,13 @@ export function AutoFitLabel({
     <NativeText
       ref={reference}
       onLayout={(e) => setWidth(e.nativeEvent.layout.width)}
-      numberOfLines={1}
+      numberOfLines={allowWrap ? 2 : 1}
       allowFontScaling={false}
       {...(Platform.OS === "web"
         ? {}
         : {
-            adjustsFontSizeToFit: true,
-            minimumFontScale: Math.min(1, 11 / desired),
+            adjustsFontSizeToFit: !intrinsic,
+            minimumFontScale: Math.min(1, 12 / desired),
           })}
       style={[style, { fontSize: fitted, flexShrink: 1 }]}
     >

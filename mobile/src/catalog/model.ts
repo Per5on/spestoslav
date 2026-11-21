@@ -1,12 +1,17 @@
+export type Retailer = { code: string; name: string; category_code: string; website_url?: string | null };
 export type Product = {
   id: string;
   name: string;
   category_code: string;
   image_url?: string | null;
   package?: string;
-  package_quantity?: string | null;
+  package_quantity?: string | number | null;
   package_unit?: string | null;
   is_demo?: boolean;
+  fuel_type?: string | null;
+  group_code?: string | null;
+  source_url?: string | null;
+  source_product_code?: string | null;
 };
 export const MAX_BASKET_ITEMS = 100;
 export type BasketItem = { product: Product; quantity: number };
@@ -88,10 +93,13 @@ export function lowestPrice(
 export function productName(p: Product) {
   return p.name.replace(/^Демо:\s*/i, "");
 }
+export function searchText(value: string) {
+  const units:Record<string,string>={"кг":"kg","гр":"g","г":"g","мл":"ml","л":"l",kg:"kg",g:"g",ml:"ml",l:"l"};
+  return value.normalize("NFKC").toLocaleLowerCase("bg").replace(/,/g,".").replace(/[–—-]/g," ").replace(/(\d)\s*(кг|гр|мл|г|л|kg|ml|g|l)(?=\s|$|[.,;%()])/g,(_,number:string,unit:string)=>number+units[unit]).replace(/\s+/g," ").trim();
+}
 export function matchesProduct(p: Product, query: string) {
-  return productName(p)
-    .toLocaleLowerCase("bg")
-    .includes(query.trim().toLocaleLowerCase("bg"));
+  const text=searchText([productName(p),p.package_quantity == null ? "" : Number(p.package_quantity),p.package_unit].filter(Boolean).join(" "));
+  return searchText(query).split(" ").every(token=>text.includes(token));
 }
 export function filterLocalities<
   T extends {
