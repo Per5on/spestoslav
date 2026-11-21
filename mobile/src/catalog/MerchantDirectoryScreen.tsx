@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, TextInput, View } from "react-native";
 import { Pressable, Text, useUI } from "../ui";
-import { groupMerchantDirectory, loadMerchantDirectory, type MerchantDirectoryEntry } from "./merchantDirectory";
+import { filterMerchantDirectory, groupMerchantDirectory, loadMerchantDirectory, type MerchantDirectoryEntry } from "./merchantDirectory";
 
 /** Verified backend branches only; never invent store locations. */
 export function MerchantDirectoryScreen() {
@@ -10,6 +10,7 @@ export function MerchantDirectoryScreen() {
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [query, setQuery] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,13 +26,17 @@ export function MerchantDirectoryScreen() {
     return () => controller.abort();
   }, [revision]);
 
-  const categories = useMemo(() => groupMerchantDirectory(rows), [rows]);
+  const filteredRows = useMemo(() => filterMerchantDirectory(rows, query), [rows, query]);
+  const categories = useMemo(() => groupMerchantDirectory(filteredRows), [filteredRows]);
   return (
     <View testID="merchant-directory" style={{ gap: 10 }}>
       <Pressable accessibilityRole="button" accessibilityLabel={t("refresh")}
         style={s.button} onPress={() => setRevision(v => v + 1)}>
         <Text>{t("refresh")}</Text>
       </Pressable>
+      <TextInput testID="merchant-directory-search" accessibilityLabel={t("searchProduct")}
+        placeholder={t("searchProduct")} value={query} onChangeText={setQuery}
+        autoCorrect={false} style={[s.option, { color: color("#19562a") }]} />
       {loading && <ActivityIndicator accessibilityRole="progressbar" color={color("#19562a")} />}
       {failed && <Text accessibilityRole="alert" style={s.notice}>{t("storesError")}</Text>}
       {!loading && !failed && categories.length === 0 && <Text style={s.meta}>{t("noStores")}</Text>}

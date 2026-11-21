@@ -171,3 +171,14 @@ for (const scale of [0.9, 1, 1.15, 1.3]) {
   }
 }
 console.log("Font settings: actual text +1pt at every saved scale; minimum readable size retained.");
+
+const merchantDirectory = loadTS("src/catalog/merchantDirectory.ts", { "../api": { api: () => { throw new Error("Network must not be used by local filtering"); } } });
+const merchantRows = [
+  { id: "1", category_code: "groceries", retailer_code: "market", retailer_name: "Магазин", branch_name: null, address: "ул. Главна 1", locality_name: "София", municipality: "Столична", region: "София" },
+  { id: "2", category_code: "fuel", retailer_code: "fuel", retailer_name: "Бензиностанция", branch_name: "Център", address: "бул. България 5", locality_name: "Варна", municipality: null, region: null },
+];
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "  "), merchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "СОФИЯ магазин").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна ЦЕНТЪР").map(x => x.id), ["2"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "несъществуващ"), []);
+console.log("Merchant directory checks passed: empty query, mixed fields, case folding, no synthetic results.");

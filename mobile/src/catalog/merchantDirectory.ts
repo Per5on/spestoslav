@@ -83,3 +83,15 @@ export function groupMerchantDirectory(rows: MerchantDirectoryEntry[]): Merchant
       })),
   }));
 }
+
+/** Search only verified merchant records, with locale-aware case and accent folding. */
+export function filterMerchantDirectory(rows: MerchantDirectoryEntry[], query: string): MerchantDirectoryEntry[] {
+  const normalize = (value: string) => value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
+  const tokens = normalize(query).split(/\s+/).filter(Boolean);
+  if (!tokens.length) return rows;
+  return rows.filter(row => {
+    const text = normalize([row.retailer_name, row.retailer_code, row.branch_name ?? "", row.address,
+      row.locality_name, row.municipality ?? "", row.region ?? "", row.category_code].join(" "));
+    return tokens.every(token => text.includes(token));
+  });
+}
