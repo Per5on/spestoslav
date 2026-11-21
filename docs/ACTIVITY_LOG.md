@@ -325,3 +325,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Final 10.5 change: unified Food and Technology thumbnail framing and disambiguated duplicate catalogue names. Repeated full PostgreSQL, browser and mobile/preflight checks. Await exact-SHA build approval.
 
 - 10.5 regression check: reproduced live merchant-directory HTTP 404. Verified the dated 116-address fallback and recovery to fixture live data. Added tap-to-enlarge and representative group photos. Repeated backend, mobile, browser and Android configuration checks. Await exact-SHA approval.
+
+- Preview 10.5 run 44930361440 attempt 3 failed provisioning the Android 10 Play Store image ZIP. Added bounded SDK installation and emulator startup retries, locally checked success and persistent failure paths. Await approval of the revised workflow SHA.
