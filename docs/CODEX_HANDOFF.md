@@ -17,7 +17,7 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 1. **Product WebPs for Храни and Техника.** Inventory missing and symbolic thumbnails. Pilot a batch matched by verified GTIN, manufacturer model, or source catalogue code. Prefer images of the correct variant and packaging from manufacturers or retailers with documented reuse rights. Use the existing 160 × 140 WebP canvas, preserve aspect ratio, and check compressed size and readability. Serve versioned images over controlled HTTPS with the existing on-device cache. Keep bundled symbolic fallbacks for unmatched, unavailable, or unlicensed images. Verify mapping, decode, offline fallback, and cache and size impact.
 2. **Itemized Сравни цените.** Extend the basket response with each selected product, quantity, current verified price per package, subtotal, and verification timestamp for each merchant branch. Derive item prices and totals from the same server quote. Keep locality and offer scope, handle missing/expired prices explicitly, and rank only complete baskets. Check quantities, rounding, expiry, ties, branch isolation, all six languages, narrow layouts, and real-price coverage where available.
 
-**Suggested layout.** Use expandable merchant cards. Each header shows the merchant, branch address, and basket total. Open the cheapest complete basket by default. Inside each card show product, quantity, price per package and line subtotal, with verification times in the details. Show comparison time above the cards. An incomplete basket displays “Липсват цени” and identifies missing items. Example with simulated prices:
+**Owner-approved layout.** Use expandable merchant cards. Each header shows the merchant, branch address, and basket total. Open the cheapest complete basket by default. Inside each card show product, quantity, price per package and line subtotal, with verification times in the details. Show comparison time above the cards. An incomplete basket displays “Липсват цени” and identifies missing items. Example with simulated prices:
 
 | Product | Qty | A per pack | A subtotal | B per pack | B subtotal |
 |---|---:|---:|---:|---:|---:|
@@ -27,6 +27,8 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 | **Basket total** | | | **€7.50** | | **€7.70** |
 
 On mobile, each card shows its own price columns so the list fits narrow screens.
+
+The owner accepted the merchant-card proposal. [Browser-rendered design sample](references/itemized-comparison-preview.png) uses simulated prices. The [TODO](PREVIEW_006_BACKLOG.md) also records content-width buttons for Храни and pop-up ⋯ menus in both catalogue tabs.
 
 **Android runner correction.** [Run 44922323093](https://github.com/Per5on/spestoslav/actions/runs/44922323093/job/136900833868) on `69021ff` built and verified the x86_64 APK. The emulator runner got exit 255 from the unlock command immediately after boot, before installing the app. The corrected workflow provisions the same Android 10 Play Store AVD, verifies that the emulator can locate it, and waits for the input service before attempting unlock. It retries startup failures within a five-minute window and retains the emulator log. The smoke script and app source are identical to the prior approved candidate. YAML and Bash syntax checks passed. A local stub check verified recovery from exit 255 and that a crashing emulator fails before APK installation. Android CI has yet to exercise the correction. Wait for owner acknowledgment of this workflow revision before dispatch.
 

@@ -15,6 +15,10 @@
 - [ ] Complete physical-device and live API/data acceptance, including the deployed merchant directory.
 - [ ] Audit missing Food and Technology thumbnails. Pilot licensed, exact-identity 160 × 140 WebPs and verify decoding, cache behavior, and size.
 - [ ] Extend basket comparison with current per-merchant item prices and line subtotals. Verify complete totals, missing and expired prices, price timestamps, and responsive merchant cards.
+- [ ] Size Храни group buttons to their labels using the same content-width principle as Техника. Verify short and long translations at narrow widths.
+- [ ] In both Храни and Техника, make the horizontal ⋯ open a pop-up menu matching the header's vertical ⋮ interaction. Close on selection, outside tap, or Back, and preserve the chosen group.
+
+[Accepted itemized comparison layout sample with simulated prices](references/itemized-comparison-preview.png)
 
 [Browser dry-run screenshots](references/pre-alpha-010-dry-run.jpg) · [Verification and next actions](CODEX_HANDOFF.md#21-november-2026--codex-pre-alpha-010)
 
