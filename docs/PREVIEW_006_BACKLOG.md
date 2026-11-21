@@ -19,6 +19,8 @@
 - [x] In both Храни and Техника, make the horizontal ⋯ open a pop-up menu matching the header's vertical ⋮ interaction. Close on selection, outside tap, or Back, and preserve the chosen group.
 - [x] Remove palettes 2, 3, 4, 5, 7, 8, 10, 14 and 17. Verify retained and removed saved selections.
 - [ ] Extend photo coverage beyond the seven-record representative pilot with documented reuse rights and product matching.
+- [x] Unify Food and Technology thumbnail framing to match the milk, oil and sugar examples. Verify bundled photo and symbolic fallback rendering.
+- [x] Distinguish same-name products using source-backed details, barcode or catalogue code. Verify search and preserve separate basket identities.
 - [ ] Obtain approval of the exact 10.5 candidate before APK/AAB dispatch and verify the installed Android build. Locally verified feature scope and live rollout limits are in the handoff.
 
 [Accepted itemized comparison layout sample with simulated prices](references/itemized-comparison-preview.png)

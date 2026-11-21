@@ -77,6 +77,15 @@ with sync_playwright() as p:
   expect(img).to_be_visible(timeout=20000)
   expect(img).to_have_accessible_name(re.compile('Примерна снимка$'))
  verify_catalogue_image('groceries','Храни','81590','банани')
+ expect(page.get_by_role('button',name='Добави БАНАНИ · 81590',exact=True)).to_be_visible()
+ expect(page.get_by_role('button',name='Добави БАНАНИ · 88590',exact=True)).to_be_visible()
+ search=page.get_by_label('Търси продукт…',exact=True)
+ search.fill('81590')
+ page.get_by_role('button',name=re.compile('^Приложи')).click()
+ expect(page.get_by_role('button',name='Добави БАНАНИ · 81590',exact=True)).to_be_visible()
+ expect(page.get_by_role('button',name='Добави БАНАНИ · 88590',exact=True)).to_have_count(0)
+ page.screenshot(path=str(args.output_dir/'banana-disambiguation.png'))
+ proof['duplicate_names_are_distinguished_and_searchable']=True
  verify_catalogue_image('technology','Техника','43832','SM-A176B GALAXY A17 5G 4/128GB Black')
  proof['product_matched_webp_pilot']=True
  # Original grocery photos and a visible one-second green add acknowledgement.

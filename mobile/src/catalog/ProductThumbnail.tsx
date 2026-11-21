@@ -39,7 +39,7 @@ function Thumbnail({ id, name, uri, illustration, fallback, fallbackLabel }: Pro
   return <Image key={imageKey}
     testID={`thumbnail-${loaded === imageKey ? "loaded" : "loading"}-${id}`}
     accessibilityLabel={symbolic ? `${name} · ${fallbackLabel ?? t("symbolicImage")}` : name}
-    source={source} style={s.photo} resizeMode="contain" onLoad={() => setLoaded(imageKey)}
+    source={source} style={[s.photo, { backgroundColor: "#fff" }]} resizeMode="contain" onLoad={() => setLoaded(imageKey)}
     onError={() => {
       if (resolved) setResolved(resolved === uri ? undefined : uri ?? undefined);
     }} />;

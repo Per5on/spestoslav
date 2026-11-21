@@ -36,6 +36,7 @@ import {
   restoreBasket,
   indexLowestPrices,
   matchesProduct,
+  duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
 import { Category, useCatalog } from "./src/catalog/useCatalog";
@@ -191,14 +192,18 @@ function Main({ initialNotice, onErase }: {
         JSON.stringify({ basket, locality }),
       ).catch(() => setNotice("saveError"));
   }, [basket, locality, restored]);
-  const displayName = (p: Product) =>
-    p.is_demo && p.id === "demo-milk"
-      ? t("demoMilk")
-      : p.is_demo && p.id === "demo-oil"
-        ? t("demoOil")
-        : p.is_demo && p.id === "demo-sugar"
-          ? t("demoSugar")
-          : productName(p);
+  const qualifiers = useMemo(() => duplicateProductQualifiers([
+    ...basket.map(item => item.product), ...catalog.products,
+  ]), [basket, catalog.products]);
+  const displayName = (p: Product) => {
+    if (p.is_demo) {
+      if (p.id === "demo-milk") return t("demoMilk");
+      if (p.id === "demo-oil") return t("demoOil");
+      if (p.id === "demo-sugar") return t("demoSugar");
+    }
+    const qualifier = qualifiers.get(p.id) ?? p.identityQualifier;
+    return qualifier ? `${productName(p)} · ${qualifier}` : productName(p);
+  };
   function change(p: Product, delta: number) {
     if (delta > 0 && !restored) return false;
     if (
@@ -209,7 +214,8 @@ function Main({ initialNotice, onErase }: {
       setNotice("limit");
       return false;
     }
-    setBasket((items) => changeQuantity(items, p, delta));
+    const qualifier = qualifiers.get(p.id) ?? p.identityQualifier;
+    setBasket((items) => changeQuantity(items, qualifier ? { ...p, identityQualifier: qualifier } : p, delta));
     setQuote(null);
     return true;
   }
@@ -293,16 +299,16 @@ function Main({ initialNotice, onErase }: {
     const ids = new Set(selected);
     return catalog.products.filter(
       p => (!group || p.group_code === group) &&
-        (ids.size ? ids.has(p.id) : !appliedQuery || matchesProduct(p, appliedQuery)),
+        (ids.size ? ids.has(p.id) : !appliedQuery || matchesProduct(p, appliedQuery, displayName(p))),
     );
-  }, [catalog.products, group, selected, appliedQuery]);
+  }, [catalog.products, group, selected, appliedQuery, qualifiers, language]);
   const groups = useMemo(() => [...new Set(
     catalog.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
   )], [catalog.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
   const normalizedQuery = query.trim().toLocaleLowerCase(language);
   const suggestions = searchOpen && normalizedQuery
-    ? catalog.products.filter(p => matchesProduct(p, query) ||
+    ? catalog.products.filter(p => matchesProduct(p, query, displayName(p)) ||
         displayName(p).toLocaleLowerCase(language).includes(normalizedQuery))
     : [];
   useEffect(()=>setSuggestionLimit(40),[query,category]);
@@ -722,7 +728,7 @@ function Main({ initialNotice, onErase }: {
             />
             {comparison && (
               <BasketComparison key={comparison.quoted_at ?? comparisonKey}
-                comparison={comparison} basket={basket} stores={catalog.stores} />
+                comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
             )}
           </>
         )}

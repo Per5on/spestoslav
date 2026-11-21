@@ -3,6 +3,9 @@ export type Product = {
   id: string;
   name: string;
   category_code: string;
+  brand?: string | null;
+  barcode?: string | null;
+  identityQualifier?: string;
   image_url?: string | null;
   package?: string;
   package_quantity?: string | number | null;
@@ -99,12 +102,47 @@ export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.n
 export function productName(p: Product) {
   return p.name.replace(/^Демо:\s*/i, "");
 }
+export function duplicateProductQualifiers(products: Product[]) {
+  const groups = new Map<string, Map<string, Product>>();
+  for (const product of products) {
+    const key = `${product.category_code}:${productName(product).normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase()}`;
+    const group = groups.get(key) ?? new Map<string, Product>();
+    group.set(product.id, product);
+    groups.set(key, group);
+  }
+  const qualifiers = new Map<string, string>();
+  for (const group of Array.from(groups.values())) {
+    if (group.size < 2) continue;
+    const rows = Array.from(group.values());
+    const details = rows.map(product => [
+      product.brand,
+      product.package || [product.package_quantity, product.package_unit].filter(Boolean).join(" "),
+    ].filter(Boolean).join(" · "));
+    const barcodes = rows.map(product => product.barcode);
+    const codes = rows.map(product => product.source_product_code);
+    rows.forEach((product, index) => {
+      const detail = details[index];
+      const barcode = barcodes[index];
+      const code = codes[index];
+      const qualifier = detail && details.indexOf(detail) === details.lastIndexOf(detail)
+        ? detail
+        : barcode && barcodes.indexOf(barcode) === barcodes.lastIndexOf(barcode)
+          ? barcode
+          : code && codes.indexOf(code) === codes.lastIndexOf(code)
+            ? code
+            : product.id;
+      qualifiers.set(product.id, qualifier);
+    });
+  }
+  return qualifiers;
+}
+
 export function searchText(value: string) {
   const units:Record<string,string>={"кг":"kg","гр":"g","г":"g","мл":"ml","л":"l",kg:"kg",g:"g",ml:"ml",l:"l"};
   return value.normalize("NFKC").toLocaleLowerCase("bg").replace(/,/g,".").replace(/[–—-]/g," ").replace(/(\d)\s*(кг|гр|мл|г|л|kg|ml|g|l)(?=\s|$|[.,;%()])/g,(_,number:string,unit:string)=>number+units[unit]).replace(/\s+/g," ").trim();
 }
-export function matchesProduct(p: Product, query: string) {
-  const text=searchText([productName(p),p.package_quantity == null ? "" : Number(p.package_quantity),p.package_unit].filter(Boolean).join(" "));
+export function matchesProduct(p: Product, query: string, name = productName(p)) {
+  const text=searchText([name,p.package_quantity == null ? "" : Number(p.package_quantity),p.package_unit].filter(Boolean).join(" "));
   return searchText(query).split(" ").every(token=>text.includes(token));
 }
 export function filterLocalities<

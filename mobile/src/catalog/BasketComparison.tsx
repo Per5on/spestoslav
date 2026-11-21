@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Text, useUI } from "../ui";
-import type { BasketItem, Store } from "./model";
+import type { BasketItem, Product, Store } from "./model";
 
 type QuoteLine = {
   product_id: string;
@@ -26,10 +26,11 @@ function quoteKey(quote: Quote) {
   return quote.branch_id ?? quote.retailer_code;
 }
 
-export function BasketComparison({ comparison, basket, stores }: {
+export function BasketComparison({ comparison, basket, stores, productLabel }: {
   comparison: Comparison;
   basket: BasketItem[];
   stores: Store[];
+  productLabel: (product: Product) => string;
 }) {
   const { t, language, styles: s, color } = useUI();
   const best = comparison.cheapest ? quoteKey(comparison.cheapest) : null;
@@ -40,7 +41,7 @@ export function BasketComparison({ comparison, basket, stores }: {
     style: "currency", currency: "EUR", minimumFractionDigits: 2, maximumFractionDigits: 4,
   });
   const time = new Intl.DateTimeFormat(language, { dateStyle: "short", timeStyle: "short" });
-  const names = new Map(basket.map(({ product }) => [product.id, product.name]));
+  const names = new Map(basket.map(({ product }) => [product.id, productLabel(product)]));
   const branches = new Map(stores.map(store => [store.id, store]));
 
   return (

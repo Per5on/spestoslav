@@ -124,7 +124,7 @@ export const s = StyleSheet.create({
     backgroundColor: "#fff",
     minHeight: 125,
   },
-  photo: { width: 88, height: 104 },
+  photo: { width: 88, height: 104, borderRadius: 8 },
   badge: {
     fontSize: 11,
     fontWeight: "700",

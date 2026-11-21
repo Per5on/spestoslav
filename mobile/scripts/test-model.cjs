@@ -16,8 +16,21 @@ const {
   restoreBasket,
   lowestPrice,
   matchesProduct,
+  duplicateProductQualifiers,
   filterLocalities,
 } = moduleObject.exports;
+const bananas = [
+  { id: "first", category_code: "groceries", name: "БАНАНИ", source_product_code: "81590" },
+  { id: "second", category_code: "groceries", name: " банани ", source_product_code: "88590" },
+  { id: "bio", category_code: "groceries", name: "БИО БАНАНИ" },
+];
+const qualifiers = duplicateProductQualifiers([...bananas, bananas[0]]);
+assert.deepEqual([...qualifiers], [["first", "81590"], ["second", "88590"]]);
+assert.equal(matchesProduct(bananas[0], "81590", "БАНАНИ · 81590"), true);
+assert.equal(matchesProduct(bananas[1], "81590", "БАНАНИ · 88590"), false);
+assert.equal(duplicateProductQualifiers([
+  { ...bananas[0], barcode: "4006381333931" }, bananas[1],
+]).get("first"), "4006381333931");
 const p = { id: "p1", name: "Мляко", category_code: "groceries" };
 let basket = changeQuantity([], p, 1);
 basket = changeQuantity(basket, p, 1);

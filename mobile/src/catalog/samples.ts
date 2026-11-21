@@ -55,14 +55,14 @@ export function technologyThumbnail(id: string, group?: string | null): ImageSou
 
 
 const groceryImages: Record<string, ImageSourcePropType> = {
-  "bakery-breakfast": require("../../../data/symbolic-thumbnails/bakery-breakfast.webp"),
-  "dairy-eggs": require("../../../data/symbolic-thumbnails/dairy-eggs.webp"),
-  "meat-fish": require("../../../data/symbolic-thumbnails/meat-fish.webp"),
-  pantry: require("../../../data/symbolic-thumbnails/pantry.webp"),
-  produce: require("../../../data/symbolic-thumbnails/produce.webp"),
-  "spices-drinks": require("../../../data/symbolic-thumbnails/spices-drinks.webp"),
+  "bakery-breakfast": require("../../assets/grocery-symbols/bakery-breakfast.webp"),
+  "dairy-eggs": require("../../assets/grocery-symbols/dairy-eggs.webp"),
+  "meat-fish": require("../../assets/grocery-symbols/meat-fish.webp"),
+  pantry: require("../../assets/grocery-symbols/pantry.webp"),
+  produce: require("../../assets/grocery-symbols/produce.webp"),
+  "spices-drinks": require("../../assets/grocery-symbols/spices-drinks.webp"),
 };
-const defaultGroceryImage = require("../../../data/symbolic-thumbnails/groceries.webp");
+const defaultGroceryImage = require("../../assets/grocery-symbols/groceries.webp");
 
 export function groceryThumbnail(group?: string | null): ImageSourcePropType {
   return group && Object.hasOwn(groceryImages, group) ? groceryImages[group] : defaultGroceryImage;
