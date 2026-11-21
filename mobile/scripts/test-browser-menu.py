@@ -53,14 +53,14 @@ with sync_playwright() as p:
  expect(directory.get_by_role('alert')).to_be_visible()
  expect(directory.get_by_text('Fixture Retailer')).to_have_count(0)
  expect(directory.get_by_text('Fixture Address',exact=True)).to_have_count(0)
- expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
+ expect(directory.get_by_text('Fixture Town (1)',exact=True)).to_have_count(0)
  assert directory_calls[0]>=2,directory_calls
  proof['merchant_directory_refresh_discards_stale_rows_on_failure']=True
  # A third refresh must recover cleanly, without resurrecting the first response.
  directory.get_by_role('button',name='Обнови',exact=True).click()
  expect(directory.get_by_role('alert')).to_have_count(0)
  expect(directory.get_by_role('button',name='Recovered Fixture Town (1)')).to_be_visible()
- expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
+ expect(directory.get_by_text('Fixture Town (1)',exact=True)).to_have_count(0)
  recovered_locality=directory.get_by_role('button',name='Recovered Fixture Town (1)')
  expect(recovered_locality).to_have_attribute('aria-expanded','false')
  # Recovery must not implicitly expand a previously expanded locality.
