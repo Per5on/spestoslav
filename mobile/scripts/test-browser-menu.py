@@ -88,6 +88,7 @@ with sync_playwright() as p:
  expect(directory.get_by_role('button',name='Recovered Fixture Town (1)')).to_have_count(0)
  expect(directory.get_by_text('Recovered Fixture Retailer',exact=True)).to_have_count(0)
  expect(directory.get_by_text('Recovered Fixture Address',exact=True)).to_have_count(0)
+ expect(directory.get_by_role('progressbar')).to_have_count(0)
  assert directory_calls[0]==4,directory_calls
  proof['merchant_directory_empty_refresh_discards_recovered_rows']=True
  page.unroute('**/api/v1/merchant-directory?*',directory_response)
