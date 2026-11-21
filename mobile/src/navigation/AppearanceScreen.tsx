@@ -3,24 +3,17 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { palettes } from "../appearance";
 import { Pressable, Text, useUI } from "../ui";
 
-type Props = { images: boolean; onToggleImages: (enabled: boolean) => void };
-
-export function AppearanceScreen({ images, onToggleImages }: Props) {
+export function AppearanceScreen() {
   const { t, palette, setPalette, dark, setDark, styles: s, color } = useUI();
-  function toggle(key: "appearanceImages" | "appearanceDark", selected: boolean, change: (value: boolean) => void) {
-    return (
-        <Pressable key={key} accessibilityRole="switch" accessibilityState={{ checked: selected }}
-          aria-checked={selected} accessibilityLabel={t(key)}
-          style={[s.button, s.option, { justifyContent: "space-between" }]}
-          onPress={() => change(!selected)}>
-          <Text style={s.productName}>{t(key)}</Text>
-          <Ionicons name={selected ? "checkbox" : "square-outline"} size={23} color={color("#267133")} />
-        </Pressable>
-    );
-  }
   return (
     <View testID="appearance-screen" style={s.panel}>
-      {toggle("appearanceImages", images, onToggleImages)}
+      <Pressable accessibilityRole="switch" accessibilityState={{ checked: dark }}
+        aria-checked={dark} accessibilityLabel={t("appearanceDark")}
+        style={[s.button, s.option, { justifyContent: "space-between" }]}
+        onPress={() => setDark(!dark)}>
+        <Text style={s.productName}>{t("appearanceDark")}</Text>
+        <Ionicons name={dark ? "checkbox" : "square-outline"} size={23} color={color("#267133")} />
+      </Pressable>
       <Text style={s.productName}>{t("appearancePalette")}</Text>
       <View style={s.row}>
         {palettes.map((combination, index) => (
@@ -37,7 +30,6 @@ export function AppearanceScreen({ images, onToggleImages }: Props) {
           </Pressable>
         ))}
       </View>
-      {toggle("appearanceDark", dark, setDark)}
     </View>
   );
 }

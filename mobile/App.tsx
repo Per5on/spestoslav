@@ -4,7 +4,7 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { sampleCredit, technologyThumbnail } from "./src/catalog/samples";
+import { groceryThumbnail, sampleCredit, technologyThumbnail } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -142,8 +142,7 @@ function Main({ initialNotice, onErase }: {
   const [locality, setLocality] = useState<Locality | null>(null),
     [basket, setBasket] = useState<BasketItem[]>([]),
     [restored, setRestored] = useState(false);
-  const [demo, setDemo] = useState(true),
-    [fuel, setFuel] = useState<FuelChoice>("petrol"),
+  const [fuel, setFuel] = useState<FuelChoice>("petrol"),
     [fuelMenuOpen, setFuelMenuOpen] = useState(false);
   const [appliedQuery, setAppliedQuery] = useState("");
   const [query, setQuery] = useState(""),
@@ -158,18 +157,7 @@ function Main({ initialNotice, onErase }: {
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, demo, true, screen === "catalog" || screen === "basket");
-  const [symbols, setSymbols] = useState<Record<string, string>>({});
-  useEffect(() => {
-    if (!demo) return;
-    const controller = new AbortController();
-    api<{ images: Record<string, string> }>("/api/v1/thumbnails", { signal: controller.signal })
-      .then(({ images }) => {
-        if (!controller.signal.aborted) setSymbols(images ?? {});
-      })
-      .catch(() => undefined);
-    return () => controller.abort();
-  }, [demo]);
+  const catalog = useCatalog(category, locality?.id, true, true, screen === "catalog" || screen === "basket");
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
   }, [screen, category]);
@@ -182,7 +170,6 @@ function Main({ initialNotice, onErase }: {
         if (!alive || !raw) return;
         const saved = JSON.parse(raw);
         setBasket(restoreBasket(saved.basket));
-        if (typeof saved.showSamplePhotos === "boolean") setDemo(saved.showSamplePhotos);
         const l = saved.locality;
         if (l && typeof l.id === "string" && typeof l.name === "string")
           setLocality({
@@ -209,9 +196,9 @@ function Main({ initialNotice, onErase }: {
     if (restored)
       AsyncStorage.setItem(
         storageKey,
-        JSON.stringify({ basket, locality, showSamplePhotos: demo }),
+        JSON.stringify({ basket, locality }),
       ).catch(() => setNotice("saveError"));
-  }, [basket, locality, demo, restored]);
+  }, [basket, locality, restored]);
   const displayName = (p: Product) =>
     p.is_demo && p.id === "demo-milk"
       ? t("demoMilk")
@@ -330,17 +317,12 @@ function Main({ initialNotice, onErase }: {
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
     const credit = p.is_demo ? sampleCredit(p.id) : undefined;
-    const symbolPath = !p.is_demo && !p.image_url
-      ? symbols[p.group_code ?? ""] ?? symbols[p.category_code]
-      : undefined;
-    const symbol = symbolPath?.startsWith("/api/v1/thumbnails/") ? API_BASE_URL + symbolPath : undefined;
     const illustration = p.category_code === "technology" ? technologyThumbnail(p.id, p.group_code) : undefined;
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
-        {demo && <ProductThumbnail key={catalog.revision} id={p.id}
-          name={symbol || illustration ? `${displayName(p)} · ${t("symbolicImage")}` : displayName(p)}
-          uri={p.image_url || symbol} illustration={illustration} />}
+        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)} uri={p.image_url}
+          illustration={illustration} fallback={groceryThumbnail(p.group_code)} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -597,20 +579,6 @@ function Main({ initialNotice, onErase }: {
                     </View>
                   </View>
                 )}
-                <Pressable
-                    accessibilityRole="switch"
-                    accessibilityState={{ checked: demo }}
-                  aria-checked={demo}
-                    style={s.option}
-                    onPress={() => setDemo(!demo)}
-                  >
-                    <Ionicons
-                      name={demo ? "checkbox" : "square-outline"}
-                      color={color("#267133")}
-                      size={22}
-                    />
-                    <Text style={[s.meta, { flex: 1 }]}>{t("demoToggle")}</Text>
-                </Pressable>
                 {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
                 {!!catalog.error && (
                   <View style={{ gap: 8 }}>
@@ -791,7 +759,7 @@ function Main({ initialNotice, onErase }: {
             onSelect={value => setScreen(value as "appearance" | "font" | "language" | "terms" | "privacy" | "deleteData")} />
         )}
         {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
-        {screen === "appearance" && <AppearanceScreen images={demo} onToggleImages={setDemo} />}
+        {screen === "appearance" && <AppearanceScreen />}
         {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")} />}
         {screen === "feedback" && <FeedbackScreen />}
         {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}

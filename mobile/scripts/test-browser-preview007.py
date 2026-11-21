@@ -14,13 +14,17 @@ with sync_playwright() as p:
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(args.base_url,wait_until='domcontentloaded')
  page.get_by_role('tab',name='Техника',exact=True).wait_for(timeout=60000)
- expect(page.get_by_role('switch')).to_have_attribute('aria-checked','true')
+ expect(page.get_by_role('switch')).to_have_count(0)
  expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
- page.get_by_role('switch').click()
- expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_have_count(0)
+ page.evaluate("""() => {
+  const key = 'spestovnik-preview-001';
+  const state = JSON.parse(localStorage.getItem(key) || '{}');
+  localStorage.setItem(key, JSON.stringify({...state, showSamplePhotos: false}));
+ }""")
  page.reload()
- expect(page.get_by_role('switch')).to_have_attribute('aria-checked','false')
- proof['sample_photos_visible_by_default_and_opt_out_persists']=True
+ expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
+ proof['thumbnails_visible_with_legacy_opt_out']=True
+ expect(page.get_by_role("img", name=re.compile("Символично изображение$")).first).to_be_visible(timeout=15000)
  page.get_by_role('tab',name='Техника',exact=True).click()
  toolbar=page.get_by_test_id('catalog-toolbar')
  page.get_by_role('button',name='Отвори менюто',exact=True).click()
@@ -43,7 +47,6 @@ with sync_playwright() as p:
  proof['six_requested_stations_and_all_five_price_filters']=True
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'fuel.png'))
  page.get_by_role('tab',name='Техника',exact=True).click()
- page.get_by_role('switch').click()
  expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible(timeout=20000)
  expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_have_count(0)
  search=page.get_by_label('Търси продукт…',exact=True)

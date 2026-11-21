@@ -85,10 +85,17 @@ with sync_playwright() as playwright:
     def open_appearance():
         page.get_by_role("button", name="Отвори менюто").click()
         page.get_by_role("menuitem", name="Настройки").click()
-        page.get_by_role("button", name="Облик", exact=True).click()
+        page.get_by_role("button", name="Тема", exact=True).click()
         return page.get_by_test_id("appearance-screen").get_by_role("radio")
 
     options = open_appearance()
+    dark = page.get_by_test_id("appearance-screen").get_by_role("switch")
+    expect(dark).to_have_count(1)
+    expect(dark).to_have_accessible_name("Тъмен режим")
+    dark.click()
+    expect(dark).to_have_attribute("aria-checked", "true")
+    dark.click()
+    expect(dark).to_have_attribute("aria-checked", "false")
     expect(options).to_have_count(17)
     for index in range(8, 17):
         options.nth(index).click()

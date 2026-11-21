@@ -107,7 +107,7 @@ tap("Техника")
 wait_resource("thumbnail-loaded-demo-laptop")
 assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-laptop") for n in nodes())
 tap("Храни")
-tap_node(next(n for n in nodes() if "Примерни снимки" in label(n)))
+assert not any("Примерни снимки" in label(n) for n in nodes())
 for tab in ["Техника", "Горива", "Сравни цените"]:
     tap(tab)
     assert label(wait_resource("location-search")) == "София"
@@ -164,13 +164,14 @@ tap("Отвори менюто")
 tap("Настройки")
 wait_text("Език")
 capture_visual("settings")
-tap("Облик")
+tap("Тема")
 wait_resource("appearance-screen")
-for index in range(1, 9):
-    wait_text(f"Цветова комбинация {index}", 10)
+assert not any(label(n) == "Изображения" for n in nodes())
 tap("Тъмен режим")
 capture_visual("appearance-dark")
 tap("Тъмен режим")
+for index in range(1, 9):
+    wait_text(f"Цветова комбинация {index}", 10)
 tap("Отвори менюто");tap("Настройки")
 tap("Език")
 names = {"English", "Deutsch", "Español", "Français", "Русский"}

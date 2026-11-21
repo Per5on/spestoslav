@@ -10,7 +10,8 @@
 - [x] Preserve default and saved palettes. Add #b9ceac/#f2eee7, #f8c7fb/#c181f3, #022f40/#38aecc, #a29f61/#383615, #f7da83/#073368, #edede2/#ebbdd3, #1B263B/#FF7F50, #1B263B/#F4C7C3 and #806380/#ffc6ff. Include the repeated purple pair once.
 - [x] After frontend, remove demonstrated obsolete code, then audit and remove unused dependencies.
 - [x] Record three checks and a successful dry run for the candidate. See the handoff and visual evidence below.
-- [ ] Obtain owner acknowledgment of the exact candidate commit before any APK/AAB build.
+- [x] Rename Облик to Тема. Remove the image switches, ignore legacy hide preferences, bundle small WebP defaults, and keep Dark mode reachable above the palettes.
+- [ ] Obtain owner acknowledgment of the revised candidate commit before another APK/AAB build.
 - [ ] Verify installed Android smoke and real merchant-directory integration after separately authorized build and backend rollout.
 
 [Browser dry-run screenshots](references/pre-alpha-010-dry-run.jpg) · [Verification and next actions](CODEX_HANDOFF.md#21-november-2026--codex-pre-alpha-010)

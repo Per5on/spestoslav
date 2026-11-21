@@ -35,7 +35,6 @@ const bg = {
   searchProduct: "Търси продукт…",
   clear: "Изчисти",
   apply: "Приложи",
-  demoToggle: "Примерни снимки · без проверени цени",
   demo: "ДЕМО СНИМКА",
   noPrice: "Няма потвърдена цена",
   priceUnavailable: "Цените не са заредени",
@@ -121,7 +120,6 @@ const en: Dictionary = {
   searchProduct: "Search products…",
   clear: "Clear",
   apply: "Apply",
-  demoToggle: "Sample photos · no verified prices",
   demo: "DEMO PHOTO",
   noPrice: "No verified price",
   priceUnavailable: "Prices not loaded",
@@ -205,7 +203,6 @@ const de: Dictionary = {
   searchProduct: "Produkte suchen…",
   clear: "Löschen",
   apply: "Anwenden",
-  demoToggle: "Beispielfotos · keine geprüften Preise",
   demo: "DEMOFOTO",
   noPrice: "Kein geprüfter Preis",
   priceUnavailable: "Preise nicht geladen",
@@ -294,7 +291,6 @@ const es: Dictionary = {
   searchProduct: "Buscar productos…",
   clear: "Borrar",
   apply: "Aplicar",
-  demoToggle: "Fotos de ejemplo · sin precios verificados",
   demo: "FOTO DEMO",
   noPrice: "Sin precio verificado",
   priceUnavailable: "Precios no cargados",
@@ -379,7 +375,6 @@ const fr: Dictionary = {
   searchProduct: "Rechercher un produit…",
   clear: "Effacer",
   apply: "Appliquer",
-  demoToggle: "Photos exemples · sans prix vérifiés",
   demo: "PHOTO DÉMO",
   noPrice: "Aucun prix vérifié",
   priceUnavailable: "Prix non chargés",
@@ -464,7 +459,6 @@ const ru: Dictionary = {
   searchProduct: "Найти товар…",
   clear: "Очистить",
   apply: "Применить",
-  demoToggle: "Примеры фото · без проверенных цен",
   demo: "ДЕМОФОТО",
   noPrice: "Нет проверенной цены",
   priceUnavailable: "Цены не загружены",
@@ -522,43 +516,37 @@ const ru: Dictionary = {
 };
 const appearanceMessages = {
   "bg": {
-    "appearance": "Облик",
-    "appearanceImages": "Изображения",
+    "appearance": "Тема",
     "appearancePalette": "Цветова комбинация",
     "appearanceDark": "Тъмен режим",
     "symbolicImage": "Символично изображение"
   },
   "en": {
-    "appearance": "Appearance",
-    "appearanceImages": "Images",
+    "appearance": "Theme",
     "appearancePalette": "Color combination",
     "appearanceDark": "Dark mode",
     "symbolicImage": "Symbolic image"
   },
   "de": {
-    "appearance": "Darstellung",
-    "appearanceImages": "Bilder",
+    "appearance": "Farbschema",
     "appearancePalette": "Farbkombination",
     "appearanceDark": "Dunkelmodus",
     "symbolicImage": "Symbolisches Bild"
   },
   "es": {
-    "appearance": "Apariencia",
-    "appearanceImages": "Imágenes",
+    "appearance": "Tema",
     "appearancePalette": "Combinación de colores",
     "appearanceDark": "Modo oscuro",
     "symbolicImage": "Imagen simbólica"
   },
   "fr": {
-    "appearance": "Apparence",
-    "appearanceImages": "Images",
+    "appearance": "Thème",
     "appearancePalette": "Combinaison de couleurs",
     "appearanceDark": "Mode sombre",
     "symbolicImage": "Image symbolique"
   },
   "ru": {
-    "appearance": "Оформление",
-    "appearanceImages": "Изображения",
+    "appearance": "Тема",
     "appearancePalette": "Цветовая комбинация",
     "appearanceDark": "Тёмный режим",
     "symbolicImage": "Символическое изображение"

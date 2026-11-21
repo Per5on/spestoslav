@@ -313,3 +313,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Added the nationwide merchant directory and implemented the requested catalogue, fuel, comparison, images and palette changes to candidate source. Removed stale toolbar code and restricted chain requests to their remaining fuel-overview caller. Resolved dependency tree and Expo plugin audit found no safe runtime removal.
 - Backend matrix passed 117 tests per leg on local PostgreSQL 16 with Bulgarian OCR. Mobile checks and six Chromium dry-run suites passed. Verified Android config and smoke script syntax independently of packaging. [Dry-run captures](references/pre-alpha-010-dry-run.jpg).
 - Next action is owner acknowledgment of the exact candidate commit. Keep Android dispatch and backend rollout on hold.
+
+- Follow-up for 010: renamed Theme, removed both image switches, bundled grocery fallbacks and moved Dark mode above palettes after the prior native smoke failure. Repeated the backend matrix, mobile checks, six browser suites and Android configuration preflight. Await revised commit acknowledgment before dispatch.
