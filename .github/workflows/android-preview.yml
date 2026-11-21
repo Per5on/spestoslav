@@ -10,14 +10,13 @@ on:
         description: "Also prepare and validate a test-signed Android App Bundle"
         type: boolean
         default: false
-  pull_request:
-    paths: ["mobile/**", ".github/workflows/android-preview.yml"]
 permissions:
   contents: read
 jobs:
   apk:
-    # Owner explicitly authorized Preview007 test builds on17November; no release approval.
-    if: (github.event_name == 'workflow_dispatch' && inputs.confirm_build == true) || (github.event_name == 'pull_request' && github.head_ref == 'codex/preview-007' && github.event.pull_request.head.repo.full_name == github.repository)
+    # Manual owner approval is required for every Android preview build.
+    # Do not start or skip Android build jobs for development pull requests.
+    if: github.event_name == 'workflow_dispatch' && inputs.confirm_build == true
     runs-on: ubuntu-latest
     timeout-minutes: 60
     defaults:
@@ -93,23 +92,58 @@ jobs:
           python -c "from PIL import Image; Image.open('smoke-fixtures/simulation-ean13.png').convert('RGB').save('smoke-fixtures/simulation-ean13.jpg', quality=100, subsampling=0)"
       - name: Enable emulator acceleration
         run: sudo chmod 666 /dev/kvm
+      - name: Provision Android 10 emulator
+        env:
+          ANDROID_AVD_HOME: ${{ runner.temp }}/spestovnik-avd
+        run: |
+          # The camera fixture needs the Play Store system image.
+          image='system-images;android-29;google_apis_playstore;x86_64'
+          sdkmanager emulator "$image"
+          mkdir -p "$ANDROID_AVD_HOME"
+          printf 'no\n' | avdmanager create avd --force --name test --package "$image" --device pixel_2 --path "$ANDROID_AVD_HOME/test.avd"
+          test -f "$ANDROID_AVD_HOME/test.ini"
+          "$ANDROID_HOME/emulator/emulator" -list-avds | grep -Fx test
       - name: Smoke test on Android 10
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          arch: x86_64
-          # Expo Camera's static ML Kit barcode decoder requires Google Play Services.
-          # The plain AOSP `default` image lacks com.android.vending.
-          target: google_apis_playstore
-          profile: pixel_2
-          disable-animations: true
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back emulated
-          script: |
-            adb install mobile/android-smoke-x86_64.apk
-            adb shell mkdir -p /sdcard/Download
-            adb push mobile/smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
-            adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
-            cd mobile && python3 scripts/smoke-android.py
+        env:
+          ANDROID_SERIAL: emulator-5554
+          ANDROID_AVD_HOME: ${{ runner.temp }}/spestovnik-avd
+        run: |
+          emulator_log="$PWD/android-emulator.log"
+          adb start-server
+          "$ANDROID_HOME/emulator/emulator" -avd test -port 5554 \
+            -no-window -gpu swiftshader_indirect -no-snapshot -noaudio \
+            -no-boot-anim -camera-back emulated > "$emulator_log" 2>&1 &
+          emulator_pid=$!
+          cleanup() {
+            timeout 15s adb emu kill || kill "$emulator_pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          deadline=$((SECONDS + 300))
+          while true; do
+            if ! kill -0 "$emulator_pid" 2>/dev/null || (( SECONDS >= deadline )); then
+              echo "::error::Android emulator did not become ready for input"
+              adb devices -l
+              tail -n 100 "$emulator_log"
+              exit 1
+            fi
+            if [[ "$(timeout 5s adb shell getprop sys.boot_completed 2>/dev/null)" == 1 ]] &&
+              timeout 5s adb shell service check input | grep -Fxq 'Service input: found'; then
+              if timeout 10s adb shell input keyevent 82; then
+                break
+              fi
+              echo "Android unlock failed during startup, retrying"
+            fi
+            sleep 2
+          done
+          for setting in window_animation_scale transition_animation_scale animator_duration_scale; do
+            adb shell settings put global "$setting" 0.0
+          done
+          adb install android-smoke-x86_64.apk
+          adb shell mkdir -p /sdcard/Download
+          adb push smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
+          adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
+          python3 scripts/smoke-android.py
       - uses: actions/upload-artifact@v5
         with:
           name: spestovnik-emulator-${{ env.PREVIEW_SEQUENCE }}-x86_64
@@ -182,5 +216,6 @@ jobs:
             mobile/android-smoke.log
             mobile/android-smoke-window.xml
             mobile/android-network.json
+            mobile/android-emulator.log
           retention-days: 30
           if-no-files-found: warn

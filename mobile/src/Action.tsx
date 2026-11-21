@@ -9,6 +9,7 @@ export function Button({
   expanded,
   labelSize = 14,
   compactRefresh = false,
+  accessibilityLabel,
 }: {
   label: string;
   onPress: () => void;
@@ -18,12 +19,14 @@ export function Button({
   expanded?: boolean;
   labelSize?: number;
   compactRefresh?: boolean;
+  accessibilityLabel?: string;
 }) {
   const { styles: s } = useUI();
   const [focused, setFocused] = useState(false);
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       focusOutline={false}
       disabled={disabled}
       accessibilityState={{ disabled, expanded }}

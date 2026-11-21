@@ -127,7 +127,7 @@ for (const value of Object.values(translations.exports.messages))
 
 function loadTS(path, dependencies = {}) {
   const code = ts.transpileModule(fs.readFileSync(path, "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2018 },
   }).outputText;
   const m = { exports: {} };
   new Function("exports", "require", "module", code)(
@@ -171,3 +171,32 @@ for (const scale of [0.9, 1, 1.15, 1.3]) {
   }
 }
 console.log("Font settings: actual text +1pt at every saved scale; minimum readable size retained.");
+
+const merchantDirectory = loadTS("src/catalog/merchantDirectory.ts", { "../api": { api: () => { throw new Error("Network must not be used by local filtering"); } } });
+const merchantRows = [
+  { id: "1", category_code: "groceries", retailer_code: "market", retailer_name: "Магазин", branch_name: null, address: "ул. Главна 1", locality_name: "София", municipality: "Столична", region: "София" },
+  { id: "2", category_code: "fuel", retailer_code: "fuel", retailer_name: "Бензиностанция", branch_name: "Център", address: "бул. България 5", locality_name: "Варна", municipality: null, region: null },
+];
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "  "), merchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "СОФИЯ магазин").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна ЦЕНТЪР").map(x => x.id), ["2"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "несъществуващ"), []);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна, ЦЕНТЪР").map(x => x.id), ["2"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "ул Главна").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "София—Магазин").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "„Магазин“").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "ул. № Главна").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "‘Център’").map(x => x.id), ["2"]);
+console.log("Merchant directory checks passed: empty query, mixed fields, case folding, no synthetic results.");
+
+// Grouping must not reorder the caller's cached branch records.
+const unsortedMerchantRows = [
+  { ...merchantRows[1], id: "z", locality_id: "varna", retailer_name: "Zeta" },
+  { ...merchantRows[1], id: "a", locality_id: "varna", retailer_name: "Alpha" },
+];
+const originalMerchantOrder = unsortedMerchantRows.map(row => row.id);
+const merchantGroups = merchantDirectory.groupMerchantDirectory(unsortedMerchantRows);
+assert.deepEqual(merchantGroups[0].localities[0].branches.map(row => row.id), ["a", "z"]);
+assert.deepEqual(unsortedMerchantRows.map(row => row.id), originalMerchantOrder);
+assert.deepEqual(merchantDirectory.groupMerchantDirectory(unsortedMerchantRows)[0].localities[0].branches.map(row => row.id), ["a", "z"]);
+console.log("Merchant directory grouping checks passed: stable sorted display without input mutation.");

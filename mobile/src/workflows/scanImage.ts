@@ -8,12 +8,26 @@ function normalizedImageBarcodeType(type: string | number): string {
   if (type === 32 || type === "32") return "ean13";
   if (type === 64 || type === "64") return "ean8";
   if (type === 512 || type === "512") return "upc_a";
+  // Some native decoders report symbolic enum names rather than Expo names.
+  const symbolic = String(type).toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (symbolic === "ean13" || symbolic === "ean8" || symbolic === "upca") {
+    return symbolic === "upca" ? "upc_a" : symbolic;
+  }
   return String(type).toLowerCase();
 }
 
 export async function decodeBarcodeImage(uri: string): Promise<string | null> {
-  const rows = await scanFromURLAsync(uri, ["ean13", "ean8", "upc_a"]);
-  const candidates = rows.map((row) => {
+  // An unreadable or unsupported photo is not a successful scan. Match the
+  // browser decoder contract and let the UI show its normal no-result state.
+  let rows: Awaited<ReturnType<typeof scanFromURLAsync>>;
+  try {
+    rows = await scanFromURLAsync(uri, ["ean13", "ean8", "upc_a"]);
+  } catch {
+    return null;
+  }
+  // Guard unexpected native bridge results as well as rejected decoder calls.
+  if (!Array.isArray(rows)) return null;
+  const candidates = rows.filter((row) => row && typeof row.data === "string").map((row) => {
     const type = normalizedImageBarcodeType(row.type);
     return { type, code: scannedGTIN(row.data, type) };
   });

@@ -15,7 +15,7 @@ export function ProductThumbnail({ id, name, uri }: { id: string; name: string; 
     if (sample || !uri) return;
     let alive = true;
     const pending = cachedThumbnail(uri);
-    void (pending ?? Promise.resolve(uri)).then(value => {
+    void (pending ?? Promise.resolve(uri)).catch(() => uri).then(value => {
       if (alive) setResolved({ original: uri, uri: value });
     });
     return () => { alive = false; };

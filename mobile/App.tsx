@@ -3,6 +3,7 @@ import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from ".
 import { LegalDocument } from "./src/legal/LegalDocument";
 import { sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
+import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
 import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
@@ -147,6 +148,7 @@ function Main({ initialNotice, onErase }: {
     [pageSize, setPageSize] = useState(40),
     [suggestionLimit,setSuggestionLimit]=useState(40),
     [group, setGroup] = useState<string | null>(null),
+    [groupsExpanded, setGroupsExpanded] = useState(false),
     [selected, setSelected] = useState<string[]>([]),
     [draft, setDraft] = useState<string[]>([]);
   const [notice, setNotice] = useState<MessageKey | "">(initialNotice),
@@ -239,6 +241,7 @@ function Main({ initialNotice, onErase }: {
     }
     if (category !== id) {
       setGroup(null);
+      setGroupsExpanded(false);
       setQuery("");
       setSelected([]);
       setAppliedQuery("");
@@ -488,6 +491,7 @@ function Main({ initialNotice, onErase }: {
             {t(notice)}
           </Text>
         )}
+        {screen === "merchantDirectory" && <MerchantDirectoryScreen />}
         {screen === "catalog" && (
           <>
             {!!catalog.storeError && (
@@ -631,19 +635,20 @@ function Main({ initialNotice, onErase }: {
                 {!!groups.length && (
                   <View style={s.panel}>
                     <Text style={s.meta}>{t(category === "technology" ? "productGroup" : "catalogGroup")}</Text>
-                    <ScrollView horizontal>
-                      <View style={s.row}>
+                    <View testID="category-group-choices" style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
                         <Button
                           label={t(category === "technology" ? "allProducts" : "allGroceries")}
                           primary={!group}
                           onPress={() => {
                             setGroup(null);
                             setSelected([]);
+                            setDraft([]);
                             setAppliedQuery("");
                             setQuery("");
+                            setSearchOpen(false);
                           }}
                         />
-                        {groups.map((code) => (
+                        {(groupsExpanded ? groups : groups.slice(0, 4).concat(group && !groups.slice(0, 4).includes(group) ? [group] : [])).map((code) => (
                           <Button
                             key={code}
                             label={
@@ -651,13 +656,27 @@ function Main({ initialNotice, onErase }: {
                             }
                             primary={group === code}
                             onPress={() => {
+                              // A group switch must not inherit a search filter from
+                              // another group, which can otherwise hide every result.
                               setGroup(code);
                               setSelected([]);
+                              setDraft([]);
+                              setAppliedQuery("");
+                              setQuery("");
+                              setSearchOpen(false);
                             }}
                           />
                         ))}
-                      </View>
-                    </ScrollView>
+                        {groups.length > 4 && (
+                          <Button
+                            label={groupsExpanded ? "−" : "⋯"}
+                            accessibilityLabel={t(groupsExpanded ? "hideExtraGroups" : "showAllGroups")}
+                            expanded={groupsExpanded}
+                            primary={groupsExpanded}
+                            onPress={() => setGroupsExpanded((expanded) => !expanded)}
+                          />
+                        )}
+                    </View>
                   </View>
                 )}
                 {visible.slice(0, pageSize).map(productCard)}
