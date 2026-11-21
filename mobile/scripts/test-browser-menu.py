@@ -35,7 +35,8 @@ with sync_playwright() as p:
   elif directory_calls[0]==2:
    route.fulfill(status=503,content_type='application/json',body='{"error":"simulated failure"}')
   elif directory_calls[0]==3:
-   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-2','category_code':'groceries','retailer_code':'fixture-recovered','retailer_name':'Recovered Fixture Retailer','locality_id':'fixture-new-town','locality_name':'Recovered Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Recovered Fixture Address'}]))  else:
+   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-2','category_code':'groceries','retailer_code':'fixture-recovered','retailer_name':'Recovered Fixture Retailer','locality_id':'fixture-new-town','locality_name':'Recovered Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Recovered Fixture Address'}]))
+  else:
    route.fulfill(status=200,content_type='application/json',body='[]')
 
  page.route('**/api/v1/merchant-directory?*',directory_response)
