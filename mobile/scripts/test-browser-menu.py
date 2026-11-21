@@ -32,8 +32,10 @@ with sync_playwright() as p:
   directory_calls[0]+=1
   if directory_calls[0]==1:
    route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-1','category_code':'groceries','retailer_code':'fixture','retailer_name':'Fixture Retailer','locality_id':'fixture-town','locality_name':'Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Fixture Address'}]))
-  else:
+  elif directory_calls[0]==2:
    route.fulfill(status=503,content_type='application/json',body='{"error":"simulated failure"}')
+  else:
+   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-2','category_code':'groceries','retailer_code':'fixture-recovered','retailer_name':'Recovered Fixture Retailer','locality_id':'fixture-new-town','locality_name':'Recovered Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Recovered Fixture Address'}]))
  page.route('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()
  directory=page.get_by_test_id('merchant-directory')
@@ -47,6 +49,16 @@ with sync_playwright() as p:
  expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
  assert directory_calls[0]>=2,directory_calls
  proof['merchant_directory_refresh_discards_stale_rows_on_failure']=True
+ # A third refresh must recover cleanly, without resurrecting the first response.
+ directory.get_by_role('button',name='Обнови',exact=True).click()
+ expect(directory.get_by_role('alert')).to_have_count(0)
+ expect(directory.get_by_role('button',name='Recovered Fixture Town (1)')).to_be_visible()
+ expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
+ directory.get_by_role('button',name='Recovered Fixture Town (1)').click()
+ expect(directory.get_by_text('Recovered Fixture Retailer')).to_be_visible()
+ expect(directory.get_by_text('Fixture Retailer',exact=True)).to_have_count(0)
+ assert directory_calls[0]==3,directory_calls
+ proof['merchant_directory_recovers_after_refresh_failure']=True
  page.unroute('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('button',name='Назад',exact=True).click()
  expect(page.get_by_test_id('catalog-toolbar')).to_be_visible()
