@@ -182,3 +182,15 @@ assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "СОФ
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна ЦЕНТЪР").map(x => x.id), ["2"]);
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "несъществуващ"), []);
 console.log("Merchant directory checks passed: empty query, mixed fields, case folding, no synthetic results.");
+
+// Grouping must not reorder the caller's cached branch records.
+const unsortedMerchantRows = [
+  { ...merchantRows[1], id: "z", locality_id: "varna", retailer_name: "Zeta" },
+  { ...merchantRows[1], id: "a", locality_id: "varna", retailer_name: "Alpha" },
+];
+const originalMerchantOrder = unsortedMerchantRows.map(row => row.id);
+const merchantGroups = merchantDirectory.groupMerchantDirectory(unsortedMerchantRows);
+assert.deepEqual(merchantGroups[0].localities[0].branches.map(row => row.id), ["a", "z"]);
+assert.deepEqual(unsortedMerchantRows.map(row => row.id), originalMerchantOrder);
+assert.deepEqual(merchantDirectory.groupMerchantDirectory(unsortedMerchantRows)[0].localities[0].branches.map(row => row.id), ["a", "z"]);
+console.log("Merchant directory grouping checks passed: stable sorted display without input mutation.");
