@@ -4,7 +4,7 @@ Updated: 21 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — Pre-alpha 010
 
-Internal Android candidate on `codex/pre-alpha-010`, directly based on Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Candidate sequence 010, app version 0.5.3 and Android version code 10. The [009 build](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed Android 10 smoke, ARM signing/ABI checks and test-signed AAB validation. Both local PostgreSQL/SQLAlchemy test legs, Bulgarian OCR, mobile tests, TypeScript, and Expo dependency checks passed for 010 preparation. Next verify the exact 010 Android run and archive its package checksums and native evidence. Live managed-account, private storage, thumbnail and feedback acceptance remain rollout work.
+Internal Android candidate on `codex/pre-alpha-010`, directly based on Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Candidate sequence 010, app version 0.5.3 and Android version code 10. The [009 build](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed Android 10 smoke, ARM signing/ABI checks and test-signed AAB validation. Both local PostgreSQL/SQLAlchemy test legs, Bulgarian OCR, mobile tests, TypeScript, and Expo dependency checks passed for 010 preparation. The owner paused builds and [run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) was cancelled. Wait for explicit authorization before starting another Android build. Live managed-account, private storage, thumbnail and feedback acceptance remain rollout work.
 
 ## Baseline — Pre-alpha 009
 

@@ -306,3 +306,4 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Reconciled Codex pre-alpha 009 handoff with [exact-head Android evidence](https://github.com/Per5on/spestoslav/actions/runs/44348096077). Started the 010 candidate directly from the 009 commit.
 - Both PostgreSQL/SQLAlchemy legs returned 115 passed and one Bulgarian OCR skip each. Installed the Bulgarian language data and reran the OCR selection separately, yielding four passes. Inventory validation, package metadata, mobile tests, TypeScript and Expo dependency checks passed.
 - Next verify Android 10 smoke, ARM APK and test-signed bundle on the final 010 candidate. Preserve 009 artifacts.
+- Owner paused Android builds. GitHub confirmed [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) cancelled. The prepared source and source-check evidence are retained.
