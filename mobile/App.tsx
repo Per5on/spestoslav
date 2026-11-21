@@ -1,7 +1,10 @@
+import { contrastingInk } from "./src/appearance";
+import { CategoryGroups } from "./src/catalog/CategoryGroups";
+import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { sampleCredit } from "./src/catalog/samples";
+import { sampleCredit, technologyThumbnail } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -129,16 +132,17 @@ function Main({ initialNotice, onErase }: {
   initialNotice: MessageKey | "";
   onErase: (cloud: Promise<CloudErasure>) => void;
 }) {
-  const { t, language, setLanguage, fontScale, setFontScale, styles: s, color } = useUI();
+  const { t, language, setLanguage, fontScale, setFontScale, styles: s, color, palette } = useUI();
   const insets = useSafeAreaInsets();
+  const headerInk = palette === 0 ? "#fff" : contrastingInk(color("#195b27", true));
+  const selectedInk = palette === 0 ? "#fff" : contrastingInk(color("#ff8500", true));
   const contentRef = useRef<ScrollView>(null);
   const [category, setCategory] = useState<Category>("groceries"),
     [screen, setScreen] = useState<Screen>("catalog");
   const [locality, setLocality] = useState<Locality | null>(null),
     [basket, setBasket] = useState<BasketItem[]>([]),
     [restored, setRestored] = useState(false);
-  const [view, setView] = useState<"products" | "stores">("products"),
-    [demo, setDemo] = useState(true),
+  const [demo, setDemo] = useState(true),
     [fuel, setFuel] = useState<FuelChoice>("petrol"),
     [fuelMenuOpen, setFuelMenuOpen] = useState(false);
   const [appliedQuery, setAppliedQuery] = useState("");
@@ -287,14 +291,7 @@ function Main({ initialNotice, onErase }: {
   }
   const active =
     screen === "basket" ? "basket" : screen === "catalog" ? category : null;
-  const title =
-    screen === "catalog"
-      ? category === "groceries" && view === "products"
-        ? "products"
-        : "stores"
-      : screen === "basket"
-        ? "list"
-        : screen;
+  const title = screen === "basket" ? "list" : screen === "catalog" ? "products" : screen;
   const fuelProduct = catalog.products.find(p => p.fuel_type === fuel);
   const [priceRevision, setPriceRevision] = useState(0);
   useEffect(() => {
@@ -337,12 +334,13 @@ function Main({ initialNotice, onErase }: {
       ? symbols[p.group_code ?? ""] ?? symbols[p.category_code]
       : undefined;
     const symbol = symbolPath?.startsWith("/api/v1/thumbnails/") ? API_BASE_URL + symbolPath : undefined;
+    const illustration = p.category_code === "technology" ? technologyThumbnail(p.id, p.group_code) : undefined;
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
         {demo && <ProductThumbnail key={catalog.revision} id={p.id}
-          name={symbol ? `${displayName(p)} · ${t("symbolicImage")}` : displayName(p)}
-          uri={p.image_url || symbol} />}
+          name={symbol || illustration ? `${displayName(p)} · ${t("symbolicImage")}` : displayName(p)}
+          uri={p.image_url || symbol} illustration={illustration} />}
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -375,7 +373,7 @@ function Main({ initialNotice, onErase }: {
   }
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]}>
-      <StatusBar style="light" />
+      <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
       <View testID="app-header" style={s.header}>
         <Image
           source={require("./assets/header-logo.webp")}
@@ -384,10 +382,10 @@ function Main({ initialNotice, onErase }: {
           resizeMode="contain"
         />
         <View style={{ flex: 1 }}>
-          <Text style={s.brand}>Спестовник</Text>
-          <Text style={s.tagline}>{t("tagline")}</Text>
+          <AutoFitLabel label="Спестовник" baseSize={25} style={[s.brand, { color: headerInk, width: "100%" }]} />
+          <Text style={[s.tagline, palette !== 0 && { color: headerInk }]}>{t("tagline")}</Text>
         </View>
-        <OverflowMenu top={insets.top + 54} onSelect={(next) => {
+        <OverflowMenu iconColor={headerInk} top={insets.top + 54} onSelect={(next) => {
           setScreen(next);
           setNotice("");
         }} />
@@ -406,15 +404,16 @@ function Main({ initialNotice, onErase }: {
             <Ionicons
               name={tab.icon}
               size={24}
-              color={active === tab.id ? "#fff" : color("#19562a")}
+              color={active === tab.id ? selectedInk : color("#19562a")}
             />
             <AutoFitLabel
               label={t(tab.label)}
               baseSize={12}
+              allowWrap
               style={[
                 s.tabText,
                 { width: "100%" },
-                active === tab.id && { color: "#fff" },
+                active === tab.id && { color: selectedInk },
               ]}
             />
             {tab.id === "basket" && basket.length > 0 && (
@@ -430,35 +429,46 @@ function Main({ initialNotice, onErase }: {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={s.body}
       >
-        <LocationPicker
+        {screen !== "merchants" && <LocationPicker
           apiBaseUrl={API_BASE_URL}
           selected={locality}
           onSelect={(l) => {
             setLocality(l);
             setQuote(null);
           }}
-        />
+        />}
         {screen === "catalog" ? (
-          <CatalogToolbar
-            category={category}
-            view={view}
-            count={locality ? catalog.stores.length : catalog.retailers.length}
-            fuelExpanded={fuelMenuOpen}
-            onView={(next) => {
-              setView(next);
-              setFuelMenuOpen(false);
-            }}
-            onFuel={() => setFuelMenuOpen((open) => !open)}
-            onRefresh={() => {
-              catalog.refresh();
-              setNotice("");
-              setSelected([]);
-              setDraft([]);
-              setQuery("");
-              setSearchOpen(false);
-              setQuote(null);
-            }}
-          />
+          <CatalogToolbar onRefresh={() => {
+            catalog.refresh();
+            setNotice("");
+            setSelected([]);
+            setDraft([]);
+            setQuery("");
+            setAppliedQuery("");
+            setSearchOpen(false);
+            setQuote(null);
+          }}>
+            {category === "fuel" ? (
+              <Button label={t(fuel)} accessibilityLabel={`${t("selectedFuel")}: ${t(fuel)}`}
+                expanded={fuelMenuOpen} onPress={() => setFuelMenuOpen(open => !open)} />
+            ) : (
+              <Input
+                testID="product-search"
+                accessibilityLabel={t("searchProduct")}
+                placeholder={t("searchProduct")}
+                style={s.productSearch}
+                value={query}
+                onFocus={() => {
+                  if (!searchOpen) setDraft(selected);
+                  setSearchOpen(true);
+                }}
+                onChangeText={(value) => {
+                  setQuery(value);
+                  setSearchOpen(true);
+                }}
+              />
+            )}
+          </CatalogToolbar>
         ) : (
           <View style={s.headingRow}>
             {screen !== "basket" && (
@@ -526,28 +536,11 @@ function Main({ initialNotice, onErase }: {
                     ))}
                   </View>
                 )}
-                <Text style={s.meta}>
-                  {t("selectedFuel")}: {t(fuel)}
-                </Text>
                 {!hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
               </>
             )}
-            {category !== "fuel" && view === "products" ? (
+            {category !== "fuel" ? (
               <>
-                <Input
-                  accessibilityLabel={t("searchProduct")}
-                  placeholder={t("searchProduct")}
-                  style={s.input}
-                  value={query}
-                  onFocus={() => {
-                    if (!searchOpen) setDraft(selected);
-                    setSearchOpen(true);
-                  }}
-                  onChangeText={(value) => {
-                    setQuery(value);
-                    setSearchOpen(true);
-                  }}
-                />
                 {searchOpen && (
                   <View style={s.panel}>
                     {suggestions.slice(0,suggestionLimit)
@@ -629,36 +622,19 @@ function Main({ initialNotice, onErase }: {
                   <Text style={s.meta}>{t("cachedCatalog")}</Text>
                 )}
                 {!!groups.length && (
-                  <View style={s.panel}>
-                    <Text style={s.meta}>{t(category === "technology" ? "productGroup" : "catalogGroup")}</Text>
-                    <ScrollView horizontal>
-                      <View style={s.row}>
-                        <Button
-                          label={t(category === "technology" ? "allProducts" : "allGroceries")}
-                          primary={!group}
-                          onPress={() => {
-                            setGroup(null);
-                            setSelected([]);
-                            setAppliedQuery("");
-                            setQuery("");
-                          }}
-                        />
-                        {groups.map((code) => (
-                          <Button
-                            key={code}
-                            label={
-                              groupNames[code] ? t(groupNames[code]) : code
-                            }
-                            primary={group === code}
-                            onPress={() => {
-                              setGroup(code);
-                              setSelected([]);
-                            }}
-                          />
-                        ))}
-                      </View>
-                    </ScrollView>
-                  </View>
+                  <CategoryGroups key={category} technology={category === "technology"}
+                    groups={[
+                      { code: null, label: t(category === "technology" ? "allProducts" : "allGroceries") },
+                      ...groups.map(code => ({ code, label: groupNames[code] ? t(groupNames[code]) : code })),
+                    ]}
+                    selected={group} onSelect={code => {
+                      setGroup(code);
+                      setSelected([]);
+                      setDraft([]);
+                      setAppliedQuery("");
+                      setQuery("");
+                      setSearchOpen(false);
+                    }} />
                 )}
                 {visible.slice(0, pageSize).map(productCard)}
                 {visible.length > pageSize && (
@@ -717,6 +693,7 @@ function Main({ initialNotice, onErase }: {
             )}
           </>
         )}
+        {screen === "merchants" && <MerchantDirectoryScreen />}
         {screen === "basket" && (
           <>
             {!basket.length && <Text style={s.notice}>{t("emptyList")}</Text>}

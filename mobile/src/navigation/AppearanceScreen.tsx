@@ -24,11 +24,11 @@ export function AppearanceScreen({ images, onToggleImages }: Props) {
       <Text style={s.productName}>{t("appearancePalette")}</Text>
       <View style={s.row}>
         {palettes.map((combination, index) => (
-          <Pressable key={combination.header} accessibilityRole="radio"
+          <Pressable key={`${combination.header}/${combination.accent}`} accessibilityRole="radio"
             accessibilityLabel={`${t("appearancePalette")} ${index + 1}`}
             accessibilityState={{ checked: index === palette }} aria-checked={index === palette}
             onPress={() => setPalette(index)}
-            style={[s.button, { paddingHorizontal: 8, alignItems: "center", width: "22%" }]}>
+            style={[s.button, { paddingHorizontal: 8, alignItems: "center", width: "22%", minWidth: 60 }]}>
             <View style={{ flexDirection: "row", borderRadius: 10, overflow: "hidden", height: 18, width: 44 }}>
               <View style={{ flex: 1, backgroundColor: combination.header }} />
               <View style={{ flex: 1, backgroundColor: combination.accent }} />

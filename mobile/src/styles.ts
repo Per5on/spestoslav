@@ -79,6 +79,16 @@ export const s = StyleSheet.create({
     color: "#263e2d",
     fontSize: 16,
   },
+  productSearch: {
+    minHeight: 44,
+    flex: 1,
+    paddingHorizontal: 13,
+    paddingVertical: 7,
+    backgroundColor: "#edf3e5",
+    borderRadius: 11,
+    color: "#263e2d",
+    fontSize: 16,
+  },
   panel: {
     padding: 13,
     borderRadius: 14,

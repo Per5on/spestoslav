@@ -307,3 +307,9 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Both PostgreSQL/SQLAlchemy legs returned 115 passed and one Bulgarian OCR skip each. Installed the Bulgarian language data and reran the OCR selection separately, yielding four passes. Inventory validation, package metadata, mobile tests, TypeScript and Expo dependency checks passed.
 - Next verify Android 10 smoke, ARM APK and test-signed bundle on the final 010 candidate. Preserve 009 artifacts.
 - Owner paused Android builds. GitHub confirmed [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) cancelled. The prepared source and source-check evidence are retained.
+
+## 21 November 2026 — 010 candidate verification and build hold
+
+- Added the nationwide merchant directory and implemented the requested catalogue, fuel, comparison, images and palette changes to candidate source. Removed stale toolbar code and restricted chain requests to their remaining fuel-overview caller. Resolved dependency tree and Expo plugin audit found no safe runtime removal.
+- Backend matrix passed 117 tests per leg on local PostgreSQL 16 with Bulgarian OCR. Mobile checks and six Chromium dry-run suites passed. Verified Android config and smoke script syntax independently of packaging. [Dry-run captures](references/pre-alpha-010-dry-run.jpg).
+- Next action is owner acknowledgment of the exact candidate commit. Keep Android dispatch and backend rollout on hold.

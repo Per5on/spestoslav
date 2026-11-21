@@ -30,7 +30,7 @@ export function useCatalog(
   includePrices = true,
   active = true,
 ) {
-  const [chains, setChains] = useState<{ category: Category; rows: Retailer[] }>({ category, rows: [] });
+  const [chains, setChains] = useState<Retailer[]>([]);
   const [chainLoading, setChainLoading] = useState(true);
   const [chainError, setChainError] = useState(false);
   const [revision, setRevision] = useState(0);
@@ -109,22 +109,22 @@ export function useCatalog(
     return () => controller.abort();
   }, [active, category, localityId, revision, includePrices]);
   useEffect(() => {
-    if (!active) return;
+    if (!active || category !== "fuel" || localityId) return;
     const controller = new AbortController();
     setChainLoading(true); setChainError(false);
     api<{ retailers: Retailer[] }>(`/api/v1/catalog?category_code=${category}`, { signal: controller.signal })
-      .then(result => { if (!controller.signal.aborted) setChains({ category, rows: result.retailers.filter(r => r.category_code === category) }); })
+      .then(result => { if (!controller.signal.aborted) setChains(result.retailers.filter(r => r.category_code === category)); })
       .catch(() => { if (!controller.signal.aborted) setChainError(true); })
       .finally(() => { if (!controller.signal.aborted) setChainLoading(false); });
     return () => controller.abort();
-  }, [active, category, revision]);
+  }, [active, category, localityId, revision]);
   const real = products[category] ?? noProducts;
   const visibleProducts = useMemo(() => demo && category !== "fuel"
     ? [...sampleProducts.filter(row => row.category_code === category), ...real]
     : real, [demo, category, real]);
   return {
     cached,
-    retailers: chains.category === category ? chains.rows : [],
+    retailers: category === "fuel" ? chains : [],
     chainLoading, chainError,
     products: visibleProducts,
     loading: category !== "fuel" && loading && real.length === 0 && visibleProducts.length === 0,

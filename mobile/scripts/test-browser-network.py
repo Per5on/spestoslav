@@ -43,7 +43,7 @@ with sync_playwright() as p:
     assert calls[0] == 2, calls
     page.get_by_text("София", exact=True).click()
     expect(location).to_have_value("София")
-    for tab in ("Техника", "Горива", "Моят списък", "Храни"):
+    for tab in ("Техника", "Горива", "Сравни цените", "Храни"):
         page.get_by_role("tab", name=tab, exact=True).click()
         expect(location).to_have_value("София")
     expect(location).to_have_count(1)

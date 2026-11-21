@@ -9,7 +9,26 @@ export const palettes = [
   { header: "#31445a", accent: "#3e6c53", tint: "#e9edf3", ink: "#30455c" },
   { header: "#63411d", accent: "#8c4536", tint: "#f6eee1", ink: "#5a3817" },
   { header: "#334b26", accent: "#7350a3", tint: "#edf1e2", ink: "#344c26" },
+  { header: "#b9ceac", accent: "#f2eee7", tint: "#f2eee7", ink: "#202820" },
+  { header: "#f8c7fb", accent: "#c181f3", tint: "#f8e9fa", ink: "#202820" },
+  { header: "#022f40", accent: "#38aecc", tint: "#e0f3f7", ink: "#202820" },
+  { header: "#a29f61", accent: "#383615", tint: "#efeedf", ink: "#202820" },
+  { header: "#f7da83", accent: "#073368", tint: "#faf0d8", ink: "#202820" },
+  { header: "#edede2", accent: "#ebbdd3", tint: "#ebbdd3", ink: "#202820" },
+  { header: "#1B263B", accent: "#FF7F50", tint: "#fff0e8", ink: "#202820" },
+  { header: "#1B263B", accent: "#F4C7C3", tint: "#F4C7C3", ink: "#202820" },
+  { header: "#806380", accent: "#ffc6ff", tint: "#ffc6ff", ink: "#202820" },
 ] as const;
+
+export function contrastingInk(background: string) {
+  const value = background.slice(1);
+  const channels = [0, 2, 4].map(offset => {
+    const channel = parseInt(value.slice(offset, offset + 2), 16) / 255;
+    return channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  });
+  const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+  return luminance > 0.179 ? "#000" : "#fff";
+}
 
 const greens = new Set(["#19562a", "#234b2d", "#267133", "#1a5228", "#263e2d", "#243d2b", "#283f2e"]);
 const pale = new Set(["#edf3e5", "#eaf1dd", "#eff4e8", "#dbead3"]);

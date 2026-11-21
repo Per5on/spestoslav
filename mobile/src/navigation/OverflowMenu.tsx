@@ -4,7 +4,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Text, useUI } from "../ui";
 import { overflowMenu, Screen } from "./menu";
 
-export function OverflowMenu({ top, onSelect }: { top: number; onSelect: (screen: Screen) => void }) {
+export function OverflowMenu({ top, onSelect, iconColor }: { top: number; iconColor: string; onSelect: (screen: Screen) => void }) {
   const { t, styles: s, color } = useUI();
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -17,7 +17,7 @@ export function OverflowMenu({ top, onSelect }: { top: number; onSelect: (screen
         style={s.settingsButton}
         onPress={() => setOpen(true)}
       >
-        <Ionicons name="ellipsis-vertical" size={25} color="#fff" />
+        <Ionicons name="ellipsis-vertical" size={25} color={iconColor} />
       </Pressable>
       <Modal transparent visible={open} animationType="none" onRequestClose={close}>
         <View style={{ flex: 1 }}>

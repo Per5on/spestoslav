@@ -168,13 +168,11 @@ export function AutoFitLabel({
   label,
   style,
   baseSize = 14,
-  intrinsic = false,
   allowWrap = false,
 }: {
   label: string;
   style?: StyleProp<TextStyle>;
   baseSize?: number;
-  intrinsic?: boolean;
   allowWrap?: boolean;
 }) {
   const { fontScale, localStyle, dark } = useUI();
@@ -185,7 +183,6 @@ export function AutoFitLabel({
   const desired = appFontSize(baseSize, fontScale, 11) * systemScale;
   let fitted = desired;
   if (
-    !intrinsic &&
     Platform.OS === "web" &&
     typeof document !== "undefined" &&
     width > 0 &&
@@ -213,7 +210,7 @@ export function AutoFitLabel({
       {...(Platform.OS === "web"
         ? {}
         : {
-            adjustsFontSizeToFit: !intrinsic,
+            adjustsFontSizeToFit: true,
             minimumFontScale: Math.min(1, 12 / desired),
           })}
       style={[dark && { color: "#d4e4da" }, localStyle(StyleSheet.flatten(style) || {}), { fontSize: fitted, flexShrink: 1 }]}

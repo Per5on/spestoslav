@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import { Image, View, type ImageSourcePropType } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useUI } from "../ui";
 import { sampleThumbnail } from "./samples";
 import { cachedThumbnail } from "./thumbnailCache";
-export function ProductThumbnail({ id, name, uri }: { id: string; name: string; uri?: string | null }) {
+export function ProductThumbnail({ id, name, uri, illustration }: { id: string; name: string; uri?: string | null; illustration?: ImageSourcePropType }) {
   const { styles: s, color } = useUI();
   const [failed, setFailed] = useState(false);
   const [loadedUri, setLoadedUri] = useState<string | null>(null);
-  const sample = sampleThumbnail(id);
+  const sample = illustration ?? sampleThumbnail(id);
   const key = sample ? id : uri;
   const [resolved, setResolved] = useState<{ original: string; uri: string }>();
   useEffect(() => {
@@ -17,6 +17,8 @@ export function ProductThumbnail({ id, name, uri }: { id: string; name: string; 
     const pending = cachedThumbnail(uri);
     void (pending ?? Promise.resolve(uri)).then(value => {
       if (alive) setResolved({ original: uri, uri: value });
+    }, () => {
+      if (alive) setResolved({ original: uri, uri });
     });
     return () => { alive = false; };
   }, [sample, uri]);

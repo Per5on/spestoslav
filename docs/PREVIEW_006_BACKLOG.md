@@ -1,3 +1,20 @@
+## Pre-alpha 010 — owner requirements, 21 November 2026
+
+- [x] Backend first: paginated nationwide merchant directory from active recorded branches, grouped by category and canonical locality, with existing branch names and addresses.
+- [x] Rename Моят списък to Сравни цените in all interface languages.
+- [x] Food and Technology: remove Stores and Products buttons, put light-green product search before Refresh in the same row.
+- [x] Remove group headings. Use two horizontally scrollable rows with a lower-right horizontal overflow button. Technology order: All Products and TV/Computing above, Smart Home, Small Appliances and Major Appliances below, then overflow.
+- [x] Replace all Technology thumbnails with bundled, coherent colorful symbolic artwork. Keep the approved Food references and use matching card presentation.
+- [x] Fuel: replace Stations and Fuel buttons with a compact current-fuel selector before Refresh.
+- [x] Add Търговски обекти to the upper vertical menu. List addresses by category and canonical locality.
+- [x] Preserve default and saved palettes. Add #b9ceac/#f2eee7, #f8c7fb/#c181f3, #022f40/#38aecc, #a29f61/#383615, #f7da83/#073368, #edede2/#ebbdd3, #1B263B/#FF7F50, #1B263B/#F4C7C3 and #806380/#ffc6ff. Include the repeated purple pair once.
+- [x] After frontend, remove demonstrated obsolete code, then audit and remove unused dependencies.
+- [x] Record three checks and a successful dry run for the candidate. See the handoff and visual evidence below.
+- [ ] Obtain owner acknowledgment of the exact candidate commit before any APK/AAB build.
+- [ ] Verify installed Android smoke and real merchant-directory integration after separately authorized build and backend rollout.
+
+[Browser dry-run screenshots](references/pre-alpha-010-dry-run.jpg) · [Verification and next actions](CODEX_HANDOFF.md#21-november-2026--codex-pre-alpha-010)
+
 ## 17 November — findings moved to to-do; execution candidate007
 
 Owner authorized the following sequence; retain this006 backlog as the finding/task log, implement on `codex/preview-007`. See [dry-test evidence](DRY_TEST_FINDINGS_2026-11-17.md) and [007 plan](PREVIEW_007_PLAN.md).

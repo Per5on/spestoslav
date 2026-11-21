@@ -23,28 +23,29 @@ with sync_playwright() as p:
  proof['sample_photos_visible_by_default_and_opt_out_persists']=True
  page.get_by_role('tab',name='Техника',exact=True).click()
  toolbar=page.get_by_test_id('catalog-toolbar')
- toolbar.get_by_role('button',name=re.compile('^Магазини')).click()
+ page.get_by_role('button',name='Отвори менюто',exact=True).click()
+ page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()
+ directory=page.get_by_test_id('merchant-directory')
  for name in ['Зора','Technopolis','Technomarket','Techmart','Вали','Ardes','Jar Computers']:
-  expect(page.get_by_text(name,exact=True)).to_be_visible(timeout=15000)
- proof['seven_requested_chains_without_fabricated_local_availability']=True
- page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'technology-chains.png'))
+  expect(directory.get_by_text(name,exact=False)).to_be_visible(timeout=15000)
+ expect(directory.get_by_role('heading',name='София',exact=True)).to_have_count(3)
+ proof['seven_requested_chains_with_recorded_addresses']=True
+ page.screenshot(path=str(args.output_dir/'merchant-directory.png'))
+ page.get_by_role('tab',name='Техника',exact=True).click()
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia')
- page.get_by_text('София',exact=True).click()
- expect(page.get_by_text('Примерен обект · демонстрационен адрес',exact=True)).to_have_count(7)
- proof['location_filtered_technology_branches']=True
+ page.get_by_text('София',exact=True).first.click()
  page.get_by_role('tab',name='Горива',exact=True).click()
  for index,name in enumerate(['Бензин 95','Бензин 98+','Дизел','Дизел +','Автогаз']):
-  toolbar.get_by_role('button',name='Гориво',exact=True).click()
+  toolbar.get_by_role('button',name=re.compile('^Избрано гориво:')).click()
   page.get_by_role('radio',name=name,exact=True).click()
   expect(page.get_by_text(f'{1.48+index*.1:.2f} €/L',exact=True)).to_be_visible(timeout=10000)
  expect(page.get_by_text('Примерен обект · демонстрационен адрес',exact=True)).to_have_count(6)
  proof['six_requested_stations_and_all_five_price_filters']=True
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'fuel.png'))
  page.get_by_role('tab',name='Техника',exact=True).click()
- toolbar.get_by_role('button',name='Продукти',exact=True).click()
  page.get_by_role('switch').click()
- expect(page.get_by_role('img',name='Лаптоп (примерна снимка)',exact=True)).to_be_visible(timeout=20000)
- expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_be_visible()
+ expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible(timeout=20000)
+ expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True)).to_have_count(0)
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()

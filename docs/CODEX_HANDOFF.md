@@ -10,6 +10,16 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 
 Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. The [009 Android run](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed the native smoke, ARM APK and test-signed bundle jobs. GitHub lists all three 009 artifacts. Direct download from this environment returned HTTP 403, so package checksums and screenshots could not be independently rechecked. Owner requested a new internal 010 build using this baseline. The owner then paused build work. [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) on `5f10369c06bfe95e2f2f65ceb458ae3b458c96ef` was cancelled. Wait for explicit owner authorization before dispatching another APK or AAB build. Carry forward the pending rollout acceptance below.
 
+**Candidate ready for review.** Implemented the [010 TODO](PREVIEW_006_BACKLOG.md) directly on the Codex lane. The additive read-only merchant API groups active recorded branches by category and locality without changing the existing store contract. The app adds the merchant directory and updates the compare tab, both catalogue toolbars, two-row groups and overflow, Technology illustrations, compact fuel selector, and nine distinct palette pairs. Added no runtime packages. Removed obsolete toolbar states, labels and unused category-level retailer requests outside the fuel overview. Reviewed package usages, Expo config plugins and the resolved dependency tree. No remaining dependency was shown to be unused.
+
+| Pre-build check | Result |
+|---|---|
+| Backend and data | Local PostgreSQL 16 matrix passed 117 tests on each of SQLAlchemy 2.0 and 2.1, including Bulgarian OCR and merchant paging. Inventory validation found 116 seed rows with zero duplicates or unmatched localities. |
+| Frontend and integrated dry run | Mobile tests, strict TypeScript including unused-code checks, Expo dependency compatibility and web export passed. Six Chromium suites passed with a loopback fixture API: toolbar and appearance, catalogue and merchant directory, menu, legal, network, and end-to-end basket/barcode/receipt flows. The toolbar was exercised in six languages at 320 px and 130% app font size. Local synthetic camera/photo and receipt inputs were used. [Screenshots](references/pre-alpha-010-dry-run.jpg) |
+| Android preflight | Expo native configuration introspection and smoke script syntax passed for Спестовник 10, app 0.5.3 / versionCode 10, camera-only permission. APK/AAB packaging and installed Android acceptance await owner approval of the exact commit. |
+
+The directory API was exercised locally. Deploying the API and verifying real merchant records, managed account, private storage, thumbnails, and feedback remain rollout work. Build permission must be tied to the reviewed commit SHA. Keep earlier artifacts.
+
 ### 18 November 2026 — concise daily handoff and Pre-alpha 009 status
 
 | Area | Completed today |

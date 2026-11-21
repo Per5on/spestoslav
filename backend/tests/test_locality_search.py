@@ -1,7 +1,7 @@
 import uuid
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine, event, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -222,3 +222,30 @@ def test_current_prices_and_promotions():
     offers = client.get("/api/v1/promotions").json()
     assert len(offers) == 1
     assert offers[0]["promotional_price_eur"] == 0.99
+
+
+def test_merchant_directory_lists_active_addresses_with_bounded_paging():
+    with TestingSessionLocal.begin() as db:
+        locality_id = db.scalar(select(Locality.id))
+        db.add_all([
+            StoreBranch(retailer_code="TEST", locality_id=locality_id, address="Main street 2"),
+            StoreBranch(retailer_code="TEST", locality_id=locality_id, address="Inactive", active=False),
+        ])
+
+    first = client.get("/api/v1/merchant-directory", params={"limit": 1})
+    assert first.status_code == 200
+    page = first.json()
+    branch = page["branches"][0]
+    assert branch["retailer_name"] == "Test Market"
+    assert branch["category_code"] == "FOOD"
+    assert branch["locality_name"] == "София"
+    assert branch["address"] == "Main street 1"
+    assert page["next_offset"] == 1
+
+    last = client.get("/api/v1/merchant-directory", params={"limit": 1, "offset": 1}).json()
+    assert [branch["address"] for branch in last["branches"]] == ["Main street 2"]
+    assert last["next_offset"] is None
+    assert client.get("/api/v1/merchant-directory", params={"offset": 2}).json() == {
+        "branches": [], "next_offset": None,
+    }
+    assert client.get("/api/v1/merchant-directory", params={"limit": 201}).status_code == 422

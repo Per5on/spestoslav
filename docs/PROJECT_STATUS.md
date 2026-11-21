@@ -6,6 +6,8 @@ Updated: 21 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 Internal Android candidate on `codex/pre-alpha-010`, directly based on Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Candidate sequence 010, app version 0.5.3 and Android version code 10. The [009 build](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed Android 10 smoke, ARM signing/ABI checks and test-signed AAB validation. Both local PostgreSQL/SQLAlchemy test legs, Bulgarian OCR, mobile tests, TypeScript, and Expo dependency checks passed for 010 preparation. The owner paused builds and [run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) was cancelled. Wait for explicit authorization before starting another Android build. Live managed-account, private storage, thumbnail and feedback acceptance remain rollout work.
 
+The 010 feature queue is implemented and its three pre-build checks are documented in the [handoff](CODEX_HANDOFF.md). Review the [TODO](PREVIEW_006_BACKLOG.md) and [browser dry-run captures](references/pre-alpha-010-dry-run.jpg). Next action is owner acknowledgment of the exact candidate commit. No build, workflow dispatch, or deployment until separately authorized.
+
 ## Baseline — Pre-alpha 009
 
 Added «Изтрий данни» with offline guest reset and authenticated cloud erasure. The owner authorized the internal APKs and AAB. The source, backend and browser checks passed, and the Android workflow runs the installed emulator APK before packaging the ARM APK and test-signed AAB. The daily summary and live-data limits are in the handoff.

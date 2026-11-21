@@ -83,7 +83,7 @@ adb("logcat", "-c")
 adb("shell", "am", "start", "-W", "-n", "bg.spestoslav.preview/.MainActivity")
 wait_text("Спестовник", 20)
 initial = nodes()
-order = ["Храни", "Техника", "Горива", "Моят списък"]
+order = ["Храни", "Техника", "Горива", "Сравни цените"]
 positions = [bounds(next(n for n in initial if label(n) == name))[0] for name in order]
 assert positions == sorted(positions)
 assert not any(label(n) == "Дом" or label(n) == "МЕСТОПОЛОЖЕНИЕ" for n in initial)
@@ -94,15 +94,11 @@ adb("shell", "input", "text", "Sofia")
 tap_node(wait_text("София"))
 assert label(wait_resource("location-search")) == "София"
 toolbar = nodes()
-products = next(n for n in toolbar if label(n) == "Продукти")
-stores = next(n for n in toolbar if label(n).startswith("Магазини ("))
+search = wait_resource("product-search")
 refresh = next(n for n in toolbar if label(n) == "Обнови")
-assert (
-    max(bounds(n)[1] for n in [products, stores, refresh])
-    - min(bounds(n)[1] for n in [products, stores, refresh])
-    < 4
-)
-assert bounds(stores)[0] < bounds(products)[0] < bounds(refresh)[0]
+assert abs(bounds(search)[1] - bounds(refresh)[1]) < 4
+assert bounds(search)[0] < bounds(refresh)[0]
+assert not any(label(n) == "Продукти" or label(n).startswith("Магазини (") for n in toolbar)
 capture_visual("catalogue")
 # Verify actual decoding of the bundled samples in both catalogue categories.
 wait_resource("thumbnail-loaded-demo-milk")
@@ -112,11 +108,11 @@ wait_resource("thumbnail-loaded-demo-laptop")
 assert not any(n.get("resource-id", "").endswith("thumbnail-fallback-demo-laptop") for n in nodes())
 tap("Храни")
 tap_node(next(n for n in nodes() if "Примерни снимки" in label(n)))
-for tab in ["Техника", "Горива", "Моят списък"]:
+for tab in ["Техника", "Горива", "Сравни цените"]:
     tap(tab)
     assert label(wait_resource("location-search")) == "София"
 assert any("Списъкът е празен" in label(n) for n in nodes())
-tap("Горива");tap("Гориво")
+tap("Горива");tap("Избрано гориво: Бензин 95")
 for grade in ("Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз"):
     assert any(label(n) == grade for n in nodes()), grade
 tap("Бензин 95")

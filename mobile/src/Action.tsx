@@ -1,29 +1,31 @@
+import { contrastingInk } from "./appearance";
 import { useState } from "react";
 import { Pressable, AutoFitLabel, useUI } from "./ui";
 export function Button({
   label,
+  accessibilityLabel,
   onPress,
   primary = false,
   disabled = false,
-  layout,
   expanded,
   labelSize = 14,
   compactRefresh = false,
 }: {
   label: string;
+  accessibilityLabel?: string;
   onPress: () => void;
   primary?: boolean;
   disabled?: boolean;
-  layout?: "equal" | "snug";
   expanded?: boolean;
   labelSize?: number;
   compactRefresh?: boolean;
 }) {
-  const { styles: s } = useUI();
+  const { styles: s, palette, color } = useUI();
   const [focused, setFocused] = useState(false);
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
       focusOutline={false}
       disabled={disabled}
       accessibilityState={{ disabled, expanded }}
@@ -33,16 +35,9 @@ export function Button({
       onBlur={() => setFocused(false)}
       style={[
         s.button,
-        layout === "equal" && {
-          flexBasis: 0,
-          flexGrow: 1,
-          minWidth: 0,
-          paddingHorizontal: 2,
-        },
-        layout === "snug" && {
-          flexGrow: 0,
+        compactRefresh && {
           flexShrink: 0,
-          paddingHorizontal: compactRefresh ? 7 : 0.25,
+          paddingHorizontal: 7,
           minWidth: 44,
           maxWidth: "34%",
         },
@@ -53,11 +48,10 @@ export function Button({
     >
       <AutoFitLabel
         label={label}
-        intrinsic={layout === "snug" && !compactRefresh}
         allowWrap={true}
         baseSize={labelSize}
         style={{
-          color: primary ? "#fff" : "#19562a",
+          color: primary ? (palette === 0 ? "#fff" : contrastingInk(color("#ff8500", true))) : "#19562a",
           fontWeight: "600",
           textAlign: "center",
         }}
