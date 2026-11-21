@@ -181,6 +181,9 @@ assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "  "), 
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "СОФИЯ магазин").map(x => x.id), ["1"]);
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна ЦЕНТЪР").map(x => x.id), ["2"]);
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "несъществуващ"), []);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "Варна, ЦЕНТЪР").map(x => x.id), ["2"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "ул Главна").map(x => x.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "София—Магазин").map(x => x.id), ["1"]);
 console.log("Merchant directory checks passed: empty query, mixed fields, case folding, no synthetic results.");
 
 // Grouping must not reorder the caller's cached branch records.
