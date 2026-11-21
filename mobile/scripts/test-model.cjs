@@ -127,7 +127,7 @@ for (const value of Object.values(translations.exports.messages))
 
 function loadTS(path, dependencies = {}) {
   const code = ts.transpileModule(fs.readFileSync(path, "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2018 },
   }).outputText;
   const m = { exports: {} };
   new Function("exports", "require", "module", code)(
