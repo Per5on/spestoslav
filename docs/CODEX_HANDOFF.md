@@ -6,6 +6,10 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 
 
 
+### 21 November 2026 — Codex pre-alpha 010
+
+Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. The [009 Android run](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed the native smoke, ARM APK and test-signed bundle jobs. GitHub lists all three 009 artifacts. Direct download from this environment returned HTTP 403, so package checksums and screenshots could not be independently rechecked. Owner requested a new internal 010 build using this baseline. Review the exact 010 Android run and preserve its APK, AAB, checksums and native evidence. Carry forward the pending rollout acceptance below.
+
 ### 18 November 2026 — concise daily handoff and Pre-alpha 009 status
 
 | Area | Completed today |

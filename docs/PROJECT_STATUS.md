@@ -1,8 +1,12 @@
 # Спестовник — active project status
 
-Updated: 18 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
+Updated: 21 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
 
-## Current work — Pre-alpha 009
+## Current work — Pre-alpha 010
+
+Internal Android candidate on `codex/pre-alpha-010`, directly based on Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Candidate sequence 010, app version 0.5.3 and Android version code 10. The [009 build](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed Android 10 smoke, ARM signing/ABI checks and test-signed AAB validation. Both local PostgreSQL/SQLAlchemy test legs, Bulgarian OCR, mobile tests, TypeScript, and Expo dependency checks passed for 010 preparation. Next verify the exact 010 Android run and archive its package checksums and native evidence. Live managed-account, private storage, thumbnail and feedback acceptance remain rollout work.
+
+## Baseline — Pre-alpha 009
 
 Added «Изтрий данни» with offline guest reset and authenticated cloud erasure. The owner authorized the internal APKs and AAB. The source, backend and browser checks passed, and the Android workflow runs the installed emulator APK before packaging the ARM APK and test-signed AAB. The daily summary and live-data limits are in the handoff.
 

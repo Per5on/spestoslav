@@ -300,3 +300,9 @@ Checked profile secret storage. Verified 14 symbolic assets and the API on local
 ## 18 November — Pre-alpha data deletion and daily consolidation
 
 Added a guest-capable local data reset and an authenticated cloud erasure route that retains the sign-in account. Backend, browser and Android prebuild lanes passed. Consolidated today’s actions in the handoff. Await the next APK build instruction and verify the live route with a disposable account before promising cloud erasure to users.
+
+## 21 November 2026 — Codex pre-alpha 010 preparation
+
+- Reconciled Codex pre-alpha 009 handoff with [exact-head Android evidence](https://github.com/Per5on/spestoslav/actions/runs/44348096077). Started the 010 candidate directly from the 009 commit.
+- Both PostgreSQL/SQLAlchemy legs returned 115 passed and one Bulgarian OCR skip each. Installed the Bulgarian language data and reran the OCR selection separately, yielding four passes. Inventory validation, package metadata, mobile tests, TypeScript and Expo dependency checks passed.
+- Next verify Android 10 smoke, ARM APK and test-signed bundle on the final 010 candidate. Preserve 009 artifacts.
