@@ -52,6 +52,7 @@ with sync_playwright() as p:
  assert directory_calls[0]==1,directory_calls
  directory.get_by_role('button',name='Обнови',exact=True).click()
  expect(directory.get_by_role('alert')).to_be_visible()
+ expect(directory.get_by_role('progressbar')).to_have_count(0)
  expect(directory.get_by_text('Fixture Retailer')).to_have_count(0)
  expect(directory.get_by_text('Fixture Address',exact=True)).to_have_count(0)
  expect(directory.get_by_text('Fixture Town (1)',exact=True)).to_have_count(0)
@@ -60,6 +61,7 @@ with sync_playwright() as p:
  # A third refresh must recover cleanly, without resurrecting the first response.
  directory.get_by_role('button',name='Обнови',exact=True).click()
  expect(directory.get_by_role('alert')).to_have_count(0)
+ expect(directory.get_by_role('progressbar')).to_have_count(0)
  expect(directory.get_by_role('button',name='Recovered Fixture Town (1)')).to_be_visible()
  expect(directory.get_by_text('Fixture Town (1)',exact=True)).to_have_count(0)
  recovered_locality=directory.get_by_role('button',name='Recovered Fixture Town (1)')
