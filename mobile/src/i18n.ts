@@ -557,6 +557,7 @@ const appearanceMessages = {
     "appearanceDark": "Тъмен режим",
     "symbolicImage": "Символично изображение",
     "representativePhoto": "Примерна снимка",
+    "illustrativePhotoNotice": "Снимките са илюстративни. Действителният продукт или опаковката може да изглеждат различно.",
     "enlargePhoto": "Увеличи снимката",
     "closePhoto": "Затвори снимката"
   },
@@ -566,6 +567,7 @@ const appearanceMessages = {
     "appearanceDark": "Dark mode",
     "symbolicImage": "Symbolic image",
     "representativePhoto": "Representative photo",
+    "illustrativePhotoNotice": "Photos are for illustration. The actual product or packaging may look different.",
     "enlargePhoto": "Enlarge photo",
     "closePhoto": "Close photo"
   },
@@ -575,6 +577,7 @@ const appearanceMessages = {
     "appearanceDark": "Dunkelmodus",
     "symbolicImage": "Symbolisches Bild",
     "representativePhoto": "Beispielfoto",
+    "illustrativePhotoNotice": "Die Fotos dienen der Veranschaulichung. Das tatsächliche Produkt oder die Verpackung kann anders aussehen.",
     "enlargePhoto": "Foto vergrößern",
     "closePhoto": "Foto schließen"
   },
@@ -584,6 +587,7 @@ const appearanceMessages = {
     "appearanceDark": "Modo oscuro",
     "symbolicImage": "Imagen simbólica",
     "representativePhoto": "Foto representativa",
+    "illustrativePhotoNotice": "Las fotos son ilustrativas. El producto real o su envase pueden tener un aspecto diferente.",
     "enlargePhoto": "Ampliar foto",
     "closePhoto": "Cerrar foto"
   },
@@ -593,6 +597,7 @@ const appearanceMessages = {
     "appearanceDark": "Mode sombre",
     "symbolicImage": "Image symbolique",
     "representativePhoto": "Photo indicative",
+    "illustrativePhotoNotice": "Les photos sont illustratives. Le produit réel ou son emballage peuvent avoir un aspect différent.",
     "enlargePhoto": "Agrandir la photo",
     "closePhoto": "Fermer la photo"
   },
@@ -602,6 +607,7 @@ const appearanceMessages = {
     "appearanceDark": "Тёмный режим",
     "symbolicImage": "Символическое изображение",
     "representativePhoto": "Пример фотографии",
+    "illustrativePhotoNotice": "Фотографии приведены для иллюстрации. Реальный товар или его упаковка могут выглядеть иначе.",
     "enlargePhoto": "Увеличить фото",
     "closePhoto": "Закрыть фото"
   }

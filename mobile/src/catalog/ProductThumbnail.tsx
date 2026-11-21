@@ -56,8 +56,9 @@ function Thumbnail({ id, name, uri, fallback }: Props) {
             <View testID="thumbnail-viewer" accessibilityViewIsModal
               style={[s.panel, { width: "92%", maxWidth: 640 }]}>
               <Text style={s.productName}>{photoName}</Text>
+              <Text style={s.meta}>{t("illustrativePhotoNotice")}</Text>
               <Image accessibilityLabel={photoName} source={source} resizeMode="contain"
-                style={{ width: "100%", height: height * 0.55, backgroundColor: "#fff" }}
+                style={{ width: "100%", height: height * 0.50, backgroundColor: "#fff" }}
                 onError={handleError} />
               <Pressable accessibilityRole="button" style={s.button} onPress={close}>
                 <Text style={s.productName}>{t("closePhoto")}</Text>

@@ -478,6 +478,9 @@ function Main({ initialNotice, onErase }: {
             {t(notice)}
           </Text>
         )}
+        {screen === "catalog" && category !== "fuel" && (
+          <Text style={s.meta}>{t("illustrativePhotoNotice")}</Text>
+        )}
         {screen === "catalog" && (
           <>
             {!!catalog.storeError && (
