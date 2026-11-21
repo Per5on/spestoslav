@@ -34,8 +34,10 @@ with sync_playwright() as p:
    route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-1','category_code':'groceries','retailer_code':'fixture','retailer_name':'Fixture Retailer','locality_id':'fixture-town','locality_name':'Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Fixture Address'}]))
   elif directory_calls[0]==2:
    route.fulfill(status=503,content_type='application/json',body='{"error":"simulated failure"}')
-  else:
-   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-2','category_code':'groceries','retailer_code':'fixture-recovered','retailer_name':'Recovered Fixture Retailer','locality_id':'fixture-new-town','locality_name':'Recovered Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Recovered Fixture Address'}]))
+  elif directory_calls[0]==3:
+   route.fulfill(status=200,content_type='application/json',body=json.dumps([{'id':'fixture-branch-2','category_code':'groceries','retailer_code':'fixture-recovered','retailer_name':'Recovered Fixture Retailer','locality_id':'fixture-new-town','locality_name':'Recovered Fixture Town','municipality':None,'region':None,'branch_name':None,'address':'Recovered Fixture Address'}]))  else:
+   route.fulfill(status=200,content_type='application/json',body='[]')
+
  page.route('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()
  directory=page.get_by_test_id('merchant-directory')
@@ -78,6 +80,14 @@ with sync_playwright() as p:
  expect(directory.get_by_text('Fixture Retailer',exact=True)).to_have_count(0)
  assert directory_calls[0]==3,directory_calls
  proof['merchant_directory_recovers_after_refresh_failure']=True
+ # A successful empty response must clear the recovered locality and its address.
+ directory.get_by_role('button',name='Обнови',exact=True).click()
+ expect(directory.get_by_role('alert')).to_have_count(0)
+ expect(directory.get_by_role('button',name='Recovered Fixture Town (1)')).to_have_count(0)
+ expect(directory.get_by_text('Recovered Fixture Retailer',exact=True)).to_have_count(0)
+ expect(directory.get_by_text('Recovered Fixture Address',exact=True)).to_have_count(0)
+ assert directory_calls[0]==4,directory_calls
+ proof['merchant_directory_empty_refresh_discards_recovered_rows']=True
  page.unroute('**/api/v1/merchant-directory?*',directory_response)
  page.get_by_role('button',name='Назад',exact=True).click()
  expect(page.get_by_test_id('catalog-toolbar')).to_be_visible()
