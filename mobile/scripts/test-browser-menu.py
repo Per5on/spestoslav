@@ -49,6 +49,7 @@ with sync_playwright() as p:
  directory.get_by_role('button',name='Обнови',exact=True).click()
  expect(directory.get_by_role('alert')).to_be_visible()
  expect(directory.get_by_text('Fixture Retailer')).to_have_count(0)
+ expect(directory.get_by_text('Fixture Address',exact=True)).to_have_count(0)
  expect(directory.get_by_text('Fixture Town (1)')).to_have_count(0)
  assert directory_calls[0]>=2,directory_calls
  proof['merchant_directory_refresh_discards_stale_rows_on_failure']=True
@@ -66,7 +67,10 @@ with sync_playwright() as p:
  expect(recovered_locality).to_have_attribute('aria-expanded','false')
  expect(directory.get_by_text('Recovered Fixture Retailer')).to_have_count(0)
  recovered_locality.click()
+ expect(recovered_locality).to_have_attribute('aria-expanded','true')
  expect(directory.get_by_text('Recovered Fixture Retailer')).to_be_visible()
+ expect(directory.get_by_text('Recovered Fixture Address',exact=True)).to_be_visible()
+ expect(directory.get_by_text('Fixture Address',exact=True)).to_have_count(0)
  proof['merchant_directory_locality_accessibility_and_toggle']=True
  expect(directory.get_by_text('Fixture Retailer',exact=True)).to_have_count(0)
  assert directory_calls[0]==3,directory_calls
