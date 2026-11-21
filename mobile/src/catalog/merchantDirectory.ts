@@ -75,7 +75,7 @@ export function groupMerchantDirectory(rows: MerchantDirectoryEntry[]): Merchant
       .sort((a, b) => compare(a.locality_name, b.locality_name) || compare(a.locality_id, b.locality_id))
       .map((locality) => ({
         ...locality,
-        branches: locality.branches.sort(
+        branches: [...locality.branches].sort(
           (a, b) => compare(a.retailer_name, b.retailer_name) ||
             compare(a.address, b.address) ||
             compare(a.id, b.id),
