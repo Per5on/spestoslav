@@ -200,3 +200,20 @@ assert.deepEqual(merchantGroups[0].localities[0].branches.map(row => row.id), ["
 assert.deepEqual(unsortedMerchantRows.map(row => row.id), originalMerchantOrder);
 assert.deepEqual(merchantDirectory.groupMerchantDirectory(unsortedMerchantRows)[0].localities[0].branches.map(row => row.id), ["a", "z"]);
 console.log("Merchant directory grouping checks passed: stable sorted display without input mutation.");
+
+
+// Canonical locality identity must not collapse homonymous towns, and
+// identical locality IDs in different categories must remain separate.
+const homonymousMerchantRows = [
+  { ...merchantRows[0], id: "town-a", locality_id: "locality-a", locality_name: "Ново село", category_code: "groceries" },
+  { ...merchantRows[0], id: "town-b", locality_id: "locality-b", locality_name: "Ново село", category_code: "groceries" },
+  { ...merchantRows[1], id: "town-fuel", locality_id: "locality-a", locality_name: "Ново село", category_code: "fuel" },
+];
+const homonymousGroups = merchantDirectory.groupMerchantDirectory(homonymousMerchantRows);
+const foodGroup = homonymousGroups.find(group => group.category_code === "groceries");
+const fuelGroup = homonymousGroups.find(group => group.category_code === "fuel");
+assert.deepEqual(foodGroup.localities.map(locality => locality.locality_id), ["locality-a", "locality-b"]);
+assert.deepEqual(foodGroup.localities.map(locality => locality.branches.map(branch => branch.id)), [["town-a"], ["town-b"]]);
+assert.deepEqual(fuelGroup.localities.map(locality => locality.branches.map(branch => branch.id)), [["town-fuel"]]);
+assert.deepEqual(homonymousMerchantRows.map(row => row.id), ["town-a", "town-b", "town-fuel"]);
+console.log("Merchant locality identity checks passed: homonymous localities and category isolation.");
