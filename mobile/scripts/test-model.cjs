@@ -217,3 +217,13 @@ assert.deepEqual(foodGroup.localities.map(locality => locality.branches.map(bran
 assert.deepEqual(fuelGroup.localities.map(locality => locality.branches.map(branch => branch.id)), [["town-fuel"]]);
 assert.deepEqual(homonymousMerchantRows.map(row => row.id), ["town-a", "town-b", "town-fuel"]);
 console.log("Merchant locality identity checks passed: homonymous localities and category isolation.");
+
+// Search normalization must not mutate source records, and punctuation-only
+// queries must behave like an empty search rather than hide all merchants.
+const merchantRowsSnapshot = JSON.stringify(merchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "„“ № — /"), merchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "СОФИЯ / ул. № Главна").map(row => row.id), ["1"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "БЪЛГАРИЯ").map(row => row.id), ["2"]);
+assert.equal(JSON.stringify(merchantRows), merchantRowsSnapshot);
+console.log("Merchant search regressions passed: punctuation-only input, compound address, immutable records.");
+
