@@ -349,3 +349,9 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Matched 724 of 794 Fuelo listings across the six requested brands to canonical localities. Added 722 rows and retained the two existing EKO records with official provenance. Recorded the 70 unresolved locality assignments in the handoff.
 - Passed inventory validation, mobile tests, TypeScript and the browser fixture check for all six chains after a simulated directory 404. The directory then recovered to fixture API data.
 - Next action is to obtain approval for the revised ARM candidate. Live API rollout and data import remain pending.
+
+## 22 November 2026 — alpha-preview10.6 verification and approval
+
+- Owner authorized the 10.6 internal build after rechecking the day's changes and requested a visual preview. The app is version 0.5.5, Android version code 12, package sequence 012. Captured the six-screen [browser preview](references/alpha-preview10.6.jpg).
+- Passed mobile tests, TypeScript, Expo dependency checks, and six browser suites. Verified the 20 pt icons with 10 pt padding, Settings columns, palette choices, static fuel rows, comparison, directory fallback, barcode scanning and receipt upload, OCR, moderation and deletion on fixtures.
+- The inventory seed matches all 1,563 saved directory entries. The local backend suite passed 110 tests and skipped seven that require disposable PostgreSQL. Live API acceptance and installed ARM-device testing remain pending.

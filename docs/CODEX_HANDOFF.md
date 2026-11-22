@@ -1,6 +1,6 @@
 # Спестовник — ongoing project handoff
 
-Updated: **21 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+Updated: **22 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
@@ -11,6 +11,8 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. The [009 Android run](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed the native smoke, ARM APK and test-signed bundle jobs. GitHub lists all three 009 artifacts. Direct download from this environment returned HTTP 403, so package checksums and screenshots could not be independently rechecked. Owner requested a new internal 010 build using this baseline. The owner then paused build work. [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) on `5f10369c06bfe95e2f2f65ceb458ae3b458c96ef` was cancelled. Wait for explicit owner authorization before dispatching another APK or AAB build. Carry forward the pending rollout acceptance below.
 
 ### 22 November 2026 — owner queue
+
+**Alpha Preview 10.6.** The owner authorized the internal ARM build after verification and requested a visual preview of the confirmed changes. App version 0.5.5, Android version code 12, package sequence 012. [Browser preview](references/alpha-preview10.6.jpg). It uses simulated data for the price comparison. Live directory rollout and physical-device acceptance remain pending.
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 

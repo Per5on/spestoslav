@@ -2,13 +2,13 @@
 
 Updated: 22 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
 
-## Current work — Preview 10.5
+## Current work — Alpha Preview 10.6
 
-The candidate implements the approved itemized comparison, both group pop-ups, palette removals, and the licensed thumbnail pilot. Pre-build checks passed. The owner needs to approve the exact commit before Android packaging. Live API rollout, physical-device acceptance, and broader product-image coverage remain pending. [Handoff](CODEX_HANDOFF.md) · [Comparison preview](references/preview-10.5-comparison.png)
+The candidate implements the approved itemized comparison, both group pop-ups, palette removals, and the licensed thumbnail pilot. Pre-build checks passed. The owner approved internal ARM packaging after the 10.6 verification. Live API rollout, physical-device acceptance, and broader product-image coverage remain pending. [Handoff](CODEX_HANDOFF.md) · [Comparison preview](references/preview-10.5-comparison.png)
 
 22 November layout and artwork update passed local checks. x86_64 packaging and hosted emulator verification were removed. The next approved build will package ARM only. Installed smoke requires an ARM device. [Browser preview](references/preview-10.5-compact-layout.jpg).
 
-22 November follow-up. Category icons are 20 pt with 10 pt top and bottom padding. The saved merchant directory includes 174 technology locations from seven retailers and the earlier grocery update. Next release steps are exact-commit approval for ARM packaging, API rollout and data import, then physical-device acceptance. [Source counts and decisions](CODEX_HANDOFF.md).
+22 November follow-up. Category icons are 20 pt with 10 pt top and bottom padding. The saved merchant directory includes 174 technology locations from seven retailers and the earlier grocery update. Next release steps are ARM packaging, API rollout and data import, then physical-device acceptance. [Source counts and decisions](CODEX_HANDOFF.md).
 
 The saved directory now also includes 724 stations from the six requested fuel chains. The source counts and locality exclusions are in the [handoff](CODEX_HANDOFF.md).
 
