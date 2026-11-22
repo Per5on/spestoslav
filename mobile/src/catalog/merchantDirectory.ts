@@ -66,6 +66,10 @@ export function groupMerchantDirectory(rows: MerchantDirectoryEntry[]): Merchant
       };
       localities.set(row.locality_id, locality);
     }
+    // Some verified branches omit geographic details; retain details from
+    // another branch in the same canonical locality when available.
+    if (!locality.municipality?.trim() && row.municipality?.trim()) locality.municipality = row.municipality;
+    if (!locality.region?.trim() && row.region?.trim()) locality.region = row.region;
     locality.branches.push(row);
   }
   const compare = (a: string, b: string) => a.localeCompare(b, "bg");
