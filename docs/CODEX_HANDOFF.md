@@ -14,6 +14,19 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
+**22 November fuel directory.** Added 722 stations to the seed and the saved „Търговски обекти → Горива“ directory. Two previously recorded EKO stations were matched to the Fuelo listings and kept with their official source. The saved directory now contains 724 stations and 1,563 locations across all categories.
+
+| Chain | Stations on Fuelo | Stations in the saved directory |
+| --- | ---: | ---: |
+| [Rompetrol](https://bg.fuelo.net/brand/id/4?lang=bg) | 57 | 53 |
+| [Lukoil](https://bg.fuelo.net/brand/id/2?lang=bg) | 219 | 204 |
+| [Petrol](https://bg.fuelo.net/brand/id/6?lang=bg) | 209 | 194 |
+| [Shell](https://bg.fuelo.net/brand/id/5?lang=bg) | 113 | 99 |
+| [EKO](https://bg.fuelo.net/brand/id/1?lang=bg) | 102 | 97 |
+| [OMV](https://bg.fuelo.net/brand/id/3?lang=bg) | 94 | 77 |
+
+Fuelo is a third-party station directory. New seed rows carry the individual listing URL, map coordinates and check date. Same-name localities were resolved when coordinates clearly distinguished them. Seventy listings were left out where canonical locality assignment remained uncertain, mainly for motorway and resort addresses. This update covers branch locations. The live API rollout and data import remain pending.
+
 **22 November technology directory and tab icons.** The category icons are now 20 pt above their labels, with 10 pt of padding on each vertical edge. The owner requested this revision without a visual preview. The browser screenshots below show the earlier 16 pt icons.
 
 The inventory seed and the saved „Търговски обекти → Техника“ directory contain 174 physical locations from the seven requested retailers. The full saved directory contains 841 addresses. Each technology row records its source URL and canonical locality.

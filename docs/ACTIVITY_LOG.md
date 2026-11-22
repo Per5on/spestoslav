@@ -343,3 +343,9 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Verified 174 physical locations from seven official technology retailers and updated the inventory seed and saved directory. All 14 requested Techmart stores were included. The date, counts and source links are in the handoff.
 - Passed mobile unit tests, TypeScript, canonical inventory validation, the six-language layout check and browser verification of the saved directory after a simulated API 404.
 - Next action is to obtain approval for the revised ARM candidate. Live directory rollout and data import remain pending.
+
+## 22 November 2026 — Fuelo stations in the saved merchant directory
+
+- Matched 724 of 794 Fuelo listings across the six requested brands to canonical localities. Added 722 rows and retained the two existing EKO records with official provenance. Recorded the 70 unresolved locality assignments in the handoff.
+- Passed inventory validation, mobile tests, TypeScript and the browser fixture check for all six chains after a simulated directory 404. The directory then recovered to fixture API data.
+- Next action is to obtain approval for the revised ARM candidate. Live API rollout and data import remain pending.

@@ -9,6 +9,7 @@
 - [x] Capture a browser preview screenshot and report verification before Android build approval. [Browser preview](references/preview-10.5-compact-layout.jpg).
 - [x] Refresh the grocery directory from the six requested official sources. T MARKET has partial coverage from verified store pages and a closure notice.
 - [x] Add verified physical stores for Techmart, Зора, JAR Computers, Техномаркет, Ardes, Технополис and Вали to Търговски обекти and record the source coverage in the handoff.
+- [x] Add the six requested Fuelo chains to Търговски обекти and record station coverage in the handoff.
 - [ ] After the final beta and before the first release, write a concise introduction summarizing the app's verified features and functionality. Keep the reminder in the handoff.
 
 ## Pre-alpha 010 — owner requirements, 21 November 2026

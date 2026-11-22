@@ -70,6 +70,17 @@ with sync_playwright() as p:
  ):
   expect(tech_section.get_by_text(entry, exact=True)).to_have_count(1)
  proof['saved_directory_displays_all_seven_technology_retailers']=True
+ fuel_section = directory.get_by_role('heading', name='Горива', exact=True).locator('..')
+ for entry in (
+  'Rompetrol · Rompetrol София 7 · бул. Ботевградско шосе №231',
+  'LUKOIL · Lukoil Б001 · Аерогара София - Терминал 1',
+  'Petrol · Petrol 7129 София: КАТ · бул. Драган Цанков (срещу КАТ)',
+  'Shell · Shell 2008 София Симеоново · Околовръстен път, km 46+717',
+  'EKO · Eko 1192 София – Александър Малинов · бул. Александър Малинов №37',
+  'OMV · OMV Младост 1А · бул. Александър Малинов',
+ ):
+  expect(fuel_section.get_by_text(entry, exact=True)).to_have_count(1)
+ proof['saved_directory_displays_all_six_fuel_chains']=True
  page.screenshot(path=str(args.output_dir/'merchant-snapshot.png'))
  page.unroute(route_pattern)
  directory.get_by_role('button',name='Обнови',exact=True).click()

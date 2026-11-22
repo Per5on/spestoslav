@@ -10,6 +10,8 @@ The candidate implements the approved itemized comparison, both group pop-ups, p
 
 22 November follow-up. Category icons are 20 pt with 10 pt top and bottom padding. The saved merchant directory includes 174 technology locations from seven retailers and the earlier grocery update. Next release steps are exact-commit approval for ARM packaging, API rollout and data import, then physical-device acceptance. [Source counts and decisions](CODEX_HANDOFF.md).
 
+The saved directory now also includes 724 stations from the six requested fuel chains. The source counts and locality exclusions are in the [handoff](CODEX_HANDOFF.md).
+
 ## Verified baseline — Pre-alpha 010
 
 **Internal 010 build successful. Live testing pending.** [Run 44923545071](https://github.com/Per5on/spestoslav/actions/runs/44923545071) at `2d19a0c984215cd052e6e7ad341c5aa938605592` passed Android 10 emulator smoke, ARM phone APK verification, and test-signed AAB validation. App version 0.5.3 and Android version code 10. Physical-device and live API/data acceptance remain open. Next work is product-matched Food/Technology WebPs and itemized merchant basket comparison. See the [handoff and proposed layout](CODEX_HANDOFF.md) and [TODO](PREVIEW_006_BACKLOG.md).
