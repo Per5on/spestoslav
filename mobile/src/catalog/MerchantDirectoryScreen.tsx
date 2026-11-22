@@ -34,8 +34,8 @@ export function MerchantDirectoryScreen() {
         style={s.button} onPress={() => setRevision(v => v + 1)}>
         <Text>{t("refresh")}</Text>
       </Pressable>
-      <TextInput testID="merchant-directory-search" accessibilityLabel={t("searchProduct")}
-        placeholder={t("searchProduct")} value={query} onChangeText={setQuery}
+      <TextInput testID="merchant-directory-search" accessibilityLabel={t("searchMerchant")}
+        placeholder={t("searchMerchant")} value={query} onChangeText={setQuery}
         autoCorrect={false} style={[s.option, { color: color("#19562a") }]} />
       {loading && <ActivityIndicator accessibilityRole="progressbar" color={color("#19562a")} />}
       {failed && <Text accessibilityRole="alert" style={s.notice}>{t("storesError")}</Text>}

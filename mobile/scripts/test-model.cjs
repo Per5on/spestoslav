@@ -124,6 +124,16 @@ const keys = Object.keys(translations.exports.messages.bg).sort();
 assert.equal(translations.exports.languages.length, 6);
 for (const value of Object.values(translations.exports.messages))
   assert.deepEqual(Object.keys(value).sort(), keys);
+// Directory search must use its own localized prompt, not the product search prompt.
+const directoryScreen = fs.readFileSync("src/catalog/MerchantDirectoryScreen.tsx", "utf8");
+assert.match(directoryScreen, /accessibilityLabel=\\{t\\("searchMerchant"\\)\\}/);
+assert.match(directoryScreen, /placeholder=\\{t\\("searchMerchant"\\)\\}/);
+for (const language of translations.exports.languages) {
+  const labels = translations.exports.messages[language.code];
+  assert.ok(labels.searchMerchant.trim(), `Missing merchant search prompt: ${language.code}`);
+  assert.notEqual(labels.searchMerchant, labels.searchProduct);
+}
+
 
 function loadTS(path, dependencies = {}) {
   const code = ts.transpileModule(fs.readFileSync(path, "utf8"), {
