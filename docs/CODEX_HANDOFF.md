@@ -14,6 +14,23 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
+**22 November grocery directory and 10 pt visual preview.** Category tabs keep their original icons above the labels, with 10 pt of padding on each vertical edge. Browser captures show [the open ⋮ menu](references/preview-10.5-menu-10pt.png) and [the unobstructed category tabs](references/preview-10.5-food-10pt.png).
+
+The seed and the app’s dated fallback now contain 669 physical branches, including 571 from the six requested grocery chains. Other chains’ rows were preserved. The deployed directory still requires its API route and a separate data import.
+
+| Chain | Addresses | Official source |
+| --- | ---: | --- |
+| Kaufland | 71 | [Contact page and its branch locator](https://www.kaufland.bg/moyat-kaufland/uslugi/kontakt.html) |
+| Lidl | 147 | [National store index and store detail listings](https://www.lidl.bg/s/bg-BG/magazini/) |
+| BILLA | 175 | [Map listing](https://www.billa.bg/magazini) |
+| Fantastico | 48 | [Store pages](https://www.fantastico.bg/shops) |
+| T MARKET | 119 | [Official store pages in the sitemap](https://tmarket.bg/sitemap/page/1.xml) and [closure and replacement notice](https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas) |
+| METRO | 11 | [Store pages](https://www.metro.bg/magazini) |
+
+T MARKET coverage is partial. The map endpoint was unavailable in this check. Four announced closures and pages with ambiguous or incomplete addresses were excluded. Lidl and Fantastico listings marked as future openings were excluded. See the seed for individual source URLs. Android packaging remains on hold.
+
+Verification passed for inventory identity and locality validation, mobile unit tests and TypeScript, and browser checks for the menu, six-language tab geometry, and directory recovery after a simulated 404.
+
 **4 pt tab padding visual preview.** Set the top and bottom tab padding to 4 pt and kept the stacked icons and labels. Mobile unit tests, TypeScript, web export and the six-language browser toolbar check passed. The owner clarified that preview meant browser screenshots. Cancellation was requested for the mistakenly dispatched Android run 45035896667. Android packaging remains on hold. [Browser evidence](references/preview-10.5-icon-tabs.jpg).
 
 **Category tab revision.** The owner rejected the label-only preview. The original four icons are restored above their labels at 16 pt with 1.5 pt vertical edge padding. Mobile unit tests, TypeScript, web export and the responsive browser toolbar check passed. The browser verifies both attributes and icon-above-label alignment. [Corrected screenshot](references/preview-10.5-icon-tabs.jpg). Android build approval remains pending for the revised SHA.

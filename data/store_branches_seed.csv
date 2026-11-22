@@ -1,23 +1,6 @@
 retailer_code,retailer_name,category_code,branch_name,city,municipality,region,address,latitude,longitude,source,source_url,source_checked_at
-kaufland,Kaufland,groceries,Kaufland Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Краков 2Б,,,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/veliko-trnovo-8600.html,2026-11-14
-lidl,Lidl,groceries,Lidl Велико Търново – Народни будители,Велико Търново,Велико Търново,Велико Търново,ул. Народни будители 25,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-narodni-buditeli-25/,2026-11-14
-lidl,Lidl,groceries,Lidl Велико Търново – Серес,Велико Търново,Велико Търново,Велико Търново,ул. Серес 3,,,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/veliko-tarnovo/ul-seres-3/,2026-11-14
 technopolis,Technopolis,technology,Технополис Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 4,43.071944,25.638972,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/stores,2026-11-14
 technomarket,Technomarket,technology,Техномаркет Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/veliko-tyrnovo/tehnomarket-veliko-tyrnovo,2026-11-14
-billa,BILLA,groceries,BILLA София – Ломско шосе,София,Столична,София (столица),бул. Ломско шосе 2А,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA София – Монтевидео,София,Столична,София (столица),ул. Монтевидео 23А,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Пловдив – Цариградско шосе,Пловдив,Пловдив,Пловдив,бул. Цариградско шосе 78,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Русе – Тулча,Русе,Русе,Русе,ул. Тулча 19,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Варна – Димитър Икономов,Варна,Варна,Варна,ул. Димитър Икономов 36,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Кюстендил – Пауталия,Кюстендил,Кюстендил,Кюстендил,ул. Пауталия 10,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Монтана – Св. Климент Охридски,Монтана,Монтана,Монтана,ул. Св. Климент Охридски 5,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Ловеч – Бяло море,Ловеч,Ловеч,Ловеч,ул. Бяло море 5,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Плевен – Цар Самуил,Плевен,Плевен,Плевен,ул. Цар Самуил 34,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Бургас – Меден рудник,Бургас,Бургас,Бургас,"ж.к. Меден рудник, Зона А, 171",,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-billa,BILLA,groceries,BILLA Стара Загора – Цар Симеон Велики,Стара Загора,Стара Загора,Стара Загора,бул. Цар Симеон Велики 218,,,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Ботевград,Ботевград,Ботевград,София,ул. Витоша 1А,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#14,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Кюстендил,Кюстендил,Кюстендил,Кюстендил,ул. Цар Освободител 231,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#29,2026-11-14
-fantastico,Fantastico,groceries,Фантастико Елин Пелин,Елин Пелин,Елин Пелин,София,ул. Витоша 7,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops#41,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Надежда 2,София,Столична,София (столица),бул. Ломско шосе 68,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Панайот Волов,София,Столична,София (столица),ул. Панайот Волов 2–4,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Гео Милев,София,Столична,София (столица),бул. Гео Милев 20,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
@@ -29,7 +12,6 @@ promarket,ProMarket,groceries,ProMarket София – Младост 2,Софи
 promarket,ProMarket,groceries,ProMarket София – Самоковско шосе,София,Столична,София (столица),бул. Самоковско шосе 40,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Граф Игнатиев,София,Столична,София (столица),ул. Граф Игнатиев 50,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Раковски,София,Столична,София (столица),ул. Г. С. Раковски 60,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
-metro,METRO,groceries,METRO Велико Търново,Велико Търново,Велико Търново,Велико Търново,бул. България 78,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/veliko-tarnovo,2026-11-14
 burlex,Burlex,groceries,Бурлекс Брегалница,Варна,Варна,Варна,ул. Селиолу 42,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
 burlex,Burlex,groceries,Бурлекс Тервел 2,Тервел,Тервел,Добрич,ул. Хан Аспарух 95,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
 burlex,Burlex,groceries,Бурлекс Хали Русе,Русе,Русе,Русе,ул. Александровска 93,,,OFFICIAL_STORE_LOCATOR,https://burlex.bg/магазини-бурлекс/,2026-11-14
@@ -115,3 +97,574 @@ hit_max,HIT Max,groceries,HIT Max Младост,София,Столична,С�
 hit_max,HIT Max,groceries,HIT Max Люлин,София,Столична,София (столица),ул. Обелско шосе 20,,,OFFICIAL_STORE_LOCATOR,https://www.hit-max.bg/elements/pages/our-stores/,2026-11-14
 eko,EKO,fuel,EKO 1103 Велико Търново,Велико Търново,Велико Търново,Велико Търново,"ул. Магистрала 3, път I-4",,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
 eko,EKO,fuel,EKO 1167 Велико Търново Вход,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 28,,,OFFICIAL_STORE_LOCATOR,https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/,2026-11-14
+billa,BILLA,groceries,,Асеновград,Асеновград,Пловдив,Бул. Васил Левски 16,42.0129421,24.8716741,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Банско,Банско,Благоевград,Ул. Цар Симеон 28,41.840375,23.484746,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Белослав,Белослав,Варна,Ул. Христо Ботев 36,43.19336,27.710373,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Благоевград,Благоевград,Благоевград,Ул. Борис Ангелушев 2,42.00272,23.101421,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Благоевград,Благоевград,Благоевград,Ул. Крали Марко 1,42.01756,23.09686,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,"Ж.К. Меден Рудник, Зона А, 171",42.4612,27.4163,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Ж.К. П. Р. Славейков 111,42.51742,27.45276,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Жк Изгрев Блок 210,42.54064,27.455935,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Кв. Изгрев Бл. 178 179 180,42.5226726,27.4618089,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Кв. Сарафово Ул. Слънце 30,42.563195,27.51931,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Ул. Александровска 58,42.4957919,27.4712822,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Ул. Гочо Иванов 30,42.5039,27.46,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Бургас,Бургас,Бургас,Ул. Оборище,42.49969,27.475042,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Бул. Владислав Варненчик 48,43.20946,27.9091,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Бул. Княз Борис I N 99,43.210827,27.930217,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Бул. Народни Будители 6,43.184746,27.889247,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Бул. Сливница 185,43.227139,27.87497,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Бул. Цар Освободител 205,43.232544,27.889714,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. 8-Ми Март 2,43.215717,27.902237,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Ак. Андрей Сахаров 3,43.220657,27.898653,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Ана Феликсова 12,43.2358795,27.8772574,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Димитър Икономов 36,43.220383,27.935816,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Дубровник 48,43.223442,27.925243,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Капитан Райчо Николов 101,43.21463,27.89422,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Кирил И Методиий 45,43.18009,27.8977,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Подвис 25,43.227154,27.918432,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Варна,Варна,Варна,Ул. Цар Иван Страцимир 2,43.209534,27.902615,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Велико Търново,Велико Търново,Велико Търново,Ул. Беляковско Шосе 1,43.081635,25.611298,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Велико Търново,Велико Търново,Велико Търново,Ул. Георги Измирлиев 13а,43.069576,25.607195,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Велинград,Велинград,Пазарджик,Ул. Патриарх Евтимий 2б,42.023766,23.995342,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Видин,Видин,Видин,Ул. Райна Княгиня 3,43.98933,22.8754699,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Враца,Враца,Враца,Ул. Илия Кръстеняков 1,43.20458,23.55548,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Враца,Враца,Враца,Ул. Кръстьо Бързаков 14 А,43.194553,23.56652,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Враца,Враца,Враца,Ул.Независимост 12,43.223087,23.543785,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Габрово,Габрово,Габрово,Бул. Могильов 47,42.88584,25.31283,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Габрово,Габрово,Габрово,Ул. Орловска 119,42.88085,25.32037,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Горна Оряховица,Горна Оряховица,Велико Търново,Ул. Янко Боянов 10,43.120255,25.690935,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Граф Игнатиево,Марица,Пловдив,Ул Карловско Шосе 93,42.282875,24.7329,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Добрич,Добрич,Добрич,Бул. Добруджа 4,43.568688,27.847224,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Добрич,Добрич,Добрич,Площад Свобода 6,43.56922,27.83035,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Добрич,Добрич,Добрич,Ул. Кирил И Методий 41,43.56471,27.82104,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Добрич,Добрич,Добрич,Ул. Христо Ботев 40,43.5742,27.841595,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Дунавци,Казанлък,Стара Загора,Местност Под Воденицата 21,42.66038,25.29322,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Дупница,Дупница,Кюстендил,Ул. Отовица 1,42.273125,23.130178,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Казанлък,Казанлък,Стара Загора,Ул. Бачо Киро 6,42.61471,25.39053,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Казанлък,Казанлък,Стара Загора,Ул. Цар Борис I 1,42.62044,25.4077349,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Карлово,Карлово,Пловдив,Местност Кантона 219,42.643497,24.788416,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Костинброд,Костинброд,София,Ул. Славянска 34,42.809357,23.212786,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Крумовград,Крумовград,Кърджали,Ул. Христо Ботев 1,41.470673,25.652288,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Кърджали,Кърджали,Кърджали,Бул. България 115,41.63373,25.38035,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Кърджали,Кърджали,Кърджали,"Кв. Възрожденци, Ул. Христо Ботев 73",41.63662,25.354881,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Кюстендил,Кюстендил,Кюстендил,Ул. Пауталия 10,42.279594,22.690088,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Ловеч,Ловеч,Ловеч,Ул. Бяло Море 5,43.1475436,24.7178159,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Ловеч,Ловеч,Ловеч,Ул. Д-Р Съйко Съев 30,43.134745,24.709437,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Монтана,Монтана,Монтана,Бул. Акад. И. Дуриданов 2,43.419754,23.222078,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Монтана,Монтана,Монтана,Ул. Св. Климент Охридски 5,43.40965,23.22706,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Нова Загора,Нова Загора,Сливен,Ул. Ангел Кънчев 68,42.50009,26.0111605,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пазарджик,Пазарджик,Пазарджик,Бул. Георги Бенковски 12,42.1961236,24.3348001,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пазарджик,Пазарджик,Пазарджик,Любен Боянов 1,42.18673,24.32017,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Панагюрище,Панагюрище,Пазарджик,Ул. Георги Бенковски 67,42.49468,24.187386,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Перник,Перник,Перник,"Кв. Изток, Ул. Юрий Гагарин 1",42.61005,23.09966,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Перник,Перник,Перник,Перник Плаза Ритейл Парк,42.607185,23.056532,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Перник,Перник,Перник,Ул. Св.Св.Кирил И Методий 29,42.61043,23.04154,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Петрич,Петрич,Благоевград,Ул. Връх Китка 2a,41.394952,23.206266,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пещера,Пещера,Пазарджик,Ул. Георги Кьосеиванов 40б,42.032238,24.305188,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пирдоп,Пирдоп,София,М. Декилиташ - Гп I-6 Km 195 Дясно 1 Обект 6,42.703563,24.163381,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Плевен,Плевен,Плевен,Бул. Христо Ботев 140,43.40399,24.625021,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Плевен,Плевен,Плевен,Площад Свободата 25,43.40955,24.6180699,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Плевен,Плевен,Плевен,Ул. Цар Самуил 34,43.42366,24.595026,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Плевен,Плевен,Плевен,Ул.Асен Халачев 2,43.41775,24.61272,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. 6 Септември 221,42.1535604,24.7616854,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. 6-Ти Септември 42,42.146026,24.723954,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. Александър Стамболийски 131,42.12463,24.720343,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. Васил Априлов 124а,42.155341,24.731734,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. Освобождение 157,42.127216,24.771198,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. Руски 54,42.1414,24.74136,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул. Цариградско Шосе 78,42.14845,24.778461,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Бул.Македония 2,42.13317,24.74417,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Ул. Димитър Талев 132а,42.11871,24.7351,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Ул. Райко Даскалов 8,42.14884,24.74797,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Пловдив,Пловдив,Пловдив,Ул. Черешово Топче 2,42.16185,24.74267,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Поморие,Поморие,Бургас,Ул. Княз Борис I 104,42.5666519,27.6220229,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Първомай,Първомай,Пловдив,Ул. Княз Борис I 51b,42.090655,25.211982,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Раднево,Раднево,Стара Загора,Ул. Митьо Станев 11,42.284845,25.932515,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Разград,Разград,Разград,Ул. Дунав 40,43.52965,26.52083,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Русе,Русе,Русе,Бул. Неофит Бозвели 18,43.83882,25.95351,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Русе,Русе,Русе,Площад Свобода 7,43.8486,25.95488,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Русе,Русе,Русе,Ул. Солун 12,43.84939,25.96737,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Русе,Русе,Русе,Ул. Стефан Стамболов 99,43.830673,25.950897,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Русе,Русе,Русе,Ул. Тулча 19,43.853893,25.978971,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Самоков,Самоков,София,Ул. Искър 2,42.3348514,23.5553975,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Сандански,Сандански,Благоевград,Ул. Малашевска 13,41.56049,23.28065,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Свиленград,Свиленград,Хасково,Ул. Генерал Столетов 3,41.761707,26.214388,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Свиленград,Свиленград,Хасково,Ул. Димитър Благоев 5,41.7675821,26.2049373,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Свищов,Свищов,Велико Търново,Площад Свобода 2,43.615665,25.351778,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Севлиево,Севлиево,Габрово,Ул. Стефан Пешев 90а,43.029427,25.092371,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Силистра,Силистра,Силистра,Бул. Цар Симеон Велики 25,44.116898,27.25964,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Сливен,Сливен,Сливен,Бул. Георги Данчев 26,42.68258,26.34086,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Сливен,Сливен,Сливен,Бул. Цар Освободител 1 Б,42.68009,26.314336,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Сливен,Сливен,Сливен,Ул. Братя Миладинови N 25,42.67614,26.32105,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Смолян,Смолян,Смолян,Бул. България 11,41.575756,24.706514,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Смолян,Смолян,Смолян,Ул. Белия Камък 24,41.572018,24.71589,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Созопол,Созопол,Бургас,Ул. Индустриална 3,42.41914,27.693007,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Ал. Стамболийски 247 B,42.70112,23.291508,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Александър Стамболийски 101,42.698067,23.309061,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Арсеналски 2,42.678383,23.31987,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Братя Бъкстон 96,42.6585714,23.2722066,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. България 69,42.664288,23.288485,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Владимир Вазов 20,42.70216,23.35347,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Владимир Вазов 70,42.71017,23.38088,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Възкресение 66,42.6969159,23.2806131,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Д-Р Петър Дертлиев 104,42.7130799,23.2398363,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Дондуков 11,42.698214,23.3274548,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Княгиня М. Луиза 102,42.711529,23.322046,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Копенхаген 22,42.646859,23.403873,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Ломско Шосе 171,42.7355683,23.2915926,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Ломско Шосе 2a,42.7239574,23.3063985,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Панчо Владигеров 15,42.71202,23.24865,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Президент Линкълн 72,42.6900056,23.248742,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Симеоновско Шосе 211,42.6144215,23.3391209,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Ситняково 48,42.691516,23.353555,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Сливница 284,42.718536,23.278286,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Цар Борис Iii 272,42.660313,23.245632,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Цар Освободител 22,42.6927672,23.3344745,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Цариградско Шосе 115 З,42.660654,23.382496,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Цариградско Шосе 12,42.67531,23.35777,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Царица Йоана 15,42.7102585,23.2712018,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Черни Връх 100,42.657862,23.314836,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул. Черни Връх 94,42.6561768,23.315035,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул.Александър Малинов,42.64792,23.37936,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул.България 55,42.66526,23.28927,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Бул.Царица Йоана N72,42.71972,23.2566,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ж.К. Обеля Ул. Дико Илиев 6,42.7432857,23.2798362,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Жк. Дианабад Бл. 65 Вход В,42.662801,23.35525,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),"Жк. Младост 4, Ул. 406-Та N 14",42.62978,23.38105,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Пл. Лъвов Мост 2,42.7045658,23.3233109,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Софийски Герой No:4,42.6835,23.29718,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Александър Екзарх 45,42.702502,23.359401,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Висарион Белински 2б,42.6535934,23.3436956,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Гюешево 14,42.697033,23.301987,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Железопътна 18,42.718117,23.343443,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Житница 5a,42.679714,23.281837,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Златовръх 4,42.673767,23.3332014,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Монтевидео 23a,42.679325,23.254168,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Опълченска 35,42.70384,23.31062,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Пиротска 9,42.6993842,23.3203025,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Полк. Г. Янков 17,42.661047,23.36589,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Професор Живко Сталев 16a,42.695365,23.3246801,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Райко Алексиев 40,42.671671,23.359657,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Раковски 116,42.69176,23.32518,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Сан Стефано 22,42.691595,23.3379799,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Св. Пимен Зографски 38,42.664853,23.348123,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Сердикийски Събор 1,42.6693528,23.3134586,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Скайлер 41,42.706104,23.34848,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Славянска 5,42.693494,23.328589,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Туше Делииванов 5,42.668696,23.397635,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Цар Иван Александър 27,42.7074323,23.295425,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,София,Столична,София (столица),Ул. Черковна 38,42.69706,23.35155,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стамболийски,Стамболийски,Пловдив,Ул. Клокотница 2,42.137199,24.54368,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Бул. Княз Ал. Батенберг 28,42.42477,25.61647,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Бул. Цар Симеон Велики 105а Ет. 1,42.424607,25.624791,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Бул. Цар Симеон Велики 218,42.42782,25.64732,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Ул. Кап.Петко Войвода No:20,42.41985,25.608,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Ул. Св. Княз Борис 93,42.4270573,25.6338598,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Стара Загора,Стара Загора,Стара Загора,Ул. Хан Аспарух 30,42.437756,25.632841,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Тетевен,Тетевен,Ловеч,Ул Пенка Михайлова 10,42.919712,24.2511,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Троян,Троян,Ловеч,Ул. Г.С.Раковски 2,42.885439,24.713413,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Харманли,Харманли,Хасково,Пл. Възраждане 21,41.931416,25.901073,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Хасково,Хасково,Хасково,Площад Общински 3,41.931515,25.557125,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Хасково,Хасково,Хасково,Ул. Банска 59,41.936374,25.535758,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Чирпан,Чирпан,Стара Загора,Ул. Георги Димитров 87,42.19945,25.334461,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Шумен,Шумен,Шумен,Бул. Славянски 30,43.27121,26.93077,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Шумен,Шумен,Шумен,Бул.Симеон Велики No:34,43.27484,26.93675,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Шумен,Шумен,Шумен,Ул. Кралевиче 1,43.280635,26.92666,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+billa,BILLA,groceries,,Ямбол,Ямбол,Ямбол,Ул. Арда 7,42.48773,26.501862,OFFICIAL_STORE_LOCATOR,https://www.billa.bg/magazini,2026-11-22
+fantastico,Fantastico,groceries,,Банкя,Столична,София (столица),"кв. ""Изгрев"", ул. ""Стефан Стамболов"" 138",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f44,2026-11-22
+fantastico,Fantastico,groceries,,Ботевград,Ботевград,София,ул. “Витоша“ №1А,,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f14,2026-11-22
+fantastico,Fantastico,groceries,,Елин Пелин,Елин Пелин,София,"ул. ""Витоша"" №7",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f41,2026-11-22
+fantastico,Fantastico,groceries,,Кюстендил,Кюстендил,Кюстендил,"ул. ""Цар Освободител"" № 231",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f29,2026-11-22
+fantastico,Fantastico,groceries,,Перник,Перник,Перник,"ул. ""Юрий Гагарин"" №52",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f45,2026-11-22
+fantastico,Fantastico,groceries,,Пловдив,Пловдив,Пловдив,"бул. ""Цар Борис III Обединител"" № 37 , Палата № 10, Международен панаир Пловдив",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f50,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""А.С.Пушкин"" №64",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f19,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Витоша"" №192-198",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f26,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Владимир Вазов"" № 41",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f46,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Г.М. Димитров"" №77",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f6,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Джавахарлал Неру"" №26",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f16,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Мадрид"" №8",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f3,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Никола Мушанов"", бл. 331А",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f20,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Проф. Цветан Лазаров"" №140",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f35,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Св. Климент Охридски"" №15",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f36,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Симеоновско шосе"" №87А",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f33,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Сливница"" №65, подземен етаж на търговски център ""Глобус""",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f9,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Тодорини кукли"", между бл. 96 и бл. 97",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f24,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Хан Кубрат"" №26",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f17,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Цариградско шосе"" №56, бл. 124",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f5,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Черни връх"" №20",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f8,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"бул. ""Черни връх"" №204",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f30,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ж.к. Западен парк, ул. Булина ливада, бл.12.",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f4,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"кв. ""Манастирски ливади"", ул. ""Пирин"" 51А",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f43,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"кв. Орландовци, ул. „Малашевска“ №1",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f48,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""102"", срещу блок 321",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f32,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Акад. Борис Стефанов"" №22",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f22,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Акад. Методи Попов"", бл. 76",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f37,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Александър Паскалев"" №3",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f12,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Бузлуджа"" №50",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f25,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Васил Кънчев"" и ул. ""Баба Вида"" №29",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f11,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Ген. Стефан Тошев"", бл. 223, вх. Д",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f10,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Д-р Атанас Москов"" №15",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f21,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Йерусалим"" №22",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f42,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Коста Лулчев"" №52, подземен етаж на SkyCity mall",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f28,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Любляна"" №42А, п.к 1618",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f38,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Макгахан"" №81",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f34,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Монтевидео"" №98",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f7,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Николай Коперник"" №27",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f40,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Нишава"" №138",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f18,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Оборище"" 72",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f1,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Св. Никола Нови"" №14",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f23,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Тирана"" № 3, до бл. 2",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f31,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Тома Георгиев"" №1",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f15,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Хубча"" No2",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f2,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Хъшове"" №4, до блок 10",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f39,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Царевец"" №11",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f27,2026-11-22
+fantastico,Fantastico,groceries,,София,Столична,София (столица),"ул. ""Шипченски проход"" №46",,,OFFICIAL_STORE_LOCATOR,https://www.fantastico.bg/shops/f13,2026-11-22
+kaufland,Kaufland,groceries,,Асеновград,Асеновград,Пловдив,ул. Хаджи Димитър Стоилов 1,42.0191255,24.861352,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/asenovgrad-7200.html,2026-11-22
+kaufland,Kaufland,groceries,,Благоевград,Благоевград,Благоевград,бул. Св. Димитър Солунски 21,42.0108015,23.0938705,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/blagoevgrad-3800.html,2026-11-22
+kaufland,Kaufland,groceries,,Ботевград,Ботевград,София,бул. Цар Освободител 35Б,42.9113777,23.8045271,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/botevgrad-5300.html,2026-11-22
+kaufland,Kaufland,groceries,,Бургас,Бургас,Бургас,ул. Отец Матей Миткалото 45,42.462843,27.4099728,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/burgas-meden-rudnik-5700.html,2026-11-22
+kaufland,Kaufland,groceries,,Бургас,Бургас,Бургас,ул. Транспортна 23,42.5315977,27.4612957,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/burgas-izgrev-7300.html,2026-11-22
+kaufland,Kaufland,groceries,,Бургас,Бургас,Бургас,ул. Янко Комитов 8,42.5148254,27.4499997,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/burgas-slaveykov-4000.html,2026-11-22
+kaufland,Kaufland,groceries,,Варна,Варна,Варна,бул. Република 60,43.2353073,27.8814384,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/varna-vzrazhdane-1300.html,2026-11-22
+kaufland,Kaufland,groceries,,Варна,Варна,Варна,бул. Трети март 77,43.2420112,27.8497074,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/varna-vladislav-varnenchik-3400.html,2026-11-22
+kaufland,Kaufland,groceries,,Варна,Варна,Варна,ул. Д-р Петър Скорчев 2,43.2224447,27.9397499,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/varna-briz-8200.html,2026-11-22
+kaufland,Kaufland,groceries,,Варна,Варна,Варна,ул. Девня 24,43.2027823,27.9019578,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/varna-odesos-8300.html,2026-11-22
+kaufland,Kaufland,groceries,,Варна,Варна,Варна,ул. Христо Смирненски 2,43.2212548,27.8907471,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/varna-troshevo-1400.html,2026-11-22
+kaufland,Kaufland,groceries,,Велико Търново,Велико Търново,Велико Търново,ул. Краков 2Б,43.0758026,25.6114939,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/veliko-trnovo-8600.html,2026-11-22
+kaufland,Kaufland,groceries,,Видин,Видин,Видин,бул. Панония 41,44.0002055,22.8691442,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/vidin-2200.html,2026-11-22
+kaufland,Kaufland,groceries,,Враца,Враца,Враца,"бул. ""Втори юни"" № 154",43.1849567,23.5833561,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/vratsa-holiday-park-2020.html,2026-11-22
+kaufland,Kaufland,groceries,,Враца,Враца,Враца,ул. Оборище 7,43.2080582,23.5453856,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/vratsa-tsentr-2100.html,2026-11-22
+kaufland,Kaufland,groceries,,Габрово,Габрово,Габрово,ул. Ивайло 6,42.8832472,25.3213794,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/gabrovo-6700.html,2026-11-22
+kaufland,Kaufland,groceries,,Горна Оряховица,Горна Оряховица,Велико Търново,ул. Мано Тодоров 7A,43.1233054,25.6833516,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/gorna-orjahovitsa-4500.html,2026-11-22
+kaufland,Kaufland,groceries,,Димитровград,Димитровград,Хасково,ул. Ромен Ролан 7,42.0586587,25.5869397,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/dimitrovgrad-4600.html,2026-11-22
+kaufland,Kaufland,groceries,,Добрич,Добрич,Добрич,ул. Дунав 55,43.5656482,27.8397493,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/dobrich-4300.html,2026-11-22
+kaufland,Kaufland,groceries,,Дупница,Дупница,Кюстендил,ул. Свети Иван Рилски 96А,42.2590756,23.1041855,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/dupnitsa-6800.html,2026-11-22
+kaufland,Kaufland,groceries,,Казанлък,Казанлък,Стара Загора,бул. 23.Шипченски пех.полк 153,42.6178198,25.3692352,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/kazanlk-5100.html,2026-11-22
+kaufland,Kaufland,groceries,,Карлово,Карлово,Пловдив,ул. Теофан Райнов 72,42.6335119,24.817013,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/karlovo-5500.html,2026-11-22
+kaufland,Kaufland,groceries,,Кърджали,Кърджали,Кърджали,ул. Здравец 13,41.6344939,25.379012,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/krdzhali-7000.html,2026-11-22
+kaufland,Kaufland,groceries,,Кюстендил,Кюстендил,Кюстендил,бул. Македония 10,42.2833699,22.6819047,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/kjustendil-2300.html,2026-11-22
+kaufland,Kaufland,groceries,,Монтана,Монтана,Монтана,бул. Трети март 139,43.4216427,23.2269421,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/montana-2400.html,2026-11-22
+kaufland,Kaufland,groceries,,Пазарджик,Пазарджик,Пазарджик,ул. Димчо Дебелянов 3,42.1861704,24.3462123,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/pazardzhik-4100.html,2026-11-22
+kaufland,Kaufland,groceries,,Перник,Перник,Перник,ул. 6-ти май 1,42.6089174,23.0361636,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/pernik-hristo-smirnenski-3100.html,2026-11-22
+kaufland,Kaufland,groceries,,Перник,Перник,Перник,ул. Овар 1,42.6063445,23.1145196,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/pernik-iztok-3600.html,2026-11-22
+kaufland,Kaufland,groceries,,Петрич,Петрич,Благоевград,ул. Първомайски път 1,41.4101,23.2102,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/petrich-5400.html,2026-11-22
+kaufland,Kaufland,groceries,,Плевен,Плевен,Плевен,ул. Гренадерска 119,43.4191748,24.6273377,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/pleven-voden-5200.html,2026-11-22
+kaufland,Kaufland,groceries,,Плевен,Плевен,Плевен,ул. Сан Стефано 80,43.3951386,24.6220567,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/pleven-kaylka-3300.html,2026-11-22
+kaufland,Kaufland,groceries,,Пловдив,Пловдив,Пловдив,бул. Освобождение 47,42.1332028,24.7898593,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/plovdiv-trakija-osvobozhdenie-1200.html,2026-11-22
+kaufland,Kaufland,groceries,,Пловдив,Пловдив,Пловдив,бул. Пещерско шосе 36,42.1400282,24.7243817,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/plovdiv-hristo-smirnenski-6900.html,2026-11-22
+kaufland,Kaufland,groceries,,Пловдив,Пловдив,Пловдив,бул. Цариградско шосе 94,42.1482953,24.7841114,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/plovdiv-tsarigradsko-shose-2600.html,2026-11-22
+kaufland,Kaufland,groceries,,Пловдив,Пловдив,Пловдив,ул. Брезовско шосе 127,42.1669686,24.7498575,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/plovdiv-gagarin-4200.html,2026-11-22
+kaufland,Kaufland,groceries,,Пловдив,Пловдив,Пловдив,ул. Македония 97Б,42.1221244,24.7411932,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/plovdiv-hristo-botev-jug-2700.html,2026-11-22
+kaufland,Kaufland,groceries,,Разград,Разград,Разград,бул. Априлско въстание 3A,43.5301795,26.5117501,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/razgrad-4400.html,2026-11-22
+kaufland,Kaufland,groceries,,Русе,Русе,Русе,бул. Липник 8,43.8452664,25.9661422,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/ruse-jalta-1500.html,2026-11-22
+kaufland,Kaufland,groceries,,Русе,Русе,Русе,бул. Христо Ботев 38,43.8321604,25.969904,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/ruse-druzhba-1600.html,2026-11-22
+kaufland,Kaufland,groceries,,Сандански,Сандански,Благоевград,ул. Свобода 55,41.550682,23.2700662,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sandanski-4700.html,2026-11-22
+kaufland,Kaufland,groceries,,Севлиево,Севлиево,Габрово,ул. Стара планина 78,43.0216466,25.0955895,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sevlievo-3200.html,2026-11-22
+kaufland,Kaufland,groceries,,Силистра,Силистра,Силистра,ул. Н. Й. Вапцаров 8,44.1121424,27.2530563,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/silistra-5000.html,2026-11-22
+kaufland,Kaufland,groceries,,Сливен,Сливен,Сливен,бул. Георги Данчев 30,42.682801,26.3419777,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sliven-mladost-1700.html,2026-11-22
+kaufland,Kaufland,groceries,,Сливен,Сливен,Сливен,бул. Цар Симеон 39,42.674655,26.323519,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sliven-promishlena-zona-7100.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Ботевградско шосе 515,42.7094172,23.4554879,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-xopark-1090.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Ген. Тотлебен 36,42.6885777,23.3025513,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-kriva-reka-7800.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Д-р Г. М. Димитров 12,42.6677586,23.3651785,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-izgrev-8400.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Петър Дертлиев 56,42.7102595,23.2588502,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-ljulin-petr-dertliev-3700.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Тодор Каблешков 3,42.6704284,23.2734381,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-vitosha-6000.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),бул. Царица Йоанна 97,42.7258602,23.241851,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-ljulin-tsaritsa-yoanna-1040.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Асен Йорданов 7,42.6749331,23.3820745,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-slatina-5900.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Васил Стефанов 61,42.6553912,23.2873198,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofia-manastirski-livadi-6500.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Владичина ливада 2,42.6338801,23.407303,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofia-gorublyane-6300.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Илиянско шосе 1,42.7317348,23.3156709,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofia-voenna-rampa-1010.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Кукуряк 3,42.6838704,23.2676309,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-ovcha-kupel-2900.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Любляна 46,42.6712582,23.2566845,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-1080.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Милко Бичев 2,42.6987512,23.3480942,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofia-teatralna-1030.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Околовръстен път 271,42.624226,23.3838341,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofia-mladost-okolovrasten-pat-8800.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Проф. д-р Ив. Странски 20,42.6428659,23.3369686,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-malinova-dolina-5800.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Резбарска 7Б,42.712897,23.3550617,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-hadzhi-dimitr-5600.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Скопие 1,42.7110323,23.3027212,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-banishora-2800.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Филип Аврамов 3,42.6453868,23.3784502,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-mladost-1000.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Хайделберг 1,42.6562376,23.3995924,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-druzhba-1100.html,2026-11-22
+kaufland,Kaufland,groceries,,София,Столична,София (столица),ул. Хан Кубрат 61,42.7293291,23.286192,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/sofija-nadezhda-3000.html,2026-11-22
+kaufland,Kaufland,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. Иван Вазов 2,42.4320982,25.6393373,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/stara-zagora--bedechka-4900.html,2026-11-22
+kaufland,Kaufland,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. Стамо Пулев 2,42.4161315,25.6207548,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/stara-zagora-kazanski-3900.html,2026-11-22
+kaufland,Kaufland,groceries,,Търговище,Търговище,Търговище,ул. Ал. Стамболийски 27,43.248316,26.5578398,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/trgovische-4800.html,2026-11-22
+kaufland,Kaufland,groceries,,Хасково,Хасково,Хасково,бул. Съединение 44,41.9306504,25.565702,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/haskovo-1900.html,2026-11-22
+kaufland,Kaufland,groceries,,Шумен,Шумен,Шумен,бул. Симеон Велики 28,43.2757788,26.9424565,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/shumen-trakija-1800.html,2026-11-22
+kaufland,Kaufland,groceries,,Шумен,Шумен,Шумен,ул. Бели Лом 1,43.2781589,26.9148729,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/shumen-bojan-blgaranov-7700.html,2026-11-22
+kaufland,Kaufland,groceries,,Ямбол,Ямбол,Ямбол,ул. Граф Игнатиев 30,42.4773107,26.5183527,OFFICIAL_STORE_LOCATOR,https://www.kaufland.bg/moyat-kaufland/uslugi/filiali/jambol-2000.html,2026-11-22
+lidl,Lidl,groceries,,Айтос,Айтос,Бургас,ул. Лозенград 2,42.70575,27.24987,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Асеновград,Асеновград,Пловдив,ул. Васил Левски 26,42.01469,24.86802,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Балчик,Балчик,Добрич,ул. Дунав 5,43.42826,28.15933,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Благоевград,Благоевград,Благоевград,бул. Св. Димитър Солунски 26,42.01462,23.08404,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Ботевград,Ботевград,София,бул. Цар Освободител 33А,42.91008,23.80268,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,"бул. Демокрация, Chantrer Residence",42.50468,27.4729,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ж.к. Изгрев бл. 207,42.52716,27.45411,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ж.к. Меден Рудник,42.45859,27.41558,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ул. Пирин 8,42.50266,27.45897,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ул. Проф. Яким Якимов 17,42.52337,27.44415,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ул. Транспортна,42.53159,27.46228,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Бургас,Бургас,Бургас,ул. Янко Комитов 4,42.51232,27.45728,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,бул. 1-ви май 6,43.17713,27.90618,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,бул. Владислав Варненчик 158,43.21589,27.89755,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,бул. Владислав Варненчик 257,43.22015,27.88261,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,бул. Република 62,43.23635,27.88164,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,бул. Сливница 176,43.22699,27.88819,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,ул. Битоля 1А,43.21497,27.91531,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,ул. Мир 45,43.22498,27.93054,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,ул. Св. Елена 14,43.24547,27.8577,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Варна,Варна,Варна,"ул.45, № 27",43.23163,28.00592,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Велико Търново,Велико Търново,Велико Търново,ул. Народни будители 25,43.07289,25.60962,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Велико Търново,Велико Търново,Велико Търново,ул. Серес 3,43.08021,25.60938,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Велинград,Велинград,Пазарджик,ул. Георги Кирков 92,42.03198,24.00463,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Видин,Видин,Видин,ул. Академик Стефан Младенов 20,43.99352,22.8654,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Враца,Враца,Враца,ул. Васил Кънчов 21,43.20781,23.56104,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Враца,Враца,Враца,ул. Стоян Ц. Даскалов 3,43.22056,23.54249,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Габрово,Габрово,Габрово,ул. Васил Неделчев 4,42.88084,25.31606,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Габрово,Габрово,Габрово,ул. Свищовска 68,42.89503,25.31082,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Горна Оряховица,Горна Оряховица,Велико Търново,ул. Христо Смирненски 14,43.12854,25.68126,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Гоце Делчев,Гоце Делчев,Благоевград,ул. Панаирски ливади 2,41.5757,23.74429,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Димитровград,Димитровград,Хасково,ул. Димитър Благоев 16,42.05439,25.5975,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Добрич,Добрич,Добрич,бул. 25 септември 70,43.57813,27.82943,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Добрич,Добрич,Добрич,бул. Русия 2,43.56186,27.83898,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Дупница,Дупница,Кюстендил,ул. Страхил войвода 17,42.26659,23.11244,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Елин Пелин,Елин Пелин,София,бул. Витоша 25,42.65604,23.59034,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Каварна,Каварна,Добрич,ул. Марица 1,43.43546,28.32692,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Казанлък,Казанлък,Стара Загора,бул. Княз Ал. Батенберг 45,42.61786,25.40022,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Карлово,Карлово,Пловдив,ул. Генерал Заимов 54,42.63274,24.80097,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Карнобат,Карнобат,Бургас,бул. Москва 24А,42.65086,26.97682,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Козлодуй,Козлодуй,Враца,ул. Христо Ботев 2A,43.77586,23.73335,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Костинброд,Костинброд,София,ул. Ломско шосе 2-т,42.7996,23.22917,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Кърджали,Кърджали,Кърджали,бул. Беломорски 72 79,41.63074,25.37759,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Кюстендил,Кюстендил,Кюстендил,ул. Петър Ников 9,42.2792,22.6721,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Ловеч,Ловеч,Ловеч,ул. Княз Имеретински 103,43.14456,24.71181,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Лозен,Столична,София (столица),ул. Лозен 3,42.62597,23.44679,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Лом,Лом,Монтана,ул. Пристанищна 41A,43.82741,23.24094,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Луковит,Луковит,Ловеч,ул. Възраждане 128,43.21464,24.16512,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Монтана,Монтана,Монтана,ул. Трети Март 137А,43.41801,23.22634,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Несебър,Несебър,Бургас,кръстовището на Е87 и пътя за Равда,42.65177,27.67117,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Несебър,Несебър,Бургас,местност Чаирите 357,42.71099,27.72162,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пазарджик,Пазарджик,Пазарджик,бул. Ал. Стамболийски 48А,42.19672,24.32666,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Панагюрище,Панагюрище,Пазарджик,ул. Пятигорск 58,42.50445,24.17167,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Перник,Перник,Перник,ул. Г. С. Раковски 2,42.60536,23.03632,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Перник,Перник,Перник,ул. Захари Зограф 159,42.60206,23.04868,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Перник,Перник,Перник,ул. Юри Гагарин 3В,42.61101,23.09131,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Петрич,Петрич,Благоевград,ул. Рокфелер 49,41.398,23.20926,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пещера,Пещера,Пазарджик,ул. Хан Пресиян 34,42.03416,24.30925,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Плевен,Плевен,Плевен,ж.к. Сторгозия 119,43.42553,24.59005,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Плевен,Плевен,Плевен,ул. Георги Кочев 4В,43.41359,24.63363,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Плевен,Плевен,Плевен,ул. Сторгозия 2,43.41928,24.60794,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. България 115А,42.15716,24.72825,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Васил Левски 105,42.17308,24.74129,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Източен 33,42.13906,24.76242,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Кукленско шосе 8Б,42.12257,24.75595,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Македония 97A,42.12231,24.74012,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Менделеев 2Б,42.1305,24.7701,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Освобождение 43,42.13631,24.79249,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Пещерско шосе 153 А,42.1315,24.6972,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,бул. Пещерско шосе 34,42.1397,24.7253,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,ул. Недялка Шилева 8,42.12597,24.78569,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,ул. Победа 75,42.16479,24.73583,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Пловдив,Пловдив,Пловдив,ул. Рогошко шосе 1А,42.16109,24.7655,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Поморие,Поморие,Бургас,ул. Княз Борис I 102а,42.56542,27.62333,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Провадия,Провадия,Варна,Северна промишлена зона,43.18971,27.44478,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Разград,Разград,Разград,ул. Априлско въстание 66E,43.52155,26.53987,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Разлог,Разлог,Благоевград,ул. Гоце Делчев 24,41.87888,23.47216,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Раковски,Раковски,Пловдив,"ул. Христо Смирненски 45, местност Казаните",42.27269,24.9164,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Русе,Русе,Русе,бул. Липник 1,43.84776,25.96118,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Русе,Русе,Русе,ул. Майор Атанас Узунов 17,43.85574,25.95929,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Русе,Русе,Русе,ул. Никола Петков 13,43.85318,25.97829,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Русе,Русе,Русе,ул. Стрешер планина 61,43.83153,25.96925,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Русе,Русе,Русе,ул. Чипровци 32,43.8471,25.97687,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Самоков,Самоков,София,бул. Искър 2Б,42.33428,23.55537,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Севлиево,Севлиево,Габрово,ул. Никола Петков 41A,43.02162,25.09434,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Септември,Септември,Пазарджик,ул. Христо Ботев 74,42.20547,24.13782,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Силистра,Силистра,Силистра,ул. Бесарабия 2,44.11495,27.27346,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Сливен,Сливен,Сливен,бул. Стефан Стамболов 10,42.6771,26.3453,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Сливен,Сливен,Сливен,ул. Цар Симеон 37,42.67484,26.32321,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Смолян,Смолян,Смолян,бул. България 1Ж,41.57237,24.71763,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Созопол,Созопол,Бургас,"м. Буджака, ул. Созополски манастири 26",42.40597,27.70601,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),"Sofia Ring Mall ниво 0, ул. Околовръстен път 214",42.62489,23.352,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Александър Стамболийски 196,42.70248,23.28463,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Андрей Ляпчев 52,42.64945,23.36869,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Ботевградско Шосе 521-525,42.70944,23.4587,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Васил Левски 152,42.70446,23.33365,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Владимир Вазов 31А,42.7098,23.37067,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Добринова скала 4,42.73221,23.24876,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Евлоги и Христо Георгиеви 169,42.69521,23.34624,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Искърско шосе 5Б,42.66859,23.4028,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Ломско шосе 218,42.74256,23.28598,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Мария Луиза 58,42.7042,23.32383,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Никола Мушанов 149A,42.68909,23.27803,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Райко Даскалов 2,42.71334,23.24781,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Самоковско шосе 99,42.62231,23.4052,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Скобелев 62A,42.69561,23.30929,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Сливница 236,42.71148,23.29166,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Тодор Александров 173,42.70313,23.29365,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Царица Йоанна 20,42.71478,23.2655,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Царица Йоанна 84,42.7215,23.25293,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Черни връх 173,42.6402,23.31286,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),бул. Черни връх 47,42.66251,23.31767,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Алабин 35,42.69484,23.32201,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Вихрен 9,42.66689,23.26747,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Ген. Никола Жеков 12,42.7337,23.31002,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Георги С. Раковски 128,42.69052,23.32324,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Д-р Атанас Москов 18,42.6363,23.3749,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Димитър Пешев 30,42.64125,23.41317,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Екзарх Йосиф 37,42.70028,23.32412,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Жечо Гюмюшев 5,42.64571,23.38531,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Йордан Йосифов 1A,42.65326,23.34721,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Княжевска 5,42.65975,23.24293,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Кумата 20,42.64551,23.27458,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Ладога 3,42.66999,23.27859,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Марко Бочар 2,42.69349,23.36697,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Николай Хайтов 3,42.66969,23.35325,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Петър Дертлиев 111,42.71209,23.2399,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Президент Линкълн 76,42.68954,23.24667,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Проф. Александър Танев 15,42.6287,23.38356,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Резбарска 1В,42.70865,23.34286,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Резбарска 7А,42.71216,23.35399,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Тодор Каблешков 28,42.6599,23.30046,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,София,Столична,София (столица),ул. Хан Кубрат 67,42.73134,23.28543,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Стара Загора,Стара Загора,Стара Загора,бул. Никола Петков 44,42.42761,25.65988,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. Радецки 11,42.43895,25.63526,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. Хаджи Димитър Асенов 3,42.41681,25.62608,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Троян,Троян,Ловеч,ул. Академик Ангел Балевски 1,42.89178,24.71541,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Търговище,Търговище,Търговище,ул. Александър Стамболийски 48,43.24852,26.55445,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Харманли,Харманли,Хасково,ж.к. Тракия 12,41.93168,25.90574,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Хасково,Хасково,Хасково,бул. България 93,41.92996,25.56385,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Хасково,Хасково,Хасково,ул. Дунав 19 Б,41.94007,25.55551,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Царево,Царево,Бургас,ул. Михаил Герджиков 19,42.16554,27.84485,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Шумен,Шумен,Шумен,бул. Ришки проход 54,43.26169,26.94474,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Шумен,Шумен,Шумен,ул. Генерал Драгомиров 18,43.27828,26.90861,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Шумен,Шумен,Шумен,ул. Симеон Велики 36 A,43.27462,26.93239,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Ямбол,Ямбол,Ямбол,"Retail Park Yambol, ул. Битоля 37",42.47771,26.5118,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+lidl,Lidl,groceries,,Ямбол,Ямбол,Ямбол,ж.к. Диана 187,42.46993,26.52449,OFFICIAL_STORE_LOCATOR,https://www.lidl.bg/s/bg-BG/magazini/,2026-11-22
+metro,METRO,groceries,,Благоевград,Благоевград,Благоевград,"Промишлена зона, Зеленодолско шосе 17",,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/blagoevgrad,2026-11-22
+metro,METRO,groceries,,Бургас,Бургас,Бургас,булевард „Стефан Стамболов“ 103,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/burgas,2026-11-22
+metro,METRO,groceries,,Варна,Варна,Варна,ул. Атанас Москов 2,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/varna,2026-11-22
+metro,METRO,groceries,,Велико Търново,Велико Търново,Велико Търново,бул. България 78,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/veliko-tarnovo,2026-11-22
+metro,METRO,groceries,,Плевен,Плевен,Плевен,улица „Метро“ 11,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/pleven,2026-11-22
+metro,METRO,groceries,,Пловдив,Пловдив,Пловдив,булевард „Санкт Петербург“ 135,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/plovdiv1,2026-11-22
+metro,METRO,groceries,,Пловдив,Пловдив,Пловдив,ул. Костиевска №1,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/plovdiv2,2026-11-22
+metro,METRO,groceries,,Русе,Русе,Русе,бул. 3-ти март 60,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/ruse,2026-11-22
+metro,METRO,groceries,,София,Столична,София (столица),бул. Европа 182,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/sofia2,2026-11-22
+metro,METRO,groceries,,София,Столична,София (столица),булевард Цариградско шосе 7-11 км,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/sofia1,2026-11-22
+metro,METRO,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. Хрищиян Войвода 30,,,OFFICIAL_STORE_LOCATOR,https://www.metro.bg/magazini/stara-zagora,2026-11-22
+t_market,T MARKET,groceries,,Айтос,Айтос,Бургас,ул. Хаджи Димитър №27,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-aitos,2026-11-22
+t_market,T MARKET,groceries,,Асеновград,Асеновград,Пловдив,ул. Ал. Стамболийски № 7,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-asenovgrad,2026-11-22
+t_market,T MARKET,groceries,,Ахтопол,Царево,Бургас,ул. „Тракия“ 35,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-ahtopol,2026-11-22
+t_market,T MARKET,groceries,,Банско,Банско,Благоевград,"ул. Пирин №92, в-г",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-bansko,2026-11-22
+t_market,T MARKET,groceries,,Берковица,Берковица,Монтана,ул. „Александровскa” № 65б,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-berkovitsa,2026-11-22
+t_market,T MARKET,groceries,,Бобов дол,Бобов дол,Кюстендил,ул. Димитър Благоев №28,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-bobov-dol,2026-11-22
+t_market,T MARKET,groceries,,Бургас,Бургас,Бургас,Меден Рудник - бул. Александър Георгиев Коджакафалията № 81,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-burgas-meden-rudnik-bul-aleksandar-georgiev-kodjakafaliyata-81,2026-11-22
+t_market,T MARKET,groceries,,Бургас,Бургас,Бургас,"кв. Славейков, бл. 214",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,Бургас,Бургас,Бургас,ул. Марагидик 17,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,Бяла Слатина,Бяла Слатина,Враца,ул. „ Търнавска” № 41,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-bqla-slatina-1,2026-11-22
+t_market,T MARKET,groceries,,Варна,Варна,Варна,"Бизнес парк, сграда Б, ул. Ян Палах №10",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-varna,2026-11-22
+t_market,T MARKET,groceries,,Видин,Видин,Видин,ул. Железничарска №19,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-vidin,2026-11-22
+t_market,T MARKET,groceries,,Враца,Враца,Враца,"ж.к Дъбника, комплекс РУМ",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-vratsa,2026-11-22
+t_market,T MARKET,groceries,,Гоце Делчев,Гоце Делчев,Благоевград,ул. „Панаирски Ливади” № 7,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-goce,2026-11-22
+t_market,T MARKET,groceries,,Девин,Девин,Смолян,ул. Освобождение 1,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-devin,2026-11-22
+t_market,T MARKET,groceries,,Димитровград,Димитровград,Хасково,ул. „Емилиян Станев“ 1 А,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-dimitrovgrad,2026-11-22
+t_market,T MARKET,groceries,,Добрич,Добрич,Добрич,ул. Капитан Д. Списаревски 30,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-dobrich,2026-11-22
+t_market,T MARKET,groceries,,Дулово,Дулово,Силистра,ул. Байкал 2А,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-dulovo,2026-11-22
+t_market,T MARKET,groceries,,Елин Пелин,Елин Пелин,София,ул. Стоян Михайловски № 5,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-elin-pelin,2026-11-22
+t_market,T MARKET,groceries,,Елхово,Елхово,Ямбол,ул. „Александър Стамболийски“ 167,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-elhovo,2026-11-22
+t_market,T MARKET,groceries,,Етрополе,Етрополе,София,бул. Партизанска 1,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-etropole,2026-11-22
+t_market,T MARKET,groceries,,Каварна,Каварна,Добрич,"ул. България 49, ет. -1",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kavarna,2026-11-22
+t_market,T MARKET,groceries,,Казанлък,Казанлък,Стара Загора,ул. Княз Александър Батенберг № 217,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kazanluk,2026-11-22
+t_market,T MARKET,groceries,,Казанлък,Казанлък,Стара Загора,"ул. „Бачо Киро“ 4, 6100 Калиакчийски",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-bacho-kiro,2026-11-22
+t_market,T MARKET,groceries,,Карлово,Карлово,Пловдив,Общински пазар 44,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-karlovo,2026-11-22
+t_market,T MARKET,groceries,,Карнобат,Карнобат,Бургас,ул. „Промишлена зона“ № 29,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-karnobat,2026-11-22
+t_market,T MARKET,groceries,,Козлодуй,Козлодуй,Враца,"ул. „Освободител"" № 47",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kozludui,2026-11-22
+t_market,T MARKET,groceries,,Костинброд,Костинброд,София,ул. Йордан Йовков № 39,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kostinbrod,2026-11-22
+t_market,T MARKET,groceries,,Котел,Котел,Сливен,"ул. Хаджи Къна Боева №4, ет.2",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kotel,2026-11-22
+t_market,T MARKET,groceries,,Крумовград,Крумовград,Кърджали,"ул. Княз Борис I, 6900",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-krumovgrad,2026-11-22
+t_market,T MARKET,groceries,,Кубрат,Кубрат,Разград,ул. „Борис I“ 2,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kubrat,2026-11-22
+t_market,T MARKET,groceries,,Кърджали,Кърджали,Кърджали,ул. Първи май 45А,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kardjali,2026-11-22
+t_market,T MARKET,groceries,,Ловеч,Ловеч,Ловеч,"бул. ""Мизия"" № 2",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lovech,2026-11-22
+t_market,T MARKET,groceries,,Лом,Лом,Монтана,ул. Аспарух № 13,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lom,2026-11-22
+t_market,T MARKET,groceries,,Луковит,Луковит,Ловеч,ул. Момчилец № 1,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lukovit,2026-11-22
+t_market,T MARKET,groceries,,Момчилград,Момчилград,Кърджали,ул. Гюмюрджинса 63,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-momchilgrad,2026-11-22
+t_market,T MARKET,groceries,,Монтана,Монтана,Монтана,бул. Ген. Арнолди № 6,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-montana,2026-11-22
+t_market,T MARKET,groceries,,Несебър,Несебър,Бургас,ж.к. Черно море 40-42,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-nesebar,2026-11-22
+t_market,T MARKET,groceries,,Нова Загора,Нова Загора,Сливен,ул. Христо Ботев № 33,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-nova-zagora,2026-11-22
+t_market,T MARKET,groceries,,Нови Искър,Столична,София (столица),ул. Искърско дефиле №116,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-novi-iskar,2026-11-22
+t_market,T MARKET,groceries,,Омуртаг,Омуртаг,Търговище,ул. „Цар Освободител” № 33,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-omurtag,2026-11-22
+t_market,T MARKET,groceries,,Павликени,Павликени,Велико Търново,бул. „Руски” № 39,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pavlikeni,2026-11-22
+t_market,T MARKET,groceries,,Пазарджик,Пазарджик,Пазарджик,ул. „Димчо Дебелянов“ 10,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pazardjik,2026-11-22
+t_market,T MARKET,groceries,,Перник,Перник,Перник,кв. Димова махала (до OMV),,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pernik,2026-11-22
+t_market,T MARKET,groceries,,Перник,Перник,Перник,"кв. Изток, ул. Благой Гебрев № 35 А",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pernik-2,2026-11-22
+t_market,T MARKET,groceries,,Перник,Перник,Перник,ул. Станционна 6,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pernik-3,2026-11-22
+t_market,T MARKET,groceries,,Пирдоп,Пирдоп,София,"ул. ""Васил Левски"" № 8",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pirdop,2026-11-22
+t_market,T MARKET,groceries,,Плевен,Плевен,Плевен,"ж. к. Сторгозия, кв. 79, до OMW",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pleven,2026-11-22
+t_market,T MARKET,groceries,,Плевен,Плевен,Плевен,пл. Иван Миндиликов № 1,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pleven-1,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,бул. Васил Априлов 102,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-aprilov,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"бул. Васил Левски № 3, ет. 1, обект маг. 2",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-levski,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,бул. Цар Борис III-ти Обединител 179,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-plovdiv-flavia,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,бул. Цариградско шосе 16,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-tsarigradsko-shose-plovdiv,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,бул. „Пещерско шосе“ №133 (Комплекс Корона),,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-peshtersko-shose,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,бул. „Шипка“ №6,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-shipka,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"ж. к. Тракия, бул. Съединение, РУМ Детски свят",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-plovdiv-suedienie,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"ж.к. Гагарин, ул. Огражден, п.к. 400",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-gagarin,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"ж.к. Тракия, бл. 14, вх. А, ет. 1, обект клон 44",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-trakiya,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"ж.к. Христо Смирненски, ул. Вечерница 3",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-smirnenski-2,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"ж.к. Христо Смирненски, ул. Йордан Гавазов 23",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-smirnenski-3,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"жк. Изгрев, ул. Герлово 1",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-izgrev,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"жк. Кючук Париж, бул. Александър Стамболийски 33",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kuchuk,2026-11-22
+t_market,T MARKET,groceries,,Пловдив,Пловдив,Пловдив,"кв. Христо Смирненски, ул. Равнища № 4",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-smirnenski,2026-11-22
+t_market,T MARKET,groceries,,Поморие,Поморие,Бургас,ул.Професор Стоянов 23,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-pomorie,2026-11-22
+t_market,T MARKET,groceries,,Попово,Попово,Търговище,ул. „Панайот Хитов” № 9,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-popovo,2026-11-22
+t_market,T MARKET,groceries,,Приморско,Приморско,Бургас,ул. Перун 3-5,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-primorsko,2026-11-22
+t_market,T MARKET,groceries,,Провадия,Провадия,Варна,Северна промишлена зона №3,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-provadiq,2026-11-22
+t_market,T MARKET,groceries,,Първомай,Първомай,Пловдив,ул. Орфей № 16,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-purvomai,2026-11-22
+t_market,T MARKET,groceries,,Раднево,Раднево,Стара Загора,ул. „Митьо Станев” № 4,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-radnevo,2026-11-22
+t_market,T MARKET,groceries,,Радомир,Радомир,Перник,ул. „Милан Грънчаров” № 1а,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-radomir,2026-11-22
+t_market,T MARKET,groceries,,Разград,Разград,Разград,"ж. к. Орел, ул. Юмрукчал № 15",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-razrgrad,2026-11-22
+t_market,T MARKET,groceries,,Разлог,Разлог,Благоевград,ул. „Гоце Делчев” № 53,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-razlog,2026-11-22
+t_market,T MARKET,groceries,,Раковски,Раковски,Пловдив,ул. Петър Парчевич 21,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-rakovski,2026-11-22
+t_market,T MARKET,groceries,,Самоков,Самоков,София,ул. Искър № 2 А,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-samokov,2026-11-22
+t_market,T MARKET,groceries,,Сандански,Сандански,Благоевград,"ул. ""Македония"" № 30, ет. -1",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-sandanski,2026-11-22
+t_market,T MARKET,groceries,,Свиленград,Свиленград,Хасково,ул. „Гео Милев“ 2,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-svilengrad,2026-11-22
+t_market,T MARKET,groceries,,Свищов,Свищов,Велико Търново,ул. „Люлин“ 20,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-svishtov,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Връбница, ж.к. Надежда 6, ул. Златен клас № 10",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-vrabnitsa,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Гевгелийски, ул.Мачуково, с/у бл.1",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-gevgeliiski,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Геренa, Сухата река, Тодорини кукли № 47",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-gerena,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Лада, кв. Красна поляна, ул. Суходолска № 2",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lada,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Люлин 9, ул. Ген. Асен Николов № 19",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lyulin-9,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"Слатина, ул. ""Камчия"" № 1",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-slatina,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"бул. България, площад Ручей",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-bulgaria-sofia,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),бул. Райко Даскалов № 15,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lulin-5,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),бул. „Възкресение” 85,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-vaskresenie,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж. к. Борово, блок 232",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-borovo,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж. к. Гоце Делчев, ул. Червена роза № 50",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-chervena-roza,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. ""Лагера"", ул. ""Баба Илийца"" № 2",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lagera,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Дружба 1, ул. 5030 6",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Дружба, до бл. 86",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Илинден, бл. 129-130",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-razsadnika,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Люлин 2, бл. 227",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-liulin2,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Младост 1, бл.72",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-mladost-1a-1594729042-1594729062,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Младост 2, между блок 206 и 209",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-mladost-2-2,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Младост 2, ул. проф. д-р Васил Златарски 3",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-mladost-2,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Младост 4, ул. Бъднина 15",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-mladost-4,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Мусагеница, ул. Боян Дановски 11",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-danovski,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"ж.к. Овча купел, до бл. 18",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-ovcha,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"жк. Люлин 10, ул. Гоце Делчев (УПИ 8, кв.32)",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lyulin-10,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"жк. Люлин 3, ул. Панчо Владигеров 44",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-lyulin-3,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"кв. Банишора, бул. Ген. Столетов №70",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-banishora,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"кв. Редута, ул. Атанас Узунов, № 14",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-reduta-atanasov,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),"кв. Редута, ул. Велчо Атанасов, № 27",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-reduta,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),ул. Академик Борис Стефанов 38,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),ул. Васил Калчев 10,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),ул. Костенски водопад № 102,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-kostenski-vodopad,2026-11-22
+t_market,T MARKET,groceries,,София,Столична,София (столица),ул. Стефан Малинов 2,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/article/vajna-informaciya-za-klientite-ni-v-grad-sofiya-i-grad-burgas,2026-11-22
+t_market,T MARKET,groceries,,Стамболийски,Стамболийски,Пловдив,ул. Търговска №50,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-stamboliiski,2026-11-22
+t_market,T MARKET,groceries,,Стара Загора,Стара Загора,Стара Загора,ул. „Загорка“ №44,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-stara-zagora,2026-11-22
+t_market,T MARKET,groceries,,Съединение,Съединение,Пловдив,ул. „Ал. Стамболийски“ 4,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-syedinenie,2026-11-22
+t_market,T MARKET,groceries,,Твърдица,Твърдица,Сливен,"ул. „Княз Борис I“ №54, Твърдица, България",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-tvarditsa,2026-11-22
+t_market,T MARKET,groceries,,Тетевен,Тетевен,Ловеч,ул. Марин Темелски №3,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-teteven-1,2026-11-22
+t_market,T MARKET,groceries,,Троян,Троян,Ловеч,"ул. Опълченска 1, до пазара",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-troyan,2026-11-22
+t_market,T MARKET,groceries,,Търговище,Търговище,Търговище,ул. Възраждане 2,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-targovishte,2026-11-22
+t_market,T MARKET,groceries,,Харманли,Харманли,Хасково,пл. Възраждане №9,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-harmanli,2026-11-22
+t_market,T MARKET,groceries,,Черноморец,Созопол,Бургас,Аклади №49,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-chernomorec,2026-11-22
+t_market,T MARKET,groceries,,Ямбол,Ямбол,Ямбол,"""Преслав“ № 266",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-yambol2,2026-11-22
+t_market,T MARKET,groceries,,Ямбол,Ямбол,Ямбол,ул. Търговска №85,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-yambol,2026-11-22

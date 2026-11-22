@@ -25,7 +25,7 @@ export const s = StyleSheet.create({
     flex: 1,
     minWidth: 0,
     paddingHorizontal: 2,
-    paddingVertical: 4,
+    paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
     gap: 1,

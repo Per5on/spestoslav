@@ -51,7 +51,13 @@ with sync_playwright() as p:
  page.route(route_pattern,lambda route:route.fulfill(status=404,json={'detail':'Not Found'}))
  directory.get_by_role('button',name='Обнови',exact=True).click()
  expect(directory.get_by_text('Запазен списък с обекти',exact=False)).to_be_visible()
- expect(directory.get_by_text('ул. Краков 2Б',exact=False)).to_be_visible()
+ for entry in (
+  'Kaufland · ул. Краков 2Б', 'Lidl · ул. Д-р Атанас Москов 18',
+  'BILLA · Бул. Възкресение 66', 'Fantastico · бул. "Мадрид" №8',
+  'T MARKET · ул. Марагидик 17', 'METRO · ул. Костиевска №1',
+ ):
+  expect(directory.get_by_text(entry,exact=True)).to_have_count(1)
+ proof['snapshot_has_verified_addresses_from_six_grocery_chains']=True
  page.screenshot(path=str(args.output_dir/'merchant-snapshot.png'))
  page.unroute(route_pattern)
  directory.get_by_role('button',name='Обнови',exact=True).click()
