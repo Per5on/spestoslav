@@ -58,6 +58,18 @@ with sync_playwright() as p:
  ):
   expect(directory.get_by_text(entry,exact=True)).to_have_count(1)
  proof['snapshot_has_verified_addresses_from_six_grocery_chains']=True
+ tech_section = directory.get_by_role('heading', name='Техника', exact=True).locator('..')
+ for entry in (
+  'Techmart · Магазин Божурище · бул. "Сливница" 437',
+  'Зора · бул. Цар Освободител 37А',
+  'Jar Computers · JAR Computers Благоевград · бул. Джеймс Баучер 10',
+  'Technomarket · ТЕХНОМАРКЕТ АСЕНОВГРАД · бул. България 68',
+  'Ardes · ж.к. Братя Миладинови, бл. 91',
+  'Technopolis · Технополис Благоевград · ул. Св. Димитър Солунски 5',
+  'Вали · бул. Христо Смирненски 239',
+ ):
+  expect(tech_section.get_by_text(entry, exact=True)).to_have_count(1)
+ proof['saved_directory_displays_all_seven_technology_retailers']=True
  page.screenshot(path=str(args.output_dir/'merchant-snapshot.png'))
  page.unroute(route_pattern)
  directory.get_by_role('button',name='Обнови',exact=True).click()

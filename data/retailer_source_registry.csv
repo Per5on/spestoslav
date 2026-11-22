@@ -20,12 +20,12 @@ omv,OMV,fuel,https://www.omv.bg/,,NEEDS_LOCATOR_URL
 petrol,Petrol,fuel,https://www.petrol.bg/,,NEEDS_LOCATOR_URL
 rompetrol,Rompetrol,fuel,https://www.rompetrol.bg/,,NEEDS_LOCATOR_URL
 shell,Shell,fuel,https://www.shell.bg/,https://www.shell.bg/shell-service-stations/shell-station-locator.html,LOCATOR_CONFIRMED
-technopolis,Technopolis,technology,https://www.technopolis.bg/,https://www.technopolis.bg/stores,LOCATOR_CONFIRMED
+technopolis,Technopolis,technology,https://www.technopolis.bg/,https://www.technopolis.bg/bg/stores,LOCATOR_CONFIRMED
 technomarket,Technomarket,technology,https://www.technomarket.bg/,https://www.technomarket.bg/magazini,LOCATOR_CONFIRMED
-zora,Зора,technology,https://zora.bg/,https://zora.bg/stores,LOCATOR_CONFIRMED
-ardes,Ardes,technology,https://ardes.bg/,,NEEDS_LOCATOR_URL
+zora,Зора,technology,https://zora.bg/,https://zora.bg/page/magazini-zora,LOCATOR_CONFIRMED
+ardes,Ardes,technology,https://ardes.bg/,https://ardes.bg/magazini-i-servizi,LOCATOR_CONFIRMED
 jar_computers,Jar Computers,technology,https://www.jarcomputers.com/,https://www.jarcomputers.com/stores/,LOCATOR_CONFIRMED
 plasico,Plasico,technology,https://plasico.bg/,,NEEDS_LOCATOR_URL
 plesio,Plesio,technology,https://plesio.bg/,,NEEDS_LOCATOR_URL
-vali,Вали,technology,https://www.vali.bg/,,NEEDS_LOCATOR_URL
+vali,Вали,technology,https://www.vali.bg/,https://www.vali.bg/kontakti,LOCATOR_CONFIRMED
 techmart,Techmart,technology,https://techmart.bg/,https://techmart.bg/store/store/list,LOCATOR_CONFIRMED_REQUIRES_BRANCH_IMPORT

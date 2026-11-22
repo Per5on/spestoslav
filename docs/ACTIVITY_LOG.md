@@ -336,3 +336,10 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Restored the original stacked category icons and names with smaller 16 pt symbols and compact padding. Verified standard and narrow browser layouts and retained the build hold.
 
 - Owner requested 4 pt vertical tab padding and a visual preview. Mobile and responsive browser checks passed. Android run 45035896667 was dispatched after misreading the request and cancellation was requested when the owner clarified.
+
+## 22 November 2026 — technology stores and category icons
+
+- Set all four category icons to 20 pt, retaining 10 pt vertical padding. The owner requested no visual preview.
+- Verified 174 physical locations from seven official technology retailers and updated the inventory seed and saved directory. All 14 requested Techmart stores were included. The date, counts and source links are in the handoff.
+- Passed mobile unit tests, TypeScript, canonical inventory validation, the six-language layout check and browser verification of the saved directory after a simulated API 404.
+- Next action is to obtain approval for the revised ARM candidate. Live directory rollout and data import remain pending.

@@ -41,7 +41,7 @@ with sync_playwright() as playwright:
     geometry()
     location = page.get_by_test_id("location-search").bounding_box()
     assert location["y"] + location["height"] < tabs.first.bounding_box()["y"]
-    assert tabs.first.bounding_box()["height"] <= 57
+    assert tabs.first.bounding_box()["height"] <= 61
     assert tabs.first.evaluate("""el => {
       const style = getComputedStyle(el);
       return style.paddingTop === "10px" && style.paddingBottom === "10px";
@@ -49,6 +49,7 @@ with sync_playwright() as playwright:
     for index in range(4):
         icon = tabs.nth(index).get_by_test_id(re.compile("^tab-icon-"))
         expect(icon).to_be_visible()
+        assert icon.evaluate("(el) => getComputedStyle(el).fontSize") == "20px"
         label = tabs.nth(index).get_by_text(tabs.nth(index).get_attribute("aria-label"), exact=True)
         icon_box, label_box = icon.bounding_box(), label.bounding_box()
         assert icon_box["y"] + icon_box["height"] <= label_box["y"] + 1

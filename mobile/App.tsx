@@ -400,7 +400,7 @@ function Main({ initialNotice, onErase }: {
             style={[s.tab, active === tab.id && s.activeTab]}
             onPress={() => switchTab(tab.id)}
           >
-            <Ionicons testID={`tab-icon-${tab.id}`} name={tab.icon} size={16}
+            <Ionicons testID={`tab-icon-${tab.id}`} name={tab.icon} size={20}
               accessible={false} color={active === tab.id ? selectedInk : color("#19562a")} />
             <AutoFitLabel
               label={t(tab.label)}

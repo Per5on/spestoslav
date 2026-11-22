@@ -1,6 +1,4 @@
 retailer_code,retailer_name,category_code,branch_name,city,municipality,region,address,latitude,longitude,source,source_url,source_checked_at
-technopolis,Technopolis,technology,Технополис Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 4,43.071944,25.638972,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/stores,2026-11-14
-technomarket,Technomarket,technology,Техномаркет Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/veliko-tyrnovo/tehnomarket-veliko-tyrnovo,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Надежда 2,София,Столична,София (столица),бул. Ломско шосе 68,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Панайот Волов,София,Столична,София (столица),ул. Панайот Волов 2–4,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
 promarket,ProMarket,groceries,ProMarket София – Гео Милев,София,Столична,София (столица),бул. Гео Милев 20,,,OFFICIAL_STORE_LOCATOR,https://promarket.bg/shops/,2026-11-14
@@ -668,3 +666,177 @@ t_market,T MARKET,groceries,,Харманли,Харманли,Хасково,п
 t_market,T MARKET,groceries,,Черноморец,Созопол,Бургас,Аклади №49,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-chernomorec,2026-11-22
 t_market,T MARKET,groceries,,Ямбол,Ямбол,Ямбол,"""Преслав“ № 266",,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-yambol2,2026-11-22
 t_market,T MARKET,groceries,,Ямбол,Ямбол,Ямбол,ул. Търговска №85,,,OFFICIAL_STORE_LOCATOR,https://tmarket.bg/page/magazin-yambol,2026-11-22
+ardes,Ardes,technology,,Бургас,Бургас,Бургас,"ж.к. Братя Миладинови, бл. 91",,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+ardes,Ardes,technology,,Варна,Варна,Варна,бул. Сливница 120,,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+ardes,Ardes,technology,,Велико Търново,Велико Търново,Велико Търново,"ул. Мармарлийска 35, Green Park, ет. 2",,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+ardes,Ardes,technology,,Перник,Перник,Перник,"ул. Св. св. Кирил и Методий 23, МОЛ Перник",,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+ardes,Ardes,technology,,Пловдив,Пловдив,Пловдив,бул. Княгиня Мария Луиза 35,,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+ardes,Ardes,technology,,София,Столична,София (столица),ул. Пловдивско поле 11а,,,OFFICIAL_STORE_LOCATOR,https://ardes.bg/magazini-i-servizi,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Благоевград,Благоевград,Благоевград,Благоевград,бул. Джеймс Баучер 10,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers - Бургас,Бургас,Бургас,Бургас,"жк. Братя Миладинови, ул.Вардар 26",,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Варна,Варна,Варна,Варна,ул. Петър Райчев 14,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Видин,Видин,Видин,Видин,"ул.Цар Александър II, 3, ет.1, офис 9",,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Враца,Враца,Враца,Враца,ул. Оборище №8,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,Веском Трейд ЕООД,Гоце Делчев,Гоце Делчев,Благоевград,"ул. Струма1, магазин Веском",,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Карлово,Карлово,Карлово,Пловдив,пл. Васил Левски 14,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,Токском,Кюстендил,Кюстендил,Кюстендил,ул.Ильо Войвода 11,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers - Пазарджик,Пазарджик,Пазарджик,Пазарджик,"ул.""Кочо Честеменски"" 1",,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers Пловдив,Пловдив,Пловдив,Пловдив,ул.Гладстон №36,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,JAR Computers - Самоков,Самоков,Самоков,София,ул. Софроний Врачански 10,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology, JAR Computers Сандански - Тома Проданов,Сандански,Сандански,Благоевград,бул. Свобода 5,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,ЖАР Компютърс - Централа,София,Столична,София (столица),бул. Акад. Иван Гешов 2Е,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,Руски паметник,София,Столична,София (столица),ул. Дамян Груев 60,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+jar_computers,Jar Computers,technology,ЖАР Компютърс - Черковна,София,Столична,София (столица),ул. Черковна 77,,,OFFICIAL_STORE_LOCATOR,https://www.jarcomputers.com/stores,2026-11-22
+techmart,Techmart,technology,Магазин Божурище,Божурище,Божурище,София,"бул. ""Сливница"" 437",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/12/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Варна,Варна,Варна,Варна,бул. Цар Освободител №263А,,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/7/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Габрово,Габрово,Габрово,Габрово,"бул. Могильов № 47, Terra Mall",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/21/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Гоце Делчев,Гоце Делчев,Гоце Делчев,Благоевград,"бул.""Гоце Делчев"" № 98-продължение",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/32/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Добрич,Добрич,Добрич,Добрич,"Околовръстен път, Дружба IV №2",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/17/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Плевен,Плевен,Плевен,Плевен,Бул. Европа 6Б,,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/20/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Пловдив,Пловдив,Пловдив,Пловдив,"ул. ""Недко Каблешков"" 10-12",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/9/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин Симеоновско шосе,София,Столична,София (столица),"бул. ""Симеоновско шосе"" 138",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/5/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин Вл.Вазов,София,Столична,София (столица),бул. Владимир Вазов 83,,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/18/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин Борово,София,Столична,София (столица),бул. „Братя Бъкстон“ 30,,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/3/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин Люлин,София,Столична,София (столица),"ж.к. Люлин, бул. Царица Йоанна 65",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/34/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин Стрелбище,София,Столична,София (столица),"кв. Стрелбище, бул. „Гоце Делчев“ бл. 1",,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/4/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Стара Загора,Стара Загора,Стара Загора,Стара Загора,кв. Три чучура - Център 40 ( до Сузуки ),,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/22/lang/1,2026-11-22
+techmart,Techmart,technology,Магазин гр. Шумен,Шумен,Шумен,Шумен,бул. Симеон Велики № 38,,,OFFICIAL_STORE_LOCATOR,https://techmart.bg/store/store/details/25/lang/1,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ АСЕНОВГРАД,Асеновград,Асеновград,Пловдив,бул. България 68,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/asenovgrad/tehnomarket-asenovgrad,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ БАНСКО,Банско,Банско,Благоевград,ул. Патриарх Евтимий 4,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/bansko/tehnomarket-bansko,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ БЛАГОЕВГРАД,Благоевград,Благоевград,Благоевград,"ж.к. Струмско, бул. Яне Сандански",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/blagoevgrad/tehnomarket-blagoevgrad,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ БОТЕВГРАД,Ботевград,Ботевград,София,бул. Цар Освободител 24А,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/botevgrad/tehnomarket-botevgrad,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ БУРГАС,Бургас,Бургас,Бургас,"бул. Транспортна 31, Гранд Плаза МОЛ",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/burgas/tehnomarket-burgas,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ БУРГАС 3,Бургас,Бургас,Бургас,бул.Захари Стоянов 1,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/burgas/tehnomarket-burgas-3,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ВАРНА 2 ГРАНД МОЛ,Варна,Варна,Варна,"бул. Андрей Сахаров 2, Гранд Мол Варна",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/varna/tehnomarket-varna-2-grand-mol,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ВАРНА,Варна,Варна,Варна,ул. Коево 2,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/varna/tehnomarket-varna,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ВЕЛИКО ТЪРНОВО,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 17,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/veliko-tyrnovo/tehnomarket-veliko-tyrnovo,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ВЕЛИНГРАД,Велинград,Велинград,Пазарджик,"ул. Хан Аспарух 2–В,Г",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/velingrad/tehnomarket-velingrad,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ГОЦЕ ДЕЛЧЕВ,Гоце Делчев,Гоце Делчев,Благоевград,бул. Панаирски ливади 1 - Сити център Белла,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/goce-delchev/tehnomarket-goce-delchev,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ДИМИТРОВГРАД,Димитровград,Димитровград,Хасково,бул.Стефан Стамболов 4А,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/dimitrovgrad/tehnomarket-dimitrovgrad,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ДОБРИЧ,Добрич,Добрич,Добрич,ул. Дунав N 53,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/dobrich/tehnomarket-dobrich,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ДУПНИЦА,Дупница,Дупница,Кюстендил,ул.Иван Вазов № 30,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/dupnica/tehnomarket-dupnica,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ЕЛИН ПЕЛИН,Елин Пелин,Елин Пелин,София,бул. Витоша 25,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/elin-pelin/tehnomarket-elin-pelin,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ИХТИМАН,Ихтиман,Ихтиман,София,ул.Цар Освободител № 128,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/ihtiman/tehnomarket-ihtiman,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ КАЗАНЛЪК,Казанлък,Казанлък,Стара Загора,бул. 23 пехотен шипченски полк 159,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/kazanlyk/tehnomarket-kazanlyk,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ КАРЛОВО,Карлово,Карлово,Пловдив,местност „Кантона“ 219,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/karlovo/tehnomarket-karlovo,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ КОСТИНБРОД,Костинброд,Костинброд,София,ул. „Ломско шосе“ №2-т.,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/kostinbrod/tehnomarket-kostinbrod,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ КЪРДЖАЛИ,Кърджали,Кърджали,Кърджали,"бул. Беломорски 68, до Васмар",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/kyrdzhali/tehnomarket-kyrdzhali,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПАЗАРДЖИК,Пазарджик,Пазарджик,Пазарджик,ул. Христо Касабвелев срещу магазин КРЕЗ,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/pazardzhik/tehnomarket-pazardzhik,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЕРНИК,Перник,Перник,Перник,"Ритейл Парк Перник Плаза, кв. Сини вир, ул. 601-ва 2",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/pernik/tehnomarket-pernik,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЕТРИЧ,Петрич,Петрич,Благоевград,ул. Места 3,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/petrich/tehnomarket-petrich,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПИРДОП,Пирдоп,Пирдоп,София,"Подбалкански път, разклонът за гр. Пирдоп",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/pirdop/tehnomarket-pirdop,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЛЕВЕН,Плевен,Плевен,Плевен,бул. Европа 6,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/pleven/tehnomarket-pleven,2026-11-22
+technomarket,Technomarket,technology,ТМ ПЛОВДИВ МАРКОВО ТЕПЕ,Пловдив,Пловдив,Пловдив,"Бул. Руски 52, 4000 Пловдив, Мол Марково Тепе",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/plovdiv/tm-plovdiv-markovo-tepe,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЛОВДИВ 2,Пловдив,Пловдив,Пловдив,Ул.Георги Странски 3 Плаза Мол,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/plovdiv/tehnomarket-plovdiv-2,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЛОВДИВ КУКЛЕНСКО ШОСЕ,Пловдив,Пловдив,Пловдив,"Южна промишлена зона, бул.Кукленско шосе 8Б",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/plovdiv/tehnomarket-plovdiv-kuklensko-shose,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЛОВДИВ,Пловдив,Пловдив,Пловдив,бул. България (4-ти километър),,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/plovdiv/tehnomarket-plovdiv,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПЪРВОМАЙ,Първомай,Първомай,Пловдив,"Ритейл Парк Първомай, ул. Княз Борис I 51В",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/pyrvomaj/tehnomarket-pyrvomaj,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ НЕСЕБЪР,Равда,Несебър,Бургас,местност Чатал тепе № 2,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/nesebyr/tehnomarket-nesebyr,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ РУСЕ АРЕНА,Русе,Русе,Русе,"Бул. ""Липник"" 1",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/ruse/tehnomarket-ruse-arena,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ РУСЕ,Русе,Русе,Русе,"бул. „Липник“ 121Д, Мол Русе",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/ruse/tehnomarket-ruse,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ САМОКОВ,Самоков,Самоков,София,ул. Софийско шосе 30А,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/samokov/tehnomarket-samokov,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ САНДАНСКИ,Сандански,Сандански,Благоевград,ул.Тодор Каблешков 7,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sandanski/tehnomarket-sandanski,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СВИЩОВ,Свищов,Свищов,Велико Търново,ул. Патриарх Евтимий № 78,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/svishtov/tehnomarket-svishtov,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СЕВЛИЕВО,Севлиево,Севлиево,Габрово,ул. Стефан Пешев 90А,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sevlievo/tehnomarket-sevlievo,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СЛИВЕН,Сливен,Сливен,Сливен,"Ритейл Парк Сливен, бул. Георги Данчев 24",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sliven/tehnomarket-sliven,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СМОЛЯН,Смолян,Смолян,Смолян,"Ритейл Парк Смолян, ул. Белия камък 24",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/smolqn/tehnomarket-smolqn,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ РИНГ МОЛ,София,Столична,София (столица),RING MALL ОКОЛОВРЪСТЕН ПЪТ 216,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-ring-mol,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СОФИЯ БОТЕВГРАДСКО ШОСЕ,София,Столична,София (столица),БУЛ. БОТЕВГРАДСКО ШОСЕ 515 - 525,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-sofiq-botevgradsko-shose,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СОФИЯ ЛЮЛИН,София,Столична,София (столица),Бул.Европа 171 Комплекс Мосю Бриколаж Люлин,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-sofiq-lyulin,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СОФИЯ MALL OF SOFIA,София,Столична,София (столица),"бул. Ал.Стамболийски 101, етаж -2",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-sofiq-mall-of-sofia,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СОФИЯ ЦАРИГРАДСКО ШОСЕ,София,Столична,София (столица),бул. Цариградско шосе 92,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-sofiq-carigradsko-shose,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ПАРК ЦЕНТЪР СОФИЯ,София,Столична,София (столица),ъгъла на бул. Черни връх и бул. Арсеналски,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/sofiq/tehnomarket-park-centyr-sofiq,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ СТАРА ЗАГОРА 2,Стара Загора,Стара Загора,Стара Загора,"Galleria Mall, ул. Хан Аспарух 30",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/stara-zagora/tehnomarket-stara-zagora-2,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ТРОЯН,Троян,Троян,Ловеч,"Ритейл Парк Троян, ул. Академик Ангел Балевски 1",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/troqn/tehnomarket-troqn,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ТЪРГОВИЩЕ,Търговище,Търговище,Търговище,бул. Ал. Стамболийски 42,,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/tyrgovishte/tehnomarket-tyrgovishte,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ШУМЕН,Шумен,Шумен,Шумен,"Ритейл Парк Арена, ул. Кралевиче 1",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/shumen/tehnomarket-shumen,2026-11-22
+technomarket,Technomarket,technology,ТЕХНОМАРКЕТ ЯМБОЛ,Ямбол,Ямбол,Ямбол,"Ритейл Парк Ямбол, ул. Битоля 37",,,OFFICIAL_STORE_LOCATOR,https://www.technomarket.bg/magazini/qmbol/tehnomarket-qmbol,2026-11-22
+technopolis,Technopolis,technology,Технополис Благоевград,Благоевград,Благоевград,Благоевград,ул. Св. Димитър Солунски 5,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Бургас 2,Бургас,Бургас,Бургас,бул. Транспортна 53,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Бургас 1,Бургас,Бургас,Бургас,к-с Славейков 94,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Варна 1,Варна,Варна,Варна,бул. Владислав Варненчик 277,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Варна 2,Варна,Варна,Варна,бул. Цар Освободител 267,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Велико Търново,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 4,43.071944,25.638972,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Видин,Видин,Видин,Видин,Бул. Панония,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Враца,Враца,Враца,Враца,бул.Втори юни 152,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Габрово,Габрово,Габрово,Габрово,ул. Индустриална 10,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Добрич,Добрич,Добрич,Добрич,кръстовището на Околовръстен път и ул. Батовска 54,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Кърджали,Кърджали,Кърджали,Кърджали,бул. Беломорски 4,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Кюстендил,Кюстендил,Кюстендил,Кюстендил,Гюешевско шосе 5,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Ловеч,Ловеч,Ловеч,Ловеч,ул. Княз Имеретински до Lidl,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Монтана,Монтана,Монтана,Монтана,бул. 3-ти март 216А,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Пазарджик,Пазарджик,Пазарджик,Пазарджик,бул. Стефан Стамболов 13,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Перник,Перник,Перник,Перник,бул. Св.Св.Кирил и Методий 21,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Плевен,Плевен,Плевен,Плевен,бул. Георги Кочев 4,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Пловдив 2,Пловдив,Пловдив,Пловдив,бул. Коматевско шосе 24,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Пловдив,Пловдив,Пловдив,Пловдив,бул. Санкт Петербург 133,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Разград,Разград,Разград,Разград,бул. Априлско въстание 66,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Русе,Русе,Русе,Русе,бул. Христо Ботев 38,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Сандански,Сандански,Сандански,Благоевград,Магистрален път Е-79 (разклона за с. Дамяница),,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Силистра,Силистра,Силистра,Силистра,бул. 7-ми септември 23,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Сливен,Сливен,Сливен,Сливен,бул. Стефан Караджа 6,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София Младост,София,Столична,София (столица),Околовръстен път 265,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София МОЛ България,София,Столична,София (столица),бул. България 69,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София Надежда,София,Столична,София (столица),бул. История Славянобългарска 13,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София Красно село,София,Столична,София (столица),бул. Никола Мушанов 149А,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София Сердика център,София,Столична,София (столица),бул. Ситняково 48,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София МОЛ The Mall,София,Столична,София (столица),бул. Цариградско шосе 115,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София МОЛ Paradise,София,Столична,София (столица),бул. Черни връх 100,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис София Люлин,София,Столична,София (столица),кв. Люлин - бул. Царица Йоанна 70,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Стара Загора,Стара Загора,Стара Загора,Стара Загора,бул. Никола Петков 50,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Хасково,Хасково,Хасково,Хасково,бул. Съединение 79,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Шумен,Шумен,Шумен,Шумен,бул. Цар Симеон Велики 5,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+technopolis,Technopolis,technology,Технополис Ямбол,Ямбол,Ямбол,Ямбол,бул. Граф Игнатиев 173-175,,,OFFICIAL_STORE_LOCATOR,https://www.technopolis.bg/bg/stores,2026-11-22
+vali,Вали,technology,,Варна,Варна,Варна,бул. Христо Смирненски 239,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+vali,Вали,technology,,Велико Търново,Велико Търново,Велико Търново,ул. Самуил 6,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+vali,Вали,technology,,Добрич,Добрич,Добрич,ул. България 15,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+vali,Вали,technology,,Пловдив,Пловдив,Пловдив,ул. Янко Сакъзов 9,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+vali,Вали,technology,,София,Столична,София (столица),ул. Д-р Марин Русев 6А,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+vali,Вали,technology,,София,Столична,София (столица),ул. Христо Ковачев 34,,,OFFICIAL_STORE_LOCATOR,https://www.vali.bg/kontakti,2026-11-22
+zora,Зора,technology,,Ботевград,Ботевград,София,бул. Цар Освободител 37А,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-botevgrad,2026-11-22
+zora,Зора,technology,,Бургас,Бургас,Бургас,бул. Транспортна (до Mall Burgas Plaza),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-zora-burgas,2026-11-22
+zora,Зора,technology,,Бургас,Бургас,Бургас,"бул. Янко Комитов 4, Пиргос парк",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-zora-burgas,2026-11-22
+zora,Зора,technology,,Варна,Варна,Варна,"бул. Република 55, Retail Park Varna",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-varna,2026-11-22
+zora,Зора,technology,,Варна,Варна,Варна,бул. Цар Освободител 263,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-varna,2026-11-22
+zora,Зора,technology,,Велико Търново,Велико Търново,Велико Търново,ул. Магистрална 40,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-veliko-tyrnovo,2026-11-22
+zora,Зора,technology,,Велинград,Велинград,Пазарджик,"местност Превалата, кв. Лъджене, Околовръстен път 58",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-velingrad,2026-11-22
+zora,Зора,technology,,Видин,Видин,Видин,"Retail Park Vidin Plaza, бул. „Панония“ 43",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-vidin,2026-11-22
+zora,Зора,technology,,Враца,Враца,Враца,бул. „Демокрация“ 16 (ТЦ СУМИ),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-vraca,2026-11-22
+zora,Зора,technology,,Гоце Делчев,Гоце Делчев,Благоевград,ул. Кирил и Методий 17,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-goce-gelcev,2026-11-22
+zora,Зора,technology,,Добрич,Добрич,Добрич,бул. 25-ти септември 70,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-dobrich,2026-11-22
+zora,Зора,technology,,Дупница,Дупница,Кюстендил,ул. „Орлинска“ 52,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-dupnitsa,2026-11-22
+zora,Зора,technology,,Казанлък,Казанлък,Стара Загора,"кв. Изток, ул. „Цар Борис I“ 1",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-kazanlak,2026-11-22
+zora,Зора,technology,,Карлово,Карлово,Пловдив,ул. „Ген. Заимов“ 32,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-karlovo,2026-11-22
+zora,Зора,technology,,Козлодуй,Козлодуй,Враца,"Ритейл парк Козлодуй, ул. Янко Сакъзов",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-kozloduy,2026-11-22
+zora,Зора,technology,,Кърджали,Кърджали,Кърджали,Бул. „Беломорски“ 72,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-kardzhali,2026-11-22
+zora,Зора,technology,,Кърджали,Кърджали,Кърджали,Бул. „Тракия“ 14,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-kardzhali,2026-11-22
+zora,Зора,technology,,Монтана,Монтана,Монтана,бул. Христо Ботев 68,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-montana,2026-11-22
+zora,Зора,technology,,Пазарджик,Пазарджик,Пазарджик,ул. „Пловдивско шосе“ 105 (Комплекс ЗОРА),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-pazardjik,2026-11-22
+zora,Зора,technology,,Панагюрище,Панагюрище,Пазарджик,"ул. Георги Бенковски 67, Pana Green Park",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-panagyurishte,2026-11-22
+zora,Зора,technology,,Плевен,Плевен,Плевен,бул. Европа 6,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-pleven,2026-11-22
+zora,Зора,technology,,Плевен,Плевен,Плевен,пл. Иван Миндиликов 1 (МОЛ Панорама),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-pleven,2026-11-22
+zora,Зора,technology,,Пловдив,Пловдив,Пловдив,"бул. ""България"" 115А",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-plovdiv,2026-11-22
+zora,Зора,technology,,Пловдив,Пловдив,Пловдив,ул. Недко Каблешков 14 (до Метро),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-plovdiv,2026-11-22
+zora,Зора,technology,,Разлог,Разлог,Благоевград,ул. „Бела река“ 4,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-razlog,2026-11-22
+zora,Зора,technology,,Раковски,Раковски,Пловдив,ул. Петър Парчевич 21,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-rakovski,2026-11-22
+zora,Зора,technology,,Русе,Русе,Русе,бул. Липник 121,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-ruse-1,2026-11-22
+zora,Зора,technology,,Сандански,Сандански,Благоевград,ул. „Тодор Каблешков“ № 9,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-sandanski,2026-11-22
+zora,Зора,technology,,Свиленград,Свиленград,Хасково,бул. „България“ 198,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-svilengrad,2026-11-22
+zora,Зора,technology,,Севлиево,Севлиево,Габрово,ул. Софийско шосе 6,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-sevlievo,2026-11-22
+zora,Зора,technology,,Сливен,Сливен,Сливен,бул. „Цар Освободител“ 1A (S Mall),,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-sliven,2026-11-22
+zora,Зора,technology,,Смолян,Смолян,Смолян,"бул. България 4, Търговски център Евридика",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-smolyan,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Estrea Park Ул. Резбарска 7,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#5,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Андрей Сахаров 20,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#3,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Ботевградско шосе 515-525,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#7,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Джавахарлал Неру 10,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#4,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Европа 184,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#8,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Мария Луиза 32,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#32,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Царица Йоанна 15,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#35,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Бул. Черни Връх 204,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#1,2026-11-22
+zora,Зора,technology,,София,Столична,София (столица),Ул. Скопие 4,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-sofia#54,2026-11-22
+zora,Зора,technology,,Стара Загора,Стара Загора,Стара Загора,бул. Патриарх Евтимий 50,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-stara-zagora,2026-11-22
+zora,Зора,technology,,Стара Загора,Стара Загора,Стара Загора,"бул. Цар Симеон Велики, кв. Железник",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/stores-stara-zagora,2026-11-22
+zora,Зора,technology,,Търговище,Търговище,Търговище,бул. Александър Стамболийски 40-44,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-targovishte,2026-11-22
+zora,Зора,technology,,Харманли,Харманли,Хасково,ул. Янко Сакъзов 2,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-harmanli,2026-11-22
+zora,Зора,technology,,Хасково,Хасково,Хасково,"бул. ""Съединение"" 106",,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-haskovo,2026-11-22
+zora,Зора,technology,,Шумен,Шумен,Шумен,ул. Преспа 6,,,OFFICIAL_STORE_LOCATOR,https://zora.bg/page/store-shumen,2026-11-22

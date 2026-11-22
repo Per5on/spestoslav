@@ -14,6 +14,22 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
+**22 November technology directory and tab icons.** The category icons are now 20 pt above their labels, with 10 pt of padding on each vertical edge. The owner requested this revision without a visual preview. The browser screenshots below show the earlier 16 pt icons.
+
+The inventory seed and the saved „Търговски обекти → Техника“ directory contain 174 physical locations from the seven requested retailers. The full saved directory contains 841 addresses. Each technology row records its source URL and canonical locality.
+
+| Retailer | Physical locations | Official source |
+| --- | ---: | --- |
+| Techmart | 14 | [All 14 branch links in the product-page footer](https://techmart.bg/product/product/landing/511565) |
+| Зора | 47 | [National locator](https://zora.bg/page/magazini-zora) and official city pages |
+| JAR Computers | 15 | [Store map](https://www.jarcomputers.com/stores), including its listed partners |
+| Техномаркет | 50 | [Locator and individual branch pages](https://www.technomarket.bg/magazini) |
+| Ardes | 6 | [Shop addresses](https://ardes.bg/magazini-i-servizi) |
+| Технополис | 36 | [Store locator](https://www.technopolis.bg/bg/stores) |
+| Вали | 6 | [Public-facing sales locations](https://www.vali.bg/kontakti) |
+
+The Вали service-only address and the Шереметя logistics centre were excluded from the store list. The live directory rollout still requires the API route and a separate data import. Android packaging remains at the owner approval gate.
+
 **22 November grocery directory and 10 pt visual preview.** Category tabs keep their original icons above the labels, with 10 pt of padding on each vertical edge. Browser captures show [the open ⋮ menu](references/preview-10.5-menu-10pt.png) and [the unobstructed category tabs](references/preview-10.5-food-10pt.png).
 
 The seed and the app’s dated fallback now contain 669 physical branches, including 571 from the six requested grocery chains. Other chains’ rows were preserved. The deployed directory still requires its API route and a separate data import.
