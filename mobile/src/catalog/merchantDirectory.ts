@@ -90,7 +90,7 @@ export function groupMerchantDirectory(rows: MerchantDirectoryEntry[]): Merchant
 
 /** Search only verified merchant records, with locale-aware case and accent folding. */
 export function filterMerchantDirectory(rows: MerchantDirectoryEntry[], query: string): MerchantDirectoryEntry[] {
-  const normalize = (value: string) => value.replace(/[.,;:!?()[\]{}\/\\|–—\-№"\u0027„“‘’]+/g, " ").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
+  const normalize = (value: string) => value.replace(/[.,;:!?()[\]{}\/\\|–—\-&+№"\u0027„“‘’]+/g, " ").normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
   const tokens = normalize(query).split(/\s+/).filter(Boolean);
   if (!tokens.length) return rows;
   return rows.filter(row => {
