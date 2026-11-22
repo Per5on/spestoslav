@@ -365,7 +365,7 @@ function Main({ initialNotice, onErase }: {
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
       <View testID="app-header" style={s.header} onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)}>
         <Image
-          source={require("./assets/header-logo.webp")}
+          source={require("./assets/scale-header.webp")}
           accessibilityLabel="Спестовник"
           style={s.logo}
           resizeMode="contain"

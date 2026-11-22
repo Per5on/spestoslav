@@ -146,8 +146,8 @@ const s = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 13,
     borderWidth: 1,
-    borderColor: "#dae2d6",
-    backgroundColor: "#fff",
+    borderColor: "#63816a",
+    backgroundColor: "#dbead3",
   },
   input: {
     flex: 1,

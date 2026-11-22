@@ -2,7 +2,7 @@
 
 Updated: 22 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
 
-## Current work — Alpha Preview 10.6
+## Current work — Preview 010.7
 
 The candidate implements the approved itemized comparison, both group pop-ups, palette removals, and the licensed thumbnail pilot. Pre-build checks passed. The owner approved internal ARM packaging after the 10.6 verification. Live API rollout, physical-device acceptance, and broader product-image coverage remain pending. [Handoff](CODEX_HANDOFF.md) · [Comparison preview](references/preview-10.5-comparison.png)
 
@@ -13,6 +13,10 @@ The candidate implements the approved itemized comparison, both group pop-ups, p
 The saved directory now also includes 724 stations from the six requested fuel chains. The source counts and locality exclusions are in the [handoff](CODEX_HANDOFF.md).
 
 The owner approved the left fuel toolbar preview. Обнови is anchored at the right edge and Дизел moves up when it fits. [Browser preview](references/alpha-preview10.6-fuel-toolbar.png).
+
+The market-scale logo is configured for the launcher and in-app header. [Visual preview](references/scale-logo-app-preview.png).
+
+The owner confirmed the existing 10.6 APK installs. The follow-up candidate combines 8 pt tab padding, the approved responsive fuel toolbar, and the market-scale launcher and header logo. The location field is slightly narrower and highlighted. The owner approved Preview 010.7 for internal ARM packaging. [Candidate preview](references/candidate-location-preview.png).
 
 ## Verified baseline — Pre-alpha 010
 

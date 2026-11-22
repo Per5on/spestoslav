@@ -16,11 +16,11 @@
         "android.permission.VIBRATE"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/money-bag-logo.png",
-        "backgroundColor": "#195b27"
+        "foregroundImage": "./assets/scale-adaptive.png",
+        "backgroundColor": "#008565"
       }
     },
-    "icon": "./assets/money-bag-logo.png",
+    "icon": "./assets/scale-launcher.png",
     "plugins": [
       [
         "expo-build-properties",

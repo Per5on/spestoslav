@@ -361,3 +361,20 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 
 - Anchored Обнови at the far right and measured the translated fuel labels before assigning choices to the first row. At 390 px with default Bulgarian text, Дизел fits before Обнови. At 320 px with enlarged Bulgarian text, the remaining choices flow to additional rows. [Browser preview](references/alpha-preview10.6-fuel-toolbar.png).
 - Mobile unit tests, TypeScript, and six-language browser toolbar checks passed. The owner approved the left visual as the reference for this commit. The earlier [10.6 ARM run](https://github.com/Per5on/spestoslav/actions/runs/45039195640) succeeded at its original source commit and predates this change.
+
+## 22 November 2026 — Спестовник logo preview
+
+- Applied the approved emerald market-scale design with gold coins and an ivory diamond in the coral шевица to the in-app header and Android launcher assets. Expo prebuild generated the legacy and adaptive launcher resources. Mobile unit tests, TypeScript, and browser toolbar checks passed.
+- The [visual preview](references/scale-logo-app-preview.png) pairs a rendering of the generated adaptive icon with a browser screenshot of the header. Next action is to review this preview before Android packaging.
+
+## 22 November 2026 — 8 pt follow-up candidate
+
+- The owner confirmed the existing 10.6 APK installs. Prepared the follow-up with 8 pt category padding, the approved responsive fuel toolbar, and the launcher and header logo.
+- Passed mobile tests, TypeScript, Expo dependency and Android resource generation checks, six-language browser toolbar checks, browser catalogue and directory checks, and validation of the 1,563 saved locations. [Candidate preview](references/candidate-8pt-fuel-and-logo.png).
+- Next action is owner approval of the candidate commit. The follow-up has not been packaged or installed.
+- Narrowed the location field by 16 px in the 390 px browser viewport and highlighted it with a pale green fill and stronger border. Mobile tests, TypeScript, six-language layout checks, and location search and retry checks passed. [Updated candidate preview](references/candidate-location-preview.png). Await owner approval before committing or packaging.
+
+## 22 November 2026 — Preview 010.7 approved
+
+- Prepared build sequence 013 from the owner-confirmed installable 10.6 baseline and the approved fuel toolbar, 8 pt tab padding, highlighted location field, and launcher and header logo. Removed the two unreferenced former runtime logo files.
+- Mobile tests, TypeScript, Expo dependency checks, the browser toolbar, location and catalogue suites, and validation of all 1,563 directory entries passed. The owner approved internal Android packaging.

@@ -12,6 +12,10 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 ### 22 November 2026 — owner queue
 
+**Preview 010.7 approved for internal ARM packaging.** The owner confirmed the existing 10.6 APK installs. The follow-up source has 8 pt padding above and below the 20 pt category icons, the approved fuel toolbar with Обнови at the far right and Дизел on the first row when it fits, and the market-scale logo in the header and Android launcher. Mobile tests, TypeScript, Expo dependency and prebuild checks, browser toolbar and directory checks, and inventory validation passed. Live directory rollout and installation of the follow-up APK are pending. The location field uses a narrower inset and a pale green highlight. [Candidate preview](references/candidate-location-preview.png).
+
+Preview 010.7 uses app version 0.5.6, Android version code 13 and artifact sequence 013. The source review removed two superseded runtime logo assets. The owner-confirmed installable 10.6 baseline remains in Git and its original workflow.
+
 **Alpha Preview 10.6.** The owner authorized the internal ARM build after verification and requested a visual preview of the confirmed changes. App version 0.5.5, Android version code 12, package sequence 012. [Browser preview](references/alpha-preview10.6.jpg). It uses simulated data for the price comparison. Live directory rollout and physical-device acceptance remain pending.
 
 The [ARM build](https://github.com/Per5on/spestoslav/actions/runs/45039195640) started from commit `11b6a3b33f003089439912911d437e05b29f90a6`.

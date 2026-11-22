@@ -42,12 +42,16 @@ with sync_playwright() as playwright:
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
 
     geometry()
-    location = page.get_by_test_id("location-search").bounding_box()
+    location_input = page.get_by_test_id("location-search")
+    location_field = location_input.locator("..")
+    assert location_field.bounding_box()["width"] == 346
+    assert location_field.evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(219, 234, 211)"
+    location = location_input.bounding_box()
     assert location["y"] + location["height"] < tabs.first.bounding_box()["y"]
-    assert tabs.first.bounding_box()["height"] <= 61
+    assert tabs.first.bounding_box()["height"] <= 57
     assert tabs.first.evaluate("""el => {
       const style = getComputedStyle(el);
-      return style.paddingTop === "10px" && style.paddingBottom === "10px";
+      return style.paddingTop === "8px" && style.paddingBottom === "8px";
     }""")
     for index in range(4):
         icon = tabs.nth(index).get_by_test_id(re.compile("^tab-icon-"))
