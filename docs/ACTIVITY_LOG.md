@@ -356,3 +356,8 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Passed mobile tests, TypeScript, Expo dependency checks, and six browser suites. Verified the 20 pt icons with 10 pt padding, Settings columns, palette choices, static fuel rows, comparison, directory fallback, barcode scanning and receipt upload, OCR, moderation and deletion on fixtures.
 - The inventory seed matches all 1,563 saved directory entries. The local backend suite passed 110 tests and skipped seven that require disposable PostgreSQL. Live API acceptance and installed ARM-device testing remain pending.
 - Dispatched the approved [ARM APK and test-signed AAB build](https://github.com/Per5on/spestoslav/actions/runs/45039195640) from `11b6a3b33f003089439912911d437e05b29f90a6`. GitHub reported it in progress. Check this exact run for packaging results and artifacts before physical-device testing.
+
+## 22 November 2026 — fuel toolbar visual revision
+
+- Anchored Обнови at the far right and measured the translated fuel labels before assigning choices to the first row. At 390 px with default Bulgarian text, Дизел fits before Обнови. At 320 px with enlarged Bulgarian text, the remaining choices flow to additional rows. [Browser preview](references/alpha-preview10.6-fuel-toolbar.png).
+- Mobile unit tests, TypeScript, and six-language browser toolbar checks passed. The owner approved the left visual as the reference for this commit. The earlier [10.6 ARM run](https://github.com/Per5on/spestoslav/actions/runs/45039195640) succeeded at its original source commit and predates this change.

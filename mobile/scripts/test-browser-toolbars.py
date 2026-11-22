@@ -28,11 +28,14 @@ with sync_playwright() as playwright:
         expect(toolbar.get_by_role("button")).to_have_count(1)
         field = toolbar.get_by_role("radio").first if fuel else toolbar.get_by_role("textbox")
         if fuel:
-            expect(page.get_by_test_id("fuel-first-row").get_by_role("radio")).to_have_count(2)
-            expect(page.get_by_test_id("fuel-second-row").get_by_role("radio")).to_have_count(3)
-            assert toolbar.get_by_role("radio").nth(2).bounding_box()["y"] > field.bounding_box()["y"]
+            expect(toolbar.get_by_role("radio")).to_have_count(5)
+            first_row = page.get_by_test_id("fuel-first-row")
+            expect(first_row.get_by_role("radio").first).to_be_visible()
+            assert first_row.get_by_role("radio").count() >= 1
         refresh = toolbar.get_by_role("button").last
         first, last = field.bounding_box(), refresh.bounding_box()
+        bounds = toolbar.bounding_box()
+        assert abs((bounds["x"] + bounds["width"]) - (last["x"] + last["width"])) < 2
         assert abs(first["y"] - last["y"]) < 2, (first, last)
         assert first["x"] + first["width"] < last["x"], (first, last)
         assert min(first["height"], last["height"]) >= 44, (first, last)
@@ -86,6 +89,7 @@ with sync_playwright() as playwright:
     page.screenshot(path=args.output_dir / "technology.png")
     tabs.nth(2).click()
     geometry(fuel=True)
+    expect(page.get_by_test_id("fuel-first-row").get_by_role("radio")).to_have_count(3)
     assert [radio.get_attribute("aria-label") for radio in toolbar.get_by_role("radio").all()] == [
         "Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз",
     ]
@@ -104,6 +108,8 @@ with sync_playwright() as playwright:
         for index in range(3):
             tabs.nth(index).click()
             geometry(fuel=index == 2)
+        if language == "bg":
+            page.screenshot(path=args.output_dir / "fuel-narrow.png")
     page.evaluate("""localStorage.setItem("spestovnik-preferences",
         JSON.stringify({language: "bg", fontScale: 1.3}))""")
     page.reload()

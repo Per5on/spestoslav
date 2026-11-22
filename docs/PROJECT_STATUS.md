@@ -12,6 +12,8 @@ The candidate implements the approved itemized comparison, both group pop-ups, p
 
 The saved directory now also includes 724 stations from the six requested fuel chains. The source counts and locality exclusions are in the [handoff](CODEX_HANDOFF.md).
 
+The owner approved the left fuel toolbar preview. Обнови is anchored at the right edge and Дизел moves up when it fits. [Browser preview](references/alpha-preview10.6-fuel-toolbar.png).
+
 ## Verified baseline — Pre-alpha 010
 
 **Internal 010 build successful. Live testing pending.** [Run 44923545071](https://github.com/Per5on/spestoslav/actions/runs/44923545071) at `2d19a0c984215cd052e6e7ad341c5aa938605592` passed Android 10 emulator smoke, ARM phone APK verification, and test-signed AAB validation. App version 0.5.3 and Android version code 10. Physical-device and live API/data acceptance remain open. Next work is product-matched Food/Technology WebPs and itemized merchant basket comparison. See the [handoff and proposed layout](CODEX_HANDOFF.md) and [TODO](PREVIEW_006_BACKLOG.md).
