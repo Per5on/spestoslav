@@ -9,7 +9,7 @@ if (!/^\d+\.\d+\.\d+$/.test(preview.version))
 // Local dry builds can vary one packaging setting at a time.
 const dryAbi = process.env.SPESTOVNIK_DRY_ANDROID_ABI;
 const dryShrink = process.env.SPESTOVNIK_DRY_ANDROID_SHRINK === "1";
-if (dryAbi && !["arm64-v8a", "x86_64", "armeabi-v7a"].includes(dryAbi))
+if (dryAbi && !["arm64-v8a", "armeabi-v7a"].includes(dryAbi))
   throw new Error("Unsupported dry-test Android ABI");
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
       ...plugin[1],
       android: {
         ...plugin[1].android,
-        ...(dryAbi ? { buildArchs: [dryAbi] } : {}),
+        buildArchs: dryAbi ? [dryAbi] : ["arm64-v8a", "armeabi-v7a"],
         ...(dryShrink ? {
           enableMinifyInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,

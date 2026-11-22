@@ -14,6 +14,10 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
+**22 November candidate.** Applied the compact header, location above the tabs, label-height tabs with 1.5 pt vertical padding, two Settings columns, and two static fuel rows. Transparent symbols are used where matched references are unavailable. Tomatoes have their own artwork and banana photos are scoped to banana catalogue codes. [Browser preview](references/preview-10.5-compact-layout.jpg).
+
+The Android workflow now packages ARM64 and ARMv7 only and retains APK signature, ABI, and test-signed AAB checks. The x86_64 emulator job and artifact were removed at owner request. Installed smoke and live acceptance require an ARM Android device and remain pending. Both PostgreSQL matrix legs (117 tests each), mobile tests, TypeScript, Android config introspection and workflow shell syntax passed. Six fixture-browser suites passed, including narrow six-language controls and the tomato artwork check. No new package was built. Await acknowledgment of the revised exact SHA.
+
 **Preview 10.5 candidate, awaiting exact-commit approval.** Candidate branch `codex/preview-10.5`, app version 0.5.4 and Android version code 11. The label and future artifact names use 10.5. The successful pre-alpha 010 artifacts below remain the rollback baseline.
 
 - Implemented itemized merchant cards using price, quantity and subtotal from the same server quote. The cheapest complete basket opens first. Incomplete quotes identify missing prices, and timestamps distinguish comparison time from per-price verification where recorded. Older deployed API responses still display totals. [Fixture-based app preview](references/preview-10.5-comparison.png).

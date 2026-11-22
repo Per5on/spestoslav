@@ -24,8 +24,12 @@ with sync_playwright() as playwright:
     ]
 
     def geometry(fuel=False):
-        expect(toolbar.get_by_role("button")).to_have_count(2 if fuel else 1)
-        field = toolbar.get_by_role("button").first if fuel else toolbar.get_by_role("textbox")
+        expect(toolbar.get_by_role("button")).to_have_count(1)
+        field = toolbar.get_by_role("radio").first if fuel else toolbar.get_by_role("textbox")
+        if fuel:
+            expect(page.get_by_test_id("fuel-first-row").get_by_role("radio")).to_have_count(2)
+            expect(page.get_by_test_id("fuel-second-row").get_by_role("radio")).to_have_count(3)
+            assert toolbar.get_by_role("radio").nth(2).bounding_box()["y"] > field.bounding_box()["y"]
         refresh = toolbar.get_by_role("button").last
         first, last = field.bounding_box(), refresh.bounding_box()
         assert abs(first["y"] - last["y"]) < 2, (first, last)
@@ -34,6 +38,10 @@ with sync_playwright() as playwright:
         assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
 
     geometry()
+    location = page.get_by_test_id("location-search").bounding_box()
+    assert location["y"] + location["height"] < tabs.first.bounding_box()["y"]
+    assert tabs.first.bounding_box()["height"] <= 24
+    assert page.get_by_test_id("app-header").bounding_box()["height"] <= 60
     assert toolbar.get_by_role("textbox").evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(237, 243, 229)"
     expect(page.get_by_test_id("category-groups")).to_be_visible(timeout=20000)
     food_overflow = page.get_by_role("button", name="Още групи")
@@ -66,15 +74,13 @@ with sync_playwright() as playwright:
     page.screenshot(path=args.output_dir / "technology.png")
     tabs.nth(2).click()
     geometry(fuel=True)
-    selector = toolbar.get_by_role("button").first
-    selector.click()
-    panel = page.get_by_test_id("fuel-type-menu")
-    assert [radio.get_attribute("aria-label") for radio in panel.get_by_role("radio").all()] == [
+    assert [radio.get_attribute("aria-label") for radio in toolbar.get_by_role("radio").all()] == [
         "Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз",
     ]
-    panel.get_by_role("radio", name="Бензин 98+").click()
-    expect(selector).to_have_accessible_name("Избрано гориво: Бензин 98+")
-    expect(panel).to_have_count(0)
+    selected_fuel = toolbar.get_by_role("radio", name="Бензин 98+")
+    selected_fuel.click()
+    expect(selected_fuel).to_have_attribute("aria-checked", "true")
+    expect(toolbar.get_by_role("radio")).to_have_count(5)
     page.screenshot(path=args.output_dir / "fuel.png")
     tabs.nth(3).click()
     page.screenshot(path=args.output_dir / "compare.png")
@@ -93,6 +99,18 @@ with sync_playwright() as playwright:
     def open_appearance():
         page.get_by_role("button", name="Отвори менюто").click()
         page.get_by_role("menuitem", name="Настройки").click()
+        settings = page.get_by_test_id("settings-columns")
+        columns = [
+            ("Език", "Тема", "Размер на шрифта"),
+            ("Общи условия", "Политика за поверителност", "Изтрий данни"),
+        ]
+        boxes = [[settings.get_by_role("button", name=name, exact=True).bounding_box()
+                  for name in column] for column in columns]
+        for column in boxes:
+            assert all(abs(box["x"] - column[0]["x"]) < 2 for box in column)
+            assert [box["y"] for box in column] == sorted(box["y"] for box in column)
+        assert boxes[0][0]["x"] < boxes[1][0]["x"]
+        page.screenshot(path=args.output_dir / "settings.png")
         page.get_by_role("button", name="Тема", exact=True).click()
         return page.get_by_test_id("appearance-screen").get_by_role("radio")
 

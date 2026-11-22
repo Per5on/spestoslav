@@ -2,13 +2,13 @@ import { View, useWindowDimensions } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Text, useUI } from "../ui";
 import { appFontSize } from "../font";
-export function SettingsChoices({ items, selected, onSelect, radio = false }: {
+export function SettingsChoices({ items, selected, onSelect, radio = false, singleColumn = false }: {
   items: { value: string; label: string; icon?: "text-outline" | "language-outline" | "document-text-outline" | "shield-checkmark-outline" | "color-palette-outline" | "trash-outline" }[];
-  selected?: string; onSelect: (value: string) => void; radio?: boolean;
+  selected?: string; onSelect: (value: string) => void; radio?: boolean; singleColumn?: boolean;
 }) {
   const { width, fontScale: systemScale } = useWindowDimensions();
   const { fontScale, styles: s, color } = useUI();
-  const columns = width >= 360 && fontScale * systemScale <= 1.15;
+  const columns = !singleColumn && width >= 360 && fontScale * systemScale <= 1.15;
   return <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
     {items.map(item => <Pressable key={item.value}
       accessibilityRole={radio ? "radio" : "button"}

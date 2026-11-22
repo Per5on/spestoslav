@@ -6,15 +6,15 @@ const thumbnails: Record<string, ImageSourcePropType> = {
   milk: require("../../assets/thumbnails/milk.webp"),
   oil: require("../../assets/thumbnails/oil.webp"),
   sugar: require("../../assets/thumbnails/sugar.webp"),
-  laptop: require("../../assets/thumbnails/laptop.webp"),
-  washer: require("../../assets/thumbnails/washer.webp"),
-  tv: require("../../assets/thumbnails/tv.webp"),
-  kettle: require("../../assets/thumbnails/kettle.webp"),
-  headphones: require("../../assets/thumbnails/headphones.webp"),
-  smartphone: require("../../assets/thumbnails/smartphone.webp"),
+  laptop: require("../../assets/technology/laptop.webp"),
+  washer: require("../../assets/technology/washer.webp"),
+  tv: require("../../assets/technology/tv.webp"),
+  kettle: require("../../assets/technology/kettle.webp"),
+  headphones: require("../../assets/technology/headphones.webp"),
+  smartphone: require("../../assets/technology/smartphone.webp"),
 };
 
-const creditsById = new Map(products.filter(row => row.source_url)
+const creditsById = new Map(products.filter(row => row.category_code === "groceries" && row.source_url)
   .map(row => ["demo-" + row.code, row] as const));
 
 export function sampleCredit(id: string) {
@@ -36,9 +36,6 @@ export function sampleThumbnail(id: string): ImageSourcePropType | undefined {
 const banana = require("../../assets/produce/banana.webp");
 const carrot = require("../../assets/produce/carrot.webp");
 const lemon = require("../../assets/produce/lemon.webp");
-const bread = require("../../assets/produce/bread.webp");
-const meat = require("../../assets/produce/meat.webp");
-const pepper = require("../../assets/produce/pepper.webp");
 const galaxyA17 = require("../../assets/technology/galaxy-a17.webp");
 const producePhotos: Record<string, ImageSourcePropType> = {
   "81590": banana, "88590": banana,
@@ -62,37 +59,28 @@ export function referencePhoto(product: Product): { source: ImageSourcePropType;
 }
 
 
-const technologyExamples: Record<string, string> = {
-  mobile: "smartphone",
-  "major-appliances": "washer",
-  "small-appliances": "kettle",
-  "tv-computing": "laptop",
-  "smart-home-mobility": "tv",
+const technologySymbols: Record<string, ImageSourcePropType> = {
+  mobile: thumbnails.smartphone,
+  "major-appliances": thumbnails.washer,
+  "small-appliances": thumbnails.kettle,
+  "tv-computing": thumbnails.laptop,
+  "smart-home-mobility": require("../../assets/technology/smart-home.webp"),
 };
-
-const groceryExamples: Record<string, ImageSourcePropType> = {
-  "dairy-eggs": thumbnails.milk,
-  "bakery-breakfast": bread,
-  "meat-fish": meat,
-  pantry: thumbnails.sugar,
-  produce: banana,
-  "spices-drinks": pepper,
+const grocerySymbols: Record<string, ImageSourcePropType> = {
+  "dairy-eggs": require("../../assets/grocery-symbols/dairy-eggs.webp"),
+  "bakery-breakfast": require("../../assets/grocery-symbols/bakery-breakfast.webp"),
+  "meat-fish": require("../../assets/grocery-symbols/meat-fish.webp"),
+  pantry: require("../../assets/grocery-symbols/pantry.webp"),
+  produce: require("../../assets/grocery-symbols/produce.webp"),
+  "spices-drinks": require("../../assets/grocery-symbols/spices-drinks.webp"),
 };
+const tomato = require("../../assets/grocery-symbols/tomato.webp");
+const groceries = require("../../assets/grocery-symbols/groceries.webp");
+const technology = require("../../assets/technology/technology.webp");
 
-export function groupPhoto(product: Product): { source: ImageSourcePropType; credit?: typeof galaxyCredit } {
+export function productSymbol(product: Product): ImageSourcePropType {
   const group = product.group_code ?? "";
-  if (product.category_code === "technology") {
-    const example = technologyExamples[group] ?? "laptop";
-    const credit = sampleCredit("demo-" + example);
-    return { source: thumbnails[example], credit: credit?.source_url
-      ? { author: credit.author, license: credit.license + " · resized WebP", source_url: credit.source_url }
-      : undefined };
-  }
-  return {
-    source: groceryExamples[group] ?? thumbnails.oil,
-    credit: group === "spices-drinks" ? {
-      author: "Eliška Jindříšková", license: "CC BY-SA 4.0 · resized WebP",
-      source_url: "https://commons.wikimedia.org/wiki/File:Ground_black_pepper.jpg",
-    } : undefined,
-  };
+  if (product.category_code === "technology") return technologySymbols[group] ?? technology;
+  if (group === "produce" && /(?:^|\s)домат(?:и)?(?:\s|$)/iu.test(product.name)) return tomato;
+  return grocerySymbols[group] ?? groceries;
 }

@@ -67,125 +67,8 @@ jobs:
       - run: npx tsc --noEmit
       - run: npm test
       - run: npx expo install --check
-      - run: npx expo prebuild --platform android --no-install
-        env:
-          SPESTOVNIK_DRY_ANDROID_SHRINK: "1"
-      - name: Build internal Android emulator APK
-        working-directory: mobile/android
-        run: |
-          ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=x86_64
-          cp app/build/outputs/apk/release/app-release.apk ../android-smoke-x86_64.apk
-      - name: Verify emulator APK signature, ABI and size
-        run: |
-          APK=android-smoke-x86_64.apk
-          "$ANDROID_HOME/build-tools/$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)/apksigner" verify --verbose "$APK"
-          ABIS=$(unzip -Z1 "$APK" | awk -F/ '$1 == "lib" && $3 ~ /\.so$/ {print $2}' | sort -u)
-          test "$ABIS" = x86_64
-          sha256sum "$APK" > "$APK.sha256"
-          echo "Signed emulator APK: $(wc -c < "$APK") bytes (x86_64)" >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - name: Prepare synthetic barcode fixture
-        run: |
-          python -m pip install "Pillow>=13.0.0,<14"
-          python ../scripts/generate_mock_images.py --output smoke-fixtures
-          python -c "from PIL import Image; Image.open('smoke-fixtures/simulation-ean13.png').convert('RGB').save('smoke-fixtures/simulation-ean13.jpg', quality=100, subsampling=0)"
-      - name: Enable emulator acceleration
-        run: sudo chmod 666 /dev/kvm
-      - name: Smoke test on Android 10
-        shell: bash
-        env:
-          ANDROID_AVD_HOME: ${{ runner.temp }}/spestovnik-avd
-          ANDROID_SERIAL: emulator-5554
-        run: |
-          # Expo Camera's static ML Kit barcode decoder needs the Play Store image.
-          image='system-images;android-29;google_apis_playstore;x86_64'
-          for attempt in 1 2 3; do
-            if timeout 5m sdkmanager emulator "$image"; then
-              break
-            fi
-            if (( attempt == 3 )); then
-              echo "::error::Android SDK installation failed after three attempts"
-              exit 1
-            fi
-            echo "::warning::Android SDK installation failed, retrying download"
-            sleep "$((attempt * 10))"
-          done
-          mkdir -p "$ANDROID_AVD_HOME"
-          printf 'no\n' | avdmanager create avd --force --name test --device pixel_2 \
-            --package "$image" --path "$ANDROID_AVD_HOME/test.avd"
-          emulator="$ANDROID_HOME/emulator/emulator"
-          "$emulator" -list-avds | grep -Fx test
-
-          emulator_pid=
-          cleanup() {
-            if [[ -z "$emulator_pid" ]]; then return; fi
-            if kill -0 "$emulator_pid" 2>/dev/null; then
-              timeout 10s adb -s "$ANDROID_SERIAL" emu kill >/dev/null 2>&1 || true
-              for _ in {1..10}; do
-                if ! kill -0 "$emulator_pid" 2>/dev/null; then break; fi
-                sleep 1
-              done
-              kill -KILL "$emulator_pid" 2>/dev/null || true
-            fi
-            wait "$emulator_pid" 2>/dev/null || true
-            emulator_pid=
-          }
-          trap cleanup EXIT
-
-          launch_and_unlock() {
-            local attempt=$1 deadline
-            "$emulator" -avd test -port 5554 -no-window -gpu swiftshader_indirect \
-              -wipe-data -no-snapshot -noaudio -no-boot-anim -camera-back emulated \
-              > "android-emulator-${attempt}.log" 2>&1 &
-            emulator_pid=$!
-            deadline=$((SECONDS + 300))
-            while kill -0 "$emulator_pid" 2>/dev/null && (( SECONDS < deadline )); do
-              if [[ "$(timeout 5s adb shell getprop sys.boot_completed 2>/dev/null)" == 1 ]] &&
-                timeout 5s adb shell service check input 2>/dev/null | grep -Fq 'Service input: found'; then
-                if timeout 10s adb shell input keyevent 82; then
-                  echo "Android input service ready and unlock succeeded"
-                  return 0
-                fi
-              fi
-              sleep 2
-            done
-            adb devices -l
-            tail -n 100 "android-emulator-${attempt}.log"
-            return 1
-          }
-
-          adb start-server
-          if ! launch_and_unlock 1; then
-            echo "::warning::Emulator startup failed, retrying with clean device data and a fresh ADB server"
-            cleanup
-            adb kill-server
-            adb start-server
-            if ! launch_and_unlock 2; then
-              echo "::error::Android emulator did not complete startup and unlock after two attempts"
-              exit 1
-            fi
-          fi
-
-          for setting in window_animation_scale transition_animation_scale animator_duration_scale; do
-            adb shell settings put global "$setting" 0.0
-          done
-          adb install android-smoke-x86_64.apk
-          adb shell mkdir -p /sdcard/Download
-          adb push smoke-fixtures/simulation-ean13.jpg /sdcard/Download/spestovnik-simulation-ean13.jpg
-          adb shell am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file:///storage/emulated/0/Download/spestovnik-simulation-ean13.jpg
-          python3 scripts/smoke-android.py
-      - uses: actions/upload-artifact@v5
-        with:
-          name: spestovnik-emulator-${{ env.PREVIEW_SEQUENCE }}-x86_64
-          path: |
-            mobile/android-smoke-x86_64.apk
-            mobile/android-smoke-x86_64.apk.sha256
-          retention-days: 30
-          if-no-files-found: error
-      - name: Regenerate Android project for ARM phones
-        run: npx expo prebuild --clean --platform android --no-install
+      - name: Prepare Android project for ARM phones
+        run: npx expo prebuild --platform android --no-install
         env:
           SPESTOVNIK_DRY_ANDROID_SHRINK: "1"
       - name: Build phone preview APK (test signing)
@@ -233,9 +116,6 @@ jobs:
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}-test-signed.aab.sha256
           retention-days: 30
           if-no-files-found: error
-      - name: Capture public API diagnostics on native failure
-        if: failure()
-        run: python scripts/check-live-api.py --output android-network.json
       - uses: actions/upload-artifact@v5
         if: always()
         with:
@@ -243,11 +123,5 @@ jobs:
           path: |
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk
             mobile/spestovnik-preview-${{ env.PREVIEW_SEQUENCE }}.apk.sha256
-            mobile/android-preview-${{ env.PREVIEW_SEQUENCE }}.png
-            mobile/android-visual-*.png
-            mobile/android-smoke.log
-            mobile/android-smoke-window.xml
-            mobile/android-network.json
-            mobile/android-emulator-*.log
           retention-days: 30
           if-no-files-found: warn

@@ -35,7 +35,7 @@ with sync_playwright() as p:
  page.reload()
  expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
  proof['thumbnails_visible_with_legacy_opt_out']=True
- expect(page.get_by_role("img", name=re.compile("Примерна снимка$")).first).to_be_visible(timeout=15000)
+ expect(page.get_by_role("img", name=re.compile("Символично изображение$")).first).to_be_visible(timeout=15000)
  page.get_by_role('tab',name='Техника',exact=True).click()
  expect(page.get_by_text(photo_notice,exact=True)).to_be_visible()
  toolbar=page.get_by_test_id('catalog-toolbar')
@@ -62,7 +62,6 @@ with sync_playwright() as p:
  page.get_by_text('София',exact=True).first.click()
  page.get_by_role('tab',name='Горива',exact=True).click()
  for index,name in enumerate(['Бензин 95','Бензин 98+','Дизел','Дизел +','Автогаз']):
-  toolbar.get_by_role('button',name=re.compile('^Избрано гориво:')).click()
   page.get_by_role('radio',name=name,exact=True).click()
   expect(page.get_by_text(f'{1.48+index*.1:.2f} €/L',exact=True)).to_be_visible(timeout=10000)
  expect(page.get_by_text('Примерен обект · демонстрационен адрес',exact=True)).to_have_count(6)
@@ -70,7 +69,7 @@ with sync_playwright() as p:
  page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'fuel.png'))
  page.get_by_role('tab',name='Техника',exact=True).click()
  expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible(timeout=20000)
- expect(page.get_by_role('link', name='Trankiet589 · CC BY-SA 4.0', exact=True).first).to_be_visible()
+ expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_have_accessible_name(re.compile('Символично изображение$'))
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()
@@ -108,6 +107,12 @@ with sync_playwright() as p:
  expect(page.get_by_role('button',name='Добави БАНАНИ · 88590',exact=True)).to_have_count(0)
  page.screenshot(path=str(args.output_dir/'banana-disambiguation.png'))
  proof['duplicate_names_are_distinguished_and_searchable']=True
+ search.fill('домати')
+ page.get_by_role('button',name=re.compile('^Приложи')).click()
+ tomato=page.get_by_role('img',name=re.compile('ДОМАТИ.*Символично изображение',re.I)).first
+ expect(tomato).to_have_attribute('src',re.compile('tomato'))
+ proof['tomatoes_use_tomato_artwork']=True
+ page.screenshot(path=str(args.output_dir/"tomato-thumbnail.png"))
  verify_catalogue_image('technology','Техника','43832','SM-A176B GALAXY A17 5G 4/128GB Black')
  proof['product_matched_webp_pilot']=True
  # Original grocery photos and a visible one-second green add acknowledgement.

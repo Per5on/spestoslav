@@ -9,13 +9,14 @@ type Props = {
   name: string;
   uri?: string | null;
   fallback: ImageSourcePropType;
+  symbolic: boolean;
 };
 
 export function ProductThumbnail(props: Props) {
   return <Thumbnail key={props.uri ?? ""} {...props} />;
 }
 
-function Thumbnail({ id, name, uri, fallback }: Props) {
+function Thumbnail({ id, name, uri, fallback, symbolic }: Props) {
   const { styles: s, t } = useUI();
   const sample = sampleThumbnail(id);
   const [resolved, setResolved] = useState<string>();
@@ -32,9 +33,9 @@ function Thumbnail({ id, name, uri, fallback }: Props) {
   }, [sample, uri]);
   const remote = resolved ? { uri: resolved } : undefined;
   const source = sample ?? remote ?? fallback;
-  const representative = !sample && !remote;
   const imageKey = resolved ?? id;
-  const photoName = representative ? `${name} · ${t("representativePhoto")}` : name;
+  const photoName = !remote && (symbolic || !sample)
+    ? `${name} · ${t(symbolic ? "symbolicImage" : "representativePhoto")}` : name;
   const [enlarged, setEnlarged] = useState(false);
   const { height } = useWindowDimensions();
   const close = () => setEnlarged(false);
@@ -47,7 +48,7 @@ function Thumbnail({ id, name, uri, fallback }: Props) {
         testID={`thumbnail-${loaded === imageKey ? "loaded" : "loading"}-${id}`}
         onPress={() => setEnlarged(true)}>
         <Image key={imageKey} accessibilityLabel={photoName}
-          source={source} style={[s.photo, { backgroundColor: "#fff" }]}
+          source={source} style={s.photo}
           resizeMode="contain" onLoad={() => setLoaded(imageKey)} onError={handleError} />
       </Pressable>
       {enlarged && (

@@ -115,7 +115,7 @@ for tab in ["Техника", "Горива", "Сравни цените"]:
     tap(tab)
     assert label(wait_resource("location-search")) == "София"
 assert any("Списъкът е празен" in label(n) for n in nodes())
-tap("Горива");tap("Избрано гориво: Бензин 95")
+tap("Горива")
 for grade in ("Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз"):
     assert any(label(n) == grade for n in nodes()), grade
 tap("Бензин 95")

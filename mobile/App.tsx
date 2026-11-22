@@ -5,7 +5,7 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { groupPhoto, referencePhoto, sampleCredit } from "./src/catalog/samples";
+import { productSymbol, referencePhoto, sampleCredit } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -47,7 +47,6 @@ import { OverflowMenu } from "./src/navigation/OverflowMenu";
 import { AboutScreen } from "./src/navigation/AboutScreen";
 import {
   CatalogToolbar,
-  fuelChoices,
   FuelChoice,
 } from "./src/catalog/CatalogToolbar";
 import { Button } from "./src/Action";
@@ -56,10 +55,10 @@ import { AccountScreen } from "./src/workflows/AccountScreen";
 import { ScanScreen } from "./src/workflows/ScanScreen";
 import { ReceiptsScreen } from "./src/workflows/ReceiptsScreen";
 const tabs = [
-  { id: "groceries", label: "food", icon: "cart-outline" },
-  { id: "technology", label: "technology", icon: "laptop-outline" },
-  { id: "fuel", label: "fuel", icon: "car-outline" },
-  { id: "basket", label: "list", icon: "list-outline" },
+  { id: "groceries", label: "food" },
+  { id: "technology", label: "technology" },
+  { id: "fuel", label: "fuel" },
+  { id: "basket", label: "list" },
 ] as const;
 function AddButton({
   name,
@@ -127,6 +126,7 @@ function Main({ initialNotice, onErase }: {
 }) {
   const { t, language, setLanguage, fontScale, setFontScale, styles: s, color, palette } = useUI();
   const insets = useSafeAreaInsets();
+  const [headerHeight, setHeaderHeight] = useState(48);
   const headerInk = palette === 0 ? "#fff" : contrastingInk(color("#195b27", true));
   const selectedInk = palette === 0 ? "#fff" : contrastingInk(color("#ff8500", true));
   const contentRef = useRef<ScrollView>(null);
@@ -135,8 +135,7 @@ function Main({ initialNotice, onErase }: {
   const [locality, setLocality] = useState<Locality | null>(null),
     [basket, setBasket] = useState<BasketItem[]>([]),
     [restored, setRestored] = useState(false);
-  const [fuel, setFuel] = useState<FuelChoice>("petrol"),
-    [fuelMenuOpen, setFuelMenuOpen] = useState(false);
+  const [fuel, setFuel] = useState<FuelChoice>("petrol");
   const [appliedQuery, setAppliedQuery] = useState("");
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
@@ -221,7 +220,6 @@ function Main({ initialNotice, onErase }: {
   }
   function switchTab(id: Category | "basket") {
     setNotice("");
-    setFuelMenuOpen(false);
     if (id === "basket") {
       setScreen("basket");
       return;
@@ -302,6 +300,16 @@ function Main({ initialNotice, onErase }: {
         (ids.size ? ids.has(p.id) : !appliedQuery || matchesProduct(p, appliedQuery, displayName(p))),
     );
   }, [catalog.products, group, selected, appliedQuery, qualifiers, language]);
+  function refreshCatalogue() {
+    catalog.refresh();
+    setNotice("");
+    setSelected([]);
+    setDraft([]);
+    setQuery("");
+    setAppliedQuery("");
+    setSearchOpen(false);
+    setQuote(null);
+  }
   const groups = useMemo(() => [...new Set(
     catalog.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
   )], [catalog.products]);
@@ -314,13 +322,14 @@ function Main({ initialNotice, onErase }: {
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
-    const reference = referencePhoto(p) ?? groupPhoto(p);
-    const credit = p.is_demo ? sampleCredit(p.id) : reference.credit;
+    const reference = referencePhoto(p);
+    const credit = p.is_demo ? sampleCredit(p.id) : reference?.credit;
     const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
         <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
-          uri={p.image_url} fallback={reference.source} />
+          uri={p.image_url} fallback={reference?.source ?? productSymbol(p)}
+          symbolic={!reference && (!p.is_demo || p.category_code === "technology")} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -354,7 +363,7 @@ function Main({ initialNotice, onErase }: {
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]}>
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
-      <View testID="app-header" style={s.header}>
+      <View testID="app-header" style={s.header} onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)}>
         <Image
           source={require("./assets/header-logo.webp")}
           accessibilityLabel="Спестовник"
@@ -362,14 +371,24 @@ function Main({ initialNotice, onErase }: {
           resizeMode="contain"
         />
         <View style={{ flex: 1 }}>
-          <AutoFitLabel label="Спестовник" baseSize={25} style={[s.brand, { color: headerInk, width: "100%" }]} />
-          <Text style={[s.tagline, palette !== 0 && { color: headerInk }]}>{t("tagline")}</Text>
+          <AutoFitLabel label="Спестовник" baseSize={19} style={[s.brand, { color: headerInk, width: "100%" }]} />
+          <Text style={[s.tagline, palette !== 0 && { color: headerInk }]}>{t("tagline").replace(". ", ".\n")}</Text>
         </View>
-        <OverflowMenu iconColor={headerInk} top={insets.top + 54} onSelect={(next) => {
+        <OverflowMenu iconColor={headerInk} top={insets.top + headerHeight} onSelect={(next) => {
           setScreen(next);
           setNotice("");
         }} />
       </View>
+      {screen !== "merchants" && <View style={s.locationBar}>
+        <LocationPicker
+          apiBaseUrl={API_BASE_URL}
+          selected={locality}
+          onSelect={(l) => {
+            setLocality(l);
+            setQuote(null);
+          }}
+        />
+      </View>}
       <View style={s.tabs}>
         {tabs.map((tab) => (
           <Pressable
@@ -381,18 +400,13 @@ function Main({ initialNotice, onErase }: {
             style={[s.tab, active === tab.id && s.activeTab]}
             onPress={() => switchTab(tab.id)}
           >
-            <Ionicons
-              name={tab.icon}
-              size={24}
-              color={active === tab.id ? selectedInk : color("#19562a")}
-            />
             <AutoFitLabel
               label={t(tab.label)}
               baseSize={12}
               allowWrap
               style={[
                 s.tabText,
-                { width: "100%" },
+                { maxWidth: basket.length && tab.id === "basket" ? "78%" : "100%" },
                 active === tab.id && { color: selectedInk },
               ]}
             />
@@ -409,29 +423,10 @@ function Main({ initialNotice, onErase }: {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={s.body}
       >
-        {screen !== "merchants" && <LocationPicker
-          apiBaseUrl={API_BASE_URL}
-          selected={locality}
-          onSelect={(l) => {
-            setLocality(l);
-            setQuote(null);
-          }}
-        />}
         {screen === "catalog" ? (
-          <CatalogToolbar onRefresh={() => {
-            catalog.refresh();
-            setNotice("");
-            setSelected([]);
-            setDraft([]);
-            setQuery("");
-            setAppliedQuery("");
-            setSearchOpen(false);
-            setQuote(null);
-          }}>
-            {category === "fuel" ? (
-              <Button label={t(fuel)} accessibilityLabel={`${t("selectedFuel")}: ${t(fuel)}`}
-                expanded={fuelMenuOpen} onPress={() => setFuelMenuOpen(open => !open)} />
-            ) : (
+          <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}
+            onFuel={setFuel}>
+            {category !== "fuel" && (
               <Input
                 testID="product-search"
                 accessibilityLabel={t("searchProduct")}
@@ -486,42 +481,7 @@ function Main({ initialNotice, onErase }: {
             {!!catalog.storeError && (
               <Text style={s.notice}>{t(catalog.storeError)}</Text>
             )}
-            {category === "fuel" && (
-              <>
-                {fuelMenuOpen && (
-                  <View
-                    testID="fuel-type-menu"
-                    accessibilityRole="radiogroup"
-                    style={s.panel}
-                  >
-                    {fuelChoices.map((f) => (
-                      <Pressable
-                        key={f}
-                        accessibilityRole="radio"
-                        accessibilityLabel={t(f)}
-                        accessibilityState={{ checked: fuel === f }}
-                        aria-checked={fuel === f}
-                        style={[s.choice, fuel === f && s.selectedChoice]}
-                        onPress={() => {
-                          setFuel(f);
-                          setFuelMenuOpen(false);
-                        }}
-                      >
-                        <Text style={s.productName}>{t(f)}</Text>
-                        {fuel === f && (
-                          <Ionicons
-                            name="checkmark"
-                            size={22}
-                            color={color("#267133")}
-                          />
-                        )}
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-                {!hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
-              </>
-            )}
+            {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
             {category !== "fuel" ? (
               <>
                 {searchOpen && (
@@ -742,8 +702,22 @@ function Main({ initialNotice, onErase }: {
           />
         )}
         {screen === "settings" && (
-          <SettingsChoices items={[{ value: "appearance", label: t("appearance"), icon: "color-palette-outline" }, { value: "font", label: t("font"), icon: "text-outline" }, { value: "language", label: t("language"), icon: "language-outline" }, { value: "terms", label: t("terms"), icon: "document-text-outline" }, { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" }, { value: "deleteData", label: t("deleteData"), icon: "trash-outline" }]}
-            onSelect={value => setScreen(value as "appearance" | "font" | "language" | "terms" | "privacy" | "deleteData")} />
+          <View testID="settings-columns" style={{ flexDirection: "row", gap: 8 }}>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <SettingsChoices singleColumn items={[
+                { value: "language", label: t("language"), icon: "language-outline" },
+                { value: "appearance", label: t("appearance"), icon: "color-palette-outline" },
+                { value: "font", label: t("font"), icon: "text-outline" },
+              ]} onSelect={value => setScreen(value as "appearance" | "font" | "language")} />
+            </View>
+            <View style={{ flex: 1, minWidth: 0 }}>
+              <SettingsChoices singleColumn items={[
+                { value: "terms", label: t("terms"), icon: "document-text-outline" },
+                { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" },
+                { value: "deleteData", label: t("deleteData"), icon: "trash-outline" },
+              ]} onSelect={value => setScreen(value as "deleteData" | "terms" | "privacy")} />
+            </View>
+          </View>
         )}
         {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
         {screen === "appearance" && <AppearanceScreen />}

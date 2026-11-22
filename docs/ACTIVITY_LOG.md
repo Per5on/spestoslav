@@ -327,3 +327,8 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - 10.5 regression check: reproduced live merchant-directory HTTP 404. Verified the dated 116-address fallback and recovery to fixture live data. Added tap-to-enlarge and representative group photos. Repeated backend, mobile, browser and Android configuration checks. Await exact-SHA approval.
 
 - Preview 10.5 run 44930361440 attempt 3 failed provisioning the Android 10 Play Store image ZIP. Added bounded SDK installation and emulator startup retries, locally checked success and persistent failure paths. Await approval of the revised workflow SHA.
+
+## 22 November 2026 — ARM-only Android candidate
+
+- Removed the x86_64 APK and hosted emulator steps. The workflow builds ARM64 and ARMv7 and checks both ABIs, APK signatures and test-signed AAB structure. Installed smoke testing now needs an ARM Android device. The previously verified artefacts remain historical evidence.
+- Reordered Settings, compacted header and tabs, relocated the locality field, and made fuel controls static. Verified transparent product artwork and tomato mapping. Both backend legs and all six browser suites passed. Captured the browser preview and left Android dispatch at the exact-SHA approval gate.

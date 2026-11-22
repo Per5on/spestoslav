@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Keyboard, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Pressable, Text, Input, useUI } from "../ui";
 import { fetchWithRetry } from "../network";
@@ -88,7 +88,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
         />
       </View>
       {query !== null && query.trim().length >= 2 && (
-        <View>
+        <ScrollView style={{ maxHeight: 180 }} keyboardShouldPersistTaps="handled">
           {loading && <ActivityIndicator color={color("#19562a")} />}
           {error ? (
             <>
@@ -132,7 +132,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
           {!loading &&
             !error &&
             !results.length && <Text style={s.meta}>{t("noLocations")}</Text>}
-        </View>
+        </ScrollView>
       )}
     </View>
   );
@@ -151,6 +151,7 @@ const s = StyleSheet.create({
   },
   input: {
     flex: 1,
+    minWidth: 0,
     minHeight: 44,
     paddingVertical: 8,
     fontSize: 15,
