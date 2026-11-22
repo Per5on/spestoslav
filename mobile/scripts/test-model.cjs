@@ -248,3 +248,17 @@ assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Софи�
 assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Варна", municipality: null, region: null }), "Варна");
 assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Ново село", municipality: "  Община   Родопи  ", region: " Област  Пловдив " }), "Ново село · Община Родопи · Област Пловдив");
 console.log("Merchant locality labels passed: geographic disambiguation and duplicate suppression.");
+
+// Geographic details may be absent from the first branch of a locality.
+// Grouping should use verified details from another branch without changing records.
+const incompleteLocalityRows = [
+  { ...merchantRows[0], id: "first", locality_id: "same-place", municipality: null, region: " " },
+  { ...merchantRows[0], id: "second", locality_id: "same-place", municipality: "Родопи", region: "Пловдив" },
+];
+const incompleteSnapshot = JSON.stringify(incompleteLocalityRows);
+const enrichedLocality = merchantDirectory.groupMerchantDirectory(incompleteLocalityRows)[0].localities[0];
+assert.equal(enrichedLocality.municipality, "Родопи");
+assert.equal(enrichedLocality.region, "Пловдив");
+assert.equal(enrichedLocality.branches.length, 2);
+assert.equal(JSON.stringify(incompleteLocalityRows), incompleteSnapshot);
+console.log("Merchant locality metadata checks passed: later verified branch fills missing details without mutation.");
