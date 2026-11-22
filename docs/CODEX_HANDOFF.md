@@ -14,6 +14,8 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 **Alpha Preview 10.6.** The owner authorized the internal ARM build after verification and requested a visual preview of the confirmed changes. App version 0.5.5, Android version code 12, package sequence 012. [Browser preview](references/alpha-preview10.6.jpg). It uses simulated data for the price comparison. Live directory rollout and physical-device acceptance remain pending.
 
+The [ARM build](https://github.com/Per5on/spestoslav/actions/runs/45039195640) started from commit `11b6a3b33f003089439912911d437e05b29f90a6`.
+
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
 **22 November fuel directory.** Added 722 stations to the seed and the saved „Търговски обекти → Горива“ directory. Two previously recorded EKO stations were matched to the Fuelo listings and kept with their official source. The saved directory now contains 724 stations and 1,563 locations across all categories.
