@@ -16,6 +16,8 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 Preview 010.7 uses app version 0.5.6, Android version code 13 and artifact sequence 013. The source review removed two superseded runtime logo assets. The owner-confirmed installable 10.6 baseline remains in Git and its original workflow.
 
+The [Preview 010.7 Android run](https://github.com/Per5on/spestoslav/actions/runs/45062475962) passed at `ebc6ec0`. The signed ARM APK and test-signed AAB are available as workflow artifacts. Next action is physical-device installation and acceptance.
+
 **Alpha Preview 10.6.** The owner authorized the internal ARM build after verification and requested a visual preview of the confirmed changes. App version 0.5.5, Android version code 12, package sequence 012. [Browser preview](references/alpha-preview10.6.jpg). It uses simulated data for the price comparison. Live directory rollout and physical-device acceptance remain pending.
 
 The [ARM build](https://github.com/Per5on/spestoslav/actions/runs/45039195640) started from commit `11b6a3b33f003089439912911d437e05b29f90a6`.

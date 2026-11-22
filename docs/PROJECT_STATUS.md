@@ -16,7 +16,7 @@ The owner approved the left fuel toolbar preview. Обнови is anchored at th
 
 The market-scale logo is configured for the launcher and in-app header. [Visual preview](references/scale-logo-app-preview.png).
 
-The owner confirmed the existing 10.6 APK installs. The follow-up candidate combines 8 pt tab padding, the approved responsive fuel toolbar, and the market-scale launcher and header logo. The location field is slightly narrower and highlighted. The owner approved Preview 010.7 for internal ARM packaging. [Candidate preview](references/candidate-location-preview.png).
+The owner confirmed the existing 10.6 APK installs. The follow-up candidate combines 8 pt tab padding, the approved responsive fuel toolbar, and the market-scale launcher and header logo. The location field is slightly narrower and highlighted. The Preview 010.7 ARM build passed. Physical-device installation is pending. [Android run](https://github.com/Per5on/spestoslav/actions/runs/45062475962). [Candidate preview](references/candidate-location-preview.png).
 
 ## Verified baseline — Pre-alpha 010
 
