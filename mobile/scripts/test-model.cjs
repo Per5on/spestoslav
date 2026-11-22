@@ -227,3 +227,17 @@ assert.deepEqual(merchantDirectory.filterMerchantDirectory(merchantRows, "БЪЛ
 assert.equal(JSON.stringify(merchantRows), merchantRowsSnapshot);
 console.log("Merchant search regressions passed: punctuation-only input, compound address, immutable records.");
 
+
+// Search must cover category, municipality, region and retailer code without
+// changing the order or contents of the verified branch rows.
+const geographicMerchantRows = [
+  { ...merchantRows[0], id: "regional", retailer_code: "regional-chain", municipality: "Родопи", region: "Пловдив" },
+  { ...merchantRows[1], id: "station", retailer_code: "fuel-network", municipality: "Варна", region: "Варна" },
+];
+const geographicSnapshot = JSON.stringify(geographicMerchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRows, "РОДОПИ Пловдив").map(row => row.id), ["regional"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRows, "fuel fuel-network").map(row => row.id), ["station"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRows, "regional-chain София").map(row => row.id), ["regional"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRows, "fuel Родопи"), []);
+assert.equal(JSON.stringify(geographicMerchantRows), geographicSnapshot);
+console.log("Merchant geographic/category search checks passed: municipality, region, category, retailer code, immutable source.");
