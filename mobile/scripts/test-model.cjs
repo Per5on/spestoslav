@@ -241,3 +241,9 @@ assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRow
 assert.deepEqual(merchantDirectory.filterMerchantDirectory(geographicMerchantRows, "fuel Родопи"), []);
 assert.equal(JSON.stringify(geographicMerchantRows), geographicSnapshot);
 console.log("Merchant geographic/category search checks passed: municipality, region, category, retailer code, immutable source.");
+
+// Homonymous localities must show their municipality/region to avoid ambiguous navigation.
+assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Ново село", municipality: "Родопи", region: "Пловдив" }), "Ново село · Родопи · Пловдив");
+assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "София", municipality: " София ", region: "София" }), "София");
+assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Варна", municipality: null, region: null }), "Варна");
+console.log("Merchant locality labels passed: geographic disambiguation and duplicate suppression.");
