@@ -1,3 +1,14 @@
+## 22 November 2026 — owner TODO
+
+- [ ] Drop x86_64 Android packaging and the hosted x86_64 emulator job. Retain signed ARM APK and test-signed AAB checks. Record the change in the development log. Installed Android testing moves to an ARM device.
+- [ ] Settings left column: Език, Тема, Размер на шрифта. Right column: Общи условия, Политика за поверителност, Изтрий данни.
+- [ ] Place the location field above the tabs. Compact the category tabs to the label height with 1.5 pt vertical space on each edge.
+- [ ] Shrink the header and the Спестовник wordmark. Align the two slogan lines with the vertical menu and keep the wordmark visibly larger.
+- [ ] Use transparent, visually consistent thumbnail artwork. Use product-matched references where known and symbolic artwork where needed. Verify that tomato entries do not display banana artwork.
+- [ ] Горива: two static rows of content-width fuel controls. Top row Бензин 95, Бензин 98+, Обнови. Bottom row Дизел, Дизел +, Автогаз.
+- [ ] Capture a browser preview screenshot and report verification before Android build approval.
+- [ ] After the final beta and before the first release, write a concise introduction summarizing the app's verified features and functionality. Keep the reminder in the handoff.
+
 ## Pre-alpha 010 — owner requirements, 21 November 2026
 
 - [x] Backend first: paginated nationwide merchant directory from active recorded branches, grouped by category and canonical locality, with existing branch names and addresses.

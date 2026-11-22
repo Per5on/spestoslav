@@ -10,6 +10,10 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 
 Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. The [009 Android run](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed the native smoke, ARM APK and test-signed bundle jobs. GitHub lists all three 009 artifacts. Direct download from this environment returned HTTP 403, so package checksums and screenshots could not be independently rechecked. Owner requested a new internal 010 build using this baseline. The owner then paused build work. [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) on `5f10369c06bfe95e2f2f65ceb458ae3b458c96ef` was cancelled. Wait for explicit owner authorization before dispatching another APK or AAB build. Carry forward the pending rollout acceptance below.
 
+### 22 November 2026 — owner queue
+
+See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
+
 **Preview 10.5 candidate, awaiting exact-commit approval.** Candidate branch `codex/preview-10.5`, app version 0.5.4 and Android version code 11. The label and future artifact names use 10.5. The successful pre-alpha 010 artifacts below remain the rollback baseline.
 
 - Implemented itemized merchant cards using price, quantity and subtotal from the same server quote. The cheapest complete basket opens first. Incomplete quotes identify missing prices, and timestamps distinguish comparison time from per-price verification where recorded. Older deployed API responses still display totals. [Fixture-based app preview](references/preview-10.5-comparison.png).
