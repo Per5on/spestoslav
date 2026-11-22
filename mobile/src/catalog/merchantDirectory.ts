@@ -95,3 +95,13 @@ export function filterMerchantDirectory(rows: MerchantDirectoryEntry[], query: s
     return tokens.every(token => text.includes(token));
   });
 }
+
+/** Distinguish homonymous localities without repeating their locality name. */
+export function merchantLocalityLabel(locality: Pick<MerchantLocalityGroup, "locality_name" | "municipality" | "region">): string {
+  const parts = [locality.locality_name];
+  for (const detail of [locality.municipality, locality.region]) {
+    const value = detail?.trim();
+    if (value && !parts.some(part => part.toLocaleLowerCase("bg") === value.toLocaleLowerCase("bg"))) parts.push(value);
+  }
+  return parts.join(" · ");
+}
