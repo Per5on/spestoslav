@@ -14,7 +14,7 @@ Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. Th
 
 See the [22 November TODO](PREVIEW_006_BACKLOG.md#22-november-2026--owner-todo) for the ARM-only workflow, compact header and tabs, Settings columns, thumbnail identity, two fuel rows and browser preview. After final beta acceptance and before the first release, write a short introduction to Спестовник covering the features verified at that point and what users can do with them.
 
-**Owner-approved 4 pt tab padding.** Set the top and bottom tab padding to 4 pt and kept the stacked icons and labels. Mobile unit tests, TypeScript, web export and the six-language browser toolbar check passed. The owner authorized the internal ARM preview build with this change. [Browser evidence](references/preview-10.5-icon-tabs.jpg).
+**4 pt tab padding visual preview.** Set the top and bottom tab padding to 4 pt and kept the stacked icons and labels. Mobile unit tests, TypeScript, web export and the six-language browser toolbar check passed. The owner clarified that preview meant browser screenshots. Cancellation was requested for the mistakenly dispatched Android run 45035896667. Android packaging remains on hold. [Browser evidence](references/preview-10.5-icon-tabs.jpg).
 
 **Category tab revision.** The owner rejected the label-only preview. The original four icons are restored above their labels at 16 pt with 1.5 pt vertical edge padding. Mobile unit tests, TypeScript, web export and the responsive browser toolbar check passed. The browser verifies both attributes and icon-above-label alignment. [Corrected screenshot](references/preview-10.5-icon-tabs.jpg). Android build approval remains pending for the revised SHA.
 

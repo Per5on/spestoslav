@@ -335,4 +335,4 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 
 - Restored the original stacked category icons and names with smaller 16 pt symbols and compact padding. Verified standard and narrow browser layouts and retained the build hold.
 
-- Owner requested 4 pt vertical tab padding and authorized the Preview 10.5 internal ARM build. Mobile and responsive browser checks passed.
+- Owner requested 4 pt vertical tab padding and a visual preview. Mobile and responsive browser checks passed. Android run 45035896667 was dispatched after misreading the request and cancellation was requested when the owner clarified.
