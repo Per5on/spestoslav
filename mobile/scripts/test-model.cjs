@@ -247,6 +247,8 @@ assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Ново 
 assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "София", municipality: " София ", region: "София" }), "София");
 assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Варна", municipality: null, region: null }), "Варна");
 assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "Ново село", municipality: "  Община   Родопи  ", region: " Област  Пловдив " }), "Ново село · Община Родопи · Област Пловдив");
+assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "  Ново   село  ", municipality: "Ново село", region: " Пловдив " }), "Ново село · Пловдив");
+assert.equal(merchantDirectory.merchantLocalityLabel({ locality_name: "  София  ", municipality: " София ", region: null }), "София");
 console.log("Merchant locality labels passed: geographic disambiguation and duplicate suppression.");
 
 // Geographic details may be absent from the first branch of a locality.
