@@ -44,6 +44,20 @@ const { loadMerchantDirectory } = moduleObject.exports;
   assert.deepEqual((await loadMerchantDirectory()).map(row => row.id), ["short"]);
   assert.equal(calls.length, 1);
 
+  // Empty directories must return without requesting another page.
+  pages = [[]];
+  calls = [];
+  assert.deepEqual(await loadMerchantDirectory(), []);
+  assert.equal(calls.length, 1);
+
+  // A continuously full directory must stop at the documented 100-page safety cap.
+  // Reusing the same records keeps the fixture small while testing the cap itself.
+  pages = Array.from({ length: 100 }, () => rows);
+  calls = [];
+  await assert.rejects(loadMerchantDirectory(), /exceeded the supported page limit/);
+  assert.equal(calls.length, 100);
+  assert.equal(calls.at(-1).url, "/api/v1/merchant-directory?limit=100&offset=9900");
+
   // An API failure must propagate, not silently present an incomplete directory.
   pages = [];
   calls = [];
