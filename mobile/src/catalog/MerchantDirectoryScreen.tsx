@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, TextInput, View } from "react-native";
 import { Pressable, Text, useUI } from "../ui";
-import { filterMerchantDirectory, groupMerchantDirectory, loadMerchantDirectory, type MerchantDirectoryEntry } from "./merchantDirectory";
+import { filterMerchantDirectory, groupMerchantDirectory, loadMerchantDirectory, merchantLocalityLabel, type MerchantDirectoryEntry } from "./merchantDirectory";
 
 /** Verified backend branches only; never invent store locations. */
 export function MerchantDirectoryScreen() {
@@ -54,7 +54,7 @@ export function MerchantDirectoryScreen() {
                   accessibilityState={{ expanded: isOpen }}
                   onPress={() => setExpanded(isOpen ? null : key)}
                   style={s.option}>
-                  <Text style={s.productName}>{locality.locality_name} ({locality.branches.length})</Text>
+                  <Text style={s.productName}>{merchantLocalityLabel(locality)} ({locality.branches.length})</Text>
                 </Pressable>
                 {isOpen && locality.branches.map(branch => (
                   <View key={branch.id} style={s.store}>
