@@ -41,7 +41,11 @@ with sync_playwright() as playwright:
     geometry()
     location = page.get_by_test_id("location-search").bounding_box()
     assert location["y"] + location["height"] < tabs.first.bounding_box()["y"]
-    assert tabs.first.bounding_box()["height"] <= 40
+    assert tabs.first.bounding_box()["height"] <= 45
+    assert tabs.first.evaluate("""el => {
+      const style = getComputedStyle(el);
+      return style.paddingTop === "4px" && style.paddingBottom === "4px";
+    }""")
     for index in range(4):
         icon = tabs.nth(index).get_by_test_id(re.compile("^tab-icon-"))
         expect(icon).to_be_visible()

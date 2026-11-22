@@ -334,3 +334,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Reordered Settings, compacted header and tabs, relocated the locality field, and made fuel controls static. Verified transparent product artwork and tomato mapping. Both backend legs and all six browser suites passed. Captured the browser preview and left Android dispatch at the exact-SHA approval gate.
 
 - Restored the original stacked category icons and names with smaller 16 pt symbols and compact padding. Verified standard and narrow browser layouts and retained the build hold.
+
+- Owner requested 4 pt vertical tab padding and authorized the Preview 10.5 internal ARM build. Mobile and responsive browser checks passed.
