@@ -1,5 +1,6 @@
 """Check responsive catalog controls using the local preview fixture server."""
 import argparse
+import re
 from pathlib import Path
 
 from playwright.sync_api import expect, sync_playwright
@@ -40,7 +41,13 @@ with sync_playwright() as playwright:
     geometry()
     location = page.get_by_test_id("location-search").bounding_box()
     assert location["y"] + location["height"] < tabs.first.bounding_box()["y"]
-    assert tabs.first.bounding_box()["height"] <= 24
+    assert tabs.first.bounding_box()["height"] <= 40
+    for index in range(4):
+        icon = tabs.nth(index).get_by_test_id(re.compile("^tab-icon-"))
+        expect(icon).to_be_visible()
+        label = tabs.nth(index).get_by_text(tabs.nth(index).get_attribute("aria-label"), exact=True)
+        icon_box, label_box = icon.bounding_box(), label.bounding_box()
+        assert icon_box["y"] + icon_box["height"] <= label_box["y"] + 1
     assert page.get_by_test_id("app-header").bounding_box()["height"] <= 60
     assert toolbar.get_by_role("textbox").evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(237, 243, 229)"
     expect(page.get_by_test_id("category-groups")).to_be_visible(timeout=20000)

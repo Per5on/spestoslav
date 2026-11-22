@@ -332,3 +332,5 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 
 - Removed the x86_64 APK and hosted emulator steps. The workflow builds ARM64 and ARMv7 and checks both ABIs, APK signatures and test-signed AAB structure. Installed smoke testing now needs an ARM Android device. The previously verified artefacts remain historical evidence.
 - Reordered Settings, compacted header and tabs, relocated the locality field, and made fuel controls static. Verified transparent product artwork and tomato mapping. Both backend legs and all six browser suites passed. Captured the browser preview and left Android dispatch at the exact-SHA approval gate.
+
+- Restored the original stacked category icons and names with smaller 16 pt symbols and compact padding. Verified standard and narrow browser layouts and retained the build hold.

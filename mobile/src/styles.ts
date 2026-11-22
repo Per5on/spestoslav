@@ -26,10 +26,9 @@ export const s = StyleSheet.create({
     minWidth: 0,
     paddingHorizontal: 2,
     paddingVertical: 1.5,
-    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 2,
+    gap: 1,
   },
   activeTab: { backgroundColor: "#ff8500" },
   tabText: {
@@ -40,6 +39,9 @@ export const s = StyleSheet.create({
     maxWidth: "100%",
   },
   count: {
+    position: "absolute",
+    top: 2,
+    right: 3,
     backgroundColor: "#195b27",
     color: "#fff",
     fontSize: 11,

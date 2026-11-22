@@ -2,7 +2,7 @@
 
 - [x] Drop x86_64 Android packaging and the hosted x86_64 emulator job. Retain signed ARM APK and test-signed AAB checks. Record the change in the development log. Installed Android testing moves to an ARM device.
 - [x] Settings left column: Език, Тема, Размер на шрифта. Right column: Общи условия, Политика за поверителност, Изтрий данни.
-- [x] Place the location field above the tabs. Compact the category tabs to the label height with 1.5 pt vertical space on each edge.
+- [x] Place the location field above the tabs. Keep each original category symbol above its name. Compact the stacked contents with 16 pt icons and 1.5 pt vertical padding.
 - [x] Shrink the header and the Спестовник wordmark. Align the two slogan lines with the vertical menu and keep the wordmark visibly larger.
 - [x] Use transparent, visually consistent thumbnail artwork. Use product-matched references where known and symbolic artwork where needed. Verify that tomato entries do not display banana artwork.
 - [x] Горива: two static rows of content-width fuel controls. Top row Бензин 95, Бензин 98+, Обнови. Bottom row Дизел, Дизел +, Автогаз.

@@ -55,10 +55,10 @@ import { AccountScreen } from "./src/workflows/AccountScreen";
 import { ScanScreen } from "./src/workflows/ScanScreen";
 import { ReceiptsScreen } from "./src/workflows/ReceiptsScreen";
 const tabs = [
-  { id: "groceries", label: "food" },
-  { id: "technology", label: "technology" },
-  { id: "fuel", label: "fuel" },
-  { id: "basket", label: "list" },
+  { id: "groceries", label: "food", icon: "cart-outline" },
+  { id: "technology", label: "technology", icon: "laptop-outline" },
+  { id: "fuel", label: "fuel", icon: "car-outline" },
+  { id: "basket", label: "list", icon: "list-outline" },
 ] as const;
 function AddButton({
   name,
@@ -400,13 +400,15 @@ function Main({ initialNotice, onErase }: {
             style={[s.tab, active === tab.id && s.activeTab]}
             onPress={() => switchTab(tab.id)}
           >
+            <Ionicons testID={`tab-icon-${tab.id}`} name={tab.icon} size={16}
+              accessible={false} color={active === tab.id ? selectedInk : color("#19562a")} />
             <AutoFitLabel
               label={t(tab.label)}
               baseSize={12}
               allowWrap
               style={[
                 s.tabText,
-                { maxWidth: basket.length && tab.id === "basket" ? "78%" : "100%" },
+                { width: "100%" },
                 active === tab.id && { color: selectedInk },
               ]}
             />
