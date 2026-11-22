@@ -264,3 +264,17 @@ assert.equal(enrichedLocality.region, "Пловдив");
 assert.equal(enrichedLocality.branches.length, 2);
 assert.equal(JSON.stringify(incompleteLocalityRows), incompleteSnapshot);
 console.log("Merchant locality metadata checks passed: later verified branch fills missing details without mutation.");
+
+// Retailer names may contain ampersands or plus signs; queries with spaces
+// should still match those verified names without rewriting source records.
+const symbolMerchantRows = [
+  { ...merchantRows[0], id: "ampersand", retailer_name: "A&B Market" },
+  { ...merchantRows[1], id: "plus", retailer_name: "Fuel+Go" },
+];
+const symbolSnapshot = JSON.stringify(symbolMerchantRows);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(symbolMerchantRows, "A B Market").map(row => row.id), ["ampersand"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(symbolMerchantRows, "Fuel Go").map(row => row.id), ["plus"]);
+assert.deepEqual(merchantDirectory.filterMerchantDirectory(symbolMerchantRows, "A&B").map(row => row.id), ["ampersand"]);
+assert.equal(JSON.stringify(symbolMerchantRows), symbolSnapshot);
+console.log("Merchant symbol search checks passed: ampersand/plus separators and immutable verified records.");
+
