@@ -6,7 +6,7 @@ Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 The reviewed nationwide directory is live with 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It has 17 indicative fuel offers and five indicative technology offers. A matched fresh grocery feed for the city is still needed.
 
-Candidate 016, display label 10.10 and app version 0.5.9, explains empty local price coverage in the grocery and technology footer. The staged grocery publisher includes the four reviewed Велико Търново branches. Browser checks used the live API and showed the Пловдив grocery notice, five technology offers and six A95 prices. Android package generation is pending. [Preview](references/preview016-plovdiv-grocery.png) · [Rollout evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
+Candidate 016, display label 10.10 and app version 0.5.9, explains empty local price coverage in the grocery and technology footer. The staged grocery publisher includes the four reviewed Велико Търново branches. Browser checks used the live API and showed the Пловдив grocery notice, five technology offers and six A95 prices. Android package generation is pending. The next steps are recorded in the [release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) and [unreleased changelog](../CHANGELOG.md#unreleased--build-016--app-059). [Preview](references/preview016-plovdiv-grocery.png) · [Rollout evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
 
 ## Bug-fix build 015
 

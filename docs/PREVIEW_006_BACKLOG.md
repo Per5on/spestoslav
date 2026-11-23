@@ -1,3 +1,14 @@
+## Build 016 release plan
+
+Build 016 is the next Android candidate, with display label 10.10 and app version 0.5.9. [Future release changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+
+- [x] **Roll out the reviewed directory.** Published 1,585 active branches. Live checks in Пловдив found five indicative technology offers and 17 indicative fuel offers. The candidate shows when the selected town has no current grocery or technology prices. [Rollout record](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016) · [Preview](references/preview016-plovdiv-grocery.png)
+- [x] **Run candidate checks.** Mobile tests, strict TypeScript, Expo configuration, live browser checks, and both hosted PostgreSQL jobs passed for source `dcbdea2`. [Hosted checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
+- [ ] **Package the Android test APK after owner approval.** Use the reviewed build 016 candidate. Verify the app version, Android version code 16, signature, both ARM architectures and the downloaded SHA-256. Record the exact source and artifact link in the changelog.
+- [ ] **Verify on an Android device.** Confirm install or upgrade, retained locality and basket, price refresh and comparison, the empty-price notice, camera barcode lookup and receipts. Use София or Велико Търново for grocery coverage when current prices are available. Check Пловдив for indicative technology and fuel offers and for the grocery empty state while coverage is absent.
+- [ ] **Expand and sustain live prices.** Find a fresh, reusable grocery source for Пловдив, then verify retailer, branch, product identity, currency and validity before publication. Extend the same checks to other underserved towns. Activate the staged four-hour publisher for sources cleared for recurring reuse and verify a scheduled run publishes before existing prices expire. Include the reviewed Велико Търново branches when the grocery feed is enabled.
+- [ ] **Verify live account and email flows.** Use an authorized inbox to check recovery-code expiry and reuse, old-session revocation, sign-in and reset attempt limits, and receipt access after recovery. Confirm feedback delivery separately. Keep these results distinct from fixture checks.
+
 ## 23 November 2026 — next commit and beta checklist
 
 - [x] Consolidate catalogue and receipt-review helpers, tidy imports, and add the pinned Ruff CI check. Preserve historical documentation entry points.
