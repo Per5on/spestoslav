@@ -101,3 +101,8 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 - The owner confirmed that build 015 installs and that the camera appears to work, and reported no visible prices in Велико Търново. Verified the local coverage gap and published 2,713 validated grocery branch prices from the Burlex public table. Technology coverage remains open. [Verification record](ACTIVITY_LOG.md)
 
 - The owner confirmed that prices appeared after refreshing build 015 on their phone in Велико Търново.
+
+
+## Nationwide directory validation
+
+- The owner asked to finish the interrupted nationwide run after reporting widespread missing prices. Completed isolated import and duplicate-free replay of the 1,563 reviewed records. Recorded the remaining grocery price gap and live rollout status. [Evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)

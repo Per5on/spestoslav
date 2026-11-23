@@ -475,3 +475,12 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 - The one-time observations expire after 12 hours. The next operational step is to enable a cleared recurring price source and check its coverage before expiry. Technology still needs eligible offers from retailers serving the city. The existing Android APK can consume the update.
 
 - The owner confirmed that grocery prices loaded on their phone in Велико Търново after refreshing build 015. This confirms the device check for the one-time publication. Scheduled publication is still pending.
+
+
+## 23 November 2026 — nationwide directory validation
+
+- The owner reported missing prices in Пловдив and requested completion of the interrupted nationwide validation. The shared database held 337 directory records before and after this validation. Executed the import on isolated Neon branch `br-steep-violet-bazjkpg3`.
+- Seed SHA-256 `94fe35dfa96c3e607b3cc9ca0cb9fc19a87039ec6c730a81d778d41b98043771`. Validated 1,563 records for provenance and canonical locality, then applied 16 bounded SQL batches. The isolated directory grew from 337 to 1,586 total rows. It has 1,585 active branches and retains one inactive legacy record. The replay preserved all row counts and full branch-record digests. The normalized active-branch identity query found zero duplicates.
+- The isolated result has 724 fuel branches in 241 localities, 687 grocery branches in 108 localities and 174 technology branches in 55 localities. Пловдив has 41 fuel, 45 grocery and 12 technology branches.
+- The paired price-coverage audit at about 21:15 Sofia time found eligible prices in 241 fuel, 2 grocery and 10 technology localities in the isolated result. The shared database returned 3, 2 and 2 respectively. Пловдив had three fuel types, five technology products and zero grocery products with eligible prices in the isolated result. Offer counts are time-sensitive. New directory rows make existing eligible offers visible in their locality.
+- The validated nationwide import and existing price coverage audit are ready for live rollout review. The next operational work is publishing the validated directory and identifying a fresh matched grocery source for Пловдив and other uncovered cities.

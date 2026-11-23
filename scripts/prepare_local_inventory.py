@@ -8,20 +8,17 @@ import json
 from validate_inventory import identity, read, validate
 
 
-def render(city, municipality, region, categories):
-    validate()
-    locality = identity(city, municipality, region)
-    rows = [
-        row for row in read("store_branches_seed.csv")
-        if identity(row["city"], row["municipality"], row["region"]) == locality
-        and row["category_code"] in categories
-    ]
+def render_rows(rows):
     if not rows:
         raise ValueError("No source-backed branches for this locality and category")
+    payload_rows = []
     for row in rows:
+        locality = identity(row["city"], row["municipality"], row["region"])
         key = "|".join((row["retailer_code"], *locality, row["address"].casefold()))
-        row["inventory_id"] = "inventory:" + hashlib.sha256(key.encode()).hexdigest()
-    payload = json.dumps(rows, ensure_ascii=False)
+        payload_row = {name: value for name, value in row.items() if name != "source_url"}
+        payload_row["inventory_id"] = "inventory:" + hashlib.sha256(key.encode()).hexdigest()
+        payload_rows.append(payload_row)
+    payload = json.dumps(payload_rows, ensure_ascii=False, separators=(",", ":"))
     if "$source_rows$" in payload or "$import_branches$" in payload:
         raise ValueError("Reserved SQL delimiter in source data")
     return """DO $import_branches$
@@ -32,8 +29,11 @@ BEGIN
   FOR r IN SELECT value FROM jsonb_array_elements($source_rows$@PAYLOAD@$source_rows$::jsonb) LOOP
     SELECT count(*), min(id::text)::uuid INTO matches, locality
     FROM inhabited_localities
-    WHERE name_bg = r->>'city' AND municipality = r->>'municipality' AND region = r->>'region';
-    IF matches <> 1 THEN RAISE EXCEPTION 'Expected one canonical locality'; END IF;
+    WHERE on_map AND name_bg = r->>'city' AND municipality = r->>'municipality' AND region = r->>'region';
+    IF matches <> 1 THEN
+      RAISE EXCEPTION 'Expected one canonical locality for % / % / %',
+        r->>'city', r->>'municipality', r->>'region';
+    END IF;
     IF NOT EXISTS (
       SELECT 1 FROM catalog_retailers
       WHERE code = r->>'retailer_code' AND category_code = r->>'category_code' AND active
@@ -64,11 +64,30 @@ BEGIN
 END $import_branches$;""".replace("@PAYLOAD@", payload)
 
 
+def render(city, municipality, region, categories):
+    validate()
+    locality = identity(city, municipality, region)
+    return render_rows([
+        row for row in read("store_branches_seed.csv")
+        if identity(row["city"], row["municipality"], row["region"]) == locality
+        and row["category_code"] in categories
+    ])
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--city", required=True)
-    parser.add_argument("--municipality", required=True)
-    parser.add_argument("--region", required=True)
-    parser.add_argument("--category", action="append", required=True, choices=("technology", "fuel"))
+    parser.add_argument("--all-reviewed", action="store_true")
+    parser.add_argument("--city")
+    parser.add_argument("--municipality")
+    parser.add_argument("--region")
+    parser.add_argument("--category", action="append", required=True, choices=("groceries", "technology", "fuel"))
     args = parser.parse_args()
-    print(render(args.city, args.municipality, args.region, set(args.category)))
+    if args.all_reviewed:
+        if any((args.city, args.municipality, args.region)):
+            parser.error("--all-reviewed excludes locality arguments")
+        validate()
+        print(render_rows([row for row in read("store_branches_seed.csv") if row["category_code"] in args.category]))
+    else:
+        if not all((args.city, args.municipality, args.region)):
+            parser.error("Provide city, municipality and region, or select --all-reviewed")
+        print(render(args.city, args.municipality, args.region, set(args.category)))

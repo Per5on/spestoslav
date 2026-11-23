@@ -8,6 +8,8 @@ Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo 
 
 **Велико Търново device report.** The city had no current grocery or technology prices when the owner tested. After a focused Burlex publication, the deployed API returned 2,713 current prices for 835 products across four branches. Build 015 rendered those prices in a live browser check. The owner then confirmed that refreshing on their phone loaded grocery prices. The browser check also showed six indicative A95 prices. Technology coverage and recurring grocery publication are open. The first new grocery observations expire at about 08:26 on 24 November, Sofia time. [Activity log](ACTIVITY_LOG.md)
 
+**Nationwide directory validation.** The isolated database accepted all 1,563 reviewed seed records in 16 batches. A complete replay preserved every stored branch. The result includes 41 fuel, 45 grocery and 12 technology branches in Пловдив. The test snapshot supported indicative fuel prices in 241 localities and technology prices in 10. Grocery price coverage was still two localities. Live rollout remains open. [Validation evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)
+
 ## Beta_10.8
 
 The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. The refreshed candidate adds „За приложението → Трети страни“ and puts attribution links there. [Changelog](../CHANGELOG.md) · [Browser preview](references/beta-10.8-third-parties.png)
