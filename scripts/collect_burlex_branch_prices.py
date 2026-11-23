@@ -19,6 +19,15 @@ STORES = {
 }
 
 
+def check_robots(client):
+    response = client.get("https://burlex.bg/robots.txt")
+    response.raise_for_status()
+    robots = RobotFileParser()
+    robots.parse(response.text.splitlines())
+    if not all(robots.can_fetch(AGENT, url) for url in (SOURCE, ENDPOINT)):
+        raise ValueError("Source disallows automated reads")
+
+
 def collect(store, client):
     page = client.get(SOURCE)
     page.raise_for_status()
@@ -103,11 +112,6 @@ if __name__ == "__main__":
     parser.add_argument("--store", choices=STORES, required=True)
     args = parser.parse_args()
     with httpx.Client(timeout=25, follow_redirects=False, headers={"User-Agent": AGENT}) as client:
-        response = client.get("https://burlex.bg/robots.txt")
-        response.raise_for_status()
-        robots = RobotFileParser()
-        robots.parse(response.text.splitlines())
-        if not all(robots.can_fetch(AGENT, url) for url in (SOURCE, ENDPOINT)):
-            parser.error("Source disallows automated reads")
+        check_robots(client)
         rows, observed = collect(args.store, client)
         print(render(args.store, rows, observed))

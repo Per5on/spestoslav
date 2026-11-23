@@ -1,0 +1,36 @@
+name: Daily price source checks
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 11 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-price-checks
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    strategy:
+      fail-fast: false
+      matrix:
+        category: [groceries, technology, fuel]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r backend/requirements.txt
+      - run: python scripts/check_daily_prices.py "${{ matrix.category }}" > price-source-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: price-check-${{ matrix.category }}
+          path: price-source-report.json
+          if-no-files-found: error
+          retention-days: 30
