@@ -9,10 +9,23 @@ Build 016 is the next Android candidate, with display label 10.10 and app versio
 - [ ] **Expand and sustain live prices.** Find a fresh, reusable grocery source for Пловдив, then verify retailer, branch, product identity, currency and validity before publication. Extend the same checks to other underserved towns. Activate the staged four-hour publisher for sources cleared for recurring reuse and verify a scheduled run publishes before existing prices expire. Include the reviewed Велико Търново branches when the grocery feed is enabled.
 - [ ] **Verify live account and email flows.** Use an authorized inbox to check recovery-code expiry and reuse, old-session revocation, sign-in and reset attempt limits, and receipt access after recovery. Confirm feedback delivery separately. Keep these results distinct from fixture checks.
 
+### Historical defect remediation
+
+- [x] **Receipt upload recovery.** Preserve the image if the database commits and the response is lost. Keep cleanup before a known failed commit and verify that repeating the same request returns the original receipt. Regression tests cover a lost commit response and a pre-commit database failure.
+- [ ] **Receipt orphan audit.** Prepare the report-only inventory pass against disposable or read-only storage. Validate age, scope and database references before proposing any cleanup.
+- [ ] **Price gaps and refresh.** Keep the current focus on coverage gaps and expiry. Validate the Пловдив grocery source and the recurring publication path in the build 016 plan before treating them as resolved.
+- [ ] **Live recovery and feedback.** Verify managed expiry, revocation and mail delivery through the existing account and email checks above.
+
+### Future subscriptions
+
+- [x] **Prepare the payment and subscription plan.** Document the Plus proposal, pricing hypotheses, Play Billing architecture, and release checks. [Subscription plan](SUBSCRIPTION_PLAN.md)
+- [ ] **Review the proposal.** Confirm tiers, prices and the supported alert coverage before implementing checkout or provisioning payment services.
+
 ## 23 November 2026 — next commit and beta checklist
 
 - [x] Consolidate catalogue and receipt-review helpers, tidy imports, and add the pinned Ruff CI check. Preserve historical documentation entry points.
-- [ ] **Expired price submissions.** Derive `EXPIRED` in submission responses for elapsed pending observations and filter them out of the admin queue before pagination. Keep both list endpoints read-only and retain the existing rejection of late approval. An isolated SQLite regression check passed with this approach. Recheck on disposable PostgreSQL before merging.
+- [x] **Expired price submissions in the candidate.** Submission responses derive `EXPIRED` for elapsed pending observations. The admin queue filters them before pagination. Both list endpoints stay read-only, and late approval is rejected. The local regression passes.
+- [ ] **Live expired-submission verification.** Recheck against a disposable PostgreSQL database and verify the behavior after backend rollout.
 - [ ] **Receipt orphan sweep.** Prepare a standalone dry-run-by-default command with an explicit option for deletion. Restrict it to receipt objects, bound each pass, and confirm the object remains unreferenced before any deletion. Establish safe behavior for in-flight uploads and partial failures using disposable storage before accepting the implementation. Review only for now. The supplied patch deletes by default.
 
 ### Visual review

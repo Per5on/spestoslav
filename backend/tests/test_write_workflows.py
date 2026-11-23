@@ -5,12 +5,13 @@ from decimal import Decimal
 from PIL import Image
 import pytest
 from sqlalchemy import select
+from sqlalchemy.exc import OperationalError
 
 import test_locality_search as fixtures
 from app.main import app
 from app.db import get_db
 from app.auth import Principal, current_user
-from app.marketplace import CurrentPrice, PriceCache, Promotion
+from app.marketplace import CurrentPrice, PriceCache, Promotion, ReceiptScan
 from app.models import Locality, Product, StoreBranch
 from app.receipt_worker import process_one
 
@@ -259,6 +260,50 @@ def test_receipt_validation_and_missing_storage(monkeypatch):
         ).status_code
         == 503
     )
+
+
+@pytest.mark.parametrize("commit_applied", [False, True])
+def test_receipt_storage_follows_database_commit_outcome(tmp_path, monkeypatch, commit_applied):
+    monkeypatch.setenv("RECEIPT_STORAGE_DIR", str(tmp_path))
+    user()
+    image = BytesIO()
+    Image.new("RGB", (2, 2)).save(image, format="PNG")
+    upload = {
+        "files": {"file": ("r.png", image.getvalue(), "image/png")},
+        "headers": {"Idempotency-Key": "test-receipt-upload"},
+    }
+    session_type = fixtures.TestingSessionLocal.class_
+
+    def lost_database_connection(*args, **kwargs):
+        raise OperationalError(None, None, RuntimeError("Test connection loss"))
+
+    with monkeypatch.context() as db_patch:
+        if commit_applied:
+            commit = session_type.commit
+
+            def commit_then_lose_reply(session):
+                commit(session)
+                lost_database_connection()
+
+            db_patch.setattr(session_type, "commit", commit_then_lose_reply)
+        else:
+            db_patch.setattr(session_type, "flush", lost_database_connection)
+        response = fixtures.client.post("/api/v1/receipts", **upload)
+    assert response.status_code == 503
+
+    with fixtures.TestingSessionLocal() as db:
+        scan = db.scalar(select(ReceiptScan))
+        if commit_applied:
+            assert scan is not None and (tmp_path / scan.image_storage_key).is_file()
+            original_id = str(scan.id)
+        else:
+            assert scan is None and not list(tmp_path.rglob("*.png"))
+
+    retry = fixtures.client.post("/api/v1/receipts", **upload)
+    assert retry.status_code == 202
+    if commit_applied:
+        assert retry.json()["id"] == original_id
+    assert len(list(tmp_path.rglob("*.png"))) == 1
 
 
 def test_product_catalog_creation_gtin_validation_and_duplicate():

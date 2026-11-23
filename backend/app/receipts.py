@@ -2,6 +2,7 @@
 
 import hashlib
 from io import BytesIO
+import logging
 import os
 from pathlib import Path
 import uuid
@@ -24,7 +25,7 @@ from PIL import Image, UnidentifiedImageError
 from pydantic import ValidationError
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from .auth import current_user
 from .db import get_db
@@ -40,6 +41,7 @@ class ReceiptPriceInput(PriceInput):
 
 
 router = APIRouter(prefix="/api/v1/receipts")
+logger = logging.getLogger(__name__)
 MAX_BYTES = 8 * 1024 * 1024
 Image.MAX_IMAGE_PIXELS = 20_000_000
 
@@ -109,6 +111,13 @@ class ReceiptStorage:
             self.client.delete_object(Bucket=self.bucket, Key=key)
         else:
             self.path(key).unlink(missing_ok=True)
+
+
+def discard_uncommitted_upload(storage, key):
+    try:
+        storage.delete(key)
+    except (BotoCoreError, ClientError, OSError):
+        logger.warning("Could not clean up a receipt image after a failed upload")
 
 
 @router.post("", status_code=202)
@@ -182,6 +191,7 @@ def upload_receipt(
     except (BotoCoreError, ClientError, OSError):
         raise HTTPException(503, "Receipt storage is unavailable") from None
     scan = ReceiptScan(image_storage_key=key, branch_id=branch_id, status="UPLOADED")
+    commit_started = False
     try:
         db.add(scan)
         db.flush()
@@ -193,10 +203,12 @@ def upload_receipt(
                 upload_fingerprint=fingerprint,
             )
         )
+        db.flush()
+        commit_started = True
         db.commit()
     except IntegrityError:
         db.rollback()
-        storage.delete(key)
+        discard_uncommitted_upload(storage, key)
         previous = (
             db.execute(
                 select(ReceiptJob, ReceiptScan)
@@ -214,9 +226,13 @@ def upload_receipt(
         raise HTTPException(
             409, "Concurrent upload; retry with the same request key"
         ) from None
-    except Exception:
+    except Exception as failure:
         db.rollback()
-        storage.delete(key)
+        # A lost commit reply can leave a valid receipt that still needs its image.
+        if not commit_started:
+            discard_uncommitted_upload(storage, key)
+        if isinstance(failure, SQLAlchemyError):
+            raise HTTPException(503, "Receipt database is unavailable") from None
         raise
     return {"id": str(scan.id), "status": scan.status}
 

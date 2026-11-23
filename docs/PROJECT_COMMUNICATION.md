@@ -113,3 +113,8 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 - The owner asked to implement the nationwide validation findings and prepare the next build. Published the directory, verified Пловдив fuel and technology and prepared build 016 for packaging. Grocery price coverage remains open in Пловдив. [Rollout record](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
 
 - The owner requested that the next steps be written in the TODO and the future release changelog. Build 016 is listed as unreleased. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+
+
+## Subscription plan and remediation focus
+
+- The owner requested a future subscription plan and asked that remediation focus on historical errors. Prepared the plan and began remediation with the receipt commit-response failure. Retained the existing release and rollout status in the TODO. [Subscription plan](SUBSCRIPTION_PLAN.md) · [TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)

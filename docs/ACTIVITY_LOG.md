@@ -496,3 +496,11 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 - Android packaging remains the next step for the prepared candidate. Verify the managed recovery settings and grocery-source coverage separately.
 
 - Recorded the build 016 release plan after the owner requested a TODO and future-release changelog. Both hosted PostgreSQL jobs passed for candidate `dcbdea2`. Packaging, device verification, recurring source publication and live account and email checks remain open. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Hosted checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
+
+
+## 23 November 2026 — subscription planning and historical defects
+
+- Drafted the future subscription plan with a free comparison tier, a proposed Plus alert tier, tentative pricing, Play Billing integration and launch checks. [Plan](SUBSCRIPTION_PLAN.md)
+- The owner asked to focus remediation on historical defects. Reproduced the receipt upload cleanup problem when a database commit succeeds and its reply is lost. The candidate preserves the referenced image in that case, returns a retryable 503 and recovers the original receipt on a same-key retry. A known pre-commit failure still cleans up its image. Storage cleanup errors preserve the original failure result.
+- Local backend tests reported 122 passes and seven skipped PostgreSQL-dependent checks. Ruff and whitespace checks passed. Updated the backlog to reflect the existing expired-submission fix and retain a report-only orphan audit, live account/mail checks and price coverage as open. [Remediation TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)
+- Next verify hosted tests for the receipt change, then validate the receipt path on the live backend when it is rolled out. Paid checkout and Android packaging remain separate approval steps.
