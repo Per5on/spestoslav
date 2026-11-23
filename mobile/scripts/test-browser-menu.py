@@ -46,6 +46,8 @@ with sync_playwright() as p:
   section.click()
   expect(section).to_have_attribute('aria-expanded', 'true')
   expect(credits.get_by_role('link', name=source, exact=True)).to_be_attached()
+  if label == 'Софтуер и услуги':
+   expect(credits.get_by_role('link', name='Tesseract OCR', exact=True)).to_be_attached()
   if label == 'Данни и цени':
    expect(credits.get_by_role('link', name='CC BY 4.0', exact=True)).to_be_visible()
    page.screenshot(path=str(args.output_dir/'third-parties-bg.png'))

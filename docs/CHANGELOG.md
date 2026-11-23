@@ -1,6 +1,6 @@
 # Спестовник changelog
 
-Current work starts at [PROJECT_STATUS.md](PROJECT_STATUS.md). Original detailed notes are archived; [preview-sequence.json](references/preview-sequence.json) retains artifact URLs and digests. Historical APKs, screenshots and supplied references are unchanged.
+The [full version changelog](../CHANGELOG.md) lists the recorded build outcomes through Beta_10.8. This file preserves the original development notes for Previews 001–005. See [project status](PROJECT_STATUS.md) for active work.
 
 ## Preview 005 — candidate, not built yet
 

@@ -44,6 +44,7 @@ export const storeCredits: Credit[] = [
   { name: "Зора", url: "https://zora.bg/page/magazini-zora" },
   { name: "EKO", url: "https://www.eko.bg/self-service-terminal-instructions/karta-na-obektite/" },
   { name: "Fuelo · EKO, LUKOIL, OMV, Rompetrol, Shell, Petrol", url: "https://bg.fuelo.net/" },
+  { name: "store_branches_seed.csv", url: repo + "data/store_branches_seed.csv" },
 ];
 
 export const photoCredits: Credit[] = [
@@ -76,6 +77,7 @@ export const softwareCredits: Credit[] = [
   { name: "React Native Safe Area Context", url: "https://appandflow.github.io/react-native-safe-area-context/" },
   { name: "ZXing", url: "https://github.com/zxing-js/browser" },
   { name: "Google ML Kit", url: "https://developers.google.com/ml-kit/vision/barcode-scanning" },
+  { name: "Tesseract OCR", url: "https://tesseract-ocr.github.io/" },
   { name: "FastAPI", url: "https://fastapi.tiangolo.com/" },
   { name: "SQLAlchemy", url: "https://www.sqlalchemy.org/" },
   { name: "PostgreSQL", url: "https://www.postgresql.org/" },
