@@ -146,3 +146,20 @@ See `PREVIEW_007_API_ROLLOUT.md`, `FEEDBACK_SETUP.md`, `TECHNOLOGY_1000.md`, `RE
 ## Project communication archive
 
 [Project communication](PROJECT_COMMUNICATION.md) preserves the available conversation and decisions alongside the verified [activity log](ACTIVITY_LOG.md).
+
+### Sofia live data checkpoint (23 November 2026)
+
+The owner accepts an indicative online offer when the retailer has an active physical store in the selected locality. Complete branch quotes have priority for that retailer. A verified Techmart basket total of €303.99 in Sofia returned no quote for the same retailer in Мадан. The live merchant directory is paginated and includes 34 Sofia technology branches, 113 fuel stations and 46 grocery stores. Seven licensed illustrative WebPs are linked in both catalogues. [Backend correction and CI](https://github.com/Per5on/spestoslav/pull/22) · [Deployment](https://dashboard.render.com/web/srv-dbs313ei0phs73bvvd00/deploys/dep-dc20hud9fdbs73c2rufg)
+
+Run the reviewed sources with the backend Python environment. Each command prints an additive import to stdout for review and validation on an isolated database. Review the exact matched rows and freshness before applying to the shared preview. The commands require no API keys for collection. Database write credentials stay server-side.
+
+```sh
+python scripts/collect_burlex_branch_prices.py --store 'БУРЛЕКС БАНИШОРА'
+python scripts/collect_burlex_branch_prices.py --store 'БУРЛЕКС ЛОЗЕНЕЦ'
+python scripts/collect_techmart_offers.py --sku 46637 --sku 43832 --sku 43957 --sku 46638 --sku 45769
+python scripts/collect_karai_fuel_offers.py
+```
+
+Burlex supplied 875 regular branch prices and Techmart supplied five online prices. Both use a 12-hour observation freshness window. KARAI supplied 17 indicative chain prices for A95, diesel and LPG across six chains. That source uses a 24-hour observation window. Credit KARAI Fuel Index in the UI under CC BY 4.0. A98+ and premium diesel remain uncovered by this feed. [Burlex official table](https://burlex.bg/kolkostruva/) · [KARAI methodology](https://karai.bg/fuel-prices/indeks#metodologiya)
+
+No recurring refresh is configured. Complete refresh scheduling, wider coverage and the remaining live workflow checks before requesting explicit beta APK approval.
