@@ -122,3 +122,14 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 - The owner reported a default-theme flash on launch with a custom theme selected. Added the startup fix to candidate 016 and recorded the Android cold-start check in the release TODO.
 
 - The owner reported slow catalogue loading and uneven refresh across tabs, with „Горива“ the slowest, and requested background sync. Candidate 016 now opens with saved catalogue data, refreshes all three tabs through the same path and schedules Android background sync. The browser test showed a saved A95 price before the delayed network response and replaced it with the fresh response. Background execution and performance on a phone will be checked after build approval. [Verification](ACTIVITY_LOG.md#23-november-2026--catalogue-loading-and-android-background-sync)
+
+
+## 23 November 2026 — release notes and repository name
+
+The owner wrote:
+
+> amend the todo and the changelog for the future release with the fixes  including the pull-to-refresh. Change the name of the repository to Per5on/spestovnik
+> Keep the history of this chat
+
+- Updated the build 016 release TODO and changelog with the fixes, the completed checks, and the remaining phone checks. The catalogue fixes include pull-to-refresh in all three tabs, faster repeat loads for fuel, and Android background sync. The previous exchange and test results are preserved in the project logs. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+- GitHub returned HTTP 403 for the repository settings write. The live receipt worker still authenticates using `Per5on/spestoslav`. Prepared a draft compatibility patch so the same repository can authenticate under either name during the transition. The rename awaits production rollout approval and GitHub settings access. [Compatibility PR](https://github.com/Per5on/spestoslav/pull/25)

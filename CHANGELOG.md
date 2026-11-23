@@ -6,10 +6,13 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 
 - Published the nationwide directory with 1,585 active branches. In Пловдив, live checks found five indicative technology offers and 17 indicative fuel offers. Current grocery prices for the city are still pending.
 - Added a notice in the grocery and technology tabs when the selected town has no current prices. Included four reviewed Велико Търново branches in the staged grocery refresh. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
-- Opened catalogue tabs from saved local data while prices refresh. Added Android background sync and pull-to-refresh in „Храни“, „Техника“ and „Горива“.
+- Added Android pull-to-refresh in „Храни“, „Техника“ and „Горива“. All three tabs use the same refresh path.
+- Speeded up repeat catalogue loads, especially „Горива“. Show saved products, shops and valid prices for the selected town while updates arrive, and prepare the other tabs after the current tab loads.
+- Added Android background sync for public catalogue and price data. The job requests a one-hour minimum interval and runs when Android schedules it and a network is available.
 - Fixed a startup flash by restoring the saved palette and dark mode before showing the first app screen. Android holds the splash until that screen is laid out.
 - Fixed candidate receipt upload recovery after a lost database commit response. Retries with the same request key can recover the saved receipt and its photo. Backend rollout is pending.
-- Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. APK packaging and device checks remain pending. [Hosted checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
+- Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. [Rollout checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
+- A delayed browser fixture rendered the saved Sofia A95 price in 140 ms, updated it after the new response and removed it when the town changed. Mobile checks, Android JavaScript export and both hosted PostgreSQL jobs passed for the catalogue changes in `504f36b`. APK approval and on-device verification, including pull-to-refresh and background job execution, remain pending. [Catalogue checks](https://github.com/Per5on/spestoslav/actions/runs/45254713574) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
 
 ## Bug fix · build 015 · app 0.5.8
 

@@ -10,6 +10,8 @@ Candidate 016, display label 10.10 and app version 0.5.9, explains empty local p
 
 The candidate now saves catalogue results by selected town, including fuel products, branches and valid prices. It prepares the other tabs after the current tab loads and schedules connected Android background updates with a one-hour minimum interval. Pull-to-refresh uses the same data loading in all three categories. A delayed browser check confirmed that saved fuel prices appear before the network reply, fresh results replace them and a locality change hides the previous town's prices. The next check is actual Android job execution and refresh behavior after packaging approval. [Catalogue sync checks](ACTIVITY_LOG.md#23-november-2026--catalogue-loading-and-android-background-sync)
 
+The owner requested the GitHub repository name `Per5on/spestovnik`. The live receipt worker checks the repository name in its signed identity, and GitHub rejected settings writes from the current integration. The compatibility patch is in draft. Next, approve and deploy the worker patch, then rename with repository Administration write access and verify the scheduled worker. [Compatibility PR](https://github.com/Per5on/spestoslav/pull/25) · [Rename checklist](PREVIEW_006_BACKLOG.md#repository-rename)
+
 The future subscription proposal documents a free comparison tier and a possible paid alerts tier. Current remediation targets historical defects. Receipt commit-response recovery is implemented in the candidate and verified locally. Backend rollout remains pending. [Subscription plan](SUBSCRIPTION_PLAN.md) · [Remediation TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)
 
 ## Bug-fix build 015
