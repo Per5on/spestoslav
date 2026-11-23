@@ -118,3 +118,5 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 ## Subscription plan and remediation focus
 
 - The owner requested a future subscription plan and asked that remediation focus on historical errors. Prepared the plan and began remediation with the receipt commit-response failure. Retained the existing release and rollout status in the TODO. [Subscription plan](SUBSCRIPTION_PLAN.md) · [TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)
+
+- The owner reported a default-theme flash on launch with a custom theme selected. Added the startup fix to candidate 016 and recorded the Android cold-start check in the release TODO.

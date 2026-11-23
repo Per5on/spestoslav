@@ -6,6 +6,7 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 
 - Published the nationwide directory with 1,585 active branches. In Пловдив, live checks found five indicative technology offers and 17 indicative fuel offers. Current grocery prices for the city are still pending.
 - Added a notice in the grocery and technology tabs when the selected town has no current prices. Included four reviewed Велико Търново branches in the staged grocery refresh. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
+- Fixed a startup flash by restoring the saved palette and dark mode before showing the first app screen. Android holds the splash until that screen is laid out.
 - Fixed candidate receipt upload recovery after a lost database commit response. Retries with the same request key can recover the saved receipt and its photo. Backend rollout is pending.
 - Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. APK packaging and device checks remain pending. [Hosted checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
 

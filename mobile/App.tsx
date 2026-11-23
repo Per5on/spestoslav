@@ -14,9 +14,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Platform,
   ScrollView,
   View,
 } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaProvider,
@@ -55,6 +57,11 @@ import { SessionProvider } from "./src/workflows/session";
 import { AccountScreen } from "./src/workflows/AccountScreen";
 import { ScanScreen } from "./src/workflows/ScanScreen";
 import { ReceiptsScreen } from "./src/workflows/ReceiptsScreen";
+
+if (Platform.OS !== "web") {
+  void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+}
+
 const tabs = [
   { id: "groceries", label: "food", icon: "cart-outline" },
   { id: "technology", label: "technology", icon: "laptop-outline" },
@@ -125,6 +132,7 @@ function Main({ initialNotice, onErase }: {
   initialNotice: MessageKey | "";
   onErase: (cloud: Promise<CloudErasure>) => void;
 }) {
+  const startupShown = useRef(false);
   const { t, language, setLanguage, fontScale, setFontScale, styles: s, color, palette } = useUI();
   const insets = useSafeAreaInsets();
   const [headerHeight, setHeaderHeight] = useState(48);
@@ -393,7 +401,11 @@ function Main({ initialNotice, onErase }: {
     !catalog.products.some(product => !product.is_demo &&
       (priceIndex.products.has(product.id) || indicativePrices.products.has(product.id)));
   return (
-    <SafeAreaView style={s.page} edges={["top", "bottom"]}>
+    <SafeAreaView style={s.page} edges={["top", "bottom"]} onLayout={() => {
+      if (Platform.OS === "web" || startupShown.current) return;
+      startupShown.current = true;
+      SplashScreen.hide();
+    }}>
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
       <View testID="app-header" style={s.header} onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)}>
         <View style={{ flex: 1 }}>

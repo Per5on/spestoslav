@@ -504,3 +504,10 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 - The owner asked to focus remediation on historical defects. Reproduced the receipt upload cleanup problem when a database commit succeeds and its reply is lost. The candidate preserves the referenced image in that case, returns a retryable 503 and recovers the original receipt on a same-key retry. A known pre-commit failure still cleans up its image. Storage cleanup errors preserve the original failure result.
 - Local backend tests reported 122 passes and seven skipped PostgreSQL-dependent checks. Ruff and whitespace checks passed. Updated the backlog to reflect the existing expired-submission fix and retain a report-only orphan audit, live account/mail checks and price coverage as open. [Remediation TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)
 - Both hosted PostgreSQL jobs passed for receipt fix source `0c2afb8`. The next check is receipt retry behavior on the deployed backend. [Hosted checks](https://github.com/Per5on/spestoslav/actions/runs/45251812461) Paid checkout and Android packaging remain separate approval steps.
+
+
+## 23 November 2026 — saved theme at startup
+
+- The owner reported a brief default-theme flash before the saved theme was restored. The candidate waits for saved preferences and dismisses the Android splash after the themed screen is laid out.
+- The browser regression deliberately delayed preference restoration and confirmed the header was absent during the read. The first header used the saved custom palette and the location field used dark mode. Responsive checks in six languages, mobile unit tests, strict TypeScript, Expo dependencies and generated Android splash configuration passed.
+- Next verify a cold start on a physical Android phone with a saved custom palette and with dark mode after build 016 is packaged.

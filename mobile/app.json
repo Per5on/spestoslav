@@ -24,6 +24,12 @@
     "icon": "./assets/scale-launcher.png",
     "plugins": [
       [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#f5f5f5"
+        }
+      ],
+      [
         "expo-build-properties",
         {
           "android": {
