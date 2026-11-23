@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Image,
   Platform,
+  RefreshControl,
   ScrollView,
   View,
 } from "react-native";
@@ -41,7 +42,9 @@ import {
   duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
-import { Category, useCatalog } from "./src/catalog/useCatalog";
+import type { Category } from "./src/catalog/catalogData";
+import { enableCatalogSync } from "./src/catalog/backgroundSync";
+import { useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
 import { Pressable, Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/ui";
 import { Screen } from "./src/navigation/menu";
@@ -158,7 +161,10 @@ function Main({ initialNotice, onErase }: {
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, true, screen === "catalog" || screen === "basket");
+  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, restored && (screen === "catalog" || screen === "basket"));
+  useEffect(() => {
+    if (restored) void enableCatalogSync().catch(error => console.warn("Could not schedule catalogue sync", error));
+  }, [restored]);
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
   }, [screen, category]);
@@ -462,6 +468,10 @@ function Main({ initialNotice, onErase }: {
         ref={contentRef}
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={s.body}
+        refreshControl={Platform.OS !== "web" && screen === "catalog"
+          ? <RefreshControl refreshing={catalog.refreshing} onRefresh={catalog.refresh}
+              colors={[color("#19562a")]} tintColor={color("#19562a")} />
+          : undefined}
       >
         {screen === "catalog" ? (
           <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}

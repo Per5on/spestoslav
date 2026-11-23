@@ -37,6 +37,7 @@
           }
         }
       ],
+      "expo-background-task",
       "expo-font",
       "expo-secure-store",
       [
