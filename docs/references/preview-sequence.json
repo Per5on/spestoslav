@@ -1,5 +1,5 @@
 {
-  "next_version": "013",
+  "next_version": "015",
   "versions": [
     {
       "version": "001",
@@ -35,6 +35,16 @@
       "sha256": "20e0e265ce8ed0e421c3a4b5d72f8bdcabb1cfe6b132bcc7e7a041230fbfc5e9",
       "workflow": "https://github.com/Per5on/spestoslav/actions/runs/43711564982",
       "snapshot": "https://github.com/Per5on/spestoslav/releases/download/android-preview-004/android-preview-004.png"
+    },
+    {
+      "version": "014",
+      "kind": "Internal test-signed ARM Android APK",
+      "url": "https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/45191123258",
+      "source": "cb8d73636d6f2d477bf4cabccc285ab2a8daf469",
+      "snapshot": "beta-10.8-third-parties.png",
+      "artifact_archive_digest": "sha256:cb665b62ad792449be832c4434a5b06c1c1bf4e175c8b8743362e87c1df93a99",
+      "sha256": "ad5886c126f53102767e2b0cef8b1401893abbde8c3e9bae23e533c6f6f7e385"
     }
   ],
   "metadata_source": "../../mobile/preview.json"

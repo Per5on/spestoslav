@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Alert, Platform, View, ActivityIndicator } from "react-native";
-import { httpStatus } from "../api";
+import { api, httpStatus } from "../api";
 import type { MessageKey } from "../i18n";
 import { useSession } from "./session";
 import { Button } from "../Action";
-import { Input, Text, useUI } from "../ui";
+import { Input, Pressable, Text, useUI } from "../ui";
 
 /** Map the backend's distinct sign-in answers to specific, translated guidance. */
 export function authMessage(error: unknown, register: boolean): MessageKey {
@@ -28,6 +28,8 @@ export function AccountScreen() {
     { t, styles: s } = useUI();
   const [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
+    [recovery, setRecovery] = useState<"email" | "code" | null>(null),
+    [otp, setOtp] = useState(""),
     [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
     [notice, setNotice] = useState<MessageKey | "">("");
@@ -39,6 +41,34 @@ export function AccountScreen() {
       setPassword("");
     } catch (error) {
       setNotice(authMessage(error, register));
+    } finally {
+      setBusy(false);
+    }
+  }
+  function changeRecovery(next: typeof recovery) {
+    setPassword("");
+    setOtp("");
+    setNotice("");
+    setRecovery(next);
+  }
+  async function recover() {
+    if (!recovery) return;
+    setBusy(true);
+    setNotice("");
+    try {
+      const resetting = recovery === "code";
+      await api<void>(resetting ? "/api/v1/auth/reset-password" : "/api/v1/auth/request-password-reset", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(resetting ? { email: email.trim(), otp, password } : { email: email.trim() }),
+      });
+      changeRecovery(resetting ? null : "code");
+      setNotice(resetting ? "passwordResetDone" : "passwordCodeSent");
+    } catch (error) {
+      const status = httpStatus(error);
+      setNotice(status === 429 ? "authRateLimited"
+        : recovery === "code" && status === 400 ? "passwordCodeRejected"
+        : "passwordResetUnavailable");
     } finally {
       setBusy(false);
     }
@@ -91,26 +121,51 @@ export function AccountScreen() {
               <Button label={t("retry")} onPress={() => void retryRestore()} />
             </>
           )}
-          <Text style={s.meta}>{t("accountPurpose")}</Text>
+          {recovery && <Text style={s.productName}>{t("forgotPassword")}</Text>}
+          {!recovery && <Text style={s.meta}>{t("accountPurpose")}</Text>}
           <Input
             accessibilityLabel={t("email")}
             placeholder={t("email")}
             value={email}
             onChangeText={setEmail}
+            editable={!busy && recovery !== "code"}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
             style={s.input}
           />
-          <Input
-            accessibilityLabel={t("password")}
-            placeholder={t("password")}
+          {recovery === "code" && (
+            <Input accessibilityLabel={t("passwordCode")} placeholder={t("passwordCode")}
+              value={otp} onChangeText={setOtp} keyboardType="number-pad"
+              autoComplete="one-time-code" maxLength={6} style={s.input} editable={!busy} />
+          )}
+          {recovery !== "email" && <Input
+            accessibilityLabel={t(recovery ? "newPassword" : "password")}
+            placeholder={t(recovery ? "newPassword" : "password")}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            autoComplete={register ? "new-password" : "current-password"}
+            autoComplete={register || recovery ? "new-password" : "current-password"}
             style={s.input}
-          />
+            editable={!busy}
+          />}
+          {!register && !recovery && (
+            <Pressable accessibilityRole="button" disabled={busy}
+              onPress={() => changeRecovery("email")}
+              style={{ alignSelf: "flex-end", minHeight: 44, justifyContent: "center" }}>
+              <Text style={[s.meta, { textDecorationLine: "underline" }]}>{t("forgotPassword")}</Text>
+            </Pressable>
+          )}
+          {recovery ? <>
+            <Button primary label={t(busy ? "working" : recovery === "email" ? "sendPasswordCode" : "saveNewPassword")}
+              disabled={busy || !email.trim().includes("@") ||
+                (recovery === "code" && (!/^[0-9]{6}$/.test(otp) || password.length < 8))}
+              onPress={recover} />
+            {recovery === "code" && (
+              <Button label={t("requestNewPasswordCode")} disabled={busy} onPress={() => changeRecovery("email")} />
+            )}
+            <Button label={t("backToSignIn")} disabled={busy} onPress={() => changeRecovery(null)} />
+          </> : <>
           <Button
             primary
             label={t(busy ? "working" : register ? "register" : "login")}
@@ -120,8 +175,9 @@ export function AccountScreen() {
           <Button
             label={t(register ? "haveAccount" : "createAccount")}
             disabled={busy}
-            onPress={() => setRegister(!register)}
+            onPress={() => { setNotice(""); setRegister(!register); }}
           />
+          </>}
         </>
       )}
       {notice !== "" && (

@@ -4,6 +4,10 @@ import { Button } from "../Action";
 import { Pressable, Text, useUI } from "../ui";
 
 type Group = { code: string | null; label: string };
+const foodRows = [
+  [null, "pantry"],
+  ["produce", "meat-fish", "dairy-eggs"],
+];
 const technologyRows = [
   [null, "tv-computing"],
   ["smart-home-mobility", "small-appliances", "major-appliances"],
@@ -20,10 +24,13 @@ export function CategoryGroups({ technology, groups, selected, onSelect }: {
   const { height } = useWindowDimensions();
   const [popupTop, setPopupTop] = useState<number | null>(null);
   const close = () => setPopupTop(null);
-  const foodRows = [groups.slice(0, 3), groups.slice(3, 6)];
-  const rows = technology
-    ? technologyRows.map(codes => codes.flatMap(code => groups.filter(group => group.code === code)))
-    : foodRows;
+  const groupsByCode = new Map(groups.map(group => [group.code, group]));
+  const rows = (technology ? technologyRows : foodRows).map(codes =>
+    codes.flatMap(code => {
+      const group = groupsByCode.get(code);
+      return group ? [group] : [];
+    }),
+  );
   const shown = new Set(rows.flat().map(group => group.code));
   const overflow = groups.filter(group => !shown.has(group.code));
   const menuHeight = Math.min(14 + overflow.length * 48, height - 24);
@@ -35,16 +42,22 @@ export function CategoryGroups({ technology, groups, selected, onSelect }: {
   }
   function render(group: Group) {
     return <Button key={group.code ?? "all"} label={group.label} labelSize={13}
-      primary={selected === group.code} onPress={() => onSelect(group.code)} />;
+      compactGroup={!technology} primary={selected === group.code} onPress={() => onSelect(group.code)} />;
   }
   return (
     <View testID="category-groups" style={{ gap: 6 }}>
       {rows.map((row, index) => (
-        <View key={index} style={s.headingRow}>
-          <ScrollView horizontal keyboardShouldPersistTaps="handled"
-            style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, gap: 6 }}>
-            {row.map(render)}
-          </ScrollView>
+        <View key={index} testID={`category-group-row-${index + 1}`} style={s.headingRow}>
+          {technology ? (
+            <ScrollView horizontal keyboardShouldPersistTaps="handled"
+              style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, gap: 6 }}>
+              {row.map(render)}
+            </ScrollView>
+          ) : (
+            <View style={{ flex: 1, flexDirection: "row", gap: 6 }}>
+              {row.map(render)}
+            </View>
+          )}
           {index === 1 && overflow.length > 0 &&
             <View ref={anchor} collapsable={false}>
               <Button label="⋯" accessibilityLabel={t("moreGroups")} expanded={popupTop !== null}

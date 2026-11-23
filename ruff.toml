@@ -1,0 +1,10 @@
+# Lint config. Formatting is not enforced yet.
+target-version = "py312"
+extend-exclude = ["mobile/node_modules"]
+
+[lint]
+select = ["F", "E9", "B"]
+ignore = [
+  "B008",  # FastAPI's Depends(...) in argument defaults is the framework idiom
+  "B905",  # zip() without strict= is fine for the small fixed-length uses here
+]

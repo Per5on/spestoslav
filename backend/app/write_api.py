@@ -7,6 +7,8 @@ from urllib.parse import urlsplit
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from pydantic import (
     BaseModel,
     Field,
@@ -16,14 +18,24 @@ from pydantic import (
     field_validator,
 )
 from sqlalchemy import select, func
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from .auth import Principal, admin_user, auth_base_url, collector_user, current_user
+from .barcodes import validate_gtin
 from .db import get_db
+from .grocery import GroceryIdentity
 from .models import Category, Product, Retailer, StoreBranch, PriceObservation
-from .marketplace import CurrentPrice, PriceCache, ProductBarcode
-from .workflows import ReviewSubmission, CollectionSource, ProductImage
+from .marketplace import CurrentPrice, PriceCache, ProductBarcode, ReceiptItem, ReceiptScan
+from .technology import TechnologyIdentity
+from .workflows import (
+    CollectionSource,
+    ProductImage,
+    ReceiptJob,
+    ReviewSubmission,
+)
 
 router = APIRouter(prefix="/api/v1")
 Money = Decimal
@@ -48,7 +60,6 @@ class ProductInput(Input):
     def gtin_checksum(cls, value):
         if value is None:
             return value
-        from .barcodes import validate_gtin
         return validate_gtin(value)
 
 
@@ -204,6 +215,20 @@ def me(principal: Principal = Depends(current_user)):
     return {"subject": principal.subject, "role": principal.role}
 
 
+def _mark_receipt_item(db, source_reference, decision):
+    """Mirror a review decision onto the receipt line it came from, if any."""
+    parts = (source_reference or "").split(":")
+    if len(parts) != 4 or parts[0] != "receipt" or parts[2] != "item":
+        return
+    try:
+        scan_id, item_id = UUID(parts[1]), UUID(parts[3])
+    except ValueError:
+        return
+    item = db.get(ReceiptItem, item_id)
+    if item and item.receipt_scan_id == scan_id:
+        item.status = "VERIFIED" if decision == "APPROVED" else "REJECTED"
+
+
 @router.post("/admin/products", status_code=201)
 def create_product(
     payload: ProductInput, principal=Depends(admin_user), db: Session = Depends(get_db)
@@ -355,9 +380,6 @@ def review(
             published_source = "ADMIN_VERIFIED_AGGREGATOR"
             published_reference = evidence
         # Dialect upsert prevents two approved submissions creating duplicate current prices.
-        from sqlalchemy.dialects.postgresql import insert as pg_insert
-        from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-
         insert = pg_insert if db.bind.dialect.name == "postgresql" else sqlite_insert
         observed = cache.collected_at
         if observed.tzinfo is None:
@@ -406,15 +428,7 @@ def review(
     else:
         cache.status = "REJECTED"
     if cache.source == "RECEIPT":
-        from .marketplace import ReceiptItem
-        parts=(cache.source_reference or "").split(":")
-        if len(parts)==4 and parts[0]=="receipt" and parts[2]=="item":
-            try:
-                item=db.get(ReceiptItem, UUID(parts[3]))
-                if item and item.receipt_scan_id==UUID(parts[1]):
-                    item.status="VERIFIED" if payload.decision=="APPROVED" else "REJECTED"
-            except ValueError:
-                pass
+        _mark_receipt_item(db, cache.source_reference, payload.decision)
     cache.reviewed_at = now
     row.reviewed_by = principal.subject
     row.review_note = payload.note + (
@@ -506,8 +520,6 @@ def browse_products(
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
 ):
-    from .grocery import GroceryIdentity
-    from .technology import TechnologyIdentity
     statement = (
         select(Product, ProductImage.image_url, GroceryIdentity, TechnologyIdentity)
         .outerjoin(GroceryIdentity, GroceryIdentity.product_id == Product.id)
@@ -554,9 +566,6 @@ def browse_products(
 def receipt_for_review(
     scan_id: UUID, principal=Depends(admin_user), db: Session = Depends(get_db)
 ):
-    from .marketplace import ReceiptScan, ReceiptItem
-    from .workflows import ReceiptJob
-
     row = db.execute(
         select(ReceiptJob, ReceiptScan)
         .join(ReceiptScan, ReceiptScan.id == ReceiptJob.scan_id)
@@ -582,18 +591,22 @@ def receipt_for_review(
     }
 
 
+def _catalog_snapshot(db, category_code):
+    # Public names/identities only. Never cache prices, receipts or credentials here.
+    rows = browse_products(
+        group_code=None, q="", category_code=category_code, limit=10000, offset=0, db=db
+    )
+    return JSONResponse(
+        jsonable_encoder({"schema_version": 1, "products": rows}),
+        headers={"Cache-Control": "public, max-age=300"},
+    )
+
+
 @router.get("/catalog/groceries")
 def grocery_snapshot(db: Session = Depends(get_db)):
-    # Public names/identities only. Never cache prices, receipts or credentials here.
-    from fastapi.responses import JSONResponse
-    from fastapi.encoders import jsonable_encoder
-    rows = browse_products(group_code=None, q="", category_code="groceries", limit=10000, offset=0, db=db)
-    return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})
+    return _catalog_snapshot(db, "groceries")
 
 
 @router.get("/catalog/technology")
 def technology_snapshot(db: Session = Depends(get_db)):
-    from fastapi.responses import JSONResponse
-    from fastapi.encoders import jsonable_encoder
-    rows = browse_products(group_code=None, q="", category_code="technology", limit=10000, offset=0, db=db)
-    return JSONResponse(jsonable_encoder({"schema_version": 1, "products": rows}), headers={"Cache-Control": "public, max-age=300"})
+    return _catalog_snapshot(db, "technology")

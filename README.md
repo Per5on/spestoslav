@@ -28,7 +28,7 @@ npx expo start
 
 Use `npm ci` normally, including its reviewed dependency-patch postinstall hook. Patches preserve SDK 54 compatibility with fixed image parsing and protect config merging; they fail visibly if the locked dependency source changes. See [audit notes](docs/AUDIT_2026-11-15.md).
 
-The Android APK workflow generates the native project and builds a standalone, test-signed Android 10+ preview. [Preview 001](docs/ANDROID_PREVIEW_001.md) is preserved; [preview 002](docs/ANDROID_PREVIEW_002.md) contains audit fixes.
+The Android APK workflow generates the native project and builds a standalone, test-signed Android 10+ preview. [Preview 001](docs/archive/previews/ANDROID_PREVIEW_001.md) is preserved; [preview 002](docs/archive/previews/ANDROID_PREVIEW_002.md) contains audit fixes.
 
 ## Verification
 
@@ -43,4 +43,4 @@ Set `TEST_DATABASE_URL` to a disposable PostgreSQL database to include migration
 
 This is a preview app. Branch inventory and real price coverage remain incomplete. Demo photos are explicitly separate and have no asserted price. Camera scanning, sign-in and private receipt workflows exist in the Preview007 Android UI but are not yet verified against a live account and physical device. No server credentials belong in the app.
 
-Release notes: [CHANGELOG](docs/CHANGELOG.md). Current candidate metadata: [mobile/preview.json](mobile/preview.json). Reproducible local scenarios: [MOCK_SCENARIOS_005](docs/MOCK_SCENARIOS_005.md).
+Release notes: [CHANGELOG](CHANGELOG.md). Current candidate metadata: [mobile/preview.json](mobile/preview.json). Reproducible local scenarios: [MOCK_SCENARIOS_005](docs/MOCK_SCENARIOS_005.md).

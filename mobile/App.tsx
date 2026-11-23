@@ -5,16 +5,15 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { productSymbol, referencePhoto, sampleCredit } from "./src/catalog/samples";
+import { productSymbol, referencePhoto } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
 import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  Linking,
   ScrollView,
   View,
 } from "react-native";
@@ -34,8 +33,8 @@ import {
   Product,
   changeQuantity,
   restoreBasket,
-  indexLowestPrices,
-  matchesProduct,
+  indexLowestPrices, indexIndicativePrices, groupFuelResults,
+  matchesSearchText, productSearchText, searchText,
   duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
@@ -45,6 +44,7 @@ import { Pressable, Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/u
 import { Screen } from "./src/navigation/menu";
 import { OverflowMenu } from "./src/navigation/OverflowMenu";
 import { AboutScreen } from "./src/navigation/AboutScreen";
+import { ThirdPartiesScreen } from "./src/navigation/ThirdPartiesScreen";
 import {
   CatalogToolbar,
   FuelChoice,
@@ -149,7 +149,7 @@ function Main({ initialNotice, onErase }: {
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, true, true, screen === "catalog" || screen === "basket");
+  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, true, screen === "catalog" || screen === "basket");
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
   }, [screen, category]);
@@ -194,7 +194,7 @@ function Main({ initialNotice, onErase }: {
   const qualifiers = useMemo(() => duplicateProductQualifiers([
     ...basket.map(item => item.product), ...catalog.products,
   ]), [basket, catalog.products]);
-  const displayName = (p: Product) => {
+  const displayName = useCallback((p: Product) => {
     if (p.is_demo) {
       if (p.id === "demo-milk") return t("demoMilk");
       if (p.id === "demo-oil") return t("demoOil");
@@ -202,7 +202,7 @@ function Main({ initialNotice, onErase }: {
     }
     const qualifier = qualifiers.get(p.id) ?? p.identityQualifier;
     return qualifier ? `${productName(p)} · ${qualifier}` : productName(p);
-  };
+  }, [qualifiers, t]);
   function change(p: Product, delta: number) {
     if (delta > 0 && !restored) return false;
     if (
@@ -262,7 +262,7 @@ function Main({ initialNotice, onErase }: {
             product_id: i.product.id,
             quantity: i.quantity,
           })),
-          include_online: false,
+          include_online: true,
         }),
       });
       setQuote({ key, data });
@@ -284,22 +284,45 @@ function Main({ initialNotice, onErase }: {
       const expiry = row.expires_at ? Date.parse(row.expires_at) : NaN;
       if (expiry > now) next = Math.min(next, expiry);
     }
+    for (const row of catalog.online) {
+      const expiry = Date.parse(row.valid_until);
+      if (expiry > now) next = Math.min(next, expiry);
+    }
     if (!Number.isFinite(next)) return;
     const timer = setTimeout(() => setPriceRevision(v => v + 1), Math.min(next - now, 2147483647));
     return () => clearTimeout(timer);
-  }, [catalog.prices, priceRevision]);
+  }, [catalog.prices, catalog.online, priceRevision]);
   const priceIndex = useMemo(
     () => indexLowestPrices(catalog.prices, catalog.stores),
     [catalog.prices, catalog.stores, priceRevision],
   );
-  const hasFuelPrices = Boolean(fuelProduct && priceIndex.products.has(fuelProduct.id));
+  const indicativePrices = useMemo(
+    () => indexIndicativePrices(catalog.online, catalog.stores),
+    [catalog.online, catalog.stores, priceRevision],
+  );
+  const fuelResults = useMemo(() => category === "fuel"
+    ? groupFuelResults(catalog.stores, fuelProduct?.id, priceIndex.branches, indicativePrices.chains)
+    : [], [category, catalog.stores, fuelProduct?.id, priceIndex.branches, indicativePrices.chains]);
+  const fuelBranchLabel = useMemo(
+    () => typeof Intl.PluralRules === "function" ? new Intl.PluralRules(language) : undefined,
+    [language],
+  );
+  const hasFuelPrices = fuelResults.some(row =>
+    row.branchCount > 0 || row.stations.some(station => station.price !== undefined));
+  const searchActive = searchOpen || Boolean(appliedQuery);
+  const searchIndex = useMemo(() => searchActive ? new Map(catalog.products.map(p => {
+    const name = displayName(p);
+    return [p.id, { foldedName: name.toLocaleLowerCase(language), text: productSearchText(p, name) }];
+  })) : undefined, [catalog.products, displayName, language, searchActive]);
   const visible = useMemo(() => {
     const ids = new Set(selected);
-    return catalog.products.filter(
-      p => (!group || p.group_code === group) &&
-        (ids.size ? ids.has(p.id) : !appliedQuery || matchesProduct(p, appliedQuery, displayName(p))),
-    );
-  }, [catalog.products, group, selected, appliedQuery, qualifiers, language]);
+    const tokens = searchText(appliedQuery).split(" ");
+    return catalog.products.filter(p => {
+      if (group && p.group_code !== group) return false;
+      if (ids.size) return ids.has(p.id);
+      return !appliedQuery || matchesSearchText(searchIndex?.get(p.id)?.text ?? "", tokens);
+    });
+  }, [catalog.products, group, selected, appliedQuery, searchIndex]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
@@ -314,34 +337,31 @@ function Main({ initialNotice, onErase }: {
     catalog.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
   )], [catalog.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
-  const normalizedQuery = query.trim().toLocaleLowerCase(language);
-  const suggestions = searchOpen && normalizedQuery
-    ? catalog.products.filter(p => matchesProduct(p, query, displayName(p)) ||
-        displayName(p).toLocaleLowerCase(language).includes(normalizedQuery))
-    : [];
+  const suggestions = useMemo(() => {
+    const normalizedQuery = query.trim().toLocaleLowerCase(language);
+    if (!searchOpen || !normalizedQuery || !searchIndex) return [];
+    const tokens = searchText(query).split(" ");
+    return catalog.products.filter(p => {
+      const indexed = searchIndex.get(p.id);
+      return indexed && (matchesSearchText(indexed.text, tokens) || indexed.foldedName.includes(normalizedQuery));
+    });
+  }, [catalog.products, language, query, searchIndex, searchOpen]);
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
     const reference = referencePhoto(p);
-    const credit = p.is_demo ? sampleCredit(p.id) : reference?.credit;
-    const price = p.is_demo ? null : priceIndex.products.get(p.id) ?? null;
+    const localPrice = p.is_demo ? undefined : priceIndex.products.get(p.id);
+    const onlinePrice = p.is_demo ? undefined : indicativePrices.products.get(p.id);
+    const price = localPrice ?? onlinePrice ?? null;
     return (
       <View key={p.id} style={s.card}>
         <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
-          uri={p.image_url} fallback={reference?.source ?? productSymbol(p)}
+          uri={p.image_url} fallback={reference ?? productSymbol(p)}
           symbolic={!reference && (!p.is_demo || p.category_code === "technology")} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
           <Text style={s.productName}>{displayName(p)}</Text>
-          {credit && (
-            <Pressable accessibilityRole="link"
-              onPress={() => void Linking.openURL(credit.source_url).catch(() => undefined)}>
-              <Text style={[s.meta, { textDecorationLine: "underline" }]}>
-                {credit.author} · {credit.license}
-              </Text>
-            </Pressable>
-          )}
           <Text style={s.meta}>
             {p.package ||
               [p.package_quantity, p.package_unit].filter(Boolean).join(" ")}
@@ -349,7 +369,7 @@ function Main({ initialNotice, onErase }: {
           <Text style={price === null ? s.meta : s.price}>
             {price === null
               ? t(catalog.storeError ? "priceUnavailable" : "noPrice")
-              : `${t("from")} ${price.toFixed(2)} €`}
+              : `${t("from")} ${price.toFixed(2)} €${localPrice === undefined ? " · " + t("indicativeOnlinePrice") : ""}`}
           </Text>
         </View>
         <AddButton
@@ -360,19 +380,17 @@ function Main({ initialNotice, onErase }: {
       </View>
     );
   }
+  const photoFooter = screen === "catalog" && category !== "fuel";
+  const cachedFooter = photoFooter && catalog.cached;
+  const footerError = screen === "catalog" &&
+    (catalog.storeError || (category === "fuel" && !locality && catalog.chainError ? "storesError" : ""));
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]}>
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
       <View testID="app-header" style={s.header} onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)}>
-        <Image
-          source={require("./assets/scale-header.webp")}
-          accessibilityLabel="Спестовник"
-          style={s.logo}
-          resizeMode="contain"
-        />
         <View style={{ flex: 1 }}>
           <AutoFitLabel label="Спестовник" baseSize={19} style={[s.brand, { color: headerInk, width: "100%" }]} />
-          <Text style={[s.tagline, palette !== 0 && { color: headerInk }]}>{t("tagline").replace(". ", ".\n")}</Text>
+          <Text style={[s.tagline, palette !== 0 && { color: headerInk }]}>{t("tagline")}</Text>
         </View>
         <OverflowMenu iconColor={headerInk} top={insets.top + headerHeight} onSelect={(next) => {
           setScreen(next);
@@ -457,7 +475,7 @@ function Main({ initialNotice, onErase }: {
                   setScreen(
                     ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
                       ? "settings"
-                      : screen === "feedback"
+                      : screen === "feedback" || screen === "thirdParties"
                         ? "about"
                         : "catalog",
                   )
@@ -475,14 +493,8 @@ function Main({ initialNotice, onErase }: {
             {t(notice)}
           </Text>
         )}
-        {screen === "catalog" && category !== "fuel" && (
-          <Text style={s.meta}>{t("illustrativePhotoNotice")}</Text>
-        )}
         {screen === "catalog" && (
           <>
-            {!!catalog.storeError && (
-              <Text style={s.notice}>{t(catalog.storeError)}</Text>
-            )}
             {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
             {category !== "fuel" ? (
               <>
@@ -549,9 +561,6 @@ function Main({ initialNotice, onErase }: {
                     <Button label={t("retry")} onPress={catalog.refresh} />
                   </View>
                 )}
-                {catalog.cached && (
-                  <Text style={s.meta}>{t("cachedCatalog")}</Text>
-                )}
                 {!!groups.length && (
                   <CategoryGroups key={category} technology={category === "technology"}
                     groups={[
@@ -583,37 +592,39 @@ function Main({ initialNotice, onErase }: {
                 {!locality ? <>
                   <Text style={s.notice}>{t("chainCoverage")}</Text>
                   {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
-                  {catalog.chainError && <Text style={s.notice}>{t("storesError")}</Text>}
                   {catalog.retailers.map(chain => <View key={chain.code} style={s.store}>
                     <View style={{ flex: 1, gap: 5 }}>
                       <Text style={s.productName}>{chain.name}</Text>
-                      {chain.website_url && <Text style={s.meta}>{chain.website_url}</Text>}
                       <Text style={s.meta}>{t("chainOverview")}</Text>
                     </View>
                   </View>)}
                 </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
-                {catalog.stores.map((store) => {
-                  const fuelQuote = fuelProduct && category === "fuel" ? priceIndex.branches.get(store.id)?.get(fuelProduct.id) ?? null : null;
-                  return (
-                  <View key={store.id} style={s.store}>
+                {fuelResults.map(row => {
+                  const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
+                  const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
+                  return <View key={row.key} style={s.store}>
                     <View style={s.storeMark}>
-                      <Ionicons
-                        name={
-                          category === "fuel"
-                            ? "car-outline"
-                            : "storefront-outline"
-                        }
-                        size={25}
-                        color={color("#19562a")}
-                      />
+                      <Ionicons name="car-outline" size={25} color={color("#19562a")} />
                     </View>
                     <View style={{ flex: 1, gap: 5 }}>
-                      <Text style={s.productName}>{store.retailer_name}</Text>
-                      <Text style={s.meta}>{store.address}</Text>
-                      <Text style={fuelQuote === null ? s.meta : s.price}>{fuelQuote === null ? t("noPrice") : `${fuelQuote.toFixed(2)} €/L`}</Text>
+                      <Text style={s.productName}>{row.name}</Text>
+                      {row.branchCount > 0 && row.estimate && (
+                        <>
+                          <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
+                          <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
+                        </>
+                      )}
+                      {row.stations.map(({ store, price }) => (
+                        <View key={store.id} style={{ gap: 4 }}>
+                          <Text style={s.meta}>{store.address}</Text>
+                          <Text style={price === undefined ? s.meta : s.price}>
+                            {price === undefined ? t("noPrice") : `${price.toFixed(2)} €/L`}
+                          </Text>
+                        </View>
+                      ))}
                     </View>
-                  </View>
-                );})}
+                  </View>;
+                })}
                 {locality &&
                   !catalog.storeLoading &&
                   !catalog.storeError &&
@@ -723,7 +734,9 @@ function Main({ initialNotice, onErase }: {
         )}
         {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
         {screen === "appearance" && <AppearanceScreen />}
-        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")} />}
+        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
+          onThirdParties={() => setScreen("thirdParties")} />}
+        {screen === "thirdParties" && <ThirdPartiesScreen />}
         {screen === "feedback" && <FeedbackScreen />}
         {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
         {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
@@ -737,6 +750,13 @@ function Main({ initialNotice, onErase }: {
         </View>}
 
       </ScrollView>
+      {(photoFooter || cachedFooter || footerError) ? (
+        <View testID="catalog-footer" style={s.catalogFooter} accessibilityLiveRegion="polite">
+          {photoFooter && <Text style={s.catalogFooterText}>{t("illustrativePhotoShort")}</Text>}
+          {!!footerError && <Text style={[s.catalogFooterText, s.catalogFooterWarning]}>{t(footerError)}</Text>}
+          {cachedFooter && <Text style={s.catalogFooterText}>{t("cachedCatalog")}</Text>}
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }

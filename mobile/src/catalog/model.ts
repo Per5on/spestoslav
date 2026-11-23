@@ -21,6 +21,7 @@ export type BasketItem = { product: Product; quantity: number };
 export type Store = {
   id: string;
   retailer_name: string;
+  retailer_code?: string;
   branch_name?: string;
   address: string;
 };
@@ -31,6 +32,65 @@ export type Price = {
   verified_at: string;
   expires_at?: string | null;
 };
+export type OnlinePrice = {
+  product_id: string;
+  retailer_code: string;
+  price_eur: string;
+  valid_until: string;
+  source_reference?: string;
+  price_scope: "NATIONAL_ONLINE";
+};
+
+export function indexIndicativePrices(offers: OnlinePrice[], stores: Store[], now = Date.now()) {
+  const retailers = new Set(stores.map(store => store.retailer_code));
+  const products = new Map<string, number>();
+  const chains = new Map<string, Map<string, OnlinePrice>>();
+  for (const row of offers) {
+    const price = Number(row.price_eur);
+    if (row.price_scope !== "NATIONAL_ONLINE" || !retailers.has(row.retailer_code) ||
+        !Number.isFinite(price) || price <= 0 || !(Date.parse(row.valid_until) > now)) continue;
+    products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
+    const chain = chains.get(row.retailer_code) ?? new Map<string, OnlinePrice>();
+    const previous = chain.get(row.product_id);
+    if (!previous || price < Number(previous.price_eur)) chain.set(row.product_id, row);
+    chains.set(row.retailer_code, chain);
+  }
+  return { products, chains };
+}
+
+export function groupFuelResults(
+  stores: Store[],
+  productId: string | undefined,
+  branchPrices: ReadonlyMap<string, ReadonlyMap<string, number>>,
+  chainPrices: ReadonlyMap<string, ReadonlyMap<string, OnlinePrice>>,
+) {
+  type FuelResult = {
+    key: string;
+    name: string;
+    estimate?: OnlinePrice;
+    branchCount: number;
+    stations: { store: Store; price: number | undefined }[];
+  };
+  const results = new Map<string, FuelResult>();
+  for (const store of stores) {
+    const price = productId ? branchPrices.get(store.id)?.get(productId) : undefined;
+    const estimate = productId && store.retailer_code
+      ? chainPrices.get(store.retailer_code)?.get(productId)
+      : undefined;
+    const key = estimate ? `chain:${estimate.retailer_code}` : `station:${store.id}`;
+    const result = results.get(key) ?? {
+      key, name: store.retailer_name, estimate, branchCount: 0, stations: [],
+    };
+    if (estimate && (price === undefined || price.toFixed(2) === Number(estimate.price_eur).toFixed(2))) {
+      result.branchCount += 1;
+    } else {
+      result.stations.push({ store, price });
+    }
+    results.set(key, result);
+  }
+  return Array.from(results.values());
+}
+
 export function changeQuantity(
   items: BasketItem[],
   product: Product,
@@ -137,13 +197,25 @@ export function duplicateProductQualifiers(products: Product[]) {
   return qualifiers;
 }
 
+const units: Record<string, string> = {
+  "кг": "kg", "гр": "g", "г": "g", "мл": "ml", "л": "l", kg: "kg", g: "g", ml: "ml", l: "l",
+};
+
 export function searchText(value: string) {
-  const units:Record<string,string>={"кг":"kg","гр":"g","г":"g","мл":"ml","л":"l",kg:"kg",g:"g",ml:"ml",l:"l"};
   return value.normalize("NFKC").toLocaleLowerCase("bg").replace(/,/g,".").replace(/[–—-]/g," ").replace(/(\d)\s*(кг|гр|мл|г|л|kg|ml|g|l)(?=\s|$|[.,;%()])/g,(_,number:string,unit:string)=>number+units[unit]).replace(/\s+/g," ").trim();
 }
+export function productSearchText(p: Product, name = productName(p)) {
+  return searchText([
+    name, p.package_quantity == null ? "" : Number(p.package_quantity), p.package_unit,
+  ].filter(Boolean).join(" "));
+}
+
+export function matchesSearchText(text: string, tokens: string[]) {
+  return tokens.every(token => text.includes(token));
+}
+
 export function matchesProduct(p: Product, query: string, name = productName(p)) {
-  const text=searchText([name,p.package_quantity == null ? "" : Number(p.package_quantity),p.package_unit].filter(Boolean).join(" "));
-  return searchText(query).split(" ").every(token=>text.includes(token));
+  return matchesSearchText(productSearchText(p, name), searchText(query).split(" "));
 }
 export function filterLocalities<
   T extends {

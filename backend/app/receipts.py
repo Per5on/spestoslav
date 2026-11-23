@@ -21,6 +21,7 @@ from fastapi import (
     Response,
 )
 from PIL import Image, UnidentifiedImageError
+from pydantic import ValidationError
 from sqlalchemy import select, delete
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -30,7 +31,7 @@ from .db import get_db
 from .models import StoreBranch
 from .marketplace import ReceiptScan, ReceiptItem
 from .workflows import ReceiptJob
-from .write_api import PriceInput
+from .write_api import PriceInput, enqueue, submission_view
 
 
 class ReceiptPriceInput(PriceInput):
@@ -359,9 +360,6 @@ def submit_receipt_price(
     principal=Depends(current_user),
     db: Session = Depends(get_db),
 ):
-    from .write_api import PriceInput, enqueue, submission_view
-    from pydantic import ValidationError
-
     job = db.scalar(
         select(ReceiptJob).where(
             ReceiptJob.scan_id == scan_id, ReceiptJob.owner_subject == principal.subject

@@ -13,7 +13,7 @@ args=parser.parse_args();args.output_dir.mkdir(parents=True,exist_ok=False)
 
 errors=[];proof={}
 with sync_playwright() as p:
- browser=p.chromium.launch(headless=True,args=['--no-sandbox']);page=browser.new_page(viewport={'width':390,'height':844});page.on('pageerror',lambda e:errors.append(str(e)))
+ browser=p.chromium.launch(headless=True,executable_path=os.getenv('PLAYWRIGHT_CHROMIUM_EXECUTABLE'),args=['--no-sandbox']);page=browser.new_page(viewport={'width':390,'height':844});page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(args.base_url,wait_until='domcontentloaded')
  refresh = page.get_by_role('button', name='Обнови', exact=True)
  refresh.wait_for(timeout=60000)
@@ -30,8 +30,32 @@ with sync_playwright() as p:
  about = page.get_by_test_id('about-screen')
  expect(about.get_by_role('link')).to_have_count(0)
  assert 'Лаптоп' not in about.inner_text() and 'https://' not in about.inner_text()
- expect(about.get_by_role('button')).to_have_count(1)
+ expect(about.get_by_role('button')).to_have_count(2)
  page.screenshot(path=str(args.output_dir/'about-bg.png'))
+ about.get_by_role('button', name='Трети страни', exact=True).click()
+ credits = page.get_by_test_id('third-parties-screen')
+ expect(credits).to_be_visible()
+ expect(credits.get_by_role('button')).to_have_count(4)
+ for label, source in [
+   ('Данни и цени', 'KARAI Fuel Index'),
+   ('Търговски обекти и адреси', 'Fuelo · EKO, LUKOIL, OMV, Rompetrol, Shell, Petrol'),
+   ('Снимки и икони', 'Samsung Galaxy A17 5G'),
+   ('Софтуер и услуги', 'Expo'),
+ ]:
+  section = credits.get_by_role('button', name=label, exact=True)
+  section.click()
+  expect(section).to_have_attribute('aria-expanded', 'true')
+  expect(credits.get_by_role('link', name=source, exact=True)).to_be_attached()
+  if label == 'Софтуер и услуги':
+   expect(credits.get_by_role('link', name='Tesseract OCR', exact=True)).to_be_attached()
+  if label == 'Данни и цени':
+   expect(credits.get_by_role('link', name='CC BY 4.0', exact=True)).to_be_visible()
+   page.screenshot(path=str(args.output_dir/'third-parties-bg.png'))
+  section.click()
+  expect(credits.get_by_role('link')).to_have_count(0)
+ page.get_by_role('button', name='Назад', exact=True).click()
+ expect(about).to_be_visible()
+ proof['credits_nested_in_about_and_back_navigation'] = True
  feedback = page.get_by_role('button',name='Обратна връзка',exact=True)
  light_green = feedback.evaluate("(el) => getComputedStyle(el).backgroundColor")
  feedback.click();expect(page.get_by_test_id('about-screen')).not_to_be_visible();page.get_by_role('button',name='Назад',exact=True).click();expect(page.get_by_test_id('about-screen')).to_be_visible();proof['feedback_nested_in_about_and_back_navigation']=True

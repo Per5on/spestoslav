@@ -37,5 +37,6 @@ jobs:
       - run: pip install -r requirements.txt -r requirements-dev.txt
       - run: pip install "SQLAlchemy==${{ matrix.sqlalchemy }}"
       - run: python -m compileall -q app migrations
+      - run: pip install ruff==0.17.6 && ruff check --config ../ruff.toml app migrations tests ../scripts
       - run: python ../scripts/validate_inventory.py
       - run: PYTHONPATH=. pytest -q

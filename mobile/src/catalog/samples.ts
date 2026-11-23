@@ -3,23 +3,16 @@ import { products } from "../../../data/demo-thumbnails/catalog.json";
 import { Product } from "./model";
 
 const thumbnails: Record<string, ImageSourcePropType> = {
-  milk: require("../../assets/thumbnails/milk.webp"),
-  oil: require("../../assets/thumbnails/oil.webp"),
-  sugar: require("../../assets/thumbnails/sugar.webp"),
-  laptop: require("../../assets/technology/laptop.webp"),
-  washer: require("../../assets/technology/washer.webp"),
-  tv: require("../../assets/technology/tv.webp"),
+  milk: require("../../assets/beta-illustrations/milk.webp"),
+  oil: require("../../assets/beta-illustrations/oil.webp"),
+  sugar: require("../../assets/beta-illustrations/sugar.webp"),
+  laptop: require("../../assets/beta-illustrations/laptop.webp"),
+  washer: require("../../assets/beta-illustrations/washer.webp"),
+  tv: require("../../assets/beta-illustrations/tv.webp"),
   kettle: require("../../assets/technology/kettle.webp"),
   headphones: require("../../assets/technology/headphones.webp"),
   smartphone: require("../../assets/technology/smartphone.webp"),
 };
-
-const creditsById = new Map(products.filter(row => row.category_code === "groceries" && row.source_url)
-  .map(row => ["demo-" + row.code, row] as const));
-
-export function sampleCredit(id: string) {
-  return creditsById.get(id);
-}
 
 export const sampleProducts: Product[] = products.map(row => ({
   id: "demo-" + row.code,
@@ -42,22 +35,15 @@ const producePhotos: Record<string, ImageSourcePropType> = {
   "81078": carrot, "89078": carrot,
   "81581": lemon, "88581": lemon,
 };
-const galaxyCredit = {
-  author: "Captainmorlypogi1959",
-  license: "CC BY-SA 4.0 · cropped/resized WebP",
-  source_url: "https://commons.wikimedia.org/wiki/File:Samsung_Galaxy_A17_5G_2026.jpg",
-};
-
-export function referencePhoto(product: Product): { source: ImageSourcePropType; credit?: typeof galaxyCredit } | undefined {
+export function referencePhoto(product: Product): ImageSourcePropType | undefined {
   const code = product.source_product_code ?? "";
   if (product.category_code === "technology" && code === "43832") {
-    return { source: galaxyA17, credit: galaxyCredit };
+    return galaxyA17;
   }
   if (product.category_code === "groceries" && product.group_code === "produce" && Object.hasOwn(producePhotos, code)) {
-    return { source: producePhotos[code] };
+    return producePhotos[code];
   }
 }
-
 
 const technologySymbols: Record<string, ImageSourcePropType> = {
   mobile: thumbnails.smartphone,

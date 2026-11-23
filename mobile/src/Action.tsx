@@ -10,6 +10,7 @@ export function Button({
   expanded,
   labelSize = 14,
   compactRefresh = false,
+  compactGroup = false,
 }: {
   label: string;
   accessibilityLabel?: string;
@@ -19,6 +20,7 @@ export function Button({
   expanded?: boolean;
   labelSize?: number;
   compactRefresh?: boolean;
+  compactGroup?: boolean;
 }) {
   const { styles: s, palette, color } = useUI();
   const [focused, setFocused] = useState(false);
@@ -41,6 +43,7 @@ export function Button({
           minWidth: 44,
           maxWidth: "34%",
         },
+        compactGroup && { flexBasis: 0, flexGrow: label.length, minWidth: 0, paddingHorizontal: 5 },
         primary && s.primary,
         focused && { backgroundColor: primary ? "#de7300" : "#dbead3" },
         disabled && { opacity: 0.45 },

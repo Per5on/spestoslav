@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
 import { MessageKey } from "../i18n";
-import { Product, Store, Price, Retailer } from "./model";
+import { Product, Store, Price, OnlinePrice, Retailer } from "./model";
 import { loadProducts } from "./cache";
 import { sampleProducts } from "./samples";
 const noProducts: Product[] = [];
 const noStores: Store[] = [];
 const noPrices: Price[] = [];
+const noOnline: OnlinePrice[] = [];
 async function allPages<T>(
   path: string,
   signal: AbortSignal,
@@ -44,7 +45,8 @@ export function useCatalog(
     scope: string;
     stores: Store[];
     prices: Price[];
-  }>({ scope: "", stores: [], prices: [] });
+    online: OnlinePrice[];
+  }>({ scope: "", stores: [], prices: [], online: [] });
   const [storeLoading, setStoreLoading] = useState(false),
     [storeError, setStoreError] = useState<MessageKey | "">("");
   useEffect(() => {
@@ -52,7 +54,8 @@ export function useCatalog(
     const controller = new AbortController();
     const { signal } = controller;
     const show = (rows: Product[]) => {
-      if (!signal.aborted) setProducts(previous => ({ ...previous, [category]: rows }));
+      if (!signal.aborted) setProducts(previous =>
+        previous[category] === rows ? previous : { ...previous, [category]: rows });
     };
     setError("");
     setLoading(category !== "fuel");
@@ -81,27 +84,35 @@ export function useCatalog(
     setStoreError("");
     setStoreLoading(Boolean(localityId));
     if (localityId) {
+      const onlineRequest = includePrices
+        ? allPages<OnlinePrice>(`/api/v1/national-offers?locality_id=${localityId}&category_code=${category}`, signal, 100)
+        : Promise.resolve(noOnline);
       const storesRequest = allPages<Store>(
         `/api/v1/stores?locality_id=${localityId}&category_code=${category}`, signal,
       );
       const pricesRequest = includePrices
-        ? allPages<Price>(`/api/v1/prices/current?locality_id=${localityId}`, signal)
+        ? allPages<Price>(`/api/v1/prices/current?locality_id=${localityId}&category_code=${category}`, signal)
         : Promise.resolve(noPrices);
       void storesRequest.then(stores => {
         if (!signal.aborted) setData(previous => ({
           scope,
           stores,
           prices: includePrices && previous.scope === scope ? previous.prices : noPrices,
+          online: includePrices && previous.scope === scope ? previous.online : noOnline,
         }));
       }).catch(() => undefined);
-      void Promise.allSettled([storesRequest, pricesRequest]).then(([stores, prices]) => {
+      void Promise.all([storesRequest, pricesRequest.catch(() => noPrices)]).then(([, prices]) => {
+        if (!signal.aborted) setData(previous => previous.scope === scope ? { ...previous, prices } : previous);
+      }).catch(() => undefined);
+      void Promise.all([storesRequest, onlineRequest.catch(() => noOnline)]).then(([, online]) => {
+        if (!signal.aborted) setData(previous => previous.scope === scope ? { ...previous, online } : previous);
+      }).catch(() => undefined);
+      void Promise.allSettled([storesRequest, pricesRequest, onlineRequest]).then(([stores, prices, online]) => {
         if (signal.aborted) return;
         if (stores.status === "rejected") {
           setStoreError("storesError");
-        } else if (prices.status === "rejected") {
+        } else if (prices.status === "rejected" || online.status === "rejected") {
           setStoreError("pricesError");
-        } else {
-          setData({ scope, stores: stores.value, prices: prices.value });
         }
         setStoreLoading(false);
       });
@@ -131,7 +142,8 @@ export function useCatalog(
     error,
     stores: data.scope === scope ? data.stores : noStores,
     prices: data.scope === scope && includePrices ? data.prices : noPrices,
-    storeLoading: Boolean(localityId) && (storeLoading || data.scope !== scope),
+    online: data.scope === scope && includePrices ? data.online : noOnline,
+    storeLoading: Boolean(localityId) && (storeLoading || (!storeError && data.scope !== scope)),
     storeError,
     revision,
     refresh: () => setRevision((v) => v + 1),

@@ -6,6 +6,10 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 
 
 
+### 23 November 2026 — next beta
+
+The [next commit and beta checklist](PREVIEW_006_BACKLOG.md#23-november-2026--next-commit-and-beta-checklist) combines the backend cleanup, submission expiry and receipt sweep with the new visual and live-data requirements. Start with the header preview and source evaluation. Obtain explicit APK approval after visual review, code review and backend dry tests.
+
 ### 21 November 2026 — Codex pre-alpha 010
 
 Continue from Codex pre-alpha 009 `4ee0e90f7186452859db02c863e1a315a4d56905`. The [009 Android run](https://github.com/Per5on/spestoslav/actions/runs/44348096077) passed the native smoke, ARM APK and test-signed bundle jobs. GitHub lists all three 009 artifacts. Direct download from this environment returned HTTP 403, so package checksums and screenshots could not be independently rechecked. Owner requested a new internal 010 build using this baseline. The owner then paused build work. [010 run 44917016393](https://github.com/Per5on/spestoslav/actions/runs/44917016393) on `5f10369c06bfe95e2f2f65ceb458ae3b458c96ef` was cancelled. Wait for explicit owner authorization before dispatching another APK or AAB build. Carry forward the pending rollout acceptance below.
@@ -393,3 +397,72 @@ Local evidence: `/workspace/work/preview007-native-pass-02/`, failed `/workspace
 No fabricated branches, coordinates, GTINs, live prices or closure status. No CAPTCHA. No automatic paid upgrade. No bulk seed replacement, locality/barcode/table/receipt purge or recovery-branch deletion without a separately approved measured proposal. Keep saved-list key `spestovnik-preview-001`. Do not remove `comparison.cheapest`, active web-preview dependencies or intentional package imports.
 
 See `PREVIEW_007_API_ROLLOUT.md`, `FEEDBACK_SETUP.md`, `TECHNOLOGY_1000.md`, `RETAILER_SOURCES_007.md`; app-branch `PREVIEW_007_PLAN.md`, `PREVIEW_006_BACKLOG.md`, `TERMS_AND_PRIVACY.md`, and inventory reconciliation docs on PR #15. Shell GitHub REST credentials expired during this session, but git push and the GitHub connector still work; use connector tools for CI/PR/artifact reads rather than exposing tokens. Direct shell PostgreSQL failed; connector transactions worked. Keep credentials private and distinguish local, CI, deployed and live-data evidence in every status report.
+
+## Project communication archive
+
+[Project communication](PROJECT_COMMUNICATION.md) preserves the available conversation and decisions alongside the verified [activity log](ACTIVITY_LOG.md).
+
+### Sofia live data checkpoint (23 November 2026)
+
+The owner accepts an indicative online offer when the retailer has an active physical store in the selected locality. Complete branch quotes have priority for that retailer. A verified Techmart basket total of €303.99 in Sofia returned no quote for the same retailer in Мадан. The live merchant directory is paginated and includes 34 Sofia technology branches, 113 fuel stations and 46 grocery stores. Seven licensed illustrative WebPs are linked in both catalogues. [Backend correction and CI](https://github.com/Per5on/spestoslav/pull/22) · [Deployment](https://dashboard.render.com/web/srv-dbs313ei0phs73bvvd00/deploys/dep-dc20hud9fdbs73c2rufg)
+
+Run the reviewed sources with the backend Python environment. Each command prints an additive import to stdout for review and validation on an isolated database. Review the exact matched rows and freshness before applying to the shared preview. The commands require no API keys for collection. Database write credentials stay server-side.
+
+```sh
+python scripts/collect_burlex_branch_prices.py --store 'БУРЛЕКС БАНИШОРА'
+python scripts/collect_burlex_branch_prices.py --store 'БУРЛЕКС ЛОЗЕНЕЦ'
+python scripts/collect_techmart_offers.py --sku 46637 --sku 43832 --sku 43957 --sku 46638 --sku 45769
+python scripts/collect_karai_fuel_offers.py
+```
+
+Burlex supplied 875 regular branch prices and Techmart supplied five online prices. Both use a 12-hour observation freshness window. KARAI supplied 17 indicative chain prices for A95, diesel and LPG across six chains. That source uses a 24-hour observation window. Credit KARAI Fuel Index under CC BY 4.0 in „За приложението → Трети страни“. A98+ and premium diesel remain uncovered by this feed. [Burlex official table](https://burlex.bg/kolkostruva/) · [KARAI methodology](https://karai.bg/fuel-prices/indeks#metodologiya)
+
+No recurring refresh is configured. Complete refresh scheduling, wider coverage and the remaining live workflow checks before requesting explicit beta APK approval.
+
+### Daily price-source checks
+
+The owner requested daily checks for „Храни“, „Техника“ and „Горива“. The GitHub Actions workflow runs at 11:17 UTC and retains a JSON report for each category. The approved sources are the two Sofia Burlex stores, five Techmart SKUs and the KARAI public chain feed. The runner uses public source endpoints. Reports contain source availability, dates and counts. Publication to the app database remains a separate operation.
+
+Use the official „Колкострува“ open archive as an additional grocery source after matching exact merchant, branch and product and checking currency and date. The reviewed archive from 22 November has 63 retailer CSV files. Its Burlex section includes Sofia locations „Надежда“ and „Свобода“. The daily check confirms that the latest dated archive can be downloaded. It does not transfer prices between branches. [Open archives](https://kolkostruva.bg/opendata)
+
+For technology, matched Xiaomi Redmi A7 Pro 4/64 Black by GTIN 6932554493271 on Techmart and Technopolis. Technopolis disallows general automated requests. This is a manual cross-check until an authorized feed is available. For fuel, Eco Petrol publishes prices for its own chain. Fuelo offers an additional station-level channel with eligible API access and station mapping. Euro-Lev is an upstream source of KARAI, and the European Commission bulletin is a weekly national reference. [Product match](https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--XIAOMI-REDMI-A7-PRO/p/510626) · [Eco Petrol](https://www.ecopetrol.bg/) · [Fuelo API](https://developers.fuelo.net/docs) · [EU reference](https://energy.ec.europa.eu/data-and-analysis/weekly-oil-bulletin_en)
+
+### Public data and responsiveness audit
+
+#### Public sources
+
+| Source | Verified scope and use |
+| --- | --- |
+| [КЗП „Колкострува“](https://kolkostruva.bg/opendata) | The recent archive contains 63 retailer CSV files with settlement code, branch, retailer product code, regular price and promotion. Locality, retailer and branch can be reconciled before staging a price or address. Product codes belong to the reporting retailer. Cross-retailer product joins need a verified identifier and exact package. |
+| [НСИ ЕКАТТЕ](https://www.nsi.bg/nrnm/ekatte/archive) | The 2025 JSON archive yielded 5,256 coded localities, including `68134` for Sofia. The shared database's 5,291 rows use GeoNames. Build an official-code cross-reference against existing IDs using locality, municipality and region, and manually review ambiguous matches. Keep existing IDs for saved locations and branch links. |
+| [GS1 България](https://www.gs1bg.org/bg/services/product-catalog-bg/) and [Verified by GS1](https://www.gs1bg.org/bg/get-a-barcode/barcode-check/) | Manufacturer and brand-owner GTIN, package and unit data can support high-confidence product matching and barcode lookup. Confirm the terms for automated or bulk reuse. Every imported mapping should identify its source and match the exact variant and package. |
+| [Open Food Facts](https://openfoodfacts.github.io/documentation/docs/Product-Opener/api/) and [Open Prices](https://openfoodfacts.github.io/open-prices/guides/data/) | Supplemental packaged-product metadata and community price evidence. The public country query returned 337 Bulgarian observations, with 172 dated on or after 23 August 2026. Review ODbL attribution and share-alike before combining with the app database, and the separate CC BY-SA terms before reusing images. Keep freshness and branch verification separate. |
+| [EU EPREL](https://energy-efficient-products.ec.europa.eu/suppliers_en) | Manufacturer model data, energy labels and product fiches for covered appliances. GTIN availability varies. Use this to identify models or link labels, and follow public API terms before bulk access. Price and local stock need separate evidence. |
+
+First stage the minimum fields needed for exact joins. Use official locality codes, merchant identity and reviewed addresses for branches. Use GTIN or a verified manufacturer model and exact variant for products. Preserve each record's source and observation date. Keep unreviewed rows separate from the current price catalogue.
+
+#### Database and application measurements
+
+- Read-only Neon diagnostics measured a 15 MB database. Statistical bloat estimates showed 416 kB of waste across three tables. The shared branch had 5,291 GeoNames localities, 285 active stores, seven image mappings and zero verified barcode rows. No catalogue imports or database maintenance ran. `pg_stat_statements` was unavailable, so there is no production query ranking.
+- The deployed locality-wide Sofia price request returned 875 grocery rows across two pages, about 40 kB compressed. Every category downloaded those same rows. The candidate adds a category parameter while retaining older API calls and ships confirmed price state as soon as its source and branch list resolve. In a browser fixture, confirmed grocery prices appeared while the indicative request was deliberately held.
+- Candidate product search caches normalized names and package text for the active search. A desktop Node microbenchmark used 2,000 catalogue records and 120 warm queries, with identical ordered results across both implementations. The filter p50 changed from 8.32 ms to 0.12 ms and p95 from 10.93 ms to 0.20 ms. Index preparation took 26.18 ms for both categories combined. These timings exclude rendering, network and Android device behavior.
+- Cold service requests, slow networks, image decoding and long-list rendering still need separate measurement on the approved Android device. Warm live catalogue requests in this sample took about 0.49 s to first byte and compressed to 41 kB for groceries and 53 kB for technology. Keep cached navigation responsive and show catalogue or price progress separately from those reads.
+- Database rewriting offers little space benefit at this size. Continue normal vacuum maintenance. As ingest volume grows, inspect duplicate observations and retention separately on a disposable branch. Archive reviewed history by policy and keep the small current-price table on the read path. Avoid dropping indexes solely because usage counters are low or missing.
+
+### Beta_10.8 public-data pilot
+
+The tracked manifest records the two sources for each of four handset GTINs and the exact NSI locality records. The government archive is pinned by SHA-256. Before applying the rendered SQL, verify the counts on a disposable PostgreSQL branch. Apply the schema and the rendered data as a single guarded transaction on the legacy shared preview. The Alembic chain uses migration 0009 for the same locality table.
+
+```sh
+curl -fL https://kolkostruva.bg/opendata_files/2026-11-22.zip -o /tmp/spest-kzp-2026-11-22.zip
+python scripts/prepare_beta108_public_data.py --archive /tmp/spest-kzp-2026-11-22.zip > /tmp/spest-beta108-public-data.sql
+```
+
+The import matched 676 regular grocery observations at Burlex Надежда and 682 at Burlex Свобода. They are dated 22 November and go to historical observations. Existing locality IDs, branches, products and current-price rows were preserved. The exact variant GTINs are independent of the phone build and available through the existing barcode endpoint. [Manifest](../data/public/beta-10.8.json) · [Changelog](../CHANGELOG.md)
+
+
+### Beta_10.8 source credits
+
+„За приложението → Трети страни“ collects links for data and prices, merchant addresses, photos and icons, and the software and services used by the app. Photo authors and applicable licenses are credited there. The catalogue and fuel screens keep the information needed to interpret photos and prices. Record-level source references stay available for data verification. Keep the source section current when introducing a feed, provider or licensed image. [Third-party source list](../mobile/src/navigation/thirdPartySources.ts)
+
+**Beta_10.8 delivery.** The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) The hosted build is an internal test-signed APK. Test the installed app's camera and barcode scan, and check the managed password recovery and feedback after their respective backend rollout and mail setup. [Full changelog](../CHANGELOG.md)

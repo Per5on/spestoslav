@@ -107,12 +107,27 @@ users = {
     "bob": {"id": "bob", "email": "bob@example.invalid", "name": "Bob"},
 }
 revoked = set()
+passwords = dict.fromkeys(users, "simulation-password")
+reset_codes = set()
 
 
 def fake_provider(path, method="GET", session=None, payload=None):
+    if path == "/email-otp/request-password-reset":
+        name = payload["email"].split("@")[0]
+        if name in users:
+            reset_codes.add(name)
+        return {"success": True}, None
+    if path == "/email-otp/reset-password":
+        name = payload["email"].split("@")[0]
+        if name not in reset_codes or payload["otp"] != "123456":
+            raise HTTPException(400, "Invalid simulation recovery code")
+        reset_codes.remove(name)
+        passwords[name] = payload["password"]
+        revoked.add(name)
+        return {"success": True}, None
     if path in ("/sign-in/email", "/sign-up/email"):
         name = payload["email"].split("@")[0]
-        if name not in users or payload["password"] != "simulation-password":
+        if name not in users or payload["password"] != passwords[name]:
             raise HTTPException(401, "Simulation credentials rejected")
         revoked.discard(name)
         return {"user": users[name]}, "simulation." + name

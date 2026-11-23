@@ -17,7 +17,7 @@ with sync_playwright() as p:
  expect(page.get_by_role('switch')).to_have_count(0)
  expect(page.get_by_test_id('thumbnail-loaded-demo-milk')).to_be_visible()
  photo_notice='Снимките са илюстративни. Действителният продукт или опаковката може да изглеждат различно.'
- expect(page.get_by_text(photo_notice,exact=True)).to_be_visible()
+ expect(page.get_by_test_id("catalog-footer").get_by_text("Снимките са илюстративни.",exact=True)).to_be_visible()
  page.get_by_test_id('thumbnail-loaded-demo-milk').click()
  viewer=page.get_by_test_id('thumbnail-viewer')
  expect(viewer.get_by_text(photo_notice,exact=True)).to_be_visible()
@@ -37,7 +37,7 @@ with sync_playwright() as p:
  proof['thumbnails_visible_with_legacy_opt_out']=True
  expect(page.get_by_role("img", name=re.compile("Символично изображение$")).first).to_be_visible(timeout=15000)
  page.get_by_role('tab',name='Техника',exact=True).click()
- expect(page.get_by_text(photo_notice,exact=True)).to_be_visible()
+ expect(page.get_by_test_id("catalog-footer").get_by_text("Снимките са илюстративни.",exact=True)).to_be_visible()
  toolbar=page.get_by_test_id('catalog-toolbar')
  page.get_by_role('button',name='Отвори менюто',exact=True).click()
  page.get_by_role('menuitem',name='Търговски обекти',exact=True).click()

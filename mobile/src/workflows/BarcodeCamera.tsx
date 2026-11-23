@@ -6,7 +6,7 @@ export function BarcodeCamera({
   onError,
 }: {
   onCode: (code: string) => void;
-  onError: () => void;
+  onError: (reason?: "denied") => void;
 }) {
   return (
     <CameraView
@@ -14,7 +14,7 @@ export function BarcodeCamera({
       style={{ height: 240, borderRadius: 12 }}
       facing="back"
       barcodeScannerSettings={{ barcodeTypes: ["ean13", "ean8", "upc_a"] }}
-      onMountError={onError}
+      onMountError={() => onError()}
       onBarcodeScanned={(r) => {
         const code = scannedGTIN(r.data, r.type);
         if (code) onCode(code);

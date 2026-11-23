@@ -144,9 +144,9 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
             onCode={(code) => {
               void find(code);
             }}
-            onError={() => {
+            onError={(reason) => {
               setCamera(false);
-              setNotice("cameraError");
+              setNotice(reason === "denied" ? "cameraDenied" : "cameraError");
             }}
           />
           <Button label={t("cancel")} onPress={() => setCamera(false)} />

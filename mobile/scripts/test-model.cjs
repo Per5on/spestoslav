@@ -15,6 +15,9 @@ const {
   changeQuantity,
   restoreBasket,
   lowestPrice,
+  indexIndicativePrices,
+  indexLowestPrices,
+  groupFuelResults,
   matchesProduct,
   duplicateProductQualifiers,
   filterLocalities,
@@ -31,6 +34,39 @@ assert.equal(matchesProduct(bananas[1], "81590", "БАНАНИ · 88590"), false
 assert.equal(duplicateProductQualifiers([
   { ...bananas[0], barcode: "4006381333931" }, bananas[1],
 ]).get("first"), "4006381333931");
+const refreshTime = Date.parse("2026-11-23T10:00:00Z");
+const onlineOffer = {
+  product_id: "p1", retailer_code: "local", price_eur: "2.99",
+  valid_until: "2026-11-23T12:00:00Z", price_scope: "NATIONAL_ONLINE",
+};
+assert.deepEqual([...indexIndicativePrices([
+  onlineOffer,
+  { ...onlineOffer, retailer_code: "other-city", price_eur: "1.01" },
+  { ...onlineOffer, valid_until: "2026-11-22T12:00:00Z", price_eur: "0.99" },
+], [{ id: "a-local-branch", retailer_code: "local" }], refreshTime).products], [["p1", 2.99]]);
+const fuelStores = [
+  { id: "fallback", retailer_code: "local", retailer_name: "Local", address: "Fallback street" },
+  { id: "same", retailer_code: "local", retailer_name: "Local", address: "Same street" },
+  { id: "different", retailer_code: "local", retailer_name: "Local", address: "Different street" },
+  { id: "second-chain", retailer_code: "second", retailer_name: "Second", address: "Second street" },
+  { id: "unknown", retailer_code: "unknown", retailer_name: "Unknown", address: "Unknown street" },
+];
+const fuelOffers = indexIndicativePrices([
+  onlineOffer, { ...onlineOffer, retailer_code: "second" },
+], fuelStores, refreshTime);
+const fuelStationPrices = indexLowestPrices([
+  { branch_id: "same", product_id: "p1", price_eur: 2.9900 },
+  { branch_id: "different", product_id: "p1", price_eur: 2.89 },
+  { branch_id: "fallback", product_id: "p1", price_eur: 2.50, expires_at: "2026-11-22T12:00:00Z" },
+], fuelStores, refreshTime);
+const fuelResults = groupFuelResults(fuelStores, "p1", fuelStationPrices.branches, fuelOffers.chains);
+assert.deepEqual(fuelResults.map(row => [row.name, row.branchCount, row.stations.map(({store, price}) => [store.address, price])]), [
+  ["Local", 2, [["Different street", 2.89]]],
+  ["Second", 1, []],
+  ["Unknown", 0, [["Unknown street", undefined]]],
+]);
+assert.equal(groupFuelResults(fuelStores, "another-fuel", fuelStationPrices.branches, fuelOffers.chains).length, 5);
+assert.equal(groupFuelResults([], "p1", fuelStationPrices.branches, fuelOffers.chains).length, 0);
 const p = { id: "p1", name: "Мляко", category_code: "groceries" };
 let basket = changeQuantity([], p, 1);
 basket = changeQuantity(basket, p, 1);

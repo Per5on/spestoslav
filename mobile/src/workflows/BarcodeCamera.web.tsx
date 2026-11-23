@@ -7,7 +7,7 @@ export function BarcodeCamera({
   onError,
 }: {
   onCode: (code: string) => void;
-  onError: () => void;
+  onError: (reason?: "denied") => void;
 }) {
   const video = useRef<HTMLVideoElement>(null),
     code = useRef(onCode),
@@ -31,8 +31,11 @@ export function BarcodeCamera({
         controls = c;
         if (cancelled) c.stop();
       })
-      .catch(() => {
-        if (!cancelled) error.current();
+      .catch((failure: unknown) => {
+        if (!cancelled) {
+          const denied = failure instanceof DOMException && failure.name === "NotAllowedError";
+          error.current(denied ? "denied" : undefined);
+        }
       });
     return () => {
       cancelled = true;
