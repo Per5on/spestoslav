@@ -1,4 +1,4 @@
-"""Rasterize Ionicons sources and export an additive thumbnail database seed."""
+"""Export database seeds for legacy symbols or the catalogue artwork pack."""
 
 import argparse
 import hashlib
@@ -7,6 +7,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data/symbolic-thumbnails"
+CATALOGUE_ART = ROOT / "data/catalogue-thumbnails"
 VENDOR = ROOT / "mobile/node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons"
 ICONS = {
     "groceries": "basket-outline", "dairy-eggs": "egg-outline",
@@ -62,10 +63,36 @@ def seed():
     return statements
 
 
+def catalogue_seed():
+    from PIL import Image
+
+    statements = ["""CREATE TABLE IF NOT EXISTS catalogue_thumbnails (
+        code text NOT NULL CHECK (code ~ '^[a-z0-9-]+$'),
+        sha256 text NOT NULL CHECK (sha256 ~ '^[a-f0-9]{64}$'),
+        data bytea NOT NULL CHECK (octet_length(data) BETWEEN 1 AND 65536),
+        PRIMARY KEY (code, sha256)
+    )"""]
+    for path in sorted(CATALOGUE_ART.glob("*.webp")):
+        data = path.read_bytes()
+        with Image.open(path) as image:
+            image.load()
+            if image.format != "WEBP" or image.size != (160, 140) or not 0 < len(data) <= 65536:
+                raise ValueError(f"Invalid catalogue artwork: {path.name}")
+        digest = hashlib.sha256(data).hexdigest()
+        statements.append(
+            "INSERT INTO catalogue_thumbnails (code, sha256, data) "
+            f"VALUES ('{path.stem}', '{digest}', decode('{data.hex()}', 'hex')) "
+            "ON CONFLICT (code, sha256) DO NOTHING"
+        )
+    return statements
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--rasterize", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--rasterize", action="store_true")
+    mode.add_argument("--catalogue", action="store_true", help="Seed the catalogue artwork pack")
     args = parser.parse_args()
     if args.rasterize:
         rasterize()
-    print(json.dumps(seed()))
+    print(json.dumps(catalogue_seed() if args.catalogue else seed()))

@@ -5,7 +5,8 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { productSymbol, referencePhoto } from "./src/catalog/samples";
+import { productArtwork } from "./src/catalog/samples";
+import { useThumbnailManifest } from "./src/catalog/thumbnailManifest";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -13,7 +14,6 @@ import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
   Platform,
   RefreshControl,
   ScrollView,
@@ -162,6 +162,7 @@ function Main({ initialNotice, onErase }: {
     null,
   );
   const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, restored && (screen === "catalog" || screen === "basket"));
+  const thumbnailUrls = useThumbnailManifest(catalog.revision);
   useEffect(() => {
     if (restored) void enableCatalogSync().catch(error => console.warn("Could not schedule catalogue sync", error));
   }, [restored]);
@@ -365,16 +366,19 @@ function Main({ initialNotice, onErase }: {
   }, [catalog.products, language, query, searchIndex, searchOpen]);
   useEffect(()=>setSuggestionLimit(40),[query,category]);
   useEffect(() => setPageSize(40), [selected, group, category]);
+  function thumbnail(p: Product) {
+    const art = productArtwork(p);
+    return <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
+      uri={p.image_url} representativeUri={art.code ? thumbnailUrls[art.code] : undefined}
+      fallback={art.source} symbolic={art.symbolic} />;
+  }
   function productCard(p: Product) {
-    const reference = referencePhoto(p);
     const localPrice = p.is_demo ? undefined : priceIndex.products.get(p.id);
     const onlinePrice = p.is_demo ? undefined : indicativePrices.products.get(p.id);
     const price = localPrice ?? onlinePrice ?? null;
     return (
       <View key={p.id} style={s.card}>
-        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
-          uri={p.image_url} fallback={reference ?? productSymbol(p)}
-          symbolic={!reference && (!p.is_demo || p.category_code === "technology")} />
+        {thumbnail(p)}
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -679,13 +683,7 @@ function Main({ initialNotice, onErase }: {
                     gap: 12,
                   }}
                 >
-                  {p.image_url && (
-                    <Image
-                      source={{ uri: p.image_url }}
-                      style={{ width: 64, height: 76 }}
-                      resizeMode="contain"
-                    />
-                  )}
+                  {(p.category_code === "groceries" || p.category_code === "technology") && thumbnail(p)}
                   <View style={{ flex: 1, gap: 5 }}>
                     <Text style={s.productName}>{displayName(p)}</Text>
                     {p.is_demo && (

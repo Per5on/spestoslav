@@ -143,3 +143,9 @@ The owner wrote:
 > the product thumbnail database is still not active or not populating ... and is not unanimous, universal or similar as visual images. it has to be reconciled and ready for use ... inspect and add to the todo and the changelog. After the build, mark the backlog which issues have been resolved
 
 - Deferred the rename. Verified the seeded symbol database, the absent public manifest, the live image coverage and the mix of bundled styles. Added the reconciliation work to the TODO and future changelog. The backlog will close each item after verification on the relevant build. [Inspection](ACTIVITY_LOG.md#23-november-2026--thumbnail-database-and-visual-reconciliation)
+
+
+## 23 November 2026 — approved thumbnail fix and price-source review
+
+- The owner asked for the thumbnail fix itself. Implemented a common WebP pack, versioned API delivery and bundled fallback. The owner approved the visual samples and requested the update in the upcoming changelog. [Approved preview](references/preview016-thumbnail-reconciliation.jpg) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+- The owner asked whether two or more price collectors could be combined with a verification check before populating prices. Reviewed the publisher, its cache schema and available feeds. Added the matching and verification work to the TODO. [Price verification](PREVIEW_006_BACKLOG.md#multi-source-price-verification)
