@@ -149,3 +149,9 @@ The owner wrote:
 
 - The owner asked for the thumbnail fix itself. Implemented a common WebP pack, versioned API delivery and bundled fallback. The owner approved the visual samples and requested the update in the upcoming changelog. [Approved preview](references/preview016-thumbnail-reconciliation.jpg) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
 - The owner asked whether two or more price collectors could be combined with a verification check before populating prices. Reviewed the publisher, its cache schema and available feeds. Added the matching and verification work to the TODO. [Price verification](PREVIEW_006_BACKLOG.md#multi-source-price-verification)
+
+
+## 23 November 2026 — nationwide price coverage and shutdown
+
+- The owner asked whether the two-source approach repeats across most locations, requested nationwide verification and asked that differing collection methods and findings be recorded in the upcoming changelog.
+- The owner asked to check regressions and missing dependencies after the audit, then stop the work environment to save electricity. They asked whether the chat window could be closed while the run continued. The audit, verification and handoff are filed in the repository. [Audit](ACTIVITY_LOG.md#23-november-2026--nationwide-price-source-audit-and-regression-check)

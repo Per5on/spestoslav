@@ -16,9 +16,20 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 
 - Replaced mixed thumbnail fallbacks in „Храни“ and „Техника“ with 33 consistent representative WebPs. The preview approved by the owner shows separate artwork for tomatoes, bananas, kettles and coffee machines. The app uses a versioned image manifest and the same bundled artwork during outages. Existing product-linked photos and the illustrative-image notice are retained. Live API rollout and installed-app acceptance remain pending. [Approved preview](docs/references/preview016-thumbnail-reconciliation.jpg)
 
-### Planned checks
+### Nationwide price-source audit · 23 November 2026
 
-- Evaluate publishing prices from multiple eligible feeds through one verification step. Keep branch prices and indicative online prices separate. Validate exact matches and record disagreements before publication. [Price verification tasks](docs/PREVIEW_006_BACKLOG.md#multi-source-price-verification)
+Read-only check of 1,585 active branches in 253 localities and all 28 regions. The live figures below use each category’s directory as the denominator.
+
+| Category | Localities with eligible live prices | Collection decision |
+| --- | --- | --- |
+| „Храни“ | 2 of 108, six Burlex branches | Use the official archive as a broad baseline after currency, branch, and product verification. Keep direct merchant collection for freshness and gaps. |
+| „Техника“ | 10 of 55, five Techmart indicative offers | Add independently verified retailer feeds. Separate each merchant’s offer and compare exact GTIN or model and variant. |
+| „Горива“ | 241 of 241 with indicative prices | Use the KARAI chain feed countrywide where an active local branch exists. Its fresh source covered A95 and diesel in 241 localities and LPG in 236. Station-level prices and premium grades need another source. |
+
+- Compared the official grocery archives for 15, 21 and 22 November. The same 314 branches in 74 of 108 grocery localities were address or reviewed-label candidates on all three dates. The same 94 localities had at least one retailer and official locality match. Those 94 include 20 localities that need further branch matching. Fourteen lacked a repeatable retailer and locality match. Kaufland appeared in the 21 November archive and was absent from the other two samples. [Official archives](https://kolkostruva.bg/opendata)
+- The archive and the direct Burlex feed overlap at four reviewed branches in Велико Търново. All 2,711 matched amounts from the 22 November archive agreed with their current counterparts after BGN-to-EUR conversion. Their dates differ, so same-window corroboration is still pending. The two live Sofia pilot branches were different from the two archived Sofia branches.
+- **Historical currency regression.** The reviewed Burlex archive importer treated raw BGN amounts as EUR. Two live history samples showed 4.29 stored where the converted price is €2.19. The sealed 1,358-row historical import needs a scoped correction and replay check. The 3,588 current grocery prices audited came from the separate direct Burlex collector. [Burlex source](https://burlex.bg/kolkostruva/)
+- Verify source, currency, product, branch or offer scope, and validity before populating prices. Retain both observations and report disagreements before publication. Each feed needs an explicit freshness rule and a documented fallback for outages or missing locations. [Price verification TODO](docs/PREVIEW_006_BACKLOG.md#multi-source-price-verification)
 
 ## Bug fix · build 015 · app 0.5.8
 
