@@ -10,8 +10,8 @@ import test_locality_search as fixtures
 from app.main import app
 from app.db import get_db
 from app.auth import Principal, current_user
-from app.marketplace import PriceCache
-from app.models import Product, StoreBranch
+from app.marketplace import CurrentPrice, PriceCache, Promotion
+from app.models import Locality, Product, StoreBranch
 from app.receipt_worker import process_one
 
 
@@ -453,6 +453,44 @@ def test_product_images_and_national_scope_are_separate_from_branches():
         == "NATIONAL_ONLINE"
     )
     assert fixtures.client.get("/api/v1/prices/current").json()[0]["price_eur"] == 1.25
+
+    with fixtures.TestingSessionLocal() as db:
+        locality_id = str(db.scalar(select(StoreBranch.locality_id)))
+        remote = Locality(source="TEST", source_id="nonlocal", name="Other city")
+        db.add(remote)
+        db.flush()
+        remote_id = str(remote.id)
+        db.add(StoreBranch(
+            retailer_code="TEST", locality_id=remote.id, address="Closed store", active=False,
+        ))
+        db.commit()
+
+    assert len(fixtures.client.get(
+        "/api/v1/national-offers", params={"locality_id": locality_id, "category_code": "FOOD"},
+    ).json()) == 1
+    assert fixtures.client.get(
+        "/api/v1/national-offers", params={"locality_id": remote_id},
+    ).json() == []
+    payload = {"locality_id": locality_id, "items": [{"product_id": product_id}]}
+    compare = "/api/v1/baskets/compare"
+    quotes = fixtures.client.post(compare, json={**payload, "include_online": True}).json()
+    assert quotes["cheapest"]["price_scope"] == "BRANCH"
+    assert all(q["price_scope"] == "BRANCH" for q in quotes["quotes"])
+
+    with fixtures.TestingSessionLocal() as db:
+        db.scalar(select(CurrentPrice)).expires_at = now - timedelta(seconds=1)
+        db.scalar(select(Promotion)).ends_at = now - timedelta(seconds=1)
+        db.commit()
+    assert fixtures.client.post(compare, json=payload).json()["cheapest"] is None
+    quotes = fixtures.client.post(compare, json={**payload, "include_online": True}).json()
+    online = quotes["cheapest"]
+    assert online["price_scope"] == "NATIONAL_ONLINE"
+    assert online["branch_id"] is online["branch_address"] is None
+    assert online["retailer_name"] == "Test Market"
+    assert Decimal(online["total_eur"]) == Decimal("1.11")
+    assert fixtures.client.post(
+        compare, json={**payload, "locality_id": remote_id, "include_online": True},
+    ).json()["quotes"] == []
 
 
 def test_demo_catalog_is_explicit_and_does_not_populate_real_prices(monkeypatch):
