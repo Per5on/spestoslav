@@ -99,3 +99,5 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 ## Велико Търново device report
 
 - The owner confirmed that build 015 installs and that the camera appears to work, and reported no visible prices in Велико Търново. Verified the local coverage gap and published 2,713 validated grocery branch prices from the Burlex public table. Technology coverage remains open. [Verification record](ACTIVITY_LOG.md)
+
+- The owner confirmed that prices appeared after refreshing build 015 on their phone in Велико Търново.
