@@ -185,6 +185,17 @@ class StoreBranchResponse(BaseModel):
     address: str
 
 
+class MerchantBranchResponse(StoreBranchResponse):
+    category_code: str
+    municipality: str | None
+    region: str | None
+
+
+class MerchantDirectoryResponse(BaseModel):
+    branches: list[MerchantBranchResponse]
+    next_offset: int | None
+
+
 class CurrentPriceResponse(BaseModel):
     id: str
     product_id: str
@@ -298,6 +309,46 @@ def stores_for_locality(
         )
         for branch, retailer_name, name_bg, locality_name in rows
     ]
+
+
+@app.get("/api/v1/merchant-directory", response_model=MerchantDirectoryResponse)
+def merchant_directory(
+    limit: int = Query(default=100, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
+    db: Session = Depends(get_db),
+):
+    locality_name = func.coalesce(func.nullif(Locality.name_bg, ""), Locality.name)
+    rows = db.execute(
+        select(StoreBranch, Retailer, locality_name, Locality.municipality, Locality.region)
+        .join(Retailer, Retailer.code == StoreBranch.retailer_code)
+        .join(Category, Category.code == Retailer.category_code)
+        .join(Locality, Locality.id == StoreBranch.locality_id)
+        .where(StoreBranch.active.is_(True), Retailer.active.is_(True), Category.active.is_(True))
+        .order_by(
+            Retailer.category_code, locality_name, Locality.id,
+            Retailer.name, StoreBranch.address, StoreBranch.id,
+        )
+        .offset(offset)
+        .limit(limit + 1)
+    ).all()
+    return MerchantDirectoryResponse(
+        branches=[
+            MerchantBranchResponse(
+                id=str(branch.id),
+                retailer_code=retailer.code,
+                retailer_name=retailer.name,
+                category_code=retailer.category_code,
+                locality_id=str(branch.locality_id),
+                locality_name=name,
+                municipality=municipality,
+                region=region,
+                branch_name=branch.branch_name,
+                address=branch.address,
+            )
+            for branch, retailer, name, municipality, region in rows[:limit]
+        ],
+        next_offset=offset + limit if len(rows) > limit else None,
+    )
 
 
 @app.get("/api/v1/prices/current", response_model=list[CurrentPriceResponse])
