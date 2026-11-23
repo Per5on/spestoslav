@@ -18,6 +18,7 @@ const {
   indexIndicativePrices,
   indexLowestPrices,
   groupFuelResults,
+  prioritizePricedProducts,
   matchesProduct,
   duplicateProductQualifiers,
   filterLocalities,
@@ -28,6 +29,11 @@ const bananas = [
   { id: "bio", category_code: "groceries", name: "БИО БАНАНИ" },
 ];
 const qualifiers = duplicateProductQualifiers([...bananas, bananas[0]]);
+assert.deepEqual(
+  prioritizePricedProducts(bananas, new Map([["bio", 1.4]]), new Map([["second", 2.4]])).map(p => p.id),
+  ["second", "bio", "first"],
+);
+assert.equal(prioritizePricedProducts(bananas, new Map(), new Map()), bananas);
 assert.deepEqual([...qualifiers], [["first", "81590"], ["second", "88590"]]);
 assert.equal(matchesProduct(bananas[0], "81590", "БАНАНИ · 81590"), true);
 assert.equal(matchesProduct(bananas[1], "81590", "БАНАНИ · 88590"), false);

@@ -2,6 +2,12 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates in build order. It covers the recorded project history through Beta_10.8. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
+## Bug fix · build 015 · app 0.5.8
+
+- Added missing verified branches for Varna and Veliko Tarnovo and published a fresh KARAI fuel update. The catalogue now surfaces priced products first and refreshes price data on resume.
+- Added price-cache generation, staged scheduled publication, source error handling and review-queue expiry checks.
+- Added candidate API limits for sign-in, password recovery and locality search. Removed `docs/12.docx` from this revision. [Build and rollout notes](docs/BUG_FIX_015.md)
+
 ## Beta_10.8 · build 014 · app 0.5.7
 
 - Grouped fuel prices by chain and local branch count. A confirmed price that differs appears with the station address.

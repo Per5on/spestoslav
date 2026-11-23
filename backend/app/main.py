@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
+from .request_limits import limit_locality_search
 from .grocery import GroceryGroup, GroceryIdentity
 from .technology import TechnologyIdentity
 from .barcodes import gtin_aliases
@@ -95,7 +96,10 @@ def categories(db: Session = Depends(get_db)):
     ]
 
 
-@app.get("/api/v1/localities", response_model=list[LocalityResponse])
+@app.get(
+    "/api/v1/localities", response_model=list[LocalityResponse],
+    dependencies=[Depends(limit_locality_search)],
+)
 def search_localities(
     q: str = Query(min_length=2, max_length=80),
     db: Session = Depends(get_db),

@@ -23,18 +23,18 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
   const [query, setQuery] = useState<string | null>(null),
     [results, setResults] = useState<Locality[]>([]),
     [loading, setLoading] = useState(false),
-    [error, setError] = useState(false),
+    [error, setError] = useState<"" | "locationUnavailable" | "authRateLimited">(""),
     [retry, setRetry] = useState(0);
   useEffect(() => {
     if (query === null || query.trim().length < 2) {
       setLoading(false);
-      setError(false);
+      setError("");
       return;
     }
     let cancelled = false;
     const controller = new AbortController();
     setLoading(true);
-    setError(false);
+    setError("");
     const timer = setTimeout(async () => {
       try {
         const rows = await fetchWithRetry<Locality[]>(
@@ -54,7 +54,8 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
       } catch (failure) {
         if (!cancelled) {
           console.warn("Location search unavailable", failure instanceof Error ? failure.name : "UnknownError");
-          setError(true);
+          setError(failure instanceof Error && failure.name === "HTTP429"
+            ? "authRateLimited" : "locationUnavailable");
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -79,7 +80,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
           onChangeText={(value) => {
             setResults([]);
             setLoading(value.trim().length >= 2);
-            setError(false);
+            setError("");
             setQuery(value);
           }}
           autoCorrect={false}
@@ -92,7 +93,7 @@ export function LocationPicker({ apiBaseUrl, selected, onSelect }: Props) {
           {loading && <ActivityIndicator color={color("#19562a")} />}
           {error ? (
             <>
-              <Text style={s.meta}>{t("locationUnavailable")}</Text>
+              <Text style={s.meta}>{t(error)}</Text>
               <Pressable
                 accessibilityRole="button"
                 onPress={() => setRetry((v) => v + 1)}

@@ -66,11 +66,17 @@ def collect(store, client):
     return rows.values(), observed
 
 
-def render(store, rows, observed):
+def render(store, rows, observed, *, summary=False):
     payload = json.dumps(list(rows), ensure_ascii=True)
     if "$burlex$" in payload:
         raise ValueError("Invalid source identifier delimiter")
     expires = observed + timedelta(hours=12)
+    count = f"""(SELECT count(*) FROM verified) AS matched,
+    (SELECT count(*) FROM verified v JOIN current_prices c
+       ON c.product_id=v.product_id AND c.branch_id=v.branch_id
+       WHERE c.verified_at <= now() AND (c.expires_at IS NULL OR c.expires_at > now())
+         AND (c.observed_at >= '{observed.isoformat()}'::timestamptz OR c.source <> 'BURLEX_PUBLIC_TABLE')
+    ) AS already_current, """ if summary else ""
     return f"""WITH source_rows AS (
   SELECT * FROM jsonb_to_recordset($burlex${payload}$burlex$::jsonb)
     AS o(code text, price numeric)
@@ -101,10 +107,11 @@ def render(store, rows, observed):
   ON CONFLICT (product_id,branch_id) DO UPDATE SET
     price_eur=excluded.price_eur, observed_at=excluded.observed_at,
     verified_at=excluded.verified_at, expires_at=excluded.expires_at
-  WHERE current_prices.source=excluded.source AND current_prices.observed_at < excluded.observed_at
+  WHERE current_prices.observed_at < excluded.observed_at
+    AND (current_prices.source=excluded.source OR current_prices.expires_at <= now())
   RETURNING 1
 )
-SELECT count(*) AS published FROM updated;"""
+SELECT {count}count(*) AS published FROM updated;"""
 
 
 if __name__ == "__main__":

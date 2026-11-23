@@ -112,6 +112,23 @@ def test_submission_idempotency_ownership_and_approval():
     )
 
 
+def test_expired_submissions_are_read_only_and_do_not_fill_the_review_queue():
+    user()
+    created = fixtures.client.post(
+        "/api/v1/submissions/prices", json=price(),
+        headers={"Idempotency-Key": "request-expired"},
+    )
+    assert created.status_code == 201
+    with fixtures.TestingSessionLocal() as db:
+        db.scalar(select(PriceCache)).expires_at = datetime.now(timezone.utc) - timedelta(seconds=1)
+        db.commit()
+
+    assert fixtures.client.get("/api/v1/submissions").json()[0]["status"] == "EXPIRED"
+    assert fixtures.client.get("/api/v1/admin/submissions", headers=ADMIN).json() == []
+    with fixtures.TestingSessionLocal() as db:
+        assert db.scalar(select(PriceCache)).status == "PENDING"
+
+
 def test_invalid_prices_and_user_cannot_set_verification():
     user()
     payload = price()

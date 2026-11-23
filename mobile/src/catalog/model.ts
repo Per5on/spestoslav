@@ -159,6 +159,21 @@ export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.n
   return { products, branches };
 }
 
+export function prioritizePricedProducts(
+  products: Product[],
+  local: ReadonlyMap<string, number>,
+  indicative: ReadonlyMap<string, number>,
+) {
+  if (!local.size && !indicative.size) return products;
+  const priced: Product[] = [];
+  const remaining: Product[] = [];
+  for (const product of products) {
+    const available = !product.is_demo && (local.has(product.id) || indicative.has(product.id));
+    (available ? priced : remaining).push(product);
+  }
+  return [...priced, ...remaining];
+}
+
 export function productName(p: Product) {
   return p.name.replace(/^Демо:\s*/i, "");
 }

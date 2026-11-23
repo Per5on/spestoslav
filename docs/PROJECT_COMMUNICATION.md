@@ -84,3 +84,11 @@ This is the repository record of the project conversation available through 23 N
 - While Beta_10.8 was packaging, the owner requested „Трети страни“ inside „За приложението“ and asked that data and app credits move there. The normal catalogue and fuel views still show merchant names, price scope and the illustrative-image notice. The candidate includes grouped links to data, address, image and software sources. [Browser preview](references/beta-10.8-third-parties.png)
 
 - Delivered Beta_10.8 build 014 with the new credits section and the changelog for all 14 recorded versions. The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) [Changelog](../CHANGELOG.md)
+
+## Beta_10.8 follow-up review
+
+- The owner asked whether the findings in `check_and_verify.docx` apply. Reviewed the document as assessment material and recorded applicable release work and corrections in the [activity log](ACTIVITY_LOG.md#23-november-2026--beta_108-document-review).
+
+## Bug-fix build 015
+
+- The owner confirmed that prices were not populating and authorized the bug-fix build. They asked for expiry, password policy, attempts and search limits to be reassessed, a cached database to be created from collected data, and `docs/12.docx` to be removed from the pack. [Build notes](BUG_FIX_015.md)

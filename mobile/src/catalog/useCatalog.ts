@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AppState } from "react-native";
 import { api } from "../api";
 import { MessageKey } from "../i18n";
 import { Product, Store, Price, OnlinePrice, Retailer } from "./model";
@@ -35,6 +36,7 @@ export function useCatalog(
   const [chainLoading, setChainLoading] = useState(true);
   const [chainError, setChainError] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [resumeRevision, setResumeRevision] = useState(0);
   const [cached, setCached] = useState(false);
   const [products, setProducts] = useState<Partial<Record<Category, Product[]>>>({});
   const loadedRevision = useRef<Partial<Record<Category, number>>>({});
@@ -49,6 +51,15 @@ export function useCatalog(
   }>({ scope: "", stores: [], prices: [], online: [] });
   const [storeLoading, setStoreLoading] = useState(false),
     [storeError, setStoreError] = useState<MessageKey | "">("");
+  useEffect(() => {
+    if (!active || !localityId || !includePrices) return;
+    let previous = AppState.currentState;
+    const subscription = AppState.addEventListener("change", state => {
+      if (state === "active" && previous !== "active") setResumeRevision(value => value + 1);
+      previous = state;
+    });
+    return () => subscription.remove();
+  }, [active, localityId, includePrices]);
   useEffect(() => {
     if (!active) return;
     const controller = new AbortController();
@@ -118,7 +129,7 @@ export function useCatalog(
       });
     }
     return () => controller.abort();
-  }, [active, category, localityId, revision, includePrices]);
+  }, [active, category, localityId, revision, resumeRevision, includePrices]);
   useEffect(() => {
     if (!active || category !== "fuel" || localityId) return;
     const controller = new AbortController();

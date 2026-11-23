@@ -34,6 +34,7 @@ import {
   changeQuantity,
   restoreBasket,
   indexLowestPrices, indexIndicativePrices, groupFuelResults,
+  prioritizePricedProducts,
   matchesSearchText, productSearchText, searchText,
   duplicateProductQualifiers,
   productName,
@@ -317,12 +318,14 @@ function Main({ initialNotice, onErase }: {
   const visible = useMemo(() => {
     const ids = new Set(selected);
     const tokens = searchText(appliedQuery).split(" ");
-    return catalog.products.filter(p => {
+    const filtered = catalog.products.filter(p => {
       if (group && p.group_code !== group) return false;
       if (ids.size) return ids.has(p.id);
       return !appliedQuery || matchesSearchText(searchIndex?.get(p.id)?.text ?? "", tokens);
     });
-  }, [catalog.products, group, selected, appliedQuery, searchIndex]);
+    return ids.size || appliedQuery ? filtered
+      : prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
+  }, [catalog.products, group, selected, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
@@ -453,6 +456,7 @@ function Main({ initialNotice, onErase }: {
                 placeholder={t("searchProduct")}
                 style={s.productSearch}
                 value={query}
+                maxLength={80}
                 onFocus={() => {
                   if (!searchOpen) setDraft(selected);
                   setSearchOpen(true);

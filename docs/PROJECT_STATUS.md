@@ -2,11 +2,17 @@
 
 Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
 
-## Current work — Beta_10.8
+## Current work — bug-fix build 015
+
+Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The Android test build and hosted backend checks are pending. [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
+
+## Beta_10.8
 
 The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. The refreshed candidate adds „За приложението → Трети страни“ and puts attribution links there. [Changelog](../CHANGELOG.md) · [Browser preview](references/beta-10.8-third-parties.png)
 
 **Beta_10.8 APK ready for device testing.** The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) Live password recovery still needs the beta backend deployed. Feedback delivery still needs its production mail setup and a live test.
+
+The owner requested an applicability review of `check_and_verify.docx`. It confirmed that the daily workflow monitors sources without publishing prices and that the candidate recovery endpoints rely on provider-side limits. Recorded the release priorities, corrections and existing backlog in the [activity log](ACTIVITY_LOG.md#23-november-2026--beta_108-document-review).
 
 ### Preview 010.7 and beta preparation
 

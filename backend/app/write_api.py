@@ -136,9 +136,15 @@ def active_pair(db, product_id, branch_id):
 
 
 def submission_view(row, cache):
+    expiry = cache.expires_at
+    if expiry and expiry.tzinfo is None:
+        expiry = expiry.replace(tzinfo=timezone.utc)
+    status = cache.status
+    if status == "PENDING" and expiry and expiry <= datetime.now(timezone.utc):
+        status = "EXPIRED"
     return {
         "id": str(row.id),
-        "status": cache.status,
+        "status": status,
         "product_id": str(cache.product_id),
         "branch_id": str(cache.branch_id),
         "price_eur": str(cache.submitted_price_eur),
@@ -325,7 +331,10 @@ def review_queue(
     rows = db.execute(
         select(ReviewSubmission, PriceCache)
         .join(PriceCache, PriceCache.id == ReviewSubmission.cache_id)
-        .where(PriceCache.status == "PENDING")
+        .where(
+            PriceCache.status == "PENDING",
+            PriceCache.expires_at.is_(None) | (PriceCache.expires_at > datetime.now(timezone.utc)),
+        )
         .order_by(ReviewSubmission.created_at, ReviewSubmission.id)
         .offset(offset)
         .limit(limit)
