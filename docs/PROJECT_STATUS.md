@@ -6,6 +6,8 @@ Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. The refreshed candidate adds „За приложението → Трети страни“ and puts attribution links there. [Changelog](../CHANGELOG.md) · [Browser preview](references/beta-10.8-third-parties.png)
 
+**Beta_10.8 APK ready for device testing.** The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) Live password recovery still needs the beta backend deployed. Feedback delivery still needs its production mail setup and a live test.
+
 ### Preview 010.7 and beta preparation
 
 Backend cleanup is prepared in the working tree. It consolidates catalogue and receipt review helpers, tidies imports, and adds a pinned Ruff check to backend CI. Local checks passed. [Activity log](ACTIVITY_LOG.md).

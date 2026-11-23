@@ -10,6 +10,7 @@ This lists the recorded Android previews and pre-alpha and beta candidates in bu
 - Imported six NSI locality codes, four corroborated handset GTINs and 1,358 dated КЗП grocery observations into the shared database. The live barcode API resolved all four codes and their zero-padded aliases. The price archive is historical and has no effect on current quotes.
 - Added „Трети страни“ under „За приложението“ with credits for data, merchant addresses, images, libraries and services. Catalogue and fuel views retain price scope and image notices. [Browser preview](docs/references/beta-10.8-third-parties.png)
 - The browser decoded one new GTIN from an image and returned the matching product through the live API. The first ARM candidate passed packaging and is superseded by the credits update. [First candidate run](https://github.com/Per5on/spestoslav/actions/runs/45188561983)
+- The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452)
 
 ## Preview 10.7 · build 013 · app 0.5.6
 
