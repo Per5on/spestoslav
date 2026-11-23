@@ -8,7 +8,8 @@ This lists the recorded Android previews and pre-alpha and beta candidates in bu
 - Added email-code password recovery to sign-in. Verified the full flow with a simulated inbox. Live recovery still needs the backend rollout and an authorized test inbox.
 - Added daily grocery, technology and fuel source checks on the default branch. Scoped the current-price request by category in the beta backend, separated confirmed price loading from indicative prices, and indexed product search.
 - Imported six NSI locality codes, four corroborated handset GTINs and 1,358 dated КЗП grocery observations into the shared database. The live barcode API resolved all four codes and their zero-padded aliases. The price archive is historical and has no effect on current quotes.
-- Android and live data verification will be recorded below when complete.
+- Added „Трети страни“ under „За приложението“ with credits for data, merchant addresses, images, libraries and services. Catalogue and fuel views retain price scope and image notices. [Browser preview](docs/references/beta-10.8-third-parties.png)
+- The browser decoded one new GTIN from an image and returned the matching product through the live API. The first ARM candidate passed packaging and is superseded by the credits update. [First candidate run](https://github.com/Per5on/spestoslav/actions/runs/45188561983)
 
 ## Preview 10.7 · build 013 · app 0.5.6
 
@@ -52,18 +53,18 @@ This lists the recorded Android previews and pre-alpha and beta candidates in bu
 - Added grocery workflows, image barcode decoding, camera and permission handling, and private receipts with OCR. Feedback moved under About.
 - Published as an Android prerelease after the corrected native build passed. [Release](https://github.com/Per5on/spestoslav/releases/tag/android-preview-005) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/43859570901)
 
-## Preview 004
+## Preview 004 · app 0.2.1
 
 - Put catalogue controls and refresh on one row and added responsive button labels. Native verification passed and the APK was published. [Release](https://github.com/Per5on/spestoslav/releases/tag/android-preview-004)
 
-## Preview 003
+## Preview 003 · app 0.2.0
 
 - Retired Home and postal search, introduced the revised four tabs, six interface languages and saved text sizing, and updated the catalogue presentation. Native verification passed and the APK was published. [Release](https://github.com/Per5on/spestoslav/releases/tag/android-preview-003)
 
-## Preview 002
+## Preview 002 · app 0.1.2
 
 - Cleaned up dependencies and code, tightened basket and receipt behavior, and verified Android smoke. The APK was published. [Release](https://github.com/Per5on/spestoslav/releases/tag/android-preview-002)
 
-## Preview 001
+## Preview 001 · app 0.1.1
 
 - First preserved interactive snapshot and standalone Android APK. Added a searchable locality, saved basket and early barcode lookup. Native compilation and Android 10 smoke passed. [Snapshot](docs/references/preview-001.html) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/43600409741)

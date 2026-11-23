@@ -4,7 +4,7 @@ Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — Beta_10.8
 
-The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. [Changelog](../CHANGELOG.md).
+The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. The refreshed candidate adds „За приложението → Трети страни“ and puts attribution links there. [Changelog](../CHANGELOG.md) · [Browser preview](references/beta-10.8-third-parties.png)
 
 ### Preview 010.7 and beta preparation
 
@@ -20,7 +20,7 @@ The fuel candidate groups shared chain estimates into one row with the local bra
 
 The price-source workflow is now on the default branch with daily checks for „Храни“, „Техника“ and „Горива“. The first hosted run passed for all three categories and generated reports. Live publication and validated fallback matching remain open. „Забравена парола“ is implemented in the app and backend candidate with a passing local browser workflow. Live code delivery is unverified. The owner will report the physical-device check. [Beta checklist](PREVIEW_006_BACKLOG.md#backend-and-beta-acceptance) · [Recovery preview](references/beta-forgot-password-code.png).
 
-A data and performance audit verified public sourcing candidates, measured the 15 MB database, and identified cross-category price overfetch. Candidate changes narrow the price feed, decouple confirmed and indicative responses, and index product search. Local browser and code checks passed. On-device responsiveness and staged official-code or barcode imports are pending. [Audit](CODEX_HANDOFF.md#public-data-and-responsiveness-audit).
+A data and performance audit verified public sourcing candidates, measured the 15 MB database, and identified cross-category price overfetch. Candidate changes narrow the price feed, decouple confirmed and indicative responses, and index product search. Local browser and code checks passed. The reviewed locality and barcode pilot is recorded above. On-device responsiveness remains pending. [Audit](CODEX_HANDOFF.md#public-data-and-responsiveness-audit).
 
 The candidate implements the approved itemized comparison, both group pop-ups, palette removals, and the licensed thumbnail pilot. Pre-build checks passed. The owner approved internal ARM packaging after the 10.6 verification. Live API rollout, physical-device acceptance, and broader product-image coverage remain pending. [Handoff](CODEX_HANDOFF.md) · [Comparison preview](references/preview-10.5-comparison.png)
 

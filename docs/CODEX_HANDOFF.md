@@ -415,7 +415,7 @@ python scripts/collect_techmart_offers.py --sku 46637 --sku 43832 --sku 43957 --
 python scripts/collect_karai_fuel_offers.py
 ```
 
-Burlex supplied 875 regular branch prices and Techmart supplied five online prices. Both use a 12-hour observation freshness window. KARAI supplied 17 indicative chain prices for A95, diesel and LPG across six chains. That source uses a 24-hour observation window. Credit KARAI Fuel Index in the UI under CC BY 4.0. A98+ and premium diesel remain uncovered by this feed. [Burlex official table](https://burlex.bg/kolkostruva/) · [KARAI methodology](https://karai.bg/fuel-prices/indeks#metodologiya)
+Burlex supplied 875 regular branch prices and Techmart supplied five online prices. Both use a 12-hour observation freshness window. KARAI supplied 17 indicative chain prices for A95, diesel and LPG across six chains. That source uses a 24-hour observation window. Credit KARAI Fuel Index under CC BY 4.0 in „За приложението → Трети страни“. A98+ and premium diesel remain uncovered by this feed. [Burlex official table](https://burlex.bg/kolkostruva/) · [KARAI methodology](https://karai.bg/fuel-prices/indeks#metodologiya)
 
 No recurring refresh is configured. Complete refresh scheduling, wider coverage and the remaining live workflow checks before requesting explicit beta APK approval.
 
@@ -459,3 +459,8 @@ python scripts/prepare_beta108_public_data.py --archive /tmp/spest-kzp-2026-11-2
 ```
 
 The import matched 676 regular grocery observations at Burlex Надежда and 682 at Burlex Свобода. They are dated 22 November and go to historical observations. Existing locality IDs, branches, products and current-price rows were preserved. The exact variant GTINs are independent of the phone build and available through the existing barcode endpoint. [Manifest](../data/public/beta-10.8.json) · [Changelog](../CHANGELOG.md)
+
+
+### Beta_10.8 source credits
+
+„За приложението → Трети страни“ collects links for data and prices, merchant addresses, photos and icons, and the software and services used by the app. Photo authors and applicable licenses are credited there. The catalogue and fuel screens keep the information needed to interpret photos and prices. Record-level source references stay available for data verification. Keep the source section current when introducing a feed, provider or licensed image. [Third-party source list](../mobile/src/navigation/thirdPartySources.ts)

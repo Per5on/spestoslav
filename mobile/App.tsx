@@ -5,7 +5,7 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { productSymbol, referencePhoto, sampleCredit } from "./src/catalog/samples";
+import { productSymbol, referencePhoto } from "./src/catalog/samples";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -14,7 +14,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Image,
-  Linking,
   ScrollView,
   View,
 } from "react-native";
@@ -45,6 +44,7 @@ import { Pressable, Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/u
 import { Screen } from "./src/navigation/menu";
 import { OverflowMenu } from "./src/navigation/OverflowMenu";
 import { AboutScreen } from "./src/navigation/AboutScreen";
+import { ThirdPartiesScreen } from "./src/navigation/ThirdPartiesScreen";
 import {
   CatalogToolbar,
   FuelChoice,
@@ -307,9 +307,6 @@ function Main({ initialNotice, onErase }: {
     () => typeof Intl.PluralRules === "function" ? new Intl.PluralRules(language) : undefined,
     [language],
   );
-  const karaiFuelIndex = "https://karai.bg/fuel-prices/indeks";
-  const showsKaraiFuel = fuelResults.some(row =>
-    row.branchCount > 0 && row.estimate?.source_reference === karaiFuelIndex);
   const hasFuelPrices = fuelResults.some(row =>
     row.branchCount > 0 || row.stations.some(station => station.price !== undefined));
   const searchActive = searchOpen || Boolean(appliedQuery);
@@ -353,27 +350,18 @@ function Main({ initialNotice, onErase }: {
   useEffect(() => setPageSize(40), [selected, group, category]);
   function productCard(p: Product) {
     const reference = referencePhoto(p);
-    const credit = p.is_demo ? sampleCredit(p.id) : reference?.credit;
     const localPrice = p.is_demo ? undefined : priceIndex.products.get(p.id);
     const onlinePrice = p.is_demo ? undefined : indicativePrices.products.get(p.id);
     const price = localPrice ?? onlinePrice ?? null;
     return (
       <View key={p.id} style={s.card}>
         <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
-          uri={p.image_url} fallback={reference?.source ?? productSymbol(p)}
+          uri={p.image_url} fallback={reference ?? productSymbol(p)}
           symbolic={!reference && (!p.is_demo || p.category_code === "technology")} />
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
           <Text style={s.productName}>{displayName(p)}</Text>
-          {credit && (
-            <Pressable accessibilityRole="link"
-              onPress={() => void Linking.openURL(credit.source_url).catch(() => undefined)}>
-              <Text style={[s.meta, { textDecorationLine: "underline" }]}>
-                {credit.author} · {credit.license}
-              </Text>
-            </Pressable>
-          )}
           <Text style={s.meta}>
             {p.package ||
               [p.package_quantity, p.package_unit].filter(Boolean).join(" ")}
@@ -487,7 +475,7 @@ function Main({ initialNotice, onErase }: {
                   setScreen(
                     ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
                       ? "settings"
-                      : screen === "feedback"
+                      : screen === "feedback" || screen === "thirdParties"
                         ? "about"
                         : "catalog",
                   )
@@ -607,19 +595,10 @@ function Main({ initialNotice, onErase }: {
                   {catalog.retailers.map(chain => <View key={chain.code} style={s.store}>
                     <View style={{ flex: 1, gap: 5 }}>
                       <Text style={s.productName}>{chain.name}</Text>
-                      {chain.website_url && <Text style={s.meta}>{chain.website_url}</Text>}
                       <Text style={s.meta}>{t("chainOverview")}</Text>
                     </View>
                   </View>)}
                 </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
-                {showsKaraiFuel && (
-                  <Pressable accessibilityRole="link"
-                    onPress={() => void Linking.openURL(karaiFuelIndex).catch(() => undefined)}>
-                    <Text style={[s.meta, { textDecorationLine: "underline" }]}>
-                      KARAI Fuel Index · CC BY 4.0
-                    </Text>
-                  </Pressable>
-                )}
                 {fuelResults.map(row => {
                   const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
                   const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
@@ -755,7 +734,9 @@ function Main({ initialNotice, onErase }: {
         )}
         {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
         {screen === "appearance" && <AppearanceScreen />}
-        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")} />}
+        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
+          onThirdParties={() => setScreen("thirdParties")} />}
+        {screen === "thirdParties" && <ThirdPartiesScreen />}
         {screen === "feedback" && <FeedbackScreen />}
         {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
         {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}

@@ -80,3 +80,5 @@ This is the repository record of the project conversation available through 23 N
 
 - The owner requested the reviewed public-data import, a small batch of exact GTINs for live scanning, verification and the Beta_10.8 commit. They also requested a changelog of all versions after the build.
 - Tested and replayed the import on a disposable branch. Applied six official locality mappings, four corroborated GTINs and 1,358 historical КЗП grocery observations to the shared database. Current prices and existing entities were preserved. [Handoff](CODEX_HANDOFF.md#beta_108-public-data-pilot) · [Changelog](../CHANGELOG.md)
+
+- While Beta_10.8 was packaging, the owner requested „Трети страни“ inside „За приложението“ and asked that data and app credits move there. The normal catalogue and fuel views still show merchant names, price scope and the illustrative-image notice. The candidate includes grouped links to data, address, image and software sources. [Browser preview](references/beta-10.8-third-parties.png)
