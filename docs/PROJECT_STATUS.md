@@ -4,7 +4,7 @@ Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — bug-fix build 015
 
-Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The Android test build and hosted backend checks are pending. [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
+Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The signed ARM APK and both hosted PostgreSQL jobs passed for source `430abff`. Physical-device installation and camera testing remain pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790) [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
 
 ## Beta_10.8
 

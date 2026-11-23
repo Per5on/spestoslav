@@ -36,3 +36,13 @@ These counters are in memory and apply within each backend process. They have no
 Expired pending submissions are shown as expired and omitted from the admin review queue. This status is derived on read and preserves the original record. The receipt-orphan sweep remains a separately tracked dry run.
 
 `docs/12.docx` was removed from this build checkout. The older Git history preserves it.
+
+## Verification
+
+Android source `430abff7ddbc1e2645a1a532c0a8f18316b79adb` passed packaging, signature and ABI checks for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. The downloaded APK and SQLite cache were verified by checksum. The pack contains the APK, cache, collection report, release notes and checksums. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
+
+Live browser tests verified Sofia grocery prices and newly available Varna technology and fuel prices. A two-item Techmart comparison in Varna returned €314, and the same merchant was excluded in Veliko Tarnovo. The live barcode API resolved a decoded handset GTIN. Browser fixtures passed camera decoding with synthetic input, private receipt upload, Bulgarian OCR, moderation, deletion and password recovery with old-password and session rejection. Physical-device installation and the managed provider's actual recovery-code lifetime and session behavior remain to be verified.
+
+Better Auth documents a default code lifetime of five minutes and three verification attempts. The live managed project's settings were not confirmed. [Email OTP options](https://www.better-auth.com/docs/plugins/email-otp)
+
+APK SHA-256 `0d5781575d1c729a87138da4663863ef184f72b187662b5d5a1d9a8d30ad5d86`. Cache SHA-256 `43746fa7f84e54f3bdc0e0b8fcc0fbde84ed24b3a854925d30282274c2387013`.

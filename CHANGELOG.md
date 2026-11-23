@@ -7,6 +7,7 @@ This lists the recorded Android previews and pre-alpha and beta candidates in bu
 - Added missing verified branches for Varna and Veliko Tarnovo and published a fresh KARAI fuel update. The catalogue now surfaces priced products first and refreshes price data on resume.
 - Added price-cache generation, staged scheduled publication, source error handling and review-queue expiry checks.
 - Added candidate API limits for sign-in, password recovery and locality search. Removed `docs/12.docx` from this revision. [Build and rollout notes](docs/BUG_FIX_015.md)
+- Verified the signed ARM APK and both hosted PostgreSQL jobs. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
 
 ## Beta_10.8 · build 014 · app 0.5.7
 
