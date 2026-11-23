@@ -133,3 +133,13 @@ The owner wrote:
 
 - Updated the build 016 release TODO and changelog with the fixes, the completed checks, and the remaining phone checks. The catalogue fixes include pull-to-refresh in all three tabs, faster repeat loads for fuel, and Android background sync. The previous exchange and test results are preserved in the project logs. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
 - GitHub returned HTTP 403 for the repository settings write. The live receipt worker still authenticates using `Per5on/spestoslav`. Prepared a draft compatibility patch so the same repository can authenticate under either name during the transition. The rename awaits production rollout approval and GitHub settings access. [Compatibility PR](https://github.com/Per5on/spestoslav/pull/25)
+
+
+## 23 November 2026 — thumbnail database and post-build backlog
+
+The owner wrote:
+
+> the name is not that important, you can leave it as pending.
+> the product thumbnail database is still not active or not populating ... and is not unanimous, universal or similar as visual images. it has to be reconciled and ready for use ... inspect and add to the todo and the changelog. After the build, mark the backlog which issues have been resolved
+
+- Deferred the rename. Verified the seeded symbol database, the absent public manifest, the live image coverage and the mix of bundled styles. Added the reconciliation work to the TODO and future changelog. The backlog will close each item after verification on the relevant build. [Inspection](ACTIVITY_LOG.md#23-november-2026--thumbnail-database-and-visual-reconciliation)

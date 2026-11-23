@@ -14,6 +14,10 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 - Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. [Rollout checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
 - A delayed browser fixture rendered the saved Sofia A95 price in 140 ms, updated it after the new response and removed it when the town changed. Mobile checks, Android JavaScript export and both hosted PostgreSQL jobs passed for the catalogue changes in `504f36b`. APK approval and on-device verification, including pull-to-refresh and background job execution, remain pending. [Catalogue checks](https://github.com/Per5on/spestoslav/actions/runs/45254713574) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
 
+### Planned for the next approved build
+
+- Reconcile the thumbnail database, catalogue image links and bundled fallbacks for „Храни“ and „Техника“. Use the milk, oil and sugar thumbnails as the visual reference for one consistent set of representative WebPs. The live symbol manifest currently returns 404, and only 7 of 2,000 products have individual image links. The rollout and installed-app checks are open. [Thumbnail release tasks](docs/PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
 ## Bug fix · build 015 · app 0.5.8
 
 - Added missing verified branches for Varna and Veliko Tarnovo and published a fresh KARAI fuel update. The catalogue now surfaces priced products first and refreshes price data on resume.
