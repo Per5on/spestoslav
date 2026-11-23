@@ -3,6 +3,7 @@
 import os
 import re
 import smtplib
+import ssl
 import time
 from collections import deque
 from email.message import EmailMessage
@@ -102,8 +103,6 @@ def deliver_smtp(payload: Feedback):
     letter.set_content(content(payload))
     port = int(os.getenv("FEEDBACK_SMTP_PORT", "587"))
     # Verified TLS only; no plaintext credentials or caller-chosen recipients.
-    import ssl
-
     context = ssl.create_default_context()
     transport = smtplib.SMTP_SSL if port == 465 else smtplib.SMTP
     options = {"context": context} if port == 465 else {}

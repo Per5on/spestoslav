@@ -1,8 +1,26 @@
 # Спестовник — active project status
 
-Updated: 22 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations.
+Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
 
-## Current work — Preview 010.7
+## Current work — Beta_10.8
+
+The owner requested the Beta_10.8 build and a changelog covering all versions. It uses sequence 014 and app version 0.5.7. The shared API database now contains six official locality mappings, four corroborated GTINs and 1,358 historical grocery observations. The isolated import replay preserved IDs and current prices. [Changelog](../CHANGELOG.md).
+
+### Preview 010.7 and beta preparation
+
+Backend cleanup is prepared in the working tree. It consolidates catalogue and receipt review helpers, tidies imports, and adds a pinned Ruff check to backend CI. Local checks passed. [Activity log](ACTIVITY_LOG.md).
+
+The next backend commit tasks include a read-only expiry fix and a dry-run-first receipt orphan sweep. The expiry variant passed a focused SQLite check in isolation. The sweep is queued for adaptation and disposable-storage verification. [Commit tasks](PREVIEW_006_BACKLOG.md#23-november-2026--next-commit-and-beta-checklist).
+
+The owner added the header, catalogue, fuel, locality, and live price requirements for the next beta. Visual review comes before including the changes in the build or APK commit. APK packaging requires explicit approval after code review, backend verification and dry tests. [Next commit and beta checklist](PREVIEW_006_BACKLOG.md#23-november-2026--next-commit-and-beta-checklist).
+
+The live Sofia catalogue now has 34 technology branches, 113 petrol stations, 875 regular grocery branch prices and seven source-backed WebP links across the two product catalogues. A backend-only fix that restricts nationally published prices to retailers with active stores in the selected locality and restores the merchant directory passed CI and merged. Render is live on the exact merge. A real two-item Techmart basket returned €303.99 in Sofia and no Techmart quote in Мадан. The live API also returns 17 indicative chain fuel prices across six retailers. Scheduled refresh, wider price and image coverage, and beta APK approval remain pending. [Backend PR 22](https://github.com/Per5on/spestoslav/pull/22) · [Comparison](references/beta-live-sofia-comparison.png) · [Fuel](references/beta-live-sofia-fuel.png).
+
+The fuel candidate groups shared chain estimates into one row with the local branch count. Confirmed station prices that differ appear below the estimate with their address. Live Sofia data and an injected exception passed the browser checks. The isolated browser workflow also passed camera and barcode fallback, sign-in, receipt upload, Bulgarian OCR, review and deletion. Live sign-in and receipt acceptance require an authorized test account. Live feedback remains unavailable. [Grouped fuel preview](references/beta-live-sofia-fuel-grouped.png).
+
+The price-source workflow is now on the default branch with daily checks for „Храни“, „Техника“ and „Горива“. The first hosted run passed for all three categories and generated reports. Live publication and validated fallback matching remain open. „Забравена парола“ is implemented in the app and backend candidate with a passing local browser workflow. Live code delivery is unverified. The owner will report the physical-device check. [Beta checklist](PREVIEW_006_BACKLOG.md#backend-and-beta-acceptance) · [Recovery preview](references/beta-forgot-password-code.png).
+
+A data and performance audit verified public sourcing candidates, measured the 15 MB database, and identified cross-category price overfetch. Candidate changes narrow the price feed, decouple confirmed and indicative responses, and index product search. Local browser and code checks passed. On-device responsiveness and staged official-code or barcode imports are pending. [Audit](CODEX_HANDOFF.md#public-data-and-responsiveness-audit).
 
 The candidate implements the approved itemized comparison, both group pop-ups, palette removals, and the licensed thumbnail pilot. Pre-build checks passed. The owner approved internal ARM packaging after the 10.6 verification. Live API rollout, physical-device acceptance, and broader product-image coverage remain pending. [Handoff](CODEX_HANDOFF.md) · [Comparison preview](references/preview-10.5-comparison.png)
 

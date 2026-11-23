@@ -25,13 +25,18 @@ with sync_playwright() as playwright:
     ]
 
     def geometry(fuel=False):
-        expect(toolbar.get_by_role("button")).to_have_count(1)
-        field = toolbar.get_by_role("radio").first if fuel else toolbar.get_by_role("textbox")
         if fuel:
-            expect(toolbar.get_by_role("radio")).to_have_count(5)
-            first_row = page.get_by_test_id("fuel-first-row")
-            expect(first_row.get_by_role("radio").first).to_be_visible()
-            assert first_row.get_by_role("radio").count() >= 1
+            expect(toolbar.get_by_role("button")).to_have_count(0)
+            radios = toolbar.get_by_role("radio")
+            expect(radios).to_have_count(5)
+            boxes = [radio.bounding_box() for radio in radios.all()]
+            assert all(abs(box["y"] - boxes[0]["y"]) < 2 for box in boxes)
+            assert all(box["width"] >= 44 and box["height"] >= 44 for box in boxes)
+            assert boxes[-1]["x"] + boxes[-1]["width"] <= page.viewport_size["width"]
+            assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            return
+        expect(toolbar.get_by_role("button")).to_have_count(1)
+        field = toolbar.get_by_role("textbox")
         refresh = toolbar.get_by_role("button").last
         first, last = field.bounding_box(), refresh.bounding_box()
         bounds = toolbar.bounding_box()
@@ -63,9 +68,21 @@ with sync_playwright() as playwright:
     assert page.get_by_test_id("app-header").bounding_box()["height"] <= 60
     assert toolbar.get_by_role("textbox").evaluate("(el) => getComputedStyle(el).backgroundColor") == "rgb(237, 243, 229)"
     expect(page.get_by_test_id("category-groups")).to_be_visible(timeout=20000)
-    food_overflow = page.get_by_role("button", name="Още групи")
+    food_first = page.get_by_test_id("category-group-row-1").get_by_role("button")
+    expect(food_first).to_have_text(["Всички храни", "Основни храни и консерви"])
+    food_second = page.get_by_test_id("category-group-row-2")
+    expect(food_second.get_by_role("button")).to_have_count(4)
+    for label in ("Плодове и зеленчуци", "Месо, колбаси и риба", "Млечни продукти и яйца"):
+        expect(food_second.get_by_role("button", name=label, exact=True)).to_be_visible()
+    food_overflow = food_second.get_by_role("button", name="Още групи")
+    right_edge = food_overflow.bounding_box()["x"]
+    for group_button in food_second.get_by_role("button").all()[:-1]:
+        box = group_button.bounding_box()
+        assert box["x"] + box["width"] <= right_edge
     food_overflow.click()
-    expect(page.get_by_role("menu").get_by_role("menuitem").first).to_be_visible()
+    food_menu = page.get_by_role("menu")
+    expect(food_menu.get_by_role("menuitem", name="Подправки и напитки")).to_be_visible()
+    expect(food_menu.get_by_role("menuitem")).to_have_count(2)
     page.get_by_role("button", name="Отказ", exact=True).click(position={"x": 5, "y": 5})
     expect(page.get_by_role("menu")).to_have_count(0)
     page.screenshot(path=args.output_dir / "food.png")
@@ -93,7 +110,6 @@ with sync_playwright() as playwright:
     page.screenshot(path=args.output_dir / "technology.png")
     tabs.nth(2).click()
     geometry(fuel=True)
-    expect(page.get_by_test_id("fuel-first-row").get_by_role("radio")).to_have_count(3)
     assert [radio.get_attribute("aria-label") for radio in toolbar.get_by_role("radio").all()] == [
         "Бензин 95", "Бензин 98+", "Дизел", "Дизел +", "Автогаз",
     ]

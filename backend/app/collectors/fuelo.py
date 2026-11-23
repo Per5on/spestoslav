@@ -74,7 +74,7 @@ class FueloClient:
         path = "/v2/gasstations"
         params = {"country": "bg", "limit": 50}
         seen = set()
-        for page in range(max_pages):
+        for _page in range(max_pages):
             payload = self.get(path, params)
             for station in payload["data"]:
                 if station.get("country") != "bg":

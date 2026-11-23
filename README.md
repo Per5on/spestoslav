@@ -28,7 +28,7 @@ npx expo start
 
 Use `npm ci` normally, including its reviewed dependency-patch postinstall hook. Patches preserve SDK 54 compatibility with fixed image parsing and protect config merging; they fail visibly if the locked dependency source changes. See [audit notes](docs/AUDIT_2026-11-15.md).
 
-The Android APK workflow generates the native project and builds a standalone, test-signed Android 10+ preview. [Preview 001](docs/ANDROID_PREVIEW_001.md) is preserved; [preview 002](docs/ANDROID_PREVIEW_002.md) contains audit fixes.
+The Android APK workflow generates the native project and builds a standalone, test-signed Android 10+ preview. [Preview 001](docs/archive/previews/ANDROID_PREVIEW_001.md) is preserved; [preview 002](docs/archive/previews/ANDROID_PREVIEW_002.md) contains audit fixes.
 
 ## Verification
 

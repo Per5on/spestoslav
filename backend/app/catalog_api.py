@@ -1,7 +1,8 @@
 """Catalog and price scope contracts shared by the upcoming Android screens."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
+from urllib.parse import urlsplit
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -12,8 +13,15 @@ from sqlalchemy.orm import Session
 
 from .auth import admin_user, current_user
 from .db import get_db
-from .models import Category, Product, Retailer, StoreBranch, PriceObservation
-from .marketplace import CurrentPrice, ProductBarcode
+from .models import (
+    Category,
+    Locality,
+    PriceObservation,
+    Product,
+    Retailer,
+    StoreBranch,
+)
+from .marketplace import CurrentPrice, ProductBarcode, Promotion
 from .workflows import ProductIdentificationRequest, ProductImage, NationalOffer
 from .write_api import Input, ProductInput
 
@@ -268,8 +276,6 @@ def create_national_offer(
     principal=Depends(admin_user),
     db: Session = Depends(get_db),
 ):
-    from urllib.parse import urlsplit
-
     now = datetime.now(timezone.utc)
     product = db.get(Product, payload.product_id)
     retailer = db.get(Retailer, payload.retailer_code)
@@ -291,8 +297,6 @@ def create_national_offer(
         or source.password
     ):
         raise HTTPException(422, "An official retailer evidence URL is required")
-    from datetime import timedelta
-
     if (
         not payload.observed_at <= now < payload.valid_until <= now + timedelta(days=31)
         or payload.observed_at >= payload.valid_until
@@ -358,13 +362,27 @@ def national_rows(db, product_id=None, retailer_code=None):
 def national_offers(
     product_id: UUID | None = None,
     retailer_code: str | None = None,
+    locality_id: UUID | None = None,
+    category_code: str | None = None,
     db: Session = Depends(get_db),
     limit: int = Query(default=50, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
 ):
+    statement = national_rows(db, product_id, retailer_code)
+    if locality_id:
+        statement = statement.where(
+            select(StoreBranch.id)
+            .where(
+                StoreBranch.retailer_code == NationalOffer.retailer_code,
+                StoreBranch.locality_id == locality_id,
+                StoreBranch.active.is_(True),
+            )
+            .exists()
+        )
+    if category_code:
+        statement = statement.where(Product.category_code == category_code)
     rows = db.scalars(
-        national_rows(db, product_id, retailer_code)
-        .order_by(NationalOffer.product_id, NationalOffer.retailer_code)
+        statement.order_by(NationalOffer.product_id, NationalOffer.retailer_code)
         .offset(offset)
         .limit(limit)
     ).all()
@@ -435,9 +453,6 @@ class BasketInput(Input):
 
 @router.post("/baskets/compare")
 def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
-    from .models import Locality
-    from .marketplace import Promotion
-
     product_ids = [i.product_id for i in payload.items]
     if len(set(product_ids)) != len(product_ids):
         raise HTTPException(422, "Combine repeated product IDs into one quantity")
@@ -535,8 +550,14 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
         for branch, retailer_name in branches
     ]
     if payload.include_online:
+        local_retailers = {branch.retailer_code: name for branch, name in branches}
+        complete_retailers = {quote["retailer_code"] for quote in quotes if quote["complete"]}
+        eligible_retailers = local_retailers.keys() - complete_retailers
         offers = db.scalars(
-            national_rows(db).where(NationalOffer.product_id.in_(product_ids))
+            national_rows(db).where(
+                NationalOffer.product_id.in_(product_ids),
+                NationalOffer.retailer_code.in_(eligible_retailers),
+            )
         ).all()
         online = {}
         for offer in offers:
@@ -544,7 +565,9 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
                 offer.price_eur, offer.verified_at,
             )
         for retailer, product_prices in online.items():
-            quotes.append(quote("NATIONAL_ONLINE", None, retailer, None, product_prices))
+            quotes.append(
+                quote("NATIONAL_ONLINE", None, retailer, local_retailers[retailer], product_prices)
+            )
     quotes.sort(
         key=lambda q: (
             not q["complete"],

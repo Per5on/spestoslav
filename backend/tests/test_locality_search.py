@@ -218,7 +218,15 @@ def test_store_list_is_limited_to_registered_active_branches():
 
 
 def test_current_prices_and_promotions():
-    assert len(client.get("/api/v1/prices/current").json()) == 1
+    prices = client.get("/api/v1/prices/current").json()
+    assert len(prices) == 1
+    locality = client.get("/api/v1/localities", params={"q": "София"}).json()[0]["id"]
+    for category, expected in (("FOOD", prices), ("fuel", [])):
+        response = client.get("/api/v1/prices/current", params={
+            "locality_id": locality, "category_code": category,
+        })
+        assert response.status_code == 200
+        assert response.json() == expected
     offers = client.get("/api/v1/promotions").json()
     assert len(offers) == 1
     assert offers[0]["promotional_price_eur"] == 0.99

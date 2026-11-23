@@ -3,12 +3,12 @@ import { products } from "../../../data/demo-thumbnails/catalog.json";
 import { Product } from "./model";
 
 const thumbnails: Record<string, ImageSourcePropType> = {
-  milk: require("../../assets/thumbnails/milk.webp"),
-  oil: require("../../assets/thumbnails/oil.webp"),
-  sugar: require("../../assets/thumbnails/sugar.webp"),
-  laptop: require("../../assets/technology/laptop.webp"),
-  washer: require("../../assets/technology/washer.webp"),
-  tv: require("../../assets/technology/tv.webp"),
+  milk: require("../../assets/beta-illustrations/milk.webp"),
+  oil: require("../../assets/beta-illustrations/oil.webp"),
+  sugar: require("../../assets/beta-illustrations/sugar.webp"),
+  laptop: require("../../assets/beta-illustrations/laptop.webp"),
+  washer: require("../../assets/beta-illustrations/washer.webp"),
+  tv: require("../../assets/beta-illustrations/tv.webp"),
   kettle: require("../../assets/technology/kettle.webp"),
   headphones: require("../../assets/technology/headphones.webp"),
   smartphone: require("../../assets/technology/smartphone.webp"),

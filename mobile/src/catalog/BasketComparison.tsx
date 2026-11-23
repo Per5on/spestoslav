@@ -12,6 +12,7 @@ type QuoteLine = {
   verified_at: string | null;
 };
 type Quote = {
+  price_scope?: "BRANCH" | "NATIONAL_ONLINE";
   branch_id: string | null;
   branch_address?: string | null;
   retailer_code: string;
@@ -53,6 +54,7 @@ export function BasketComparison({ comparison, basket, stores, productLabel }: {
         const key = quoteKey(quote);
         const branch = quote.branch_id ? branches.get(quote.branch_id) : undefined;
         const name = quote.retailer_name || branch?.retailer_name || quote.retailer_code;
+        const indicative = quote.price_scope === "NATIONAL_ONLINE";
         const address = quote.branch_address ?? branch?.address;
         const total = quote.complete && quote.total_eur !== null
           ? prices.format(Number(quote.total_eur)) : t("missingPrices");
@@ -60,6 +62,7 @@ export function BasketComparison({ comparison, basket, stores, productLabel }: {
         const header = <>
           <View style={{ flex: 1 }}>
             <Text style={s.productName}>{name}</Text>
+            {indicative && <Text style={s.meta}>{t("indicativeOnlinePrice")}</Text>}
             {!!address && <Text style={s.meta}>{address}</Text>}
           </View>
           <View style={{ flexShrink: 1 }}>
@@ -71,7 +74,7 @@ export function BasketComparison({ comparison, basket, stores, productLabel }: {
           <View key={key} style={[s.panel, key === best && { borderColor: color("#267133") }]}>
             {quote.items ? (
               <Pressable accessibilityRole="button" accessibilityState={{ expanded: open }}
-                aria-expanded={open} accessibilityLabel={`${name}: ${total}`}
+                aria-expanded={open} accessibilityLabel={`${name}: ${total}${indicative ? ` · ${t("indicativeOnlinePrice")}` : ""}`}
                 style={[s.headingRow, { minHeight: 44 }]} onPress={() => setExpanded(open ? null : key)}>
                 {header}
                 <Ionicons name={open ? "chevron-up" : "chevron-down"} color={color("#19562a")} size={18} />

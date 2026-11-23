@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
 from .grocery import GroceryGroup, GroceryIdentity
-from .technology import TechnologyGroup, TechnologyIdentity
+from .technology import TechnologyIdentity
 from .barcodes import gtin_aliases
 from .models import (
     Category,
@@ -349,6 +349,7 @@ def current_prices(
     product_id: UUID | None = None,
     branch_id: UUID | None = None,
     locality_id: UUID | None = None,
+    category_code: str | None = None,
     limit: int = Query(default=500, ge=1, le=500),
     offset: int = Query(default=0, ge=0),
     db: Session = Depends(get_db),
@@ -372,6 +373,8 @@ def current_prices(
         stmt = stmt.where(CurrentPrice.branch_id == branch_id)
     if locality_id:
         stmt = stmt.where(StoreBranch.locality_id == locality_id)
+    if category_code:
+        stmt = stmt.where(Product.category_code == category_code)
     now = datetime.now(timezone.utc)
     rows = db.scalars(
         stmt.where(

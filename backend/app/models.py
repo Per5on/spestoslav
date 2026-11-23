@@ -1,9 +1,10 @@
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
+    Date,
     DateTime,
     Index,
     ForeignKey,
@@ -48,6 +49,20 @@ class Locality(Base):
     __table_args__ = (
         UniqueConstraint("source", "source_id", name="uq_inhabited_locality_source"),
         Index("ix_localities_name_lower", func.lower(name)),
+    )
+
+
+class LocalityEkatte(Base):
+    __tablename__ = "locality_ekatte"
+    locality_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("inhabited_localities.id"), primary_key=True
+    )
+    ekatte_code: Mapped[str] = mapped_column(String(5), nullable=False)
+    source_reference: Mapped[str] = mapped_column(String(500), nullable=False)
+    source_as_of: Mapped[date] = mapped_column(Date, nullable=False)
+    __table_args__ = (
+        UniqueConstraint("ekatte_code", name="uq_locality_ekatte_code"),
+        CheckConstraint("length(ekatte_code) = 5", name="ck_locality_ekatte_length"),
     )
 
 

@@ -155,3 +155,33 @@ def test_registration_distinguishes_existing_account(provider, monkeypatch, prov
     )
     assert response.status_code == expected_status
     assert "private provider payload" not in response.text
+
+
+def test_password_recovery_preserves_provider_identity_and_does_not_disclose_accounts(provider, monkeypatch):
+    calls = []
+
+    def request(method, url, **kwargs):
+        body = kwargs["json"]
+        calls.append((method, url, body))
+        if url.endswith("/request-password-reset"):
+            status = 404 if body["email"].startswith("unknown") else 200
+        else:
+            status = 200 if body["otp"] == "123456" else 400
+        return httpx.Response(status, json={"provider": "private-provider-detail"}, request=httpx.Request(method, url))
+
+    monkeypatch.setattr(mobile_auth.httpx, "request", request)
+    for email in ("alice@example.invalid", "unknown@example.invalid"):
+        response = client.post("/api/v1/auth/request-password-reset", json={"email": email})
+        assert response.status_code == 204 and response.content == b""
+        assert response.headers["cache-control"] == "no-store"
+    payload = {"email": "alice@example.invalid", "password": "new-password"}
+    rejected = client.post("/api/v1/auth/reset-password", json={**payload, "otp": "000000"})
+    assert rejected.status_code == 400
+    assert "private-provider-detail" not in rejected.text
+    success = client.post("/api/v1/auth/reset-password", json={**payload, "otp": "123456"})
+    assert success.status_code == 204 and success.content == b""
+    assert success.headers["cache-control"] == "no-store"
+    assert calls[-1][1].endswith("/email-otp/reset-password")
+    assert calls[-1][2] == {**payload, "otp": "123456"}
+    assert client.post("/api/v1/auth/reset-password", json={**payload, "otp": "short"}).status_code == 422
+    assert len(calls) == 4

@@ -1,0 +1,88 @@
+{
+  "locality_source": "https://www.nsi.bg/nrnm/ekatte/archive/json/Ekatte-2025-json.zip/download",
+  "locality_as_of": "2025-12-23",
+  "localities": [
+    {
+      "name": "Бургас",
+      "municipality": "Бургас",
+      "region": "Бургас",
+      "code": "07079"
+    },
+    {
+      "name": "Варна",
+      "municipality": "Варна",
+      "region": "Варна",
+      "code": "10135"
+    },
+    {
+      "name": "Велико Търново",
+      "municipality": "Велико Търново",
+      "region": "Велико Търново",
+      "code": "10447"
+    },
+    {
+      "name": "Пловдив",
+      "municipality": "Пловдив",
+      "region": "Пловдив",
+      "code": "56784"
+    },
+    {
+      "name": "Русе",
+      "municipality": "Русе",
+      "region": "Русе",
+      "code": "63427"
+    },
+    {
+      "name": "София",
+      "municipality": "Столична",
+      "region": "София (столица)",
+      "code": "68134"
+    }
+  ],
+  "barcode_checked_on": "2026-11-23",
+  "barcodes": [
+    {
+      "sku": "46637",
+      "gtin": "6932554493271",
+      "source": "https://techmart.bg/smartfon-xiaomi-redmi-a7-pro-464gb-black",
+      "corroboration": "https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--XIAOMI-REDMI-A7-PRO/p/510626"
+    },
+    {
+      "sku": "45769",
+      "gtin": "6932554493257",
+      "source": "https://techmart.bg/smartfon-xiaomi-redmi-a7-pro-4128gb-black",
+      "corroboration": "https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--XIAOMI-REDMI-A7-PRO/p/510629"
+    },
+    {
+      "sku": "43832",
+      "gtin": "8806097640226",
+      "source": "https://techmart.bg/smartfon-samsung-sm-a176b-galaxy-a17-5g-4128gb-black",
+      "corroboration": "https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--SAMSUNG-GALAXY-A17-5G-A176-BLACK/p/508325"
+    },
+    {
+      "sku": "46638",
+      "gtin": "6932554476281",
+      "source": "https://techmart.bg/smartfon-xiaomi-redmi-note-15-6128-black",
+      "corroboration": "https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--XIAOMI-REDMI-NOTE-15-6-128-BLACK/p/509597"
+    }
+  ],
+  "price_date": "2026-11-22",
+  "price_archive": "https://kolkostruva.bg/opendata_files/2026-11-22.zip",
+  "price_archive_sha256": "7fe04905e2e914197891998578ee0db0c2344aee0c6113563290466493fff2f7",
+  "price_currency": "EUR",
+  "price_currency_evidence": "https://www.kolkostruva.bg/compare",
+  "branches": [
+    {
+      "code": "68134",
+      "label": "БУРЛЕКС НАДЕЖДА - НАДЕЖДА 4 ЕКЗАРХ СТЕФАН ДО БЛ. 462",
+      "name": "Бурлекс Надежда",
+      "address": "ж.к. Надежда 4, ул. Екзарх Стефан"
+    },
+    {
+      "code": "68134",
+      "label": "БУРЛЕКС СВОБОДА - ГЕНЕРАЛ НИКОЛА ЖЕКОВ ДО БЛ.12",
+      "name": "Бурлекс Свобода",
+      "address": "ж.к. Свобода, бул. Ген. Никола Жеков, до бл. 12"
+    }
+  ]
+}

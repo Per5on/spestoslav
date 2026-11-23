@@ -4,4 +4,4 @@ One shared searchable name-only locality selector across Food, Technology, Fuel 
 
 The owner removed postal search/storage, mode buttons and the interior “Местоположение” label on 15 November 2026. GPS, OSM, current-position and radius flows remain excluded. Historical postal/coordinate data references do not authorize restoring these features.
 
-See PREVIEW_003.md and FRONTEND_BRIEF.md for current implementation and rollout details.
+See docs/archive/previews/PREVIEW_003.md and FRONTEND_BRIEF.md for current implementation and rollout details.

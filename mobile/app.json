@@ -5,6 +5,7 @@
     "userInterfaceStyle": "light",
     "android": {
       "package": "bg.spestoslav.preview",
+      "icon": "./assets/money-bag-logo.png",
       "permissions": [
         "android.permission.CAMERA"
       ],
@@ -16,8 +17,8 @@
         "android.permission.VIBRATE"
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/scale-adaptive.png",
-        "backgroundColor": "#008565"
+        "foregroundImage": "./assets/money-bag-logo.png",
+        "backgroundColor": "#195b27"
       }
     },
     "icon": "./assets/scale-launcher.png",

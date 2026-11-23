@@ -16,12 +16,20 @@ router = APIRouter(prefix="/api/v1/auth")
 COOKIE = "__Secure-neon-auth.session_token"
 
 
-class Credentials(BaseModel):
+class RecoveryEmail(BaseModel):
     email: str = Field(
         min_length=3, max_length=254, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
     )
+
+
+class Credentials(RecoveryEmail):
     password: str = Field(min_length=8, max_length=128)
     name: str = Field(default="Спестовник", min_length=1, max_length=100)
+
+
+class PasswordReset(RecoveryEmail):
+    otp: str = Field(pattern=r"^[0-9]{6}$")
+    password: str = Field(min_length=8, max_length=128)
 
 
 def upstream(path, method="GET", session=None, payload=None):
@@ -53,6 +61,8 @@ def upstream(path, method="GET", session=None, payload=None):
                 if code == "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL":
                     raise HTTPException(409, "Account already exists")
                 raise HTTPException(422, "Registration request was not accepted")
+            if path.startswith("/email-otp/") and result.status_code in (404, 422):
+                raise HTTPException(result.status_code, "Password reset request was not accepted")
             code = (
                 result.status_code
                 if result.status_code in (400, 401, 403, 409, 429)
@@ -118,3 +128,25 @@ def sign_out(
     response.headers["Cache-Control"] = "no-store"
     upstream("/sign-out", "POST", session=x_auth_session, payload={})
     return {"success": True}
+
+
+@router.post("/request-password-reset", status_code=204)
+def request_password_reset(payload: RecoveryEmail, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    try:
+        upstream("/email-otp/request-password-reset", "POST", payload=payload.model_dump())
+    except HTTPException as exc:
+        # Keep the same public response for recognized and unrecognized addresses.
+        if exc.status_code != 404:
+            raise
+
+
+@router.post("/reset-password", status_code=204)
+def reset_password(payload: PasswordReset, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    try:
+        upstream("/email-otp/reset-password", "POST", payload=payload.model_dump())
+    except HTTPException as exc:
+        if exc.status_code in (400, 401, 403, 404, 422):
+            raise HTTPException(400, "Reset code was not accepted") from None
+        raise

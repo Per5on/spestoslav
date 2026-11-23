@@ -1,3 +1,42 @@
+## 23 November 2026 — next commit and beta checklist
+
+- [x] Consolidate catalogue and receipt-review helpers, tidy imports, and add the pinned Ruff CI check. Preserve historical documentation entry points.
+- [ ] **Expired price submissions.** Derive `EXPIRED` in submission responses for elapsed pending observations and filter them out of the admin queue before pagination. Keep both list endpoints read-only and retain the existing rejection of late approval. An isolated SQLite regression check passed with this approach. Recheck on disposable PostgreSQL before merging.
+- [ ] **Receipt orphan sweep.** Prepare a standalone dry-run-by-default command with an explicit option for deletion. Restrict it to receipt objects, bound each pass, and confirm the object remains unreferenced before any deletion. Establish safe behavior for in-flight uploads and partial failures using disposable storage before accepting the implementation. Review only for now. The supplied patch deletes by default.
+
+### Visual review
+
+- [x] **Header.** Remove the logo from the header and use „Сравни и спести“ in the existing slogan position. Enlarge the slogan for smaller screens. Reduce header height and move its bottom edge up slightly. The owner approved the logo-free preview.
+- [x] **Android launcher.** Restore the previous money-bag icon for Android only.
+- [ ] **Product cards and thumbnails.** Reduce product and thumbnail fields by 2 pt. Unify the visual style across „Храни“ and „Техника“ and retain approved WebP output. Evaluate [Broshura.bg](https://www.broshura.bg) for both categories, checking reuse terms and product matches. Add a thumbnail database if needed. The 2 pt size reduction and six matched generated sample WebPs are implemented. Live coverage remains open. [Implemented technology sample](references/next-beta-technology-implemented.png).
+- [x] **Bottom message.** Use the screenshot as the reference for the illustrative-photo notice, store-load error and saved-catalogue notice. Shorten them and group the applicable notices at the bottom of the screen with 1.5 pt between lines. Show each notice under its existing condition. [Implemented footer](references/next-beta-footer-implemented.png).
+- [x] **Food groups.** The first row is „Всички храни“ and „Основни храни и консерви“. The second contains „Плодове и зеленчуци“, „Месо, колбаси и риба“ and „Млечни продукти и яйца“. All other available groups, including „Подправки и напитки“, are in the trailing three-dot menu. [Implemented view](references/next-beta-food-implemented.png).
+- [ ] **Fuel controls.** Remove „Обнови“ and arrange all five fuel choices in one row. Show local petrol stations and prices for the selected fuel. Remove product search, cart actions and fuel participation in „Сравни цените“. Keep product search and add-to-cart in „Храни“ and „Техника“ only.
+
+Visual approval set: [Food, Technology and Fuel](references/next-beta-catalogue-review.png) · [Food overflow open](references/next-beta-food-groups-mock.png) · [Header and all three footer notices](references/next-beta-no-logo-header.png). The contact-sheet thumbnails are generated, illustrative WebPs. Fuel prices in the mockup are fixture values.
+
+### Backend and beta acceptance
+
+- [x] **Daily source checks.** The owner requested daily checks for „Храни“, „Техника“ and „Горива“. A GitHub Actions workflow on the default branch checks Burlex, Techmart and KARAI at 11:17 UTC. Its report tracks the recent official grocery archive as a secondary source.
+- [ ] **Price publication and backup matching.** Apply fresh observations to the live app only after verifying source date, currency, identity and locality. The Burlex and Techmart pilot prices expire after 12 hours and the KARAI pilot after 24 hours. Keep expired observations out of current totals. The archive's sampled Sofia branches are distinct from the two active Burlex pilot branches. Technology and fuel backup sources still need an authorized feed and matching coverage.
+- [x] **Forgotten password candidate.** Added „Забравена парола“ to email/password sign-in and implemented Neon Auth email-code recovery. Browser fixtures verified incorrect and reused codes and sign-in with the new password. [Sign-in](references/beta-forgot-password-sign-in.png) · [Email](references/beta-forgot-password-email.png) · [Code](references/beta-forgot-password-code.png)
+- [ ] **Live password recovery.** Verify receipt of the code in an authorized inbox and sign in on a new or clean device. Confirm the recovered account can reopen its receipts. The basket and preferences use device-local storage.
+- [ ] **Price sources.** Start connecting groceries and technology to Broshura.bg or official merchant pages. Select the lightest reliable source per merchant and verify the location and validity of the offer. Confirm a usable station-level price source for the selected fuel. Keep unavailable prices distinct from verified prices.
+- [ ] **Location scope.** Scope filters, results and prices to the selected locality. Restrict comparisons to stores present in that locality. Verify location changes and empty or incomplete coverage.
+- [ ] **Моят магазин.** The grocery chain already has a registry placeholder and no seeded branches at this checkpoint. Verify physical addresses against the [official directory](https://www.moiatmagazin.bg/magazini), add the branches to „Търговски обекти“, and include eligible chain products and prices as sourcing becomes available.
+- [ ] **Beta feature checks.** Treat subsequent builds as betas. Verify real product thumbnails and prices, locality filtering, product search, cart and price comparison, barcode scan, receipt flows, feedback with email delivery, login, and the other planned features in the [handoff](CODEX_HANDOFF.md) and project documentation. Record fixture results separately from live acceptance. Run the beta candidate against its live API with simulation mode off. Verify live reads, location-specific data and end-to-end authenticated workflows before requesting APK approval. The „данните и изпращането са симулирани“ notice stays on fixture previews only. Keep real outage, missing-price and catalogue notices available in the live app.
+- [ ] **Release gates.** Show visual previews of all user-facing changes for review before including them in the build or APK commit. Review the code, verify backend functionality and pass dry tests. Obtain explicit owner approval for the APK build after those gates. Keep the cleanup, expired submissions and receipt sweep tasks above in scope.
+
+### Source checks — 23 November 2026
+
+| Source | Observed | Next check |
+| --- | --- | --- |
+| [Kaufland offers](https://www.kaufland.bg/aktualni-predlozheniya/oferti.html) | The public store-specific feed for Sofia branch BG1000 returned article IDs and validity dates. | Join only offers supported by the selected branch and validate the matching displayed price and any loyalty conditions. |
+| [Technopolis sample product](https://www.technopolis.bg/bg/Smartfoni-i-mobilni-telefoni/Smartfon-GSM--MOTOROLA-EDGE-70-FUSION/p/509669) | The official page exposes a structured EUR price and a store pickup option. | Confirm branch-level availability and whether the online price also applies in the branch before including it in a local comparison. |
+| [Моят магазин locator](https://www.moiatmagazin.bg/magazini) | The public locator returned 288 records. The site says participating retailers set their own selling prices and promotional scope can vary by store. | Validate and deduplicate addresses against canonical localities. Check participation per offer. |
+| [Broshura.bg terms](https://s3-eu-west-1.amazonaws.com/public-legal-docs.offerista/offerista-bg/en/tou.html) | The published terms restrict copying significant parts of the database. | Confirm reuse permission before a bulk import or redistribution of catalogue images or data. |
+| [Fuelo](https://api.fuelo.net/) | The app repository has a station-price collector and known station listings. The collector requires an API key and eligible plan. | Verify plan coverage and freshness with authorized access. |
+
 ## 22 November 2026 — owner TODO
 
 - [x] Drop x86_64 Android packaging and the hosted x86_64 emulator job. Retain signed ARM APK and test-signed AAB checks. Record the change in the development log. Installed Android testing moves to an ARM device.
