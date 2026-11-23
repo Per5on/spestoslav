@@ -4,7 +4,9 @@ Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current work — bug-fix build 015
 
-Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The signed ARM APK and both hosted PostgreSQL jobs passed for source `430abff`. Physical-device installation and camera testing remain pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790) [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
+Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The signed ARM APK and both hosted PostgreSQL jobs passed for source `430abff`. The owner confirmed installation and reported that the camera appears to work. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790) [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
+
+**Велико Търново device report.** The city had no current grocery or technology prices when the owner tested. After a focused Burlex publication, the deployed API returned 2,713 current prices for 835 products across four branches. Build 015 rendered those prices in a live browser check. The app also rendered six indicative A95 prices. Technology coverage and recurring grocery publication are open. The first new grocery observations expire at about 08:26 on 24 November, Sofia time. [Activity log](ACTIVITY_LOG.md)
 
 ## Beta_10.8
 

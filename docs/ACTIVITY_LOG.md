@@ -465,3 +465,11 @@ Added a guest-capable local data reset and an authenticated cloud erasure route 
 - Added API request limits, account-neutral reset responses, read-only expired-submission handling, catalogue price prioritization and resume refresh. Local backend tests, mobile tests, strict TypeScript, Expo dependency checks, Ruff and live browser smoke passed. The scheduled publisher is staged. [Build notes](BUG_FIX_015.md) · [Browser preview](references/bug-fix-015-varna.png)
 
 Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, download checksums and SQLite integrity passed. Confirmed the €314 Varna basket, locality exclusion, live barcode-image lookup, fixture recovery and private receipt workflow. Physical-device and live managed-auth tests remain ahead. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
+
+
+## 23 November 2026 — Велико Търново device follow-up
+
+- The owner confirmed installation and said the camera appears to work. They reported missing prices and identified Велико Търново. Before the data update, the API returned zero grocery and technology prices, and 17 indicative fuel offers. Build 015 rendered six A95 prices from the live API.
+- Checked official Burlex public listings for four already verified branches. Matched regular prices by branch address and exact catalogue code and normalized product name. Isolated publication inserted 617 for Чолаковци, 748 for Търговски парк, 729 for Пазара and 619 for Магро. Identical replay published zero updates.
+- The same bounded publication added 2,713 current-price rows to the shared branch. Live API pagination confirmed 835 distinct products and four branches. A live two-item basket returned €4.20 and build 015 rendered bananas from €1.10 in the browser after publication. [Official Burlex table](https://burlex.bg/kolkostruva/)
+- The one-time observations expire after 12 hours. The next operational step is to enable a cleared recurring price source and check its coverage before expiry. Technology still needs eligible offers from retailers serving the city. The existing Android APK can consume the update.

@@ -94,3 +94,8 @@ This is the repository record of the project conversation available through 23 N
 - The owner confirmed that prices were not populating and authorized the bug-fix build. They asked for expiry, password policy, attempts and search limits to be reassessed, a cached database to be created from collected data, and `docs/12.docx` to be removed from the pack. [Build notes](BUG_FIX_015.md)
 
 Delivered the build 015 pack with the APK, SQLite base and checksums. The four-hour price publisher and authentication safeguards remain staged. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
+
+
+## Велико Търново device report
+
+- The owner confirmed that build 015 installs and that the camera appears to work, and reported no visible prices in Велико Търново. Verified the local coverage gap and published 2,713 validated grocery branch prices from the Burlex public table. Technology coverage remains open. [Verification record](ACTIVITY_LOG.md)

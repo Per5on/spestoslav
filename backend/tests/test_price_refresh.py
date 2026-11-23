@@ -5,12 +5,43 @@ from pathlib import Path
 import sqlite3
 import sys
 
+import httpx
 import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 import check_daily_prices as checks
+import collect_burlex_branch_prices as burlex
 import collect_karai_fuel_offers as karai
 from refresh_live_prices import Batch, cache_batches
+
+
+def test_tarnovo_prices_match_catalogue_names_and_keep_the_branch_scope():
+    store = "БУРЛЕКС МАГРО"
+    pages = []
+
+    def response(request):
+        if str(request.url) == burlex.SOURCE:
+            return httpx.Response(200, text='<div class="burlex-wrap" data-nonce="test"></div> BGN_EUR_RATE = 1.95583')
+        page = int(request.url.params["page"])
+        pages.append(page)
+        assert request.url.params["settlement"] == "Велико Търново"
+        assert request.url.params["store"] == store
+        return httpx.Response(200, json={
+            "ok": True, "page": page, "total": 2,
+            "rows": [{
+                "store": store, "settlement": "Велико Търново",
+                "product_name": "БАНАНИ" if page == 1 else "Different product",
+                "product_code": "81590", "price": "2.15",
+            }],
+        })
+
+    with httpx.Client(transport=httpx.MockTransport(response)) as client:
+        observations, observed = burlex.collect(store, client)
+    assert pages == [1, 2]
+    assert list(observations) == [{"code": "81590", "price": "1.10"}]
+    statement = burlex.render(store, observations, observed)
+    assert "name_bg='Велико Търново'" in statement
+    assert "b.address='ул. Васил Левски 15'" in statement
 
 
 def test_invalid_fuel_source_is_reported():
