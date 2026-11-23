@@ -2,13 +2,19 @@
 
 Updated: 23 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
 
-## Current work — bug-fix build 015
+## Current work — build 016 candidate
+
+The reviewed nationwide directory is live with 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It has 17 indicative fuel offers and five indicative technology offers. A matched fresh grocery feed for the city is still needed.
+
+Candidate 016, display label 10.10 and app version 0.5.9, explains empty local price coverage in the grocery and technology footer. The staged grocery publisher includes the four reviewed Велико Търново branches. Browser checks used the live API and showed the Пловдив grocery notice, five technology offers and six A95 prices. Android package generation is pending. [Preview](references/preview016-plovdiv-grocery.png) · [Rollout evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
+
+## Bug-fix build 015
 
 Prices now appear in live verified Varna technology and fuel and Veliko Tarnovo fuel after the reviewed directory additions and the KARAI refresh. Sofia grocery availability remains a pilot. The four-hour publisher and account/search safeguards are staged. The signed ARM APK and both hosted PostgreSQL jobs passed for source `430abff`. The owner confirmed installation and reported that the camera appears to work. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790) [Build notes](BUG_FIX_015.md) · [Browser evidence](references/bug-fix-015-varna.png)
 
 **Велико Търново device report.** The city had no current grocery or technology prices when the owner tested. After a focused Burlex publication, the deployed API returned 2,713 current prices for 835 products across four branches. Build 015 rendered those prices in a live browser check. The owner then confirmed that refreshing on their phone loaded grocery prices. The browser check also showed six indicative A95 prices. Technology coverage and recurring grocery publication are open. The first new grocery observations expire at about 08:26 on 24 November, Sofia time. [Activity log](ACTIVITY_LOG.md)
 
-**Nationwide directory validation.** The isolated database accepted all 1,563 reviewed seed records in 16 batches. A complete replay preserved every stored branch. The result includes 41 fuel, 45 grocery and 12 technology branches in Пловдив. The test snapshot supported indicative fuel prices in 241 localities and technology prices in 10. Grocery price coverage was still two localities. Live rollout remains open. [Validation evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)
+**Nationwide directory validation.** The isolated database accepted all 1,563 reviewed seed records in 16 batches. A complete replay preserved every stored branch. The result includes 41 fuel, 45 grocery and 12 technology branches in Пловдив. The test snapshot supported indicative fuel prices in 241 localities and technology prices in 10. Grocery price coverage was still two localities. See the current build notes above for the follow-up rollout. [Validation evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)
 
 ## Beta_10.8
 

@@ -2,6 +2,12 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates in build order. It covers the recorded project history through Beta_10.8. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
+## Candidate build 016 · app 0.5.9
+
+- Published the reviewed nationwide branch directory. Live checks confirmed indicative fuel and technology prices in Пловдив.
+- Added a locality-level notice for grocery and technology tabs with no current prices. Included the four reviewed Велико Търново branches in the staged grocery refresh.
+- Android configuration and tests passed. APK packaging is pending. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
+
 ## Bug fix · build 015 · app 0.5.8
 
 - Added missing verified branches for Varna and Veliko Tarnovo and published a fresh KARAI fuel update. The catalogue now surfaces priced products first and refreshes price data on resume.

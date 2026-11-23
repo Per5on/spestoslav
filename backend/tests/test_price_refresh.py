@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 import check_daily_prices as checks
 import collect_burlex_branch_prices as burlex
 import collect_karai_fuel_offers as karai
-from refresh_live_prices import Batch, cache_batches
+from refresh_live_prices import Batch, cache_batches, collect_batches
 
 
 def test_tarnovo_prices_match_catalogue_names_and_keep_the_branch_scope():
@@ -42,6 +42,18 @@ def test_tarnovo_prices_match_catalogue_names_and_keep_the_branch_scope():
     statement = burlex.render(store, observations, observed)
     assert "name_bg='Велико Търново'" in statement
     assert "b.address='ул. Васил Левски 15'" in statement
+
+
+def test_grocery_refresh_keeps_reviewed_sofia_and_tarnovo_branch_scopes(monkeypatch):
+    now = datetime.now(timezone.utc)
+    monkeypatch.setattr(burlex, "check_robots", lambda client: None)
+    monkeypatch.setattr(burlex, "collect", lambda store, client: ([{"code": "81590", "price": "1.10"}], now))
+    batches = list(collect_batches("groceries", None, None))
+    assert {(batch.rows[0][3], batch.rows[0][4]) for batch in batches} == (
+        {("София", address) for address in burlex.STORES.values()}
+        | {("Велико Търново", address) for address in burlex.TARNOVO_STORES.values()}
+    )
+    assert all("name_bg='" + batch.rows[0][3] + "'" in batch.statement for batch in batches)
 
 
 def test_invalid_fuel_source_is_reported():

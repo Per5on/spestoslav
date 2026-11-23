@@ -46,14 +46,16 @@ class Batch:
 def collect_batches(category, client, failed_sku):
     if category == "groceries":
         burlex.check_robots(client)
-        for store, address in burlex.STORES.items():
+        addresses = {**burlex.STORES, **burlex.TARNOVO_STORES}
+        for store, address in addresses.items():
             rows, observed = burlex.collect(store, client)
             rows = list(rows)
             if not rows:
                 raise ValueError("Burlex returned no usable prices")
             expiry = observed + timedelta(hours=12)
+            locality = "Велико Търново" if store in burlex.TARNOVO_STORES else "София"
             yield Batch(category, [
-                (category, burlex.SOURCE, "burlex", "София", address, row["code"],
+                (category, burlex.SOURCE, "burlex", locality, address, row["code"],
                  row["price"], observed.isoformat(), expiry.isoformat(), "BRANCH")
                 for row in rows
             ], burlex.render(store, rows, observed, summary=True))

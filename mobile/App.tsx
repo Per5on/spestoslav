@@ -387,6 +387,11 @@ function Main({ initialNotice, onErase }: {
   const cachedFooter = photoFooter && catalog.cached;
   const footerError = screen === "catalog" &&
     (catalog.storeError || (category === "fuel" && !locality && catalog.chainError ? "storesError" : ""));
+  const localityPriceGap = photoFooter && Boolean(locality) &&
+    !catalog.loading && !catalog.error && !catalog.storeLoading && !catalog.storeError &&
+    catalog.products.length > 0 &&
+    !catalog.products.some(product => !product.is_demo &&
+      (priceIndex.products.has(product.id) || indicativePrices.products.has(product.id)));
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]}>
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
@@ -758,6 +763,7 @@ function Main({ initialNotice, onErase }: {
         <View testID="catalog-footer" style={s.catalogFooter} accessibilityLiveRegion="polite">
           {photoFooter && <Text style={s.catalogFooterText}>{t("illustrativePhotoShort")}</Text>}
           {!!footerError && <Text style={[s.catalogFooterText, s.catalogFooterWarning]}>{t(footerError)}</Text>}
+          {localityPriceGap && <Text style={s.catalogFooterText}>{t("noLocalPrices")}</Text>}
           {cachedFooter && <Text style={s.catalogFooterText}>{t("cachedCatalog")}</Text>}
         </View>
       ) : null}

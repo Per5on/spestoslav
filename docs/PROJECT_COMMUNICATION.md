@@ -106,3 +106,8 @@ Delivered the build 015 pack with the APK, SQLite base and checksums. The four-h
 ## Nationwide directory validation
 
 - The owner asked to finish the interrupted nationwide run after reporting widespread missing prices. Completed isolated import and duplicate-free replay of the 1,563 reviewed records. Recorded the remaining grocery price gap and live rollout status. [Evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)
+
+
+## Nationwide rollout and build 016
+
+- The owner asked to implement the nationwide validation findings and prepare the next build. Published the directory, verified Пловдив fuel and technology and prepared build 016 for packaging. Grocery price coverage remains open in Пловдив. [Rollout record](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
