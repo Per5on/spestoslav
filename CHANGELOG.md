@@ -2,7 +2,9 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
-## Preview 10.9.1 · candidate
+## Preview 10.9.1 · build 017 · app 0.5.10
+
+- Delivered the signed internal ARM APK from source `2726bce`. Verified the package ID, Android version code 17, ABI set, checksum and same signing certificate as 10.8.1. Size 43,965,037 bytes (+91,339 bytes). [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
 
 - Added automatic mobile verification for pull requests, including strict TypeScript, fixture-based browser flows and thumbnail coverage and size reporting. Removed 17 unused mobile WebPs totalling 75,120 bytes from the repository. [Release plan](docs/PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
 - The food and technology catalogue buttons now read „Обнови цени“. „Горива“ retains pull-to-refresh.

@@ -191,3 +191,7 @@ The owner wrote:
 ## 24 November 2026 — authorize the preview 10.9.1 source commit
 
 - The owner asked to implement the remaining fixes where a solution was available and start the commit. The source candidate includes corrected artwork assignments and consolidated fuel loading. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+## 24 November 2026 — preview 10.9.1 APK approval
+
+- The owner approved building the APK. Packaged and verified the signed preview 10.9.1 ARM artifact. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)

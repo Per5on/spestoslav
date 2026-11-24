@@ -6,6 +6,10 @@ This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and th
 
 
 
+### 24 November 2026 — verified preview 10.9.1 Android APK
+
+Delivered build 017 (app 0.5.10) from source `2726bce`. The package ID and signing certificate match preview 10.8.1, and Android version code advanced to 17. Hosted Android, browser and database checks passed. The two new live API routes still returned 404 at packaging. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
+
 ### 24 November 2026 — preview 10.9.1 bug-fix plan
 
 Use the [release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan) and the new [mobile verification workflow](../.github/workflows/mobile-tests.yml). Run and assess the relevant checks before committing. The candidate implements the fuel and thumbnail fixes. Continue with hosted checks, backend rollout and the remaining release checks. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)

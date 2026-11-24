@@ -1,5 +1,5 @@
 {
-  "next_version": "017",
+  "next_version": "018",
   "versions": [
     {
       "version": "001",
@@ -66,6 +66,17 @@
       "snapshot": "preview016-thumbnail-reconciliation.jpg",
       "artifact_archive_digest": "sha256:7c5cce86b2387093745d3c676dd83100a2f8515ec358b0fab737a1d9431683ab",
       "sha256": "841e2ae92710989f4fb0466b6a76e821c16dead33596ba32b9c071698607f0d3"
+    },
+    {
+      "version": "017",
+      "label": "10.9.1",
+      "kind": "Internal test-signed ARM Android APK",
+      "url": "https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/45425062806",
+      "source": "2726bceaec6ee766dc4f4bb7159777ed33edc8ae",
+      "snapshot": "next-preview-search-tap-to-add.png",
+      "artifact_archive_digest": "sha256:65f29adc98ac3fca67461916154c5ab12023b7c50469fbe8e8fdaf62eb728282",
+      "sha256": "a4e7101c718e83a167c2b22ec1278cae757abfdc8f89d1658aba78d09e7e0d08"
     }
   ],
   "metadata_source": "../../mobile/preview.json"

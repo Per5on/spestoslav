@@ -1,6 +1,6 @@
 ## Preview 10.9.1 bug-fix release plan
 
-Use the signed preview 10.8.1 (build 016) as the comparison baseline. Keep the next Android sequence and package metadata pending until the candidate is ready. This plan covers the 24 November changes and carries over the unresolved defects that affect them.
+Use the signed preview 10.8.1 (build 016) as the comparison baseline. The approved APK uses build 017 and app version 0.5.10. This plan covers the 24 November changes and carries over the unresolved defects that affect them.
 
 | Order | Work | Automated verification and benefit |
 | --- | --- | --- |
@@ -27,7 +27,7 @@ The local browser entry point is `python mobile/scripts/verify-browser.py`. It p
 - [ ] **Verify the user's sign-in report on Android.** Check cold start, resume, offline recovery, expiry and refresh. Compare the stored session with provider cookie rotation. The current managed branch exposes no custom hash setting. Documented Better Auth default is scrypt. [Password hashing](https://better-auth.com/docs/reference/security)
 - [x] **Mock receipt document capture and fiscal QR.** Preview two images for a long receipt, fall back to one photo, reject an over-limit image, and decode fiscal metadata locally. The QR supplies fiscal ID, receipt number, date, time and total. [Mock results](NEXT_PREVIEW_MOCK.md)
 - [ ] **Validate and implement native receipt capture.** Evaluate Google ML Kit automatic crop on supported Android devices with the existing camera as fallback. Measure first-use download, scanner launch time, segmentation, OCR accuracy and upload size on real short and long receipts. The existing endpoint accepts one JPEG, PNG or WebP up to 8 MiB and 20 megapixels. Keep fiscal QR separate from product GTIN and use OCR or supported digital receipts for line items and currency. [Android document scanner](https://developers.google.com/ml-kit/vision/doc-scanner/android) · [NRA technical specification](https://nra.bg/wps/wcm/connect/nra.bg25863/6e2bcfb7-8035-445d-901f-e7f49a3d772e/Naredba%2B%E2%84%96%2BN-18%2B%2B2006.pdf?CACHEID=ROOTWORKSPACE.Z18_PPGAHG8009LJC0QTR5C2HH30I6-6e2bcfb7-8035-445d-901f-e7f49a3d772e-psWyuRZ&MOD=AJPERES)
-- [ ] **Wait for explicit approval before packaging the next APK.**
+- [x] **Package the approved preview 10.9.1 APK.** Verified both ARM ABIs, signing continuity and the downloaded SHA-256 for build 017. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
 
 ## Build 016 release plan
 
