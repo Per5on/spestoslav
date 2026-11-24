@@ -6,6 +6,8 @@ Updated: 24 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 Staged price refresh labels, list virtualization and session recovery after a rejected access token. The browser checks passed. Added the cart action, camera document mode, and long-receipt QR assessment to the backlog. Physical Android verification and APK approval remain open. [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
 
+The fuel price delay remains open for device measurement. Build 10.8.1 caches valid local fuel prices. The staged list change reduces rendering work, while the first uncached price still requires the grade catalogue, local stations and a current price feed. [Fuel follow-up](ACTIVITY_LOG.md#24-november-2026--fuel-price-loading-follow-up)
+
 ## Current work — preview 10.8.1
 
 The reviewed nationwide directory is live with 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It has 17 indicative fuel offers and five indicative technology offers. A matched fresh grocery feed for the city is still needed.

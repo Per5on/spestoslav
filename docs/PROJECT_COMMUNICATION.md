@@ -167,3 +167,6 @@ The owner wrote:
 
 - The owner requested „Обнови цени“, lazy loading with 10, 15 or 20 rows depending on delay, direct cart addition from search, the password hashing method, investigation of one repeated sign-in report, document mode, QR extraction for long receipts, and a performance assessment.
 - Staged the price labels, 15-row virtualization and 401 recovery. Recorded the direct-add and camera options, QR limits, and Android checks. [Next preview TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+
+- The owner asked about the fuel-price loading delay after the next-preview list changes. Confirmed the difference between cached prices, list rendering and a first uncached fetch. Added a dedicated Android timing task. [Fuel follow-up](ACTIVITY_LOG.md#24-november-2026--fuel-price-loading-follow-up)
