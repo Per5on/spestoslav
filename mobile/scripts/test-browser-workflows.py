@@ -44,7 +44,12 @@ with sync_playwright() as p:
  picker.value.set_files(root/'simulation-ean13.png');expect(page.get_by_label('Търсене по баркод',exact=True)).to_have_value('4006381333931',timeout=30000);proof['image_decoding']=True
  menu('Вход');page.get_by_label('Имейл',exact=True).fill('alice@example.invalid');page.get_by_label('Парола (поне 8 знака)',exact=True).fill('simulation-password');page.get_by_role('button',name='Вход',exact=True).click();expect(page.get_by_text('alice@example.invalid',exact=True)).to_be_visible(timeout=15000)
  menu('Сканирай');page.get_by_label('Търсене по баркод',exact=True).fill('1234567890128');page.get_by_role('button',name='Намери продукт',exact=True).click();page.get_by_role('button',name='Заяви разпознаване',exact=True).click(timeout=10000);expect(page.get_by_text('Заявката е изпратена за проверка. Не е добавен непроверен продукт.',exact=True)).to_be_visible();proof['unknown_barcode_review_request']=True
- menu('Касови бележки')
+ # A rejected access token must not discard a still-valid provider session.
+ page.route('**/api/v1/receipts', lambda route: route.fulfill(status=401,json={'detail':'Expired access token'}),times=1)
+ with page.expect_response(lambda r: r.url.endswith('/api/v1/auth/refresh') and r.status==200):
+  menu('Касови бележки')
+ expect(page.get_by_role('button',name='Вход',exact=True)).to_have_count(0)
+ proof['protected_read_refreshes_session_after_401']=True
  with page.expect_file_chooser() as picker:page.get_by_role('button',name='Избери снимка',exact=True).click()
  picker.value.set_files(root/'simulation-receipt.png');page.get_by_role('button',name='Изпрати лично',exact=True).click();expect(page.get_by_text('В опашката за обработка',exact=True).first).to_be_visible(timeout=15000)
  result=page.request.post(args.api_url+'/__simulation/ocr');assert result.json()['processed'] is True

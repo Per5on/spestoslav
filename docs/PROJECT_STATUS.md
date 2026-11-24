@@ -2,6 +2,10 @@
 
 Updated: 24 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
 
+## Next preview preparation
+
+Staged price refresh labels, list virtualization and session recovery after a rejected access token. The browser checks passed. Added the cart action, camera document mode, and long-receipt QR assessment to the backlog. Physical Android verification and APK approval remain open. [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
 ## Current work — preview 10.8.1
 
 The reviewed nationwide directory is live with 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It has 17 indicative fuel offers and five indicative technology offers. A matched fresh grocery feed for the city is still needed.

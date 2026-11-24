@@ -161,3 +161,9 @@ The owner wrote:
 
 - The owner approved packaging the combined fixes as bug-fix preview-10.8.1 and asked for a full code, currency and regression check before the build. The candidate uses Android version code 16 and app version 0.5.9. [Changelog](../CHANGELOG.md#preview-1081--build-016--app-059)
 - Completed the pre-build audit, fixed receipt review and currency regressions, and delivered the checked internal APK. Device acceptance and backend rollout remain pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)
+
+
+## 24 November 2026 — next preview preparation
+
+- The owner requested „Обнови цени“, lazy loading with 10, 15 or 20 rows depending on delay, direct cart addition from search, the password hashing method, investigation of one repeated sign-in report, document mode, QR extraction for long receipts, and a performance assessment.
+- Staged the price labels, 15-row virtualization and 401 recovery. Recorded the direct-add and camera options, QR limits, and Android checks. [Next preview TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation)

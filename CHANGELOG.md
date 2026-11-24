@@ -2,6 +2,13 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
+## Unreleased · next Android preview
+
+- The food and technology catalogue buttons now read „Обнови цени“. „Горива“ retains pull-to-refresh.
+- The three catalogue tabs and basket render rows as needed, starting with a batch of 15. Search suggestions also start at 15. In Chromium, the initial grocery card count fell from 40 to 15. Android timings remain open.
+- Fixed an avoidable sign-in prompt. After a protected request returns 401, the app checks the provider session and retries a safe read once if renewal succeeds.
+- Assessed direct addition from search, document capture, and receipt QR extraction. [Performance assessment and remaining tasks](docs/PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
 ## Preview 10.8.1 · build 016 · app 0.5.9
 
 - Delivered the signed internal ARM APK from source `d1a6a2d`. Verified Android version code 16, app version 0.5.9, both ARM ABIs and the downloaded SHA-256. Physical-device acceptance remains open. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)

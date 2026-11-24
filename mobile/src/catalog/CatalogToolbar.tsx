@@ -36,7 +36,7 @@ export function CatalogToolbar({ children, onRefresh, fuel, onFuel }: {
   return (
     <View testID="catalog-toolbar" style={[s.headingRow, { alignItems: "stretch" }]}>
       <View style={{ flex: 1, minWidth: 0 }}>{children}</View>
-      <Button compactRefresh label={t("refresh")} onPress={onRefresh} />
+      <Button compactRefresh label={t("refreshPrices")} onPress={onRefresh} />
     </View>
   );
 }

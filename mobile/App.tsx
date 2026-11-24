@@ -14,6 +14,7 @@ import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
+  FlatList,
   Platform,
   RefreshControl,
   ScrollView,
@@ -34,6 +35,7 @@ import {
   BasketItem,
   MAX_BASKET_ITEMS,
   Product,
+  type Retailer,
   changeQuantity,
   restoreBasket,
   indexLowestPrices, indexIndicativePrices, groupFuelResults,
@@ -131,6 +133,13 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+const tabBatchSize = 15;
+type TabRow =
+  | { kind: "product"; key: string; value: Product }
+  | { kind: "basket"; key: string; value: BasketItem }
+  | { kind: "fuel"; key: string; value: ReturnType<typeof groupFuelResults>[number] }
+  | { kind: "retailer"; key: string; value: Retailer };
+
 function Main({ initialNotice, onErase }: {
   initialNotice: MessageKey | "";
   onErase: (cloud: Promise<CloudErasure>) => void;
@@ -142,6 +151,7 @@ function Main({ initialNotice, onErase }: {
   const headerInk = palette === 0 ? "#fff" : contrastingInk(color("#195b27", true));
   const selectedInk = palette === 0 ? "#fff" : contrastingInk(color("#ff8500", true));
   const contentRef = useRef<ScrollView>(null);
+  const tabList = useRef<FlatList<TabRow>>(null);
   const [category, setCategory] = useState<Category>("groceries"),
     [screen, setScreen] = useState<Screen>("catalog");
   const [locality, setLocality] = useState<Locality | null>(null),
@@ -151,8 +161,7 @@ function Main({ initialNotice, onErase }: {
   const [appliedQuery, setAppliedQuery] = useState("");
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
-    [pageSize, setPageSize] = useState(40),
-    [suggestionLimit,setSuggestionLimit]=useState(40),
+    [suggestionLimit, setSuggestionLimit] = useState(tabBatchSize),
     [group, setGroup] = useState<string | null>(null),
     [selected, setSelected] = useState<string[]>([]),
     [draft, setDraft] = useState<string[]>([]);
@@ -170,6 +179,7 @@ function Main({ initialNotice, onErase }: {
   }, [restored]);
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
+    tabList.current?.scrollToOffset({ offset: 0, animated: false });
   }, [screen, category]);
   const comparisonKey = JSON.stringify({ basket, locality: locality?.id });
   const comparison = quote?.key === comparisonKey ? quote.data : null;
@@ -367,8 +377,7 @@ function Main({ initialNotice, onErase }: {
       return indexed && (matchesSearchText(indexed.text, tokens) || indexed.foldedName.includes(normalizedQuery));
     });
   }, [catalog.products, language, query, searchIndex, searchOpen]);
-  useEffect(()=>setSuggestionLimit(40),[query,category]);
-  useEffect(() => setPageSize(40), [selected, group, category]);
+  useEffect(() => setSuggestionLimit(tabBatchSize), [query, category]);
   function thumbnail(p: Product) {
     const art = productArtwork(p);
     return <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
@@ -413,6 +422,334 @@ function Main({ initialNotice, onErase }: {
     catalog.products.length > 0 &&
     !catalog.products.some(product => !product.is_demo &&
       (priceIndex.products.has(product.id) || indicativePrices.products.has(product.id)));
+  const tabRows = useMemo<TabRow[]>(() => {
+    if (screen === "basket") {
+      return basket.map(value => ({ kind: "basket", key: value.product.id, value }));
+    }
+    if (screen !== "catalog") return [];
+    if (category !== "fuel") {
+      return visible.map(value => ({ kind: "product", key: value.id, value }));
+    }
+    return locality
+      ? fuelResults.map(value => ({ kind: "fuel", key: value.key, value }))
+      : catalog.retailers.map(value => ({ kind: "retailer", key: value.code, value }));
+  }, [screen, basket, category, visible, locality, fuelResults, catalog.retailers]);
+  function renderTabRow({ item }: { item: TabRow }) {
+    switch (item.kind) {
+      case "product":
+        return productCard(item.value);
+      case "retailer": {
+        const chain = item.value;
+        return (
+          <View style={s.store}>
+            <View style={{ flex: 1, gap: 5 }}>
+              <Text style={s.productName}>{chain.name}</Text>
+              <Text style={s.meta}>{t("chainOverview")}</Text>
+            </View>
+          </View>
+        );
+      }
+      case "fuel": {
+        const row = item.value;
+        const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
+        const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
+        return <View key={row.key} style={s.store}>
+          <View style={s.storeMark}>
+            <Ionicons name="car-outline" size={25} color={color("#19562a")} />
+          </View>
+          <View style={{ flex: 1, gap: 5 }}>
+            <Text style={s.productName}>{row.name}</Text>
+            {row.branchCount > 0 && row.estimate && (
+              <>
+                <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
+                <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
+              </>
+            )}
+            {row.stations.map(({ store, price }) => (
+              <View key={store.id} style={{ gap: 4 }}>
+                <Text style={s.meta}>{store.address}</Text>
+                <Text style={price === undefined ? s.meta : s.price}>
+                  {price === undefined ? t("noPrice") : `${price.toFixed(2)} €/L`}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>;
+      }
+      case "basket": {
+        const { product: p, quantity } = item.value;
+        return (
+          <View key={p.id} style={s.panel}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              {(p.category_code === "groceries" || p.category_code === "technology") && thumbnail(p)}
+              <View style={{ flex: 1, gap: 5 }}>
+                <Text style={s.productName}>{displayName(p)}</Text>
+                {p.is_demo && (
+                  <Text style={s.meta}>{t("demoProduct")}</Text>
+                )}
+              </View>
+            </View>
+            <View style={s.row}>
+              <Button
+                label="−"
+                disabled={comparing}
+                onPress={() => change(p, -1)}
+              />
+              <Text
+                accessibilityLabel={`${t("quantity")} ${quantity}`}
+                style={s.price}
+              >
+                {quantity}
+              </Text>
+              <Button
+                label="+"
+                disabled={comparing}
+                onPress={() => change(p, 1)}
+              />
+              <Button
+                label={t("remove")}
+                disabled={comparing}
+                onPress={() => {
+                  setBasket((items) =>
+                    items.filter((i) => i.product.id !== p.id),
+                  );
+                  setQuote(null);
+                }}
+              />
+            </View>
+          </View>
+        );
+      }
+    }
+  }
+  const bodyHeader = (
+    <View style={{ gap: 11 }}>
+      {screen === "catalog" ? (
+        <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}
+          onFuel={setFuel}>
+          {category !== "fuel" && (
+            <Input
+              testID="product-search"
+              accessibilityLabel={t("searchProduct")}
+              placeholder={t("searchProduct")}
+              style={s.productSearch}
+              value={query}
+              maxLength={80}
+              onFocus={() => {
+                if (!searchOpen) setDraft(selected);
+                setSearchOpen(true);
+              }}
+              onChangeText={(value) => {
+                setQuery(value);
+                setSearchOpen(true);
+              }}
+            />
+          )}
+        </CatalogToolbar>
+      ) : (
+        <View style={s.headingRow}>
+          {screen !== "basket" && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("back")}
+              style={s.button}
+              onPress={() =>
+                setScreen(
+                  ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
+                    ? "settings"
+                    : screen === "feedback" || screen === "thirdParties"
+                      ? "about"
+                      : "catalog",
+                )
+              }
+            >
+              <Ionicons name="arrow-back" color={color("#19562a")} size={20} />
+            </Pressable>
+          )}
+          <Text style={[s.heading, ["settings", "language", "font", "terms", "privacy"].includes(screen) && { color: "#111" }]}>{t(title)}</Text>
+        </View>
+      )}
+      {SIMULATION_MODE && <Text style={s.notice}>{t("simulationNotice")}</Text>}
+      {!!notice && (
+        <Text accessibilityLiveRegion="polite" style={s.notice}>
+          {t(notice)}
+        </Text>
+      )}
+      {screen === "catalog" && (
+        <>
+          {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
+          {category !== "fuel" ? (
+            <>
+              {searchOpen && (
+                <View style={s.panel}>
+                  {suggestions.slice(0,suggestionLimit)
+                    .map((p) => (
+                      <Pressable
+                        key={p.id}
+                        accessibilityRole="checkbox"
+                        accessibilityLabel={displayName(p)}
+                        accessibilityState={{ checked: draft.includes(p.id) }}
+                        aria-checked={draft.includes(p.id)}
+                        style={s.option}
+                        onPress={() =>
+                          setDraft((d) =>
+                            d.includes(p.id)
+                              ? d.filter((id) => id !== p.id)
+                              : [...d, p.id],
+                          )
+                        }
+                      >
+                        <Ionicons
+                          name={
+                            draft.includes(p.id)
+                              ? "checkbox"
+                              : "square-outline"
+                          }
+                          size={24}
+                          color={color("#267133")}
+                        />
+                        <Text style={{ flex: 1, color: "#264c30" }}>
+                          {displayName(p)}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  {suggestions.length>suggestionLimit&&<Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`} onPress={() => setSuggestionLimit(n => n + tabBatchSize)}/>}
+                  <View style={s.row}>
+                    <Button
+                      label={t("clear")}
+                      onPress={() => {
+                        setDraft([]);
+                        setSelected([]);
+                        setAppliedQuery("");
+                        setQuery("");
+                      }}
+                    />
+                    <Button
+                      label={`${t("apply")} (${draft.length || (query.trim() ? suggestions.length : 0)})`}
+                      primary
+                      onPress={() => {
+                        setSelected(draft);
+                        setAppliedQuery(draft.length ? "" : query.trim());
+                        setSearchOpen(false);
+                      }}
+                    />
+                  </View>
+                </View>
+              )}
+              {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
+              {!!catalog.error && (
+                <View style={{ gap: 8 }}>
+                  <Text style={s.notice}>{t(catalog.error)}</Text>
+                  <Button label={t("retry")} onPress={catalog.refresh} />
+                </View>
+              )}
+              {!!groups.length && (
+                <CategoryGroups key={category} technology={category === "technology"}
+                  groups={[
+                    { code: null, label: t(category === "technology" ? "allProducts" : "allGroceries") },
+                    ...groups.map(code => ({ code, label: groupNames[code] ? t(groupNames[code]) : code })),
+                  ]}
+                  selected={group} onSelect={code => {
+                    setGroup(code);
+                    setSelected([]);
+                    setDraft([]);
+                    setAppliedQuery("");
+                    setQuery("");
+                    setSearchOpen(false);
+                  }} />
+              )}
+              {!catalog.loading && !catalog.error && !visible.length && (
+                <Text style={s.meta}>{t("emptyProducts")}</Text>
+              )}
+            </>
+          ) : (
+            <>
+              {!locality ? <>
+                <Text style={s.notice}>{t("chainCoverage")}</Text>
+                {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
+              </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
+              {locality &&
+                !catalog.storeLoading &&
+                !catalog.storeError &&
+                !catalog.stores.length && (
+                  <Text style={s.notice}>{t("noStores")}</Text>
+                )}
+            </>
+          )}
+        </>
+      )}
+      {screen === "basket" && !basket.length && <Text style={s.notice}>{t("emptyList")}</Text>}
+    </View>
+  );
+  const bodyFooter = (
+    <View style={{ gap: 11 }}>
+      {screen === "merchants" && <MerchantDirectoryScreen />}
+      {screen === "basket" && (
+        <>
+          <Button
+            label={t(comparing ? "comparing" : "compare")}
+            primary
+            disabled={comparing || !basket.length}
+            onPress={compare}
+          />
+          {comparison && (
+            <BasketComparison key={comparison.quoted_at ?? comparisonKey}
+              comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
+          )}
+        </>
+      )}
+      {screen === "scan" && (
+        <ScanScreen onAdd={(product) => change(product, 1)} />
+      )}
+      {screen === "login" && <AccountScreen />}
+      {screen === "receipts" && (
+        <ReceiptsScreen
+          localityId={locality?.id}
+          onLogin={() => setScreen("login")}
+        />
+      )}
+      {screen === "settings" && (
+        <View testID="settings-columns" style={{ flexDirection: "row", gap: 8 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <SettingsChoices singleColumn items={[
+              { value: "language", label: t("language"), icon: "language-outline" },
+              { value: "appearance", label: t("appearance"), icon: "color-palette-outline" },
+              { value: "font", label: t("font"), icon: "text-outline" },
+            ]} onSelect={value => setScreen(value as "appearance" | "font" | "language")} />
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <SettingsChoices singleColumn items={[
+              { value: "terms", label: t("terms"), icon: "document-text-outline" },
+              { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" },
+              { value: "deleteData", label: t("deleteData"), icon: "trash-outline" },
+            ]} onSelect={value => setScreen(value as "deleteData" | "terms" | "privacy")} />
+          </View>
+        </View>
+      )}
+      {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
+      {screen === "appearance" && <AppearanceScreen />}
+      {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
+        onThirdParties={() => setScreen("thirdParties")} />}
+      {screen === "thirdParties" && <ThirdPartiesScreen />}
+      {screen === "feedback" && <FeedbackScreen />}
+      {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
+      {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
+        selected={language} onSelect={value => setLanguage(value as Language)} />}
+      {screen === "font" && <View style={{ gap: 12 }}>
+        <SettingsChoices radio items={[
+          { value: "0.9", label: t("small") }, { value: "1", label: t("normal") },
+          { value: "1.15", label: t("large") }, { value: "1.3", label: t("extraLarge") },
+        ]} selected={String(fontScale)} onSelect={value => setFontScale(Number(value))} />
+        <Text style={{ color: "#111" }}>{t("fontPreview")}</Text>
+      </View>}
+    </View>
+  );
   return (
     <SafeAreaView style={s.page} edges={["top", "bottom"]} onLayout={() => {
       if (Platform.OS === "web" || startupShown.current) return;
@@ -471,317 +808,31 @@ function Main({ initialNotice, onErase }: {
           </Pressable>
         ))}
       </View>
-      <ScrollView
-        ref={contentRef}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={s.body}
-        refreshControl={Platform.OS !== "web" && screen === "catalog"
-          ? <RefreshControl refreshing={catalog.refreshing} onRefresh={catalog.refresh}
-              colors={[color("#19562a")]} tintColor={color("#19562a")} />
-          : undefined}
-      >
-        {screen === "catalog" ? (
-          <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}
-            onFuel={setFuel}>
-            {category !== "fuel" && (
-              <Input
-                testID="product-search"
-                accessibilityLabel={t("searchProduct")}
-                placeholder={t("searchProduct")}
-                style={s.productSearch}
-                value={query}
-                maxLength={80}
-                onFocus={() => {
-                  if (!searchOpen) setDraft(selected);
-                  setSearchOpen(true);
-                }}
-                onChangeText={(value) => {
-                  setQuery(value);
-                  setSearchOpen(true);
-                }}
-              />
-            )}
-          </CatalogToolbar>
-        ) : (
-          <View style={s.headingRow}>
-            {screen !== "basket" && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("back")}
-                style={s.button}
-                onPress={() =>
-                  setScreen(
-                    ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
-                      ? "settings"
-                      : screen === "feedback" || screen === "thirdParties"
-                        ? "about"
-                        : "catalog",
-                  )
-                }
-              >
-                <Ionicons name="arrow-back" color={color("#19562a")} size={20} />
-              </Pressable>
-            )}
-            <Text style={[s.heading, ["settings", "language", "font", "terms", "privacy"].includes(screen) && { color: "#111" }]}>{t(title)}</Text>
-          </View>
-        )}
-        {SIMULATION_MODE && <Text style={s.notice}>{t("simulationNotice")}</Text>}
-        {!!notice && (
-          <Text accessibilityLiveRegion="polite" style={s.notice}>
-            {t(notice)}
-          </Text>
-        )}
-        {screen === "catalog" && (
-          <>
-            {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
-            {category !== "fuel" ? (
-              <>
-                {searchOpen && (
-                  <View style={s.panel}>
-                    {suggestions.slice(0,suggestionLimit)
-                      .map((p) => (
-                        <Pressable
-                          key={p.id}
-                          accessibilityRole="checkbox"
-                          accessibilityLabel={displayName(p)}
-                          accessibilityState={{ checked: draft.includes(p.id) }}
-                          aria-checked={draft.includes(p.id)}
-                          style={s.option}
-                          onPress={() =>
-                            setDraft((d) =>
-                              d.includes(p.id)
-                                ? d.filter((id) => id !== p.id)
-                                : [...d, p.id],
-                            )
-                          }
-                        >
-                          <Ionicons
-                            name={
-                              draft.includes(p.id)
-                                ? "checkbox"
-                                : "square-outline"
-                            }
-                            size={24}
-                            color={color("#267133")}
-                          />
-                          <Text style={{ flex: 1, color: "#264c30" }}>
-                            {displayName(p)}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    {suggestions.length>suggestionLimit&&<Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`} onPress={()=>setSuggestionLimit(n=>n+40)}/>}
-                    <View style={s.row}>
-                      <Button
-                        label={t("clear")}
-                        onPress={() => {
-                          setDraft([]);
-                          setSelected([]);
-                          setAppliedQuery("");
-                          setQuery("");
-                        }}
-                      />
-                      <Button
-                        label={`${t("apply")} (${draft.length || (query.trim() ? suggestions.length : 0)})`}
-                        primary
-                        onPress={() => {
-                          setSelected(draft);
-                          setAppliedQuery(draft.length ? "" : query.trim());
-                          setSearchOpen(false);
-                        }}
-                      />
-                    </View>
-                  </View>
-                )}
-                {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
-                {!!catalog.error && (
-                  <View style={{ gap: 8 }}>
-                    <Text style={s.notice}>{t(catalog.error)}</Text>
-                    <Button label={t("retry")} onPress={catalog.refresh} />
-                  </View>
-                )}
-                {!!groups.length && (
-                  <CategoryGroups key={category} technology={category === "technology"}
-                    groups={[
-                      { code: null, label: t(category === "technology" ? "allProducts" : "allGroceries") },
-                      ...groups.map(code => ({ code, label: groupNames[code] ? t(groupNames[code]) : code })),
-                    ]}
-                    selected={group} onSelect={code => {
-                      setGroup(code);
-                      setSelected([]);
-                      setDraft([]);
-                      setAppliedQuery("");
-                      setQuery("");
-                      setSearchOpen(false);
-                    }} />
-                )}
-                {visible.slice(0, pageSize).map(productCard)}
-                {visible.length > pageSize && (
-                  <Button
-                    label={`${t("showMore")} (${pageSize}/${visible.length})`}
-                    onPress={() => setPageSize((n) => n + 40)}
-                  />
-                )}
-                {!catalog.loading && !catalog.error && !visible.length && (
-                  <Text style={s.meta}>{t("emptyProducts")}</Text>
-                )}
-              </>
-            ) : (
-              <>
-                {!locality ? <>
-                  <Text style={s.notice}>{t("chainCoverage")}</Text>
-                  {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
-                  {catalog.retailers.map(chain => <View key={chain.code} style={s.store}>
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <Text style={s.productName}>{chain.name}</Text>
-                      <Text style={s.meta}>{t("chainOverview")}</Text>
-                    </View>
-                  </View>)}
-                </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
-                {fuelResults.map(row => {
-                  const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
-                  const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
-                  return <View key={row.key} style={s.store}>
-                    <View style={s.storeMark}>
-                      <Ionicons name="car-outline" size={25} color={color("#19562a")} />
-                    </View>
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <Text style={s.productName}>{row.name}</Text>
-                      {row.branchCount > 0 && row.estimate && (
-                        <>
-                          <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
-                          <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
-                        </>
-                      )}
-                      {row.stations.map(({ store, price }) => (
-                        <View key={store.id} style={{ gap: 4 }}>
-                          <Text style={s.meta}>{store.address}</Text>
-                          <Text style={price === undefined ? s.meta : s.price}>
-                            {price === undefined ? t("noPrice") : `${price.toFixed(2)} €/L`}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>;
-                })}
-                {locality &&
-                  !catalog.storeLoading &&
-                  !catalog.storeError &&
-                  !catalog.stores.length && (
-                    <Text style={s.notice}>{t("noStores")}</Text>
-                  )}
-              </>
-            )}
-          </>
-        )}
-        {screen === "merchants" && <MerchantDirectoryScreen />}
-        {screen === "basket" && (
-          <>
-            {!basket.length && <Text style={s.notice}>{t("emptyList")}</Text>}
-            {basket.map(({ product: p, quantity }) => (
-              <View key={p.id} style={s.panel}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  {(p.category_code === "groceries" || p.category_code === "technology") && thumbnail(p)}
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text style={s.productName}>{displayName(p)}</Text>
-                    {p.is_demo && (
-                      <Text style={s.meta}>{t("demoProduct")}</Text>
-                    )}
-                  </View>
-                </View>
-                <View style={s.row}>
-                  <Button
-                    label="−"
-                    disabled={comparing}
-                    onPress={() => change(p, -1)}
-                  />
-                  <Text
-                    accessibilityLabel={`${t("quantity")} ${quantity}`}
-                    style={s.price}
-                  >
-                    {quantity}
-                  </Text>
-                  <Button
-                    label="+"
-                    disabled={comparing}
-                    onPress={() => change(p, 1)}
-                  />
-                  <Button
-                    label={t("remove")}
-                    disabled={comparing}
-                    onPress={() => {
-                      setBasket((items) =>
-                        items.filter((i) => i.product.id !== p.id),
-                      );
-                      setQuote(null);
-                    }}
-                  />
-                </View>
-              </View>
-            ))}
-            <Button
-              label={t(comparing ? "comparing" : "compare")}
-              primary
-              disabled={comparing || !basket.length}
-              onPress={compare}
-            />
-            {comparison && (
-              <BasketComparison key={comparison.quoted_at ?? comparisonKey}
-                comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
-            )}
-          </>
-        )}
-        {screen === "scan" && (
-          <ScanScreen onAdd={(product) => change(product, 1)} />
-        )}
-        {screen === "login" && <AccountScreen />}
-        {screen === "receipts" && (
-          <ReceiptsScreen
-            localityId={locality?.id}
-            onLogin={() => setScreen("login")}
-          />
-        )}
-        {screen === "settings" && (
-          <View testID="settings-columns" style={{ flexDirection: "row", gap: 8 }}>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <SettingsChoices singleColumn items={[
-                { value: "language", label: t("language"), icon: "language-outline" },
-                { value: "appearance", label: t("appearance"), icon: "color-palette-outline" },
-                { value: "font", label: t("font"), icon: "text-outline" },
-              ]} onSelect={value => setScreen(value as "appearance" | "font" | "language")} />
-            </View>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <SettingsChoices singleColumn items={[
-                { value: "terms", label: t("terms"), icon: "document-text-outline" },
-                { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" },
-                { value: "deleteData", label: t("deleteData"), icon: "trash-outline" },
-              ]} onSelect={value => setScreen(value as "deleteData" | "terms" | "privacy")} />
-            </View>
-          </View>
-        )}
-        {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
-        {screen === "appearance" && <AppearanceScreen />}
-        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
-          onThirdParties={() => setScreen("thirdParties")} />}
-        {screen === "thirdParties" && <ThirdPartiesScreen />}
-        {screen === "feedback" && <FeedbackScreen />}
-        {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
-        {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
-          selected={language} onSelect={value => setLanguage(value as Language)} />}
-        {screen === "font" && <View style={{ gap: 12 }}>
-          <SettingsChoices radio items={[
-            { value: "0.9", label: t("small") }, { value: "1", label: t("normal") },
-            { value: "1.15", label: t("large") }, { value: "1.3", label: t("extraLarge") },
-          ]} selected={String(fontScale)} onSelect={value => setFontScale(Number(value))} />
-          <Text style={{ color: "#111" }}>{t("fontPreview")}</Text>
-        </View>}
-
-      </ScrollView>
+      {screen === "catalog" || screen === "basket" ? (
+        <FlatList
+          key={screen === "basket" ? "basket" : category}
+          ref={tabList}
+          data={tabRows}
+          keyExtractor={row => row.key}
+          renderItem={renderTabRow}
+          initialNumToRender={tabBatchSize}
+          maxToRenderPerBatch={tabBatchSize}
+          windowSize={5}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={s.body}
+          ListHeaderComponent={bodyHeader}
+          ListFooterComponent={screen === "basket" ? bodyFooter : null}
+          refreshControl={Platform.OS !== "web" && screen === "catalog"
+            ? <RefreshControl refreshing={catalog.refreshing} onRefresh={catalog.refresh}
+                colors={[color("#19562a")]} tintColor={color("#19562a")} />
+            : undefined}
+        />
+      ) : (
+        <ScrollView ref={contentRef} keyboardShouldPersistTaps="handled" contentContainerStyle={s.body}>
+          {bodyHeader}
+          {bodyFooter}
+        </ScrollView>
+      )}
       {(photoFooter || cachedFooter || footerError) ? (
         <View testID="catalog-footer" style={s.catalogFooter} accessibilityLiveRegion="polite">
           {photoFooter && <Text style={s.catalogFooterText}>{t("illustrativePhotoShort")}</Text>}

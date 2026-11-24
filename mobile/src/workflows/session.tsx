@@ -189,6 +189,20 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     await clear().catch(() => undefined);
   }
 
+  async function refreshSession(before: number) {
+    if (!pending.current) {
+      pending.current = refresh().finally(() => {
+        pending.current = null;
+      });
+    }
+    try {
+      return await pending.current;
+    } catch (error) {
+      if (before === generation.current && httpStatus(error) === 401) await clear();
+      throw error;
+    }
+  }
+
   async function request<T>(
     path: string,
     options: RequestInit = {},
@@ -196,39 +210,35 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   ) {
     if (!current.current) throw new ApiError(401);
     const before = generation.current;
-    if (Date.now() - issued.current > 12 * 60 * 1000) {
-      if (!pending.current)
-        pending.current = refresh().finally(() => {
-          pending.current = null;
-        });
-      try {
-        await pending.current;
-      } catch (e) {
-        if (before === generation.current && httpStatus(e) === 401) await clear();
-        throw e;
-      }
-    }
-    const fresh = current.current;
-    if (!fresh || before !== generation.current) throw new ApiError(401);
-    try {
-      const result = await api<T>(
-        path,
-        {
-          ...options,
-          headers: {
-            ...options.headers,
-            Authorization: "Bearer " + fresh.access_token,
-          },
+    if (Date.now() - issued.current > 12 * 60 * 1000) await refreshSession(before);
+
+    async function send() {
+      const value = current.current;
+      if (!value || before !== generation.current) throw new ApiError(401);
+      const result = await api<T>(path, {
+        ...options,
+        headers: {
+          ...options.headers,
+          Authorization: "Bearer " + value.access_token,
         },
-        timeoutMs,
-      );
+      }, timeoutMs);
       if (before !== generation.current) throw new Error("Session changed");
       return result;
-    } catch (e) {
-      if (before === generation.current && httpStatus(e) === 401) await clear();
-      throw e;
+    }
+
+    const token = current.current?.access_token;
+    try {
+      return await send();
+    } catch (error) {
+      if (before !== generation.current || httpStatus(error) !== 401) throw error;
+      // A rejected access token does not establish that the provider session ended.
+      if (current.current?.access_token === token) await refreshSession(before);
+      const method = (options.method ?? "GET").toUpperCase();
+      if (method === "GET" || method === "HEAD") return send();
+      throw error;
     }
   }
+
   return (
     <Context.Provider value={{ user, ready, restoreUnavailable, retryRestore, signIn, signOut, deleteAccount, eraseServerData, request }}>
       {children}
