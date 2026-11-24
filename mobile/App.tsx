@@ -161,7 +161,9 @@ function Main({ initialNotice, onErase }: {
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, restored && (screen === "catalog" || screen === "basket"));
+  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, {
+    active: restored && (screen === "catalog" || screen === "basket"),
+  });
   const thumbnailUrls = useThumbnailManifest(catalog.revision);
   useEffect(() => {
     if (restored) void enableCatalogSync().catch(error => console.warn("Could not schedule catalogue sync", error));

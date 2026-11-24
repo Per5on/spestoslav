@@ -38,7 +38,7 @@ export function ReceiptsScreen({
   localityId: string | undefined;
   onLogin: () => void;
 }) {
-  const catalogue = useCatalog("groceries", localityId, false, false);
+  const catalogue = useCatalog("groceries", localityId, false, { includePrices: false });
   const stores = catalogue.stores;
   const session = useSession(),
     { t, styles: s } = useUI();

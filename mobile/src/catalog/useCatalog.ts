@@ -20,7 +20,7 @@ export function useCatalog(
   category: Category,
   localityId: string | undefined,
   demo: boolean,
-  active: boolean,
+  { active = true, includePrices = true }: { active?: boolean; includePrices?: boolean } = {},
 ) {
   const [revision, setRevision] = useState(0);
   const [resumeRevision, setResumeRevision] = useState(0);
@@ -92,10 +92,10 @@ export function useCatalog(
       const [stores, prices, online] = await Promise.allSettled([
         storesResource.load(scope, signal, force, rows => show("stores", rows))
           .then(rows => show("stores", rows)),
-        pricesResource.load(scope, signal, force, rows => show("prices", rows))
-          .then(rows => show("prices", rows)),
-        onlineResource.load(scope, signal, force, rows => show("online", rows))
-          .then(rows => show("online", rows)),
+        includePrices ? pricesResource.load(scope, signal, force, rows => show("prices", rows))
+          .then(rows => show("prices", rows)) : Promise.resolve(),
+        includePrices ? onlineResource.load(scope, signal, force, rows => show("online", rows))
+          .then(rows => show("online", rows)) : Promise.resolve(),
       ]);
       if (signal.aborted) return;
       if (stores.status === "rejected") setStoreError("storesError");
@@ -117,9 +117,9 @@ export function useCatalog(
       setRefreshing(false);
     });
     return () => controller.abort();
-  }, [active, category, localityId, revision, loadKey]);
+  }, [active, category, localityId, revision, loadKey, includePrices]);
 
-  const warm = active && loaded && !refreshing && !error && !storeError;
+  const warm = active && includePrices && loaded && !refreshing && !error && !storeError;
   useEffect(() => {
     if (!warm || !localityId) return;
     const controller = new AbortController();
@@ -147,7 +147,8 @@ export function useCatalog(
     prices: data?.prices ?? noPrices,
     online: data?.online ?? noOnline,
     storeLoading: Boolean(localityId) && !loaded &&
-      (!data?.stores || !data.prices || !data.online || (category === "fuel" && !products.fuel)),
+      (!data?.stores || (includePrices && (!data.prices || !data.online)) ||
+        (category === "fuel" && !products.fuel)),
     storeError,
     revision,
     refreshing,
