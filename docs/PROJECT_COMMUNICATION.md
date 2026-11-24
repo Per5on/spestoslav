@@ -155,3 +155,8 @@ The owner wrote:
 
 - The owner asked whether the two-source approach repeats across most locations, requested nationwide verification and asked that differing collection methods and findings be recorded in the upcoming changelog.
 - The owner asked to check regressions and missing dependencies after the audit, then stop the work environment to save electricity. They asked whether the chat window could be closed while the run continued. The audit, verification and handoff are filed in the repository. [Audit](ACTIVITY_LOG.md#23-november-2026--nationwide-price-source-audit-and-regression-check)
+
+
+## 24 November 2026 — preview-10.8.1 build approval
+
+- The owner approved packaging the combined fixes as bug-fix preview-10.8.1 and asked for a full code, currency and regression check before the build. The candidate uses Android version code 16 and app version 0.5.9. [Changelog](../CHANGELOG.md#preview-1081--build-016--app-059)

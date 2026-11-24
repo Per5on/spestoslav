@@ -2,7 +2,7 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
-## Unreleased · build 016 · app 0.5.9
+## Preview 10.8.1 · build 016 · app 0.5.9
 
 - Published the nationwide directory with 1,585 active branches. In Пловдив, live checks found five indicative technology offers and 17 indicative fuel offers. Current grocery prices for the city are still pending.
 - Added a notice in the grocery and technology tabs when the selected town has no current prices. Included four reviewed Велико Търново branches in the staged grocery refresh. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
@@ -12,9 +12,12 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 - Fixed a startup flash by restoring the saved palette and dark mode before showing the first app screen. Android holds the splash until that screen is laid out.
 - Fixed candidate receipt upload recovery after a lost database commit response. Retries with the same request key can recover the saved receipt and its photo. Backend rollout is pending.
 - Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. [Rollout checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
-- A delayed browser fixture rendered the saved Sofia A95 price in 140 ms, updated it after the new response and removed it when the town changed. Mobile checks, Android JavaScript export and both hosted PostgreSQL jobs passed for the catalogue changes in `504f36b`. APK approval and on-device verification, including pull-to-refresh and background job execution, remain pending. [Catalogue checks](https://github.com/Per5on/spestoslav/actions/runs/45254713574) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
+- A delayed browser fixture rendered the saved Sofia A95 price in 140 ms, updated it after the new response and removed it when the town changed. Mobile checks, Android JavaScript export and both hosted PostgreSQL jobs passed for the catalogue changes in `504f36b`. On-device verification, including pull-to-refresh and background job execution, remains pending. [Catalogue checks](https://github.com/Per5on/spestoslav/actions/runs/45254713574) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
 
 - Replaced mixed thumbnail fallbacks in „Храни“ and „Техника“ with 33 consistent representative WebPs. The preview approved by the owner shows separate artwork for tomatoes, bananas, kettles and coffee machines. The app uses a versioned image manifest and the same bundled artwork during outages. Existing product-linked photos and the illustrative-image notice are retained. Live API rollout and installed-app acceptance remain pending. [Approved preview](docs/references/preview016-thumbnail-reconciliation.jpg)
+
+- Corrected BGN-to-EUR normalization for the sealed Burlex historical archive. Added a repeatable repair restricted to that imported history, plus currency checks for basket quotes, explicit Bulgarian receipt euro labels, and the indicative fuel feed. The production history repair requires a separate rollout.
+- Updated the price refresh cache to retain independent observations for the same offer and timestamp. The nationwide source rollout and automatic conflict review remain open.
 
 ### Nationwide price-source audit · 23 November 2026
 

@@ -141,7 +141,7 @@ def test_failed_object_deletion_is_retryable_and_not_processed(monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "currency,expected", [("EUR", "2.40"), ("BGN", None), ("", None)]
+    "currency,expected", [("EUR", "2.40"), ("ЕВРО", "2.40"), ("BGN", None), ("ЛВ.", None), ("", None)]
 )
 def test_ocr_ignores_totals_discounts_and_unknown_currency(currency, expected):
     as_user()

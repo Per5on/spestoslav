@@ -21,6 +21,7 @@ def offers(data, now):
     if (
         observed.utcoffset() is None
         or data["source"] != "live"
+        or data.get("currency", "EUR") != "EUR"
         or not now - timedelta(hours=24) <= observed <= now
         or source_date != observed.astimezone(sofia).date()
     ):

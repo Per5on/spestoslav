@@ -21,7 +21,7 @@ type Quote = {
   total_eur: string | null;
   items?: QuoteLine[];
 };
-export type Comparison = { quotes: Quote[]; cheapest: Quote | null; quoted_at?: string };
+export type Comparison = { currency: "EUR"; quotes: Quote[]; cheapest: Quote | null; quoted_at?: string };
 
 function quoteKey(quote: Quote) {
   return quote.branch_id ?? quote.retailer_code;

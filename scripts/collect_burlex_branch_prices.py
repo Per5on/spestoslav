@@ -3,7 +3,7 @@
 
 import argparse
 from datetime import datetime, timedelta, timezone
-from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from decimal import Decimal, InvalidOperation
 import json
 from pathlib import Path
 import re
@@ -12,7 +12,7 @@ from urllib.robotparser import RobotFileParser
 import httpx
 
 from collect_burlex_catalog import ENDPOINT, SOURCE
-from prepare_beta108_public_data import normal
+from prepare_beta108_public_data import bgn_to_eur, normal
 
 AGENT = "Spestovnik-Catalog-Review/0.3"
 STORES = {
@@ -81,7 +81,7 @@ def collect(store, client):
             raise ValueError(f"Invalid Burlex price for {code}") from exc
         if not bgn.is_finite() or not 0 <= bgn <= 99999:
             raise ValueError(f"Invalid Burlex price for {code}")
-        price = (bgn / Decimal("1.95583")).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        price = bgn_to_eur(bgn)
         if price <= 0:
             continue
         if code in rows and rows[code]["price"] != str(price):

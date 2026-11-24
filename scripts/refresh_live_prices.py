@@ -20,20 +20,18 @@ import collect_techmart_offers as techmart
 
 CATEGORIES = ("groceries", "technology", "fuel")
 DATA = Path(__file__).resolve().parents[1] / "data"
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS price_observations (
+TABLE = """CREATE TABLE IF NOT EXISTS price_observations (
     category TEXT NOT NULL, source_url TEXT NOT NULL, retailer TEXT NOT NULL,
     locality TEXT NOT NULL, store_address TEXT NOT NULL, product_key TEXT NOT NULL,
     price_eur TEXT NOT NULL, observed_at TEXT NOT NULL, valid_until TEXT NOT NULL,
     price_scope TEXT NOT NULL,
-    PRIMARY KEY (category, retailer, locality, store_address, product_key, observed_at)
-) WITHOUT ROWID;
-CREATE INDEX IF NOT EXISTS price_validity ON price_observations(category, valid_until);
-CREATE VIEW IF NOT EXISTS unexpired_observations AS
+    PRIMARY KEY (category, retailer, locality, store_address, product_key, observed_at, source_url, price_scope)
+) WITHOUT ROWID"""
+PRICE_INDEX = "CREATE INDEX IF NOT EXISTS price_validity ON price_observations(category, valid_until)"
+UNEXPIRED_VIEW = """CREATE VIEW IF NOT EXISTS unexpired_observations AS
     SELECT * FROM price_observations
     WHERE julianday(observed_at) <= julianday('now')
-      AND julianday(valid_until) > julianday('now');
-"""
+      AND julianday(valid_until) > julianday('now')"""
 
 
 @dataclass
@@ -81,7 +79,18 @@ def collect_batches(category, client, failed_sku):
 def cache_batches(path, batches):
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as cache:
-        cache.executescript(SCHEMA)
+        cache.execute("BEGIN IMMEDIATE")
+        columns = cache.execute("PRAGMA table_info(price_observations)").fetchall()
+        old_key = columns and not any(row[1] == "source_url" and row[5] for row in columns)
+        if old_key:
+            cache.execute("DROP VIEW IF EXISTS unexpired_observations")
+            cache.execute("ALTER TABLE price_observations RENAME TO previous_price_observations")
+        cache.execute(TABLE)
+        if old_key:
+            cache.execute("INSERT INTO price_observations SELECT * FROM previous_price_observations")
+            cache.execute("DROP TABLE previous_price_observations")
+        cache.execute(PRICE_INDEX)
+        cache.execute(UNEXPIRED_VIEW)
         cache.executemany(
             """INSERT INTO price_observations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT DO NOTHING""",

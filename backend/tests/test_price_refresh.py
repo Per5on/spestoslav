@@ -70,6 +70,8 @@ def test_invalid_fuel_source_is_reported():
     payload["providers"][0]["a95"] = "1.45"
     rows, observed = karai.offers(payload, now)
     assert rows == [{"retailer": "eko", "fuel": "petrol", "price": "1.45"}] and observed == now
+    payload["currency"] = "BGN"
+    assert checks.attempt(lambda: karai.offers(payload, now)) == {"ok": False, "error": "ValueError"}
 
 
 def test_cache_preserves_history_without_returning_expired_prices(tmp_path):
@@ -92,3 +94,24 @@ def test_cache_preserves_history_without_returning_expired_prices(tmp_path):
 def test_fuel_sql_rejects_unsafe_delimiter():
     with pytest.raises(ValueError, match="delimiter"):
         karai.render([{"retailer": "$karai$"}], datetime.now(timezone.utc))
+
+def test_cache_migrates_legacy_rows_and_retains_overlapping_source_observations(tmp_path):
+    from refresh_live_prices import TABLE
+
+    path = tmp_path / "legacy.sqlite"
+    now = datetime.now(timezone.utc)
+    stamp, expiry = now.isoformat(), (now + timedelta(hours=1)).isoformat()
+    base = ("groceries", "https://direct.example.invalid", "test", "София", "address", "1")
+    first = (*base, "2.19", stamp, expiry, "BRANCH")
+    second = (base[0], "https://archive.example.invalid", *base[2:], "2.20", stamp, expiry, "BRANCH")
+    with sqlite3.connect(path) as db:
+        db.execute(TABLE.replace("observed_at, source_url, price_scope)", "observed_at)"))
+        db.execute("INSERT INTO price_observations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", first)
+        db.execute("CREATE INDEX price_validity ON price_observations(category, valid_until)")
+        db.execute("CREATE VIEW unexpired_observations AS SELECT * FROM price_observations")
+    for _ in range(2):
+        cache_batches(path, [Batch("groceries", [first, second], "")])
+    with sqlite3.connect(path) as db:
+        assert db.execute("SELECT price_eur FROM unexpired_observations ORDER BY price_eur").fetchall() == [
+            ("2.19",), ("2.20",),
+        ]

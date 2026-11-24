@@ -281,6 +281,7 @@ function Main({ initialNotice, onErase }: {
           include_online: true,
         }),
       });
+      if (data.currency !== "EUR") throw new Error("Unexpected basket currency");
       setQuote({ key, data });
     } catch {
       setNotice("compareError");
