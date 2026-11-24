@@ -1,4 +1,5 @@
 import hashlib
+import json
 import os
 import runpy
 import uuid
@@ -28,13 +29,16 @@ def test_catalogue_pack_is_available_without_the_thumbnail_database(monkeypatch)
         "spices-drinks", "technology", "mobile", "major-appliances", "small-appliances",
         "tv-computing", "smart-home-mobility",
     } <= manifest["images"].keys()
-    for path in manifest["images"].values():
+    expected = json.loads((thumbnails.CATALOGUE_ART / "sha256.json").read_text())
+    assert set(manifest["images"]) == set(expected)
+    for code, path in manifest["images"].items():
         image_response = client.get(path)
         assert image_response.status_code == 200
         assert image_response.headers["content-type"] == "image/webp"
         assert "immutable" in image_response.headers["cache-control"]
         digest = hashlib.sha256(image_response.content).hexdigest()
         assert path.endswith(f"?v={digest}")
+        assert digest == expected[code]
         assert image_response.headers["etag"] == f'"{digest}"'
         with Image.open(BytesIO(image_response.content)) as image:
             image.load()

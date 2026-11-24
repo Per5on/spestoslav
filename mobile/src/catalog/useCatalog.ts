@@ -2,9 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AppState } from "react-native";
 import type { MessageKey } from "../i18n";
 import type { Product, Store, Price, OnlinePrice, Retailer } from "./model";
-import { loadProducts } from "./cache";
 import {
-  fuelChainsResource, onlineResource, pricesResource, storesResource, warmOtherCatalogs, type Category,
+  fuelChainsResource, loadCatalogProducts, onlineResource, pricesResource, storesResource, warmOtherCatalogs, type Category,
 } from "./catalogData";
 import { sampleProducts } from "./samples";
 
@@ -80,7 +79,7 @@ export function useCatalog(
     };
 
     const productRead = category !== "fuel" || localityId
-      ? loadProducts(signal, force, rows => showProducts(rows, true), category)
+      ? loadCatalogProducts({ category, localityId }, signal, force, rows => showProducts(rows, true))
         .then(result => showProducts(result.products, result.cached))
         .catch(() => {
           if (!signal.aborted) setError("catalogError");
@@ -150,6 +149,7 @@ export function useCatalog(
       (!data?.stores || (includePrices && (!data.prices || !data.online)) ||
         (category === "fuel" && !products.fuel)),
     storeError,
+    fuelLoading: Boolean(localityId) && !loaded,
     revision,
     refreshing,
     refresh: () => {

@@ -13,6 +13,8 @@ import { Button } from "../Action";
 import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
+import { SIMULATION_MODE } from "../api";
+import { ReceiptCaptureMock } from "./ReceiptCaptureMock";
 type Summary = {
   id: string;
   status: string;
@@ -246,6 +248,7 @@ export function ReceiptsScreen({
   return (
     <View style={{ gap: 12 }}>
       <Text style={s.meta}>{t("receiptPrivacy")}</Text>
+      {SIMULATION_MODE && Platform.OS === "web" && <ReceiptCaptureMock />}
       <View style={s.row}>
         <Button
           label={t("takeReceipt")}

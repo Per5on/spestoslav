@@ -90,7 +90,13 @@ jobs:
           DEST="spestovnik-preview-${PREVIEW_SEQUENCE}.apk"
           cp "$APK" "$DEST"
           sha256sum "$DEST" > "$DEST.sha256"
-          echo "Signed ARM phone APK: $(wc -c < "$DEST") bytes (arm64-v8a, armeabi-v7a)" >> "$GITHUB_STEP_SUMMARY"
+          apk_bytes=$(wc -c < "$DEST")
+          webp_bytes=$(unzip -v "$DEST" | awk '$NF ~ /[.]webp$/ { size += $3 } END { print size + 0 }')
+          {
+            echo "Signed ARM phone APK: $apk_bytes bytes (arm64-v8a, armeabi-v7a)"
+            echo "Size difference from signed preview 10.8.1: $((apk_bytes - 43873698)) bytes"
+            echo "Compressed WebP entries: $webp_bytes bytes (preview 10.8.1: 497272 bytes)"
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Validate test-signed ARM app bundle
         if: inputs.prepare_bundle == true
         run: |

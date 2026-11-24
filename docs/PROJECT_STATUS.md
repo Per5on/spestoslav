@@ -2,11 +2,19 @@
 
 Updated: 24 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
 
+## Preview 10.9.1 bug-fix release
+
+The priority work is recorded in the [release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan). The mobile verification workflow owns type, dependency, browser and asset checks. Removed 17 unused mobile WebPs after confirming they were absent from build 016. The candidate corrects icon assignments and combines the fuel reads. The next step is to verify hosted CI and deploy the backend routes before measuring the installed app. APK packaging remains pending.
+
 ## Next preview preparation
 
-Staged price refresh labels, list virtualization and session recovery after a rejected access token. The browser checks passed. Added the cart action, camera document mode, and long-receipt QR assessment to the backlog. Physical Android verification and APK approval remain open. [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+The browser mock verified „Обнови цени“, virtualized catalogue and basket rows, cart addition from search, session recovery, and a receipt capture prototype with fiscal QR metadata. Android document capture, long-receipt OCR and physical-device checks remain open. The next APK awaits explicit approval. [Mock results](NEXT_PREVIEW_MOCK.md) · [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
 
-The fuel price delay remains open for device measurement. Build 10.8.1 caches valid local fuel prices. The staged list change reduces rendering work, while the first uncached price still requires the grade catalogue, local stations and a current price feed. [Fuel follow-up](ACTIVITY_LOG.md#24-november-2026--fuel-price-loading-follow-up)
+Cold „Горива“ missed the under-200 ms goal. With an empty price cache and 300 ms added per fuel request, the browser took a median 359 ms from tab selection to the first usable price and 847 ms from navigation. The cached offline revisit took 19 ms after selecting the tab. The candidate now shows a loading indicator while the requests settle. Candidate timings distinguish startup from first-price latency. [Candidate timing details](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+The search follow-up removes the old buttons and checkboxes. Tapping a suggestion adds the product locally, and Enter opens the full results list. Browser median response times changed by 1.3 ms or less in the same warmed fixture. Android keyboard verification remains open. [Search mock](NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+
+Thumbnail reconciliation is open in both „Храни“ and „Техника“. The audit traced mismatches to broad group artwork and incomplete type rules. The live manifest returned 404. The candidate uses specific artwork where matched and a neutral image elsewhere. The app and server validate the WebP digests. Live delivery and installed package size remain open. [Thumbnail plan](PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
 
 ## Current work — preview 10.8.1
 

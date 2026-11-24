@@ -585,3 +585,36 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 - Confirmed that preview 10.8.1 already serves cached valid fuel prices by locality. The known delayed-network browser fixture displayed a cached Sofia A95 price in 140 ms. The next preview virtualizes the station rows. Both cold-load and repeat-load timing remain open on an Android phone.
 - A read-only spot check for Пловдив after API locality lookup saw five grades in 198 ms, 41 stations in 215 ms, zero station-specific prices in 331 ms, and 17 indicative chain offers in 334 ms. These are parallel network request timings from the workspace against an already contacted host. They neither time a cold service start nor measure phone rendering.
 - On the first uncached visit, the client loads grades, stations and price feeds concurrently. A displayed price still needs a matching grade, local station or chain, and eligible quote. The fuel notice currently can appear before those responses settle. Next verify cold start, cached revisit, slow refresh and the notice on an ARM phone. [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+## 24 November 2026 — next preview mock results
+
+- Verified direct basket addition from search in „Храни“ and „Техника“ with no write request. Filter selection and clearing remain independent. Repeat addition, the basket cap, and the itemized comparison passed.
+- Verified localized price-refresh labels, browser list batches of 10, 15 and 20, provider recovery after a protected read 401, and the receipt prototype. The prototype covered two sections, single-photo fallback, image limits and fiscal QR metadata. Strict TypeScript, the mobile suite, toolbar layout and the complete browser regression passed.
+- With empty catalogue and price caches and 300 ms added per fuel request, median time to the first A95 price was 359 ms from tab selection and 847 ms from navigation. The cached offline revisit took 19 ms from tab selection. The cold screen showed the empty-price notice before the first price arrived. The Sofia price disappeared when the selected town changed to Пловдив.
+- Profile Android startup and first-price delivery separately next. The APK still awaits explicit approval. [Report and screenshots](NEXT_PREVIEW_MOCK.md) · [Release TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+## 24 November 2026 — product search simplification mock
+
+- Removed the „Приложи“ and „Изчисти“ controls, selection checkboxes, associated state, handlers and translations. Tapping a suggestion adds locally. Enter opens catalogue matches across the active tab, and clearing the text restores the catalogue.
+- Verified both tabs and all 154 „вино“ results at narrow width, with 15 initially mounted. The catalogue, six-language toolbar and full browser workflows, strict TypeScript and mobile tests passed.
+- Compared twelve warmed browser trials per action and tab. Add-to-basket medians improved by 0.80 ms in „Храни“ and 1.30 ms in „Техника“. Opening matched results changed by −0.55 ms and +0.50 ms respectively. Android keyboard and responsive timing checks remain next, with APK packaging pending approval. [Search mock and timing](NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+
+## 24 November 2026 — thumbnail mapping and size audit
+
+- Applied the existing mobile artwork resolver to both 1,000-row live catalogues and visually inspected the fallback pack. Reproduced biscuits with bread, beer with juice, and technology mismatches including a doorbell with a smart speaker and a tumble dryer with a washer. In „Храни“, 990 rows resolve to group artwork. In „Техника“, 189 have no specific matching type rule.
+- The live catalogue manifest returned HTTP 404. The seven live product-linked photos use URLs without a SHA-256 version. The checked-in catalogue endpoint hashes all 33 WebPs and passed byte, header and outage checks. The disposable PostgreSQL test skipped because no test database was configured.
+- Compared the resolver's 38 bundled WebPs with the signed 10.8.1 ARM artifact by SHA-256. All 38 were present. The 17 old mobile thumbnail and grocery-symbol files were absent. Two legacy server symbols had identical bytes. Repository cleanup and APK savings need separate accounting.
+- Recorded coverage, content identity, compatibility, size and offline verification in the release TODO. The next step is to correct the mappings and show a candidate preview. [Thumbnail plan](PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
+## 24 November 2026 — preview 10.9.1 plan and automated verification
+
+- Added a PR and main-branch mobile workflow. It runs strict TypeScript, mobile unit and thumbnail checks, Expo dependency validation, an Android JavaScript export, and six local browser suites with isolated fixtures and automatic shutdown. Corrected the older menu test to look for „Обнови цени“. The existing backend workflow retains its PostgreSQL matrix.
+- Local verification passed strict TypeScript, mobile tests, Android JavaScript export, six browser suites, Ruff, inventory, and 137 backend tests with disposable PostgreSQL. The runner recorded browser screenshots and reports. Those are local results for the working tree.
+- Removed two obsolete mobile artwork folders after confirming there were no source references or packed copies. The 17 removed WebPs total 75,120 bytes. Their duplicate license text remains in the credited server symbol pack. The 38 active, unique WebPs still total 61,906 bytes. This reduces repository bytes without changing bundled thumbnail bytes.
+- Recorded the combined release plan and baseline. The signing workflow now reports APK and WebP size against the signed preview 10.8.1. Next implement the artwork mapping and delivery fixes, then measure cold fuel loading. No new APK was packaged. [Preview 10.9.1 plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
+
+## 24 November 2026 — preview 10.9.1 candidate verification
+
+- Checked the full 2,000-row thumbnail fixture. Known biscuit, beer, doorbell, milk frother and dryer mismatches now use product-type artwork. The resolver uses neutral art where a type cannot be inferred. The tests compare 48 managed WebP payloads with their recorded SHA-256 digests, and the mobile client skips duplicate downloads of identical bundled artwork.
+- The locality-scoped fuel snapshot reduced the cold path from four successful reads to one. The browser checked loading feedback, older-host fallback and locality isolation. Median tab-to-price time was 137 ms at 100 ms injected delay and 334 ms at 300 ms. Android and production timing remain open.
+- Local verification passed seven browser suites, 138 backend tests with disposable PostgreSQL, strict TypeScript, mobile tests, Ruff and Android JavaScript export. The next action is hosted verification and backend rollout before signed packaging. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)

@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { api, API_BASE_URL } from "../api";
+import { api, API_BASE_URL, httpStatus } from "../api";
 import { loadProducts } from "./cache";
-import type { OnlinePrice, Price, Retailer, Store } from "./model";
+import type { OnlinePrice, Price, Product, Retailer, Store } from "./model";
 
 const categories = ["groceries", "technology", "fuel"] as const;
 export type Category = typeof categories[number];
@@ -102,8 +102,58 @@ function localPath(path: string, { category, localityId }: Scope) {
   return `/api/v1/${path}?locality_id=${encodeURIComponent(localityId)}&category_code=${category}`;
 }
 
+type FuelSnapshot = {
+  schema_version: number;
+  locality_id: string;
+  products: Product[];
+  stores: Store[];
+  prices: Price[];
+  online: OnlinePrice[];
+};
+const fuelRequests = new Map<string, Promise<FuelSnapshot | undefined>>();
+let fuelSnapshotUnavailableUntil = 0;
+
+async function fuelSnapshotField<K extends "products" | "stores" | "prices" | "online">(
+  field: K, scope: Scope, signal: AbortSignal,
+): Promise<FuelSnapshot[K] | undefined> {
+  if (scope.category !== "fuel" || Date.now() < fuelSnapshotUnavailableUntil) return;
+  const localityId = scope.localityId;
+  let request = fuelRequests.get(localityId);
+  if (!request) {
+    // Each consumer has its own cache and cancellation. The shared HTTP request
+    // is bounded by the API timeout even if all consumers leave the screen.
+    request = api<FuelSnapshot>(`/api/v1/fuel-snapshot?locality_id=${encodeURIComponent(localityId)}`, {}, 5000)
+      .then(result => {
+        if (result?.schema_version !== 1 || result.locality_id !== localityId ||
+            !Array.isArray(result.products) || !Array.isArray(result.stores) ||
+            !Array.isArray(result.prices) || !Array.isArray(result.online)) return undefined;
+        return result;
+      })
+      .catch(error => {
+        if (httpStatus(error) === 404) fuelSnapshotUnavailableUntil = Date.now() + freshFor;
+        return undefined; // Older hosts and failed snapshots retain the independent reads.
+      })
+      .finally(() => fuelRequests.delete(localityId));
+    fuelRequests.set(localityId, request);
+  }
+  const result = await request;
+  if (signal.aborted) throw new Error("Catalogue read cancelled");
+  return result?.[field];
+}
+
+export function loadCatalogProducts(
+  scope: { category: Category; localityId?: string }, signal: AbortSignal, force: boolean,
+  onCached: (rows: Product[]) => void,
+) {
+  const localityId = scope.localityId;
+  return loadProducts(signal, force, onCached, scope.category,
+    scope.category === "fuel" && localityId
+      ? requestSignal => fuelSnapshotField("products", { category: "fuel", localityId }, requestSignal)
+      : undefined);
+}
+
 export const storesResource = catalogResource<Store>("stores",
-  (scope, signal) => allPages(localPath("stores", scope), signal),
+  async (scope, signal) => await fuelSnapshotField("stores", scope, signal) ?? allPages(localPath("stores", scope), signal),
   rows => rows.flatMap(row => {
     if (typeof row?.id !== "string" || typeof row.retailer_name !== "string" ||
         typeof row.address !== "string") return [];
@@ -112,7 +162,7 @@ export const storesResource = catalogResource<Store>("stores",
   }), 7 * day);
 
 export const pricesResource = catalogResource<Price>("prices",
-  (scope, signal) => allPages(localPath("prices/current", scope), signal),
+  async (scope, signal) => await fuelSnapshotField("prices", scope, signal) ?? allPages(localPath("prices/current", scope), signal),
   (rows, savedAt, now) => rows.flatMap(row => {
     if (typeof row?.product_id !== "string" || typeof row.branch_id !== "string" ||
         !Number.isFinite(Number(row.price_eur)) || Number(row.price_eur) <= 0) return [];
@@ -124,7 +174,7 @@ export const pricesResource = catalogResource<Price>("prices",
 );
 
 export const onlineResource = catalogResource<OnlinePrice>("online",
-  (scope, signal) => allPages(localPath("national-offers", scope), signal, 100),
+  async (scope, signal) => await fuelSnapshotField("online", scope, signal) ?? allPages(localPath("national-offers", scope), signal, 100),
   (rows, _savedAt, now) => rows.flatMap(row => {
     if (row?.price_scope !== "NATIONAL_ONLINE" || typeof row.product_id !== "string" ||
         typeof row.retailer_code !== "string" || !Number.isFinite(Number(row.price_eur)) ||
@@ -143,7 +193,7 @@ export const fuelChainsResource = catalogResource<Retailer>("retailers", async (
 async function refreshCategory(
   category: Category, localityId: string | undefined, signal: AbortSignal, force: boolean,
 ) {
-  const products = loadProducts(signal, force, () => {}, category);
+  const products = loadCatalogProducts({ category, localityId }, signal, force, () => {});
   const reads = localityId
     ? [products, storesResource.load({ category, localityId }, signal),
       pricesResource.load({ category, localityId }, signal),

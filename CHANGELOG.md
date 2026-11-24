@@ -2,12 +2,19 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
-## Unreleased · next Android preview
+## Preview 10.9.1 · candidate
 
+- Added automatic mobile verification for pull requests, including strict TypeScript, fixture-based browser flows and thumbnail coverage and size reporting. Removed 17 unused mobile WebPs totalling 75,120 bytes from the repository. [Release plan](docs/PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
 - The food and technology catalogue buttons now read „Обнови цени“. „Горива“ retains pull-to-refresh.
 - The three catalogue tabs and basket render rows as needed, starting with a batch of 15. Search suggestions also start at 15. In Chromium, the initial grocery card count fell from 40 to 15. Android timings remain open.
 - Fixed an avoidable sign-in prompt. After a protected request returns 401, the app checks the provider session and retries a safe read once if renewal succeeds.
-- Assessed direct addition from search, document capture, and receipt QR extraction. [Performance assessment and remaining tasks](docs/PREVIEW_006_BACKLOG.md#next-preview-preparation)
+- In „Храни“ and „Техника“, tap a search suggestion to add it directly to the basket. Press Enter or the keyboard Search key to show all matches. Removed „Приложи“, „Изчисти“ and the selection checkboxes. [Search mock and timing](docs/NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+- Verified the browser-only receipt prototype with two image sections, a single-photo fallback and Bulgarian fiscal QR metadata. Android document capture and multipage OCR remain open.
+- With an empty fuel cache and 300 ms added per API request, the browser mock took a median 359 ms from tab selection to the first price and 847 ms from navigation. A cached offline revisit took 19 ms from tab selection. Track the premature fuel empty message and the under-200 ms cold-load goal. [Mock results](docs/NEXT_PREVIEW_MOCK.md)
+
+- Corrected mismatched product artwork in both tabs and replaced uncertain group matches with a neutral thumbnail. A SHA-256 manifest prevents duplicate downloads of the bundled artwork. The live API rollout remains pending. [Thumbnail plan](docs/PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
+- „Горива“ now loads grades, stations and prices in one locality-scoped request when the endpoint is available. The app shows a loading indicator until the price request completes and supports older API versions. [Timing and coverage](docs/NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
 
 ## Preview 10.8.1 · build 016 · app 0.5.9
 

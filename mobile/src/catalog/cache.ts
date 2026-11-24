@@ -74,6 +74,7 @@ export async function loadProducts(
   force: boolean,
   onCached: (rows: Product[]) => void,
   category: Category = "groceries",
+  preferredRead?: (signal: AbortSignal) => Promise<Product[] | undefined>,
 ) {
   const key = KEY + (category === "groceries" ? "" : ":" + category);
   let cached: Cache | null = null;
@@ -85,7 +86,7 @@ export async function loadProducts(
   if (cached && !force && Date.now() - cached.saved_at < 6 * 60 * 60 * 1000)
     return { products: cached.products, cached: true };
   try {
-    return { products: await refreshProducts(key, category), cached: false };
+    return { products: await refreshProducts(key, category, preferredRead), cached: false };
   } catch (e) {
     if (cached && !signal.aborted)
       return { products: cached.products, cached: true };
@@ -94,13 +95,17 @@ export async function loadProducts(
 }
 
 const pending = new Map<string, Promise<Product[]>>();
-function refreshProducts(key: string, category: Category) {
+function refreshProducts(
+  key: string, category: Category,
+  preferredRead?: (signal: AbortSignal) => Promise<Product[] | undefined>,
+) {
   const existing = pending.get(key);
   if (existing) return existing;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 35000);
-  const request = fetchProducts(category, controller.signal).then(async products => {
+  const read = async () => await preferredRead?.(controller.signal) ?? fetchProducts(category, controller.signal);
+  const request = read().then(async products => {
     if (controller.signal.aborted) throw new Error("Catalogue refresh timed out");
     const now = Date.now();
     const validated = validateCatalog({ schema_version: 1, saved_at: now, products }, now, category);

@@ -34,9 +34,10 @@ let fetchResult = async path => path.includes("stores?") ? [station] :
   path.includes("national-offers?") ? [offer] : [price];
 const mockApi = {
   API_BASE_URL: "https://fixture.invalid",
-  httpStatus: () => null,
+  httpStatus: error => error.status ?? null,
   api: async path => {
     paths.push(path);
+    if (path.startsWith("/api/v1/fuel-snapshot?")) throw Object.assign(new Error("HTTP 404"), { status: 404 });
     return fetchResult(path);
   },
 };

@@ -6,16 +6,12 @@ const art = {
   groceries: require("../../../data/catalogue-thumbnails/groceries.webp"),
   "dairy-eggs": require("../../../data/catalogue-thumbnails/dairy-eggs.webp"),
   "bakery-breakfast": require("../../../data/catalogue-thumbnails/bakery-breakfast.webp"),
-  produce: require("../../../data/catalogue-thumbnails/produce.webp"),
   "meat-fish": require("../../../data/catalogue-thumbnails/meat-fish.webp"),
-  pantry: require("../../../data/catalogue-thumbnails/pantry.webp"),
   "spices-drinks": require("../../../data/catalogue-thumbnails/spices-drinks.webp"),
   technology: require("../../../data/catalogue-thumbnails/technology.webp"),
   mobile: require("../../../data/catalogue-thumbnails/mobile.webp"),
   "major-appliances": require("../../../data/catalogue-thumbnails/major-appliances.webp"),
-  "small-appliances": require("../../../data/catalogue-thumbnails/small-appliances.webp"),
   "tv-computing": require("../../../data/catalogue-thumbnails/tv-computing.webp"),
-  "smart-home-mobility": require("../../../data/catalogue-thumbnails/smart-home-mobility.webp"),
   tomato: require("../../../data/catalogue-thumbnails/tomato.webp"),
   banana: require("../../../data/catalogue-thumbnails/banana.webp"),
   carrot: require("../../../data/catalogue-thumbnails/carrot.webp"),
@@ -36,6 +32,21 @@ const art = {
   "power-bank": require("../../../data/catalogue-thumbnails/power-bank.webp"),
   "smart-plug": require("../../../data/catalogue-thumbnails/smart-plug.webp"),
   "kettle": require("../../../data/catalogue-thumbnails/kettle.webp"),
+  "biscuits": require("../../../data/catalogue-thumbnails/biscuits.webp"),
+  "beer": require("../../../data/catalogue-thumbnails/beer.webp"),
+  "tumble-dryer": require("../../../data/catalogue-thumbnails/tumble-dryer.webp"),
+  "doorbell": require("../../../data/catalogue-thumbnails/doorbell.webp"),
+  "milk-frother": require("../../../data/catalogue-thumbnails/milk-frother.webp"),
+  "unclassified": require("../../../data/catalogue-thumbnails/unclassified.webp"),
+  "wine": require("../../../data/catalogue-thumbnails/wine.webp"),
+  "tea": require("../../../data/catalogue-thumbnails/tea.webp"),
+  "coffee": require("../../../data/catalogue-thumbnails/coffee.webp"),
+  "chocolate": require("../../../data/catalogue-thumbnails/chocolate.webp"),
+  "pasta": require("../../../data/catalogue-thumbnails/pasta.webp"),
+  "cheese": require("../../../data/catalogue-thumbnails/cheese.webp"),
+  "yogurt": require("../../../data/catalogue-thumbnails/yogurt.webp"),
+  "hand-blender": require("../../../data/catalogue-thumbnails/hand-blender.webp"),
+  "mixer": require("../../../data/catalogue-thumbnails/mixer.webp"),
 } satisfies Record<string, ImageSourcePropType>;
 type ArtCode = keyof typeof art;
 
@@ -59,7 +70,21 @@ export const sampleProducts: Product[] = products.map(row => ({
   is_demo: true,
 }));
 
-const produceArt: ReadonlyArray<readonly [RegExp, ArtCode]> = [
+const groceryArt: ReadonlyArray<readonly [RegExp, ArtCode]> = [
+  [/(?<![\p{L}])бисквит[аи](?![\p{L}])/iu, "biscuits"],
+  [/^(?:безалкохолна\s+)?(?:бира|пиво)(?=\s|$)/iu, "beer"],
+  [/^вино(?=\s|$)/iu, "wine"],
+  [/^чай(?=\s|$)/iu, "tea"],
+  [/^кафе(?=\s|$)/iu, "coffee"],
+  [/^шоколад(?=\s|$)/iu, "chocolate"],
+  [/^(?:макарони|спагети|фиде|паста)(?=\s|$)/iu, "pasta"],
+  [/^(?:сирене|кашкавал)(?=\s|$)/iu, "cheese"],
+  [/^кис(?:ело|\.)?\s+мляко(?=\s|$)/iu, "yogurt"],
+  [/^хляб(?=\s|$)/iu, "bakery-breakfast"],
+  [/^(?:прясно|козе|овче|краве)\s+мляко(?=\s|$)/iu, "dairy-eggs"],
+  [/^(?:слънчогледово\s+)?олио(?=\s|$)/iu, "groceries"],
+  [/^(?:сьомга|филе\s+от\s+сьомга)(?=\s|$)/iu, "meat-fish"],
+  [/^(?:портокалов\s+сок|сок\s+от\s+портокал)(?=\s|$)/iu, "spices-drinks"],
   [/^(?:био\s+)?банани(?:\s|$)/iu, "banana"],
   [/^(?:био\s+)?моркови(?:\s|$)/iu, "carrot"],
   [/^(?:био\s+)?(?:(?:чери|розови)\s+)?домат(?:и)?(?:\s|$)/iu, "tomato"],
@@ -69,12 +94,17 @@ const technologyArt: ReadonlyArray<readonly [RegExp, ArtCode]> = [
   [/^(?:електрическа\s+|ел\.\s*)?кана(?=\s|$)/iu, "kettle"],
   [/^кафемашина(?=\s|$)/iu, "coffee-maker"],
   [/^микровълнова(?=\s|$)/iu, "microwave"],
+  [/^пасатор(?=\s|$)/iu, "hand-blender"],
+  [/^миксер(?=\s|$)/iu, "mixer"],
   [/^блендер(?=\s|$)/iu, "blender"],
   [/^тостер(?=\s|$)/iu, "toaster"],
   [/^сешоар(?=\s|$)/iu, "hair-dryer"],
   [/^хладилник(?=\s|$)/iu, "fridge"],
   [/^климатик(?=\s|$)/iu, "air-conditioner"],
-  [/^(?:пералня|сушилня)(?=\s|$)/iu, "major-appliances"],
+  [/^пералня(?=\s|$)/iu, "major-appliances"],
+  [/^сушилня(?=\s|$)/iu, "tumble-dryer"],
+  [/^(?:(?:безжичен|смарт)\s+)?звънец(?=\s|$)/iu, "doorbell"],
+  [/^(?:разпенител\s+за\s+мляко)(?=\s|$)/iu, "milk-frother"],
   [/^телевизор(?=\s|$)/iu, "tv-computing"],
   [/^монитор(?=\s|$)/iu, "monitor"],
   [/^лаптоп(?=\s|$)/iu, "technology"],
@@ -97,20 +127,14 @@ export function productArtwork(product: Product): { code?: ArtCode; source: Imag
   const tech = product.category_code === "technology";
   if (sample) return { source: sample, symbolic: tech };
 
-  const group = product.group_code ?? "";
   const name = product.name.trim();
   if (tech && product.source_product_code === "43832" && /\bGALAXY A17\b/i.test(name)) {
     return { source: galaxyA17, symbolic: false };
   }
-  if (!tech && group === "produce") {
-    if (/^(?:био\s+)?лимони(?:\s|$)/iu.test(name)) return { source: lemon, symbolic: false };
-    const match = produceArt.find(([pattern]) => pattern.test(name));
-    if (match) {
-      const code = match[1];
-      return { code, source: art[code], symbolic: code === "tomato" };
-    }
+  if (!tech && product.group_code === "produce" && /^(?:био\s+)?лимони(?:\s|$)/iu.test(name)) {
+    return { source: lemon, symbolic: false };
   }
-  const matchedType = tech ? technologyArt.find(([pattern]) => pattern.test(name))?.[1] : undefined;
-  const code = matchedType ?? (Object.hasOwn(art, group) ? group as ArtCode : tech ? "technology" : "groceries");
-  return { code, source: art[code], symbolic: true };
+  const rules = tech ? technologyArt : groceryArt;
+  const code = rules.find(([pattern]) => pattern.test(name))?.[1] ?? "unclassified";
+  return { code, source: art[code], symbolic: code !== "banana" && code !== "carrot" };
 }

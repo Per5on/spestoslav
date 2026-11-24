@@ -170,3 +170,24 @@ The owner wrote:
 
 
 - The owner asked about the fuel-price loading delay after the next-preview list changes. Confirmed the difference between cached prices, list rendering and a first uncached fetch. Added a dedicated Android timing task. [Fuel follow-up](ACTIVITY_LOG.md#24-november-2026--fuel-price-loading-follow-up)
+
+## 24 November 2026 — mock request and cold fuel priority
+
+- The owner confirmed that caching is acceptable and identified cold start as the priority. They requested a mock of every next-preview item, explicitly including adding from search, and set a target under 200 ms. They requested the mock results before APK approval or further timing optimization.
+- The mock results and remaining Android checks are filed with the release TODO. [Mock report](NEXT_PREVIEW_MOCK.md) · [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+## 24 November 2026 — product search follow-up
+
+- The owner requested removal of „Приложи“ and „Изчисти“ and their code, direct cart addition by selecting a product, and a full matching list on Enter. They requested another mock and a before-and-after delay comparison. [Search mock and timing](NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+
+## 24 November 2026 — product icon reconciliation follow-up
+
+- The owner reported missing and misplaced product icon artwork in both tabs, including bread for biscuits and juice for beer in „Храни“, and corresponding mismatches in „Техника“. They asked to plan the fix, confirm content hashing, check the code again, remove redundant interlinks and verify that the app shrinks where possible. [Thumbnail plan](PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
+## 24 November 2026 — automated verification and preview 10.9.1 plan
+
+- The owner asked for automated checks, verification before every commit, and a measured assessment of benefit for each change. They requested that today's candidates and open work be organized as preview-10.9.1, with redundant internal dependencies and link associations removed where verified. [Release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
+
+## 24 November 2026 — authorize the preview 10.9.1 source commit
+
+- The owner asked to implement the remaining fixes where a solution was available and start the commit. The source candidate includes corrected artwork assignments and consolidated fuel loading. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)

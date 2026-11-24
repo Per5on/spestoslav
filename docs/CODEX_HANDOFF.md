@@ -1,10 +1,18 @@
 # Спестовник — ongoing project handoff
 
-Updated: **22 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+Updated: **24 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 
+
+### 24 November 2026 — preview 10.9.1 bug-fix plan
+
+Use the [release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan) and the new [mobile verification workflow](../.github/workflows/mobile-tests.yml). Run and assess the relevant checks before committing. The candidate implements the fuel and thumbnail fixes. Continue with hosted checks, backend rollout and the remaining release checks. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+### 24 November 2026 — next preview mock
+
+Continue from the [mock report](NEXT_PREVIEW_MOCK.md) and [release TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation). The mock covered all requested next-preview items. The next timing pass should separate app startup and first-price delivery in „Горива“ and correct the premature empty-price notice. Native receipt document capture and physical Android checks remain open. The next APK awaits explicit approval.
 
 ### 23 November 2026 — next beta
 

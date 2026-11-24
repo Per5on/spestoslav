@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { api, API_BASE_URL } from "../api";
 
+import hashes from "../../../data/catalogue-thumbnails/sha256.json";
+
+const bundledHashes: Readonly<Record<string, string>> = hashes;
 type ThumbnailUrls = Readonly<Record<string, string>>;
 
 export function parseThumbnailManifest(value: unknown): ThumbnailUrls {
@@ -9,7 +12,9 @@ export function parseThumbnailManifest(value: unknown): ThumbnailUrls {
   const entries = Object.entries(value.images).filter(([code, path]) => {
     if (!/^[a-z0-9-]+$/.test(code) || typeof path !== "string") return false;
     const prefix = `/api/v1/thumbnails/catalogue/${code}?v=`;
-    return path.startsWith(prefix) && /^[a-f0-9]{64}$/.test(path.slice(prefix.length));
+    const digest = path.slice(prefix.length);
+    return Boolean(bundledHashes[code]) && path.startsWith(prefix) &&
+      /^[a-f0-9]{64}$/.test(digest) && digest !== bundledHashes[code];
   });
   return Object.fromEntries(entries.map(([code, path]) => [code, API_BASE_URL + path]));
 }

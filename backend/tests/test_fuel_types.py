@@ -92,3 +92,19 @@ def test_unverified_values_cannot_be_added_to_taxonomy(tmp_path):
     path.write_text(json.dumps(data))
     with pytest.raises(ValueError, match="No inferred"):
         importer.load_types(path)
+
+
+def test_fuel_snapshot_agrees_with_old_routes_and_hides_nonfuel_inventory():
+    with fixture.TestingSessionLocal.begin() as db:
+        importer.import_types(db, importer.load_types())
+    locality = fixture.client.get("/api/v1/localities?q=Sofija").json()[0]["id"]
+    query = f"category_code=fuel&locality_id={locality}"
+    response = fixture.client.get(f"/api/v1/fuel-snapshot?locality_id={locality}")
+    assert response.status_code == 200
+    result = response.json()
+    assert result["schema_version"] == 1
+    assert result["locality_id"] == locality
+    assert set(p["fuel_type"] for p in result["products"]) == importer.CODES
+    for key, route in (("stores", "stores"), ("prices", "prices/current"), ("online", "national-offers")):
+        assert result[key] == fixture.client.get(f"/api/v1/{route}?{query}").json() == []
+    assert fixture.client.get("/api/v1/fuel-snapshot?locality_id=not-a-uuid").status_code == 422

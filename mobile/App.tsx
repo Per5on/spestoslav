@@ -77,10 +77,12 @@ function AddButton({
   name,
   onAdd,
   disabled,
+  showName = false,
 }: {
   name: string;
   onAdd: () => boolean;
   disabled: boolean;
+  showName?: boolean;
 }) {
   const { t, styles: s, color } = useUI();
   const [added, setAdded] = useState(false);
@@ -97,8 +99,9 @@ function AddButton({
         setAdded(true);
         timer.current = setTimeout(() => setAdded(false), 1000);
       }}
-      style={[s.add, added && s.added]}
+      style={[showName ? [s.option, { paddingHorizontal: 8, borderRadius: 8 }] : s.add, added && s.added]}
     >
+      {showName && <Text style={{ flex: 1, color: added ? "#fff" : "#264c30" }}>{name}</Text>}
       <Ionicons
         name="cart-outline"
         size={22}
@@ -133,7 +136,10 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-const tabBatchSize = 15;
+const mockBatch = SIMULATION_MODE && Platform.OS === "web" && typeof location !== "undefined"
+  ? Number(new URLSearchParams(location.search).get("batch"))
+  : 0;
+const tabBatchSize = mockBatch === 10 || mockBatch === 20 ? mockBatch : 15;
 type TabRow =
   | { kind: "product"; key: string; value: Product }
   | { kind: "basket"; key: string; value: BasketItem }
@@ -162,9 +168,7 @@ function Main({ initialNotice, onErase }: {
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
     [suggestionLimit, setSuggestionLimit] = useState(tabBatchSize),
-    [group, setGroup] = useState<string | null>(null),
-    [selected, setSelected] = useState<string[]>([]),
-    [draft, setDraft] = useState<string[]>([]);
+    [group, setGroup] = useState<string | null>(null);
   const [notice, setNotice] = useState<MessageKey | "">(initialNotice),
     [comparing, setComparing] = useState(false);
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
@@ -255,9 +259,7 @@ function Main({ initialNotice, onErase }: {
     if (category !== id) {
       setGroup(null);
       setQuery("");
-      setSelected([]);
       setAppliedQuery("");
-      setDraft([]);
       setSearchOpen(false);
     }
     setCategory(id);
@@ -339,26 +341,20 @@ function Main({ initialNotice, onErase }: {
   const hasFuelPrices = fuelResults.some(row =>
     row.branchCount > 0 || row.stations.some(station => station.price !== undefined));
   const searchActive = searchOpen || Boolean(appliedQuery);
-  const searchIndex = useMemo(() => searchActive ? new Map(catalog.products.map(p => {
-    const name = displayName(p);
-    return [p.id, { foldedName: name.toLocaleLowerCase(language), text: productSearchText(p, name) }];
-  })) : undefined, [catalog.products, displayName, language, searchActive]);
+  const searchIndex = useMemo(() => searchActive
+    ? new Map(catalog.products.map(p => [p.id, productSearchText(p, displayName(p))]))
+    : undefined, [catalog.products, displayName, searchActive]);
   const visible = useMemo(() => {
-    const ids = new Set(selected);
-    const tokens = searchText(appliedQuery).split(" ");
-    const filtered = catalog.products.filter(p => {
-      if (group && p.group_code !== group) return false;
-      if (ids.size) return ids.has(p.id);
-      return !appliedQuery || matchesSearchText(searchIndex?.get(p.id)?.text ?? "", tokens);
-    });
-    return ids.size || appliedQuery ? filtered
-      : prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
-  }, [catalog.products, group, selected, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
+    if (appliedQuery && searchIndex) {
+      const tokens = appliedQuery.split(" ");
+      return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+    }
+    const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
+    return prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
+  }, [catalog.products, group, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
-    setSelected([]);
-    setDraft([]);
     setQuery("");
     setAppliedQuery("");
     setSearchOpen(false);
@@ -369,14 +365,11 @@ function Main({ initialNotice, onErase }: {
   )], [catalog.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
   const suggestions = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase(language);
+    const normalizedQuery = searchText(query);
     if (!searchOpen || !normalizedQuery || !searchIndex) return [];
-    const tokens = searchText(query).split(" ");
-    return catalog.products.filter(p => {
-      const indexed = searchIndex.get(p.id);
-      return indexed && (matchesSearchText(indexed.text, tokens) || indexed.foldedName.includes(normalizedQuery));
-    });
-  }, [catalog.products, language, query, searchIndex, searchOpen]);
+    const tokens = normalizedQuery.split(" ");
+    return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+  }, [catalog.products, query, searchIndex, searchOpen]);
   useEffect(() => setSuggestionLimit(tabBatchSize), [query, category]);
   function thumbnail(p: Product) {
     const art = productArtwork(p);
@@ -469,7 +462,7 @@ function Main({ initialNotice, onErase }: {
               <View key={store.id} style={{ gap: 4 }}>
                 <Text style={s.meta}>{store.address}</Text>
                 <Text style={price === undefined ? s.meta : s.price}>
-                  {price === undefined ? t("noPrice") : `${price.toFixed(2)} €/L`}
+                  {price === undefined ? (catalog.fuelLoading ? "" : t("noPrice")) : `${price.toFixed(2)} €/L`}
                 </Text>
               </View>
             ))}
@@ -541,13 +534,19 @@ function Main({ initialNotice, onErase }: {
               style={s.productSearch}
               value={query}
               maxLength={80}
-              onFocus={() => {
-                if (!searchOpen) setDraft(selected);
-                setSearchOpen(true);
-              }}
+              returnKeyType="search"
+              onFocus={() => setSearchOpen(true)}
               onChangeText={(value) => {
                 setQuery(value);
                 setSearchOpen(true);
+                if (!value.trim()) setAppliedQuery("");
+              }}
+              onSubmitEditing={({ nativeEvent }) => {
+                const normalizedQuery = searchText(nativeEvent.text);
+                setAppliedQuery(normalizedQuery);
+                if (normalizedQuery) setGroup(null);
+                setSearchOpen(false);
+                tabList.current?.scrollToOffset({ offset: 0, animated: false });
               }}
             />
           )}
@@ -583,63 +582,18 @@ function Main({ initialNotice, onErase }: {
       )}
       {screen === "catalog" && (
         <>
-          {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
           {category !== "fuel" ? (
             <>
-              {searchOpen && (
-                <View style={s.panel}>
-                  {suggestions.slice(0,suggestionLimit)
-                    .map((p) => (
-                      <Pressable
-                        key={p.id}
-                        accessibilityRole="checkbox"
-                        accessibilityLabel={displayName(p)}
-                        accessibilityState={{ checked: draft.includes(p.id) }}
-                        aria-checked={draft.includes(p.id)}
-                        style={s.option}
-                        onPress={() =>
-                          setDraft((d) =>
-                            d.includes(p.id)
-                              ? d.filter((id) => id !== p.id)
-                              : [...d, p.id],
-                          )
-                        }
-                      >
-                        <Ionicons
-                          name={
-                            draft.includes(p.id)
-                              ? "checkbox"
-                              : "square-outline"
-                          }
-                          size={24}
-                          color={color("#267133")}
-                        />
-                        <Text style={{ flex: 1, color: "#264c30" }}>
-                          {displayName(p)}
-                        </Text>
-                      </Pressable>
-                    ))}
-                  {suggestions.length>suggestionLimit&&<Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`} onPress={() => setSuggestionLimit(n => n + tabBatchSize)}/>}
-                  <View style={s.row}>
-                    <Button
-                      label={t("clear")}
-                      onPress={() => {
-                        setDraft([]);
-                        setSelected([]);
-                        setAppliedQuery("");
-                        setQuery("");
-                      }}
-                    />
-                    <Button
-                      label={`${t("apply")} (${draft.length || (query.trim() ? suggestions.length : 0)})`}
-                      primary
-                      onPress={() => {
-                        setSelected(draft);
-                        setAppliedQuery(draft.length ? "" : query.trim());
-                        setSearchOpen(false);
-                      }}
-                    />
-                  </View>
+              {suggestions.length > 0 && (
+                <View testID="product-suggestions" style={s.panel}>
+                  {suggestions.slice(0, suggestionLimit).map(p => (
+                    <AddButton key={p.id} name={displayName(p)} disabled={!restored}
+                      showName onAdd={() => change(p, 1)} />
+                  ))}
+                  {suggestions.length > suggestionLimit && (
+                    <Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`}
+                      onPress={() => setSuggestionLimit(n => n + tabBatchSize)} />
+                  )}
                 </View>
               )}
               {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
@@ -657,8 +611,6 @@ function Main({ initialNotice, onErase }: {
                   ]}
                   selected={group} onSelect={code => {
                     setGroup(code);
-                    setSelected([]);
-                    setDraft([]);
                     setAppliedQuery("");
                     setQuery("");
                     setSearchOpen(false);
@@ -673,7 +625,13 @@ function Main({ initialNotice, onErase }: {
               {!locality ? <>
                 <Text style={s.notice}>{t("chainCoverage")}</Text>
                 {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
-              </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
+              </> : !hasFuelPrices && (
+                catalog.fuelLoading
+                  ? <ActivityIndicator testID="fuel-loading" color={color("#19562a")} />
+                  : <Text accessibilityLiveRegion="polite" style={s.notice}>
+                      {t(catalog.storeError || catalog.error || "fuelPending")}
+                    </Text>
+              )}
               {locality &&
                 !catalog.storeLoading &&
                 !catalog.storeError &&
