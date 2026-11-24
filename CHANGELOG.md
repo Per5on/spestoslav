@@ -4,6 +4,8 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 
 ## Preview 10.8.1 · build 016 · app 0.5.9
 
+- Delivered the signed internal ARM APK from source `d1a6a2d`. Verified Android version code 16, app version 0.5.9, both ARM ABIs and the downloaded SHA-256. Physical-device acceptance remains open. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)
+
 - Published the nationwide directory with 1,585 active branches. In Пловдив, live checks found five indicative technology offers and 17 indicative fuel offers. Current grocery prices for the city are still pending.
 - Added a notice in the grocery and technology tabs when the selected town has no current prices. Included four reviewed Велико Търново branches in the staged grocery refresh. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
 - Added Android pull-to-refresh in „Храни“, „Техника“ and „Горива“. All three tabs use the same refresh path.
@@ -32,7 +34,7 @@ Read-only check of 1,585 active branches in 253 localities and all 28 regions. T
 
 - Compared the official grocery archives for 15, 21 and 22 November. The same 314 branches in 74 of 108 grocery localities were address or reviewed-label candidates on all three dates. The same 94 localities had at least one retailer and official locality match. Those 94 include 20 localities that need further branch matching. Fourteen lacked a repeatable retailer and locality match. Kaufland appeared in the 21 November archive and was absent from the other two samples. [Official archives](https://kolkostruva.bg/opendata)
 - The archive and the direct Burlex feed overlap at four reviewed branches in Велико Търново. All 2,711 matched amounts from the 22 November archive agreed with their current counterparts after BGN-to-EUR conversion. Their dates differ, so same-window corroboration is still pending. The two live Sofia pilot branches were different from the two archived Sofia branches.
-- **Historical currency regression.** The reviewed Burlex archive importer treated raw BGN amounts as EUR. Two live history samples showed 4.29 stored where the converted price is €2.19. The sealed 1,358-row historical import needs a scoped correction and replay check. The 3,588 current grocery prices audited came from the separate direct Burlex collector. [Burlex source](https://burlex.bg/kolkostruva/)
+- **Historical currency regression.** The reviewed Burlex archive importer treated raw BGN amounts as EUR. Two live history samples showed 4.29 stored where the converted price is €2.19. The scoped repair passed the disposable PostgreSQL replay check. The 1,358-row production history correction remains open. The 3,588 current grocery prices audited came from the separate direct Burlex collector. [Burlex source](https://burlex.bg/kolkostruva/)
 - Verify source, currency, product, branch or offer scope, and validity before populating prices. Retain both observations and report disagreements before publication. Each feed needs an explicit freshness rule and a documented fallback for outages or missing locations. [Price verification TODO](docs/PREVIEW_006_BACKLOG.md#multi-source-price-verification)
 
 ## Bug fix · build 015 · app 0.5.8

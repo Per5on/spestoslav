@@ -160,3 +160,4 @@ The owner wrote:
 ## 24 November 2026 — preview-10.8.1 build approval
 
 - The owner approved packaging the combined fixes as bug-fix preview-10.8.1 and asked for a full code, currency and regression check before the build. The candidate uses Android version code 16 and app version 0.5.9. [Changelog](../CHANGELOG.md#preview-1081--build-016--app-059)
+- Completed the pre-build audit, fixed receipt review and currency regressions, and delivered the checked internal APK. Device acceptance and backend rollout remain pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)

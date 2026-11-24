@@ -1,5 +1,5 @@
 {
-  "next_version": "016",
+  "next_version": "017",
   "versions": [
     {
       "version": "001",
@@ -55,6 +55,17 @@
       "snapshot": "bug-fix-015-varna.png",
       "artifact_archive_digest": "sha256:fa790217ccd9fe9d891f38a3dc0f9aa76a990a31126ccfbd376c4fd6f0da867a",
       "sha256": "0d5781575d1c729a87138da4663863ef184f72b187662b5d5a1d9a8d30ad5d86"
+    },
+    {
+      "version": "016",
+      "label": "10.8.1",
+      "kind": "Internal test-signed ARM Android APK",
+      "url": "https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390",
+      "workflow": "https://github.com/Per5on/spestoslav/actions/runs/45352059558",
+      "source": "d1a6a2da08b581027012992c3f5795e3d7b3994f",
+      "snapshot": "preview016-thumbnail-reconciliation.jpg",
+      "artifact_archive_digest": "sha256:7c5cce86b2387093745d3c676dd83100a2f8515ec358b0fab737a1d9431683ab",
+      "sha256": "841e2ae92710989f4fb0466b6a76e821c16dead33596ba32b9c071698607f0d3"
     }
   ],
   "metadata_source": "../../mobile/preview.json"
