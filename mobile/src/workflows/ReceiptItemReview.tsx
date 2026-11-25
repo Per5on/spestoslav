@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { View } from "react-native";
+import { httpStatus } from "../api";
 import { Product, Store, matchesProduct } from "../catalog/model";
 import { Pressable, Input, Text, useUI } from "../ui";
 import { Button } from "../Action";
@@ -29,6 +30,10 @@ export function ReceiptItemReview({
     [confirmed, setConfirmed] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(false);
+  // Synchronous guard against a double tap, and one expiry per attempt: the server treats
+  // the same request key with a different expiry as a conflict, so retries must repeat it.
+  const inFlight = useRef(false),
+    expiry = useRef<string | null>(null);
   const valid =
     /^\d{1,8}(?:[.,]\d{1,4})?$/.test(unitPrice) &&
     Number(unitPrice.replace(",", ".")) > 0 &&
@@ -37,9 +42,13 @@ export function ReceiptItemReview({
     stores.some((s) => s.id === branch) &&
     confirmed;
   async function submit() {
-    if (!valid || !product || !branch) return;
+    if (!valid || !product || !branch || inFlight.current) return;
+    inFlight.current = true;
     setBusy(true);
     setError(false);
+    if (!expiry.current)
+      expiry.current = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    let submitted = false;
     try {
       await session.request(
         `/api/v1/receipts/${receiptId}/items/${itemId}/submit-price`,
@@ -50,23 +59,39 @@ export function ReceiptItemReview({
             product_id: product.id,
             branch_id: branch,
             price_eur: unitPrice.replace(",", "."),
-            expires_at: new Date(
-              Date.now() + 24 * 60 * 60 * 1000,
-            ).toISOString(),
+            expires_at: expiry.current,
           }),
         },
       );
-      setOpen(false);
-      await onSubmitted();
-    } catch {
-      setError(true);
+      submitted = true;
+    } catch (failure) {
+      const status = httpStatus(failure);
+      // 409: this item was already submitted (earlier tap or a lost response). Refresh
+      // so the list shows its real state instead of a misleading failure.
+      submitted = status === 409;
+      // A 4xx other than 409 created nothing, so a fresh expiry is safe for the next try.
+      // Timeouts and 5xx keep it, because the server may have processed the request.
+      if (!submitted && status !== null && status < 500) expiry.current = null;
+      if (!submitted) setError(true);
     } finally {
+      inFlight.current = false;
       setBusy(false);
     }
+    if (!submitted) return;
+    expiry.current = null;
+    setOpen(false);
+    // The price is already submitted; a failed refresh must not look like a failed submit.
+    await onSubmitted().catch(() => undefined);
   }
   if (!open)
     return (
-      <Button label={t("reviewReceiptItem")} onPress={() => setOpen(true)} />
+      <Button
+        label={t("reviewReceiptItem")}
+        onPress={() => {
+          expiry.current = null;
+          setOpen(true);
+        }}
+      />
     );
   return (
     <View style={s.panel}>

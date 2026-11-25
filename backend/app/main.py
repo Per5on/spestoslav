@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, load_only
 
 from .db import get_db
+from .request_limits import limit_locality_search
 from .grocery import GroceryGroup, GroceryIdentity
 from .technology import TechnologyIdentity
 from .barcodes import gtin_aliases
@@ -95,7 +96,10 @@ def categories(db: Session = Depends(get_db)):
     ]
 
 
-@app.get("/api/v1/localities", response_model=list[LocalityResponse])
+@app.get(
+    "/api/v1/localities", response_model=list[LocalityResponse],
+    dependencies=[Depends(limit_locality_search)],
+)
 def search_localities(
     q: str = Query(min_length=2, max_length=80),
     db: Session = Depends(get_db),
@@ -397,6 +401,31 @@ def current_prices(
         )
         for row in rows
     ]
+
+
+@app.get("/api/v1/fuel-snapshot")
+def fuel_snapshot(locality_id: UUID, db: Session = Depends(get_db)):
+    """Provide the selected locality's fuel view in one client round trip."""
+    from .catalog_api import national_offers
+    from .write_api import browse_products
+
+    def collect(read, size: int, **filters):
+        rows = []
+        for offset in range(0, 10000, size):
+            page = read(category_code="fuel", db=db, limit=size, offset=offset, **filters)
+            rows.extend(page)
+            if len(page) < size:
+                return rows
+        raise HTTPException(503, "Fuel snapshot capacity exceeded")
+
+    return {
+        "schema_version": 1,
+        "locality_id": str(locality_id),
+        "products": collect(browse_products, 100, q=""),
+        "stores": collect(stores_for_locality, 500, locality_id=locality_id),
+        "prices": collect(current_prices, 500, locality_id=locality_id),
+        "online": collect(national_offers, 100, locality_id=locality_id),
+    }
 
 
 @app.get("/api/v1/promotions", response_model=list[PromotionResponse])

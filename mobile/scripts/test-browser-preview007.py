@@ -101,20 +101,26 @@ with sync_playwright() as p:
  expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_have_accessible_name(re.compile('Символично изображение$'))
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
- page.get_by_role('checkbox',name='Лаптоп (примерна снимка)',exact=True).click()
+ suggestions=page.get_by_test_id('product-suggestions')
+ laptop=suggestions.get_by_role('button',name='Добави Лаптоп (примерна снимка)',exact=True)
+ laptop.get_by_text('Лаптоп (примерна снимка)',exact=True).click()
+ page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
+  .some(item => item.product.id === 'demo-laptop' && item.quantity === 1)""")
+ expect(page.get_by_role('button',name=re.compile('^(Приложи|Изчисти)'))).to_have_count(0)
  search.fill('Смартфон')
- page.get_by_role('checkbox',name='Смартфон (примерна снимка)',exact=True).click()
- page.get_by_role('button',name='Приложи (2)',exact=True).click()
- expect(page.get_by_role('button',name=re.compile('^Добави '))).to_have_count(2)
- proof['multiselect_retains_pending_selection_across_queries']=True
- page.wait_for_timeout(650);page.screenshot(path=str(args.output_dir/'technology.png'))
+ suggestions.get_by_role('button',name='Добави Смартфон (примерна снимка)',exact=True).click()
+ page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
+  .some(item => item.product.id === 'demo-smartphone' && item.quantity === 1)""")
+ proof['search_row_tap_directly_adds_without_filter_controls']=True
  search.fill('телевизор')
- page.get_by_role('button',name='Изчисти',exact=True).click()
- search.fill('телевизор')
- page.get_by_role('button',name=re.compile('^Приложи')).click()
+ search.press('Enter')
+ expect(suggestions).to_have_count(0)
  names=page.get_by_role('button',name=re.compile('^Добави ')).evaluate_all('(els)=>els.map(e=>e.getAttribute("aria-label"))')
  assert names and all('телевизор' in name.casefold() for name in names),names
- proof['query_only_filter_without_explicit_checkboxes']=True
+ page.screenshot(path=str(args.output_dir/'technology.png'))
+ search.fill('')
+ expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible()
+ proof['enter_filters_catalogue_and_empty_input_restores_it']=True
  # The representative images are local assets and are tied to catalogue IDs.
  def verify_catalogue_image(category, tab, code, query):
   page.get_by_role('tab',name=tab,exact=True).click()
@@ -122,7 +128,7 @@ with sync_playwright() as p:
   product=next(row for row in snapshot if row['source_product_code']==code)
   search=page.get_by_label('Търси продукт…',exact=True)
   search.fill(query)
-  page.get_by_role('button',name=re.compile('^Приложи')).click()
+  search.press('Enter')
   img=page.get_by_test_id('thumbnail-loaded-'+product['id'])
   expect(img).to_be_visible(timeout=20000)
   expect(img).to_have_accessible_name(re.compile('Примерна снимка$'))
@@ -131,13 +137,13 @@ with sync_playwright() as p:
  expect(page.get_by_role('button',name='Добави БАНАНИ · 88590',exact=True)).to_be_visible()
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('81590')
- page.get_by_role('button',name=re.compile('^Приложи')).click()
+ search.press('Enter')
  expect(page.get_by_role('button',name='Добави БАНАНИ · 81590',exact=True)).to_be_visible()
  expect(page.get_by_role('button',name='Добави БАНАНИ · 88590',exact=True)).to_have_count(0)
  page.screenshot(path=str(args.output_dir/'banana-disambiguation.png'))
  proof['duplicate_names_are_distinguished_and_searchable']=True
  search.fill('домати')
- page.get_by_role('button',name=re.compile('^Приложи')).click()
+ search.press('Enter')
  tomato=page.get_by_role('img',name=re.compile('ДОМАТИ.*Символично изображение',re.I)).first
  expect(tomato).to_have_attribute('src',re.compile('tomato'))
  proof['tomatoes_use_tomato_artwork']=True

@@ -29,6 +29,7 @@ from .db import get_db
 from .grocery import GroceryIdentity
 from .models import Category, Product, Retailer, StoreBranch, PriceObservation
 from .marketplace import CurrentPrice, PriceCache, ProductBarcode, ReceiptItem, ReceiptScan
+from .quotas import enforce_daily_quota
 from .technology import TechnologyIdentity
 from .workflows import (
     CollectionSource,
@@ -136,9 +137,15 @@ def active_pair(db, product_id, branch_id):
 
 
 def submission_view(row, cache):
+    expiry = cache.expires_at
+    if expiry and expiry.tzinfo is None:
+        expiry = expiry.replace(tzinfo=timezone.utc)
+    status = cache.status
+    if status == "PENDING" and expiry and expiry <= datetime.now(timezone.utc):
+        status = "EXPIRED"
     return {
         "id": str(row.id),
-        "status": cache.status,
+        "status": status,
         "product_id": str(cache.product_id),
         "branch_id": str(cache.branch_id),
         "price_eur": str(cache.submitted_price_eur),
@@ -177,6 +184,16 @@ def enqueue(db, payload, principal, request_key, source):
         if expiry != payload.expires_at:
             raise HTTPException(409, "Idempotency key expiry differs")
         return existing, cache
+    if principal.role == "user":
+        # Replays returned above; only genuinely new user submissions count.
+        enforce_daily_quota(
+            db,
+            ReviewSubmission,
+            principal.subject,
+            "SUBMISSION_DAILY_LIMIT",
+            200,
+            "Daily price submission limit reached",
+        )
     active_pair(db, payload.product_id, payload.branch_id)
     now = datetime.now(timezone.utc)
     if payload.observed_at and (
@@ -325,7 +342,10 @@ def review_queue(
     rows = db.execute(
         select(ReviewSubmission, PriceCache)
         .join(PriceCache, PriceCache.id == ReviewSubmission.cache_id)
-        .where(PriceCache.status == "PENDING")
+        .where(
+            PriceCache.status == "PENDING",
+            PriceCache.expires_at.is_(None) | (PriceCache.expires_at > datetime.now(timezone.utc)),
+        )
         .order_by(ReviewSubmission.created_at, ReviewSubmission.id)
         .offset(offset)
         .limit(limit)

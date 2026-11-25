@@ -13,6 +13,8 @@ import { Button } from "../Action";
 import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
+import { SIMULATION_MODE, httpStatus } from "../api";
+import { ReceiptCaptureMock } from "./ReceiptCaptureMock";
 type Summary = {
   id: string;
   status: string;
@@ -38,7 +40,7 @@ export function ReceiptsScreen({
   localityId: string | undefined;
   onLogin: () => void;
 }) {
-  const catalogue = useCatalog("groceries", localityId, false, false);
+  const catalogue = useCatalog("groceries", localityId, false, { includePrices: false });
   const stores = catalogue.stores;
   const session = useSession(),
     { t, styles: s } = useUI();
@@ -50,7 +52,7 @@ export function ReceiptsScreen({
     [error, setError] = useState(false),
     [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null),
     [note, setNote] = useState<
-      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed"
+      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed" | "receiptLimit"
     >("");
   const mounted = useRef(true),
     requestKey = useRef(""),
@@ -169,10 +171,11 @@ export function ReceiptsScreen({
         headers: { "Idempotency-Key": requestKey.current },
         body: form,
       });
-    } catch {
+    } catch (failure) {
       // The outcome is unknown if the response was lost. Keep the draft and its request key.
       if (mounted.current) {
-        setError(true);
+        if (httpStatus(failure) === 429) setNote("receiptLimit");
+        else setError(true);
         setBusy(false);
       }
       return;
@@ -246,6 +249,7 @@ export function ReceiptsScreen({
   return (
     <View style={{ gap: 12 }}>
       <Text style={s.meta}>{t("receiptPrivacy")}</Text>
+      {SIMULATION_MODE && Platform.OS === "web" && <ReceiptCaptureMock />}
       <View style={s.row}>
         <Button
           label={t("takeReceipt")}

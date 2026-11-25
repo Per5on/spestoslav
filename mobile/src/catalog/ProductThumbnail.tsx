@@ -1,55 +1,65 @@
 import { useEffect, useState } from "react";
-import { Image, Modal, View, useWindowDimensions, type ImageSourcePropType } from "react-native";
+import { Image, Modal, StyleSheet, View, useWindowDimensions, type ImageSourcePropType } from "react-native";
 import { Pressable, Text, useUI } from "../ui";
-import { sampleThumbnail } from "./samples";
 import { cachedThumbnail } from "./thumbnailCache";
 
 type Props = {
   id: string;
   name: string;
   uri?: string | null;
+  representativeUri?: string;
   fallback: ImageSourcePropType;
   symbolic: boolean;
 };
 
-export function ProductThumbnail(props: Props) {
-  return <Thumbnail key={props.uri ?? ""} {...props} />;
-}
-
-function Thumbnail({ id, name, uri, fallback, symbolic }: Props) {
+export function ProductThumbnail({ id, name, uri, representativeUri, fallback, symbolic }: Props) {
   const { styles: s, t } = useUI();
-  const sample = sampleThumbnail(id);
-  const [resolved, setResolved] = useState<string>();
-  const [loaded, setLoaded] = useState<string>();
-  useEffect(() => {
-    if (sample || !uri) return;
-    let active = true;
-    const pending = cachedThumbnail(uri);
-    void (pending ?? Promise.resolve(uri)).then(
-      value => { if (active) setResolved(value); },
-      () => { if (active) setResolved(uri); },
-    );
-    return () => { active = false; };
-  }, [sample, uri]);
-  const remote = resolved ? { uri: resolved } : undefined;
-  const source = sample ?? remote ?? fallback;
-  const imageKey = resolved ?? id;
-  const photoName = !remote && (symbolic || !sample)
-    ? `${name} · ${t(symbolic ? "symbolicImage" : "representativePhoto")}` : name;
+  const [failed, setFailed] = useState<string[]>([]);
+  const url = [uri, representativeUri].find(candidate => candidate && !failed.includes(candidate));
+  const [resolved, setResolved] = useState<{ url: string; path: string }>();
+  const [loadedPath, setLoadedPath] = useState<string>();
+  const [fallbackLoaded, setFallbackLoaded] = useState(false);
   const [enlarged, setEnlarged] = useState(false);
   const { height } = useWindowDimensions();
+  useEffect(() => {
+    if (!url) return;
+    let active = true;
+    void (cachedThumbnail(url) ?? Promise.resolve(url)).then(
+      path => { if (active) setResolved({ url, path }); },
+      () => { if (active) setResolved({ url, path: url }); },
+    );
+    return () => { active = false; };
+  }, [url]);
+
+  const remote = resolved && resolved.url === url ? resolved : undefined;
+  const remoteLoaded = Boolean(remote && loadedPath === remote.path);
+  const source = remoteLoaded && remote ? { uri: remote.path } : fallback;
+  const photoName = (remoteLoaded && remote?.url === uri) || (id.startsWith("demo-") && !symbolic)
+    ? name : `${name} · ${t(symbolic ? "symbolicImage" : "representativePhoto")}`;
   const close = () => setEnlarged(false);
-  const handleError = () => {
-    if (resolved) setResolved(resolved === uri ? undefined : uri ?? undefined);
-  };
+
+  function handleError() {
+    if (!remote) return;
+    setLoadedPath(undefined);
+    if (remote.path !== remote.url) {
+      setResolved({ url: remote.url, path: remote.url });
+    } else {
+      setFailed(previous => [...previous, remote.url]);
+    }
+  }
+
   return (
     <>
       <Pressable accessibilityRole="button" accessibilityLabel={`${t("enlargePhoto")}: ${photoName}`}
-        testID={`thumbnail-${loaded === imageKey ? "loaded" : "loading"}-${id}`}
+        testID={`thumbnail-${fallbackLoaded || remoteLoaded ? "loaded" : "loading"}-${id}`}
         onPress={() => setEnlarged(true)}>
-        <Image key={imageKey} accessibilityLabel={photoName}
-          source={source} style={s.photo}
-          resizeMode="contain" onLoad={() => setLoaded(imageKey)} onError={handleError} />
+        <Image accessibilityLabel={photoName} aria-hidden={remoteLoaded}
+          source={fallback} style={[s.photo, remoteLoaded && { opacity: 0 }]}
+          resizeMode="contain" onLoad={() => setFallbackLoaded(true)} />
+        {remote && <Image key={remote.path} accessibilityLabel={photoName} aria-hidden={!remoteLoaded}
+          source={{ uri: remote.path }}
+          style={[s.photo, StyleSheet.absoluteFillObject, { opacity: remoteLoaded ? 1 : 0 }]}
+          resizeMode="contain" onLoad={() => setLoadedPath(remote.path)} onError={handleError} />}
       </Pressable>
       {enlarged && (
         <Modal transparent visible onRequestClose={close}>

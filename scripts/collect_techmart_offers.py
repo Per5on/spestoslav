@@ -71,7 +71,7 @@ def offer_price(html, code):
     return str(price)
 
 
-def collect(codes, client):
+def collect(codes, client, *, on_failed_sku=None):
     source = json.loads(CATALOGUE.read_text())
     by_code = {row["source_product_code"]: row["source_url"] for row in source["products"]}
     robots_response = client.get(BASE + "/robots.txt")
@@ -79,14 +79,25 @@ def collect(codes, client):
     robots = RobotFileParser()
     robots.parse(robots_response.text.replace("\\r\\n", "\n").splitlines())
     for code in codes:
-        url = by_code[code]
+        url = by_code.get(code)
+        if url is None and on_failed_sku is not None:
+            on_failed_sku(code)
+            continue
+        if url is None:
+            raise ValueError(f"SKU {code} is absent from the imported catalogue")
         parsed = urlsplit(url)
         if parsed.scheme != "https" or parsed.netloc != "techmart.bg" or not robots.can_fetch(AGENT, url):
             raise ValueError(f"Catalogue URL is outside the allowed source for SKU {code}")
         time.sleep(1)
-        response = client.get(url)
-        response.raise_for_status()
-        price = offer_price(response.text, code)
+        try:
+            response = client.get(url)
+            response.raise_for_status()
+            price = offer_price(response.text, code)
+        except (httpx.HTTPError, ValueError):
+            if on_failed_sku is None:
+                raise
+            on_failed_sku(code)
+            continue
         if price:
             observed = datetime.now(timezone.utc)
             yield {
@@ -95,24 +106,31 @@ def collect(codes, client):
             }
 
 
-def render(rows):
+def render(rows, *, summary=False):
     payload = json.dumps(rows)
     if not rows or "$observations$" in payload:
         raise ValueError("No valid offers or invalid SQL delimiter")
-    return """WITH observations AS (
+    statement = """WITH observations AS (
   SELECT * FROM jsonb_to_recordset($observations$@PAYLOAD@$observations$::jsonb)
     AS o(code text, url text, price numeric, observed timestamptz, expires timestamptz)
-)
-INSERT INTO national_offers
-  (id,product_id,retailer_code,price_eur,source_reference,observed_at,verified_at,verified_by,valid_until)
-SELECT md5(concat_ws('|','techmart-online',i.product_id,o.observed::text))::uuid,
-  i.product_id,r.code,o.price,o.url,o.observed,now(),'techmart-public-jsonld',o.expires
+), matched AS (
+SELECT md5(concat_ws('|','techmart-online',i.product_id,o.observed::text))::uuid AS id,
+  i.product_id,r.code,o.price,o.url,o.observed,o.expires
 FROM observations o JOIN technology_catalog_identities i
   ON i.source='TECHMART_PUBLIC_CATALOG' AND i.source_product_code=o.code AND i.source_url=o.url
 JOIN products p ON p.id=i.product_id AND p.active AND p.category_code='technology'
 JOIN catalog_retailers r ON r.code='techmart' AND r.active AND r.category_code=p.category_code
 WHERE o.observed <= now() AND now() < o.expires
-ON CONFLICT (id) DO NOTHING RETURNING product_id, price_eur;""".replace("@PAYLOAD@", payload)
+), inserted AS (
+  INSERT INTO national_offers
+    (id,product_id,retailer_code,price_eur,source_reference,observed_at,verified_at,verified_by,valid_until)
+  SELECT id,product_id,code,price,url,observed,now(),'techmart-public-jsonld',expires
+  FROM matched ON CONFLICT (id) DO NOTHING RETURNING product_id, price_eur
+) """.replace("@PAYLOAD@", payload)
+    return statement + (
+        "SELECT (SELECT count(*) FROM matched) AS matched, count(*) AS published FROM inserted;"
+        if summary else "SELECT product_id, price_eur FROM inserted;"
+    )
 
 
 if __name__ == "__main__":

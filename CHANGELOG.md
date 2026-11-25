@@ -1,6 +1,64 @@
 # Спестовник changelog
 
-This lists the recorded Android previews and pre-alpha and beta candidates in build order. It covers the recorded project history through Beta_10.8. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
+This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
+
+## Preview 10.9.1 · build 017 · app 0.5.10
+
+- Delivered the signed internal ARM APK from source `2726bce`. Verified the package ID, Android version code 17, ABI set, checksum and same signing certificate as 10.8.1. Size 43,965,037 bytes (+91,339 bytes). [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
+
+- Added automatic mobile verification for pull requests, including strict TypeScript, fixture-based browser flows and thumbnail coverage and size reporting. Removed 17 unused mobile WebPs totalling 75,120 bytes from the repository. [Release plan](docs/PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
+- The food and technology catalogue buttons now read „Обнови цени“. „Горива“ retains pull-to-refresh.
+- The three catalogue tabs and basket render rows as needed, starting with a batch of 15. Search suggestions also start at 15. In Chromium, the initial grocery card count fell from 40 to 15. Android timings remain open.
+- Fixed an avoidable sign-in prompt. After a protected request returns 401, the app checks the provider session and retries a safe read once if renewal succeeds.
+- In „Храни“ and „Техника“, tap a search suggestion to add it directly to the basket. Press Enter or the keyboard Search key to show all matches. Removed „Приложи“, „Изчисти“ and the selection checkboxes. [Search mock and timing](docs/NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+- Verified the browser-only receipt prototype with two image sections, a single-photo fallback and Bulgarian fiscal QR metadata. Android document capture and multipage OCR remain open.
+- With an empty fuel cache and 300 ms added per API request, the browser mock took a median 359 ms from tab selection to the first price and 847 ms from navigation. A cached offline revisit took 19 ms from tab selection. Track the premature fuel empty message and the under-200 ms cold-load goal. [Mock results](docs/NEXT_PREVIEW_MOCK.md)
+
+- Corrected mismatched product artwork in both tabs and replaced uncertain group matches with a neutral thumbnail. A SHA-256 manifest prevents duplicate downloads of the bundled artwork. The live API rollout remains pending. [Thumbnail plan](docs/PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
+- „Горива“ now loads grades, stations and prices in one locality-scoped request when the endpoint is available. The app shows a loading indicator until the price request completes and supports older API versions. [Timing and coverage](docs/NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+## Preview 10.8.1 · build 016 · app 0.5.9
+
+- Delivered the signed internal ARM APK from source `d1a6a2d`. Verified Android version code 16, app version 0.5.9, both ARM ABIs and the downloaded SHA-256. Physical-device acceptance remains open. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)
+
+- Published the nationwide directory with 1,585 active branches. In Пловдив, live checks found five indicative technology offers and 17 indicative fuel offers. Current grocery prices for the city are still pending.
+- Added a notice in the grocery and technology tabs when the selected town has no current prices. Included four reviewed Велико Търново branches in the staged grocery refresh. [Live browser preview](docs/references/preview016-plovdiv-grocery.png)
+- Added Android pull-to-refresh in „Храни“, „Техника“ and „Горива“. All three tabs use the same refresh path.
+- Speeded up repeat catalogue loads, especially „Горива“. Show saved products, shops and valid prices for the selected town while updates arrive, and prepare the other tabs after the current tab loads.
+- Added Android background sync for public catalogue and price data. The job requests a one-hour minimum interval and runs when Android schedules it and a network is available.
+- Fixed a startup flash by restoring the saved palette and dark mode before showing the first app screen. Android holds the splash until that screen is laid out.
+- Restored product and local store selection during receipt review after the catalogue refresh changes.
+- Fixed candidate receipt upload recovery after a lost database commit response. Retries with the same request key can recover the saved receipt and its photo. Backend rollout is pending.
+- Mobile tests, Android configuration, live browser checks and both hosted PostgreSQL jobs passed for source `dcbdea2`. [Rollout checks](https://github.com/Per5on/spestoslav/actions/runs/45249343835)
+- A delayed browser fixture rendered the saved Sofia A95 price in 140 ms, updated it after the new response and removed it when the town changed. Mobile checks, Android JavaScript export and both hosted PostgreSQL jobs passed for the catalogue changes in `504f36b`. On-device verification, including pull-to-refresh and background job execution, remains pending. [Catalogue checks](https://github.com/Per5on/spestoslav/actions/runs/45254713574) · [Release TODO](docs/PREVIEW_006_BACKLOG.md#build-016-release-plan)
+
+- Replaced mixed thumbnail fallbacks in „Храни“ and „Техника“ with 33 consistent representative WebPs. The preview approved by the owner shows separate artwork for tomatoes, bananas, kettles and coffee machines. The app uses a versioned image manifest and the same bundled artwork during outages. Existing product-linked photos and the illustrative-image notice are retained. Live API rollout and installed-app acceptance remain pending. [Approved preview](docs/references/preview016-thumbnail-reconciliation.jpg)
+
+- Corrected BGN-to-EUR normalization for the sealed Burlex historical archive. Added a repeatable repair restricted to that imported history, plus currency checks for basket quotes, explicit Bulgarian receipt euro labels, and the indicative fuel feed. The production history repair requires a separate rollout.
+- Updated the price refresh cache to retain independent observations for the same offer and timestamp. The nationwide source rollout and automatic conflict review remain open.
+
+### Nationwide price-source audit · 23 November 2026
+
+Read-only check of 1,585 active branches in 253 localities and all 28 regions. The live figures below use each category’s directory as the denominator.
+
+| Category | Localities with eligible live prices | Collection decision |
+| --- | --- | --- |
+| „Храни“ | 2 of 108, six Burlex branches | Use the official archive as a broad baseline after currency, branch, and product verification. Keep direct merchant collection for freshness and gaps. |
+| „Техника“ | 10 of 55, five Techmart indicative offers | Add independently verified retailer feeds. Separate each merchant’s offer and compare exact GTIN or model and variant. |
+| „Горива“ | 241 of 241 with indicative prices | Use the KARAI chain feed countrywide where an active local branch exists. Its fresh source covered A95 and diesel in 241 localities and LPG in 236. Station-level prices and premium grades need another source. |
+
+- Compared the official grocery archives for 15, 21 and 22 November. The same 314 branches in 74 of 108 grocery localities were address or reviewed-label candidates on all three dates. The same 94 localities had at least one retailer and official locality match. Those 94 include 20 localities that need further branch matching. Fourteen lacked a repeatable retailer and locality match. Kaufland appeared in the 21 November archive and was absent from the other two samples. [Official archives](https://kolkostruva.bg/opendata)
+- The archive and the direct Burlex feed overlap at four reviewed branches in Велико Търново. All 2,711 matched amounts from the 22 November archive agreed with their current counterparts after BGN-to-EUR conversion. Their dates differ, so same-window corroboration is still pending. The two live Sofia pilot branches were different from the two archived Sofia branches.
+- **Historical currency regression.** The reviewed Burlex archive importer treated raw BGN amounts as EUR. Two live history samples showed 4.29 stored where the converted price is €2.19. The scoped repair passed the disposable PostgreSQL replay check. The 1,358-row production history correction remains open. The 3,588 current grocery prices audited came from the separate direct Burlex collector. [Burlex source](https://burlex.bg/kolkostruva/)
+- Verify source, currency, product, branch or offer scope, and validity before populating prices. Retain both observations and report disagreements before publication. Each feed needs an explicit freshness rule and a documented fallback for outages or missing locations. [Price verification TODO](docs/PREVIEW_006_BACKLOG.md#multi-source-price-verification)
+
+## Bug fix · build 015 · app 0.5.8
+
+- Added missing verified branches for Varna and Veliko Tarnovo and published a fresh KARAI fuel update. The catalogue now surfaces priced products first and refreshes price data on resume.
+- Added price-cache generation, staged scheduled publication, source error handling and review-queue expiry checks.
+- Added candidate API limits for sign-in, password recovery and locality search. Removed `docs/12.docx` from this revision. [Build and rollout notes](docs/BUG_FIX_015.md)
+- Verified the signed ARM APK and both hosted PostgreSQL jobs. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
 
 ## Beta_10.8 · build 014 · app 0.5.7
 

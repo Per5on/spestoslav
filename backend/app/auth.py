@@ -1,6 +1,7 @@
 """Managed Neon JWT authentication and separate server-only service credentials."""
 
 import hmac
+import logging
 import os
 from dataclasses import dataclass
 from functools import lru_cache
@@ -12,6 +13,8 @@ from fastapi import Depends, Header, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 bearer = HTTPBearer(auto_error=False)
+logger = logging.getLogger(__name__)
+_audience_warned = False
 
 
 @dataclass(frozen=True)
@@ -32,6 +35,16 @@ def jwks_client(url):
     return PyJWKClient(url, cache_keys=True, lifespan=300, timeout=5)
 
 
+def _warn_missing_audience():
+    global _audience_warned
+    if not _audience_warned:
+        _audience_warned = True
+        logger.warning(
+            "AUTH_AUDIENCE is not set: any token from the issuer is accepted. "
+            "Set it and AUTH_REQUIRE_AUDIENCE=true in production."
+        )
+
+
 def current_user(credentials: HTTPAuthorizationCredentials | None = Depends(bearer)):
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(
@@ -43,6 +56,10 @@ def current_user(credentials: HTTPAuthorizationCredentials | None = Depends(bear
     try:
         key = jwks_client(jwks_url).get_signing_key_from_jwt(credentials.credentials)
         audience = os.getenv("AUTH_AUDIENCE")
+        if not audience:
+            if os.getenv("AUTH_REQUIRE_AUDIENCE", "").lower() == "true":
+                raise HTTPException(503, "Authentication audience is not configured")
+            _warn_missing_audience()
         claims = jwt.decode(
             credentials.credentials,
             key.key,

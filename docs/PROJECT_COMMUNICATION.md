@@ -84,3 +84,114 @@ This is the repository record of the project conversation available through 23 N
 - While Beta_10.8 was packaging, the owner requested „Трети страни“ inside „За приложението“ and asked that data and app credits move there. The normal catalogue and fuel views still show merchant names, price scope and the illustrative-image notice. The candidate includes grouped links to data, address, image and software sources. [Browser preview](references/beta-10.8-third-parties.png)
 
 - Delivered Beta_10.8 build 014 with the new credits section and the changelog for all 14 recorded versions. The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) [Changelog](../CHANGELOG.md)
+
+## Beta_10.8 follow-up review
+
+- The owner asked whether the findings in `check_and_verify.docx` apply. Reviewed the document as assessment material and recorded applicable release work and corrections in the [activity log](ACTIVITY_LOG.md#23-november-2026--beta_108-document-review).
+
+## Bug-fix build 015
+
+- The owner confirmed that prices were not populating and authorized the bug-fix build. They asked for expiry, password policy, attempts and search limits to be reassessed, a cached database to be created from collected data, and `docs/12.docx` to be removed from the pack. [Build notes](BUG_FIX_015.md)
+
+Delivered the build 015 pack with the APK, SQLite base and checksums. The four-hour price publisher and authentication safeguards remain staged. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)
+
+
+## Велико Търново device report
+
+- The owner confirmed that build 015 installs and that the camera appears to work, and reported no visible prices in Велико Търново. Verified the local coverage gap and published 2,713 validated grocery branch prices from the Burlex public table. Technology coverage remains open. [Verification record](ACTIVITY_LOG.md)
+
+- The owner confirmed that prices appeared after refreshing build 015 on their phone in Велико Търново.
+
+
+## Nationwide directory validation
+
+- The owner asked to finish the interrupted nationwide run after reporting widespread missing prices. Completed isolated import and duplicate-free replay of the 1,563 reviewed records. Recorded the remaining grocery price gap and live rollout status. [Evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-directory-validation)
+
+
+## Nationwide rollout and build 016
+
+- The owner asked to implement the nationwide validation findings and prepare the next build. Published the directory, verified Пловдив fuel and technology and prepared build 016 for packaging. Grocery price coverage remains open in Пловдив. [Rollout record](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
+
+- The owner requested that the next steps be written in the TODO and the future release changelog. Build 016 is listed as unreleased. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+
+
+## Subscription plan and remediation focus
+
+- The owner requested a future subscription plan and asked that remediation focus on historical errors. Prepared the plan and began remediation with the receipt commit-response failure. Retained the existing release and rollout status in the TODO. [Subscription plan](SUBSCRIPTION_PLAN.md) · [TODO](PREVIEW_006_BACKLOG.md#historical-defect-remediation)
+
+- The owner reported a default-theme flash on launch with a custom theme selected. Added the startup fix to candidate 016 and recorded the Android cold-start check in the release TODO.
+
+- The owner reported slow catalogue loading and uneven refresh across tabs, with „Горива“ the slowest, and requested background sync. Candidate 016 now opens with saved catalogue data, refreshes all three tabs through the same path and schedules Android background sync. The browser test showed a saved A95 price before the delayed network response and replaced it with the fresh response. Background execution and performance on a phone will be checked after build approval. [Verification](ACTIVITY_LOG.md#23-november-2026--catalogue-loading-and-android-background-sync)
+
+
+## 23 November 2026 — release notes and repository name
+
+The owner wrote:
+
+> amend the todo and the changelog for the future release with the fixes  including the pull-to-refresh. Change the name of the repository to Per5on/spestovnik
+> Keep the history of this chat
+
+- Updated the build 016 release TODO and changelog with the fixes, the completed checks, and the remaining phone checks. The catalogue fixes include pull-to-refresh in all three tabs, faster repeat loads for fuel, and Android background sync. The previous exchange and test results are preserved in the project logs. [Release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+- GitHub returned HTTP 403 for the repository settings write. The live receipt worker still authenticates using `Per5on/spestoslav`. Prepared a draft compatibility patch so the same repository can authenticate under either name during the transition. The rename awaits production rollout approval and GitHub settings access. [Compatibility PR](https://github.com/Per5on/spestoslav/pull/25)
+
+
+## 23 November 2026 — thumbnail database and post-build backlog
+
+The owner wrote:
+
+> the name is not that important, you can leave it as pending.
+> the product thumbnail database is still not active or not populating ... and is not unanimous, universal or similar as visual images. it has to be reconciled and ready for use ... inspect and add to the todo and the changelog. After the build, mark the backlog which issues have been resolved
+
+- Deferred the rename. Verified the seeded symbol database, the absent public manifest, the live image coverage and the mix of bundled styles. Added the reconciliation work to the TODO and future changelog. The backlog will close each item after verification on the relevant build. [Inspection](ACTIVITY_LOG.md#23-november-2026--thumbnail-database-and-visual-reconciliation)
+
+
+## 23 November 2026 — approved thumbnail fix and price-source review
+
+- The owner asked for the thumbnail fix itself. Implemented a common WebP pack, versioned API delivery and bundled fallback. The owner approved the visual samples and requested the update in the upcoming changelog. [Approved preview](references/preview016-thumbnail-reconciliation.jpg) · [Changelog](../CHANGELOG.md#unreleased--build-016--app-059)
+- The owner asked whether two or more price collectors could be combined with a verification check before populating prices. Reviewed the publisher, its cache schema and available feeds. Added the matching and verification work to the TODO. [Price verification](PREVIEW_006_BACKLOG.md#multi-source-price-verification)
+
+
+## 23 November 2026 — nationwide price coverage and shutdown
+
+- The owner asked whether the two-source approach repeats across most locations, requested nationwide verification and asked that differing collection methods and findings be recorded in the upcoming changelog.
+- The owner asked to check regressions and missing dependencies after the audit, then stop the work environment to save electricity. They asked whether the chat window could be closed while the run continued. The audit, verification and handoff are filed in the repository. [Audit](ACTIVITY_LOG.md#23-november-2026--nationwide-price-source-audit-and-regression-check)
+
+
+## 24 November 2026 — preview-10.8.1 build approval
+
+- The owner approved packaging the combined fixes as bug-fix preview-10.8.1 and asked for a full code, currency and regression check before the build. The candidate uses Android version code 16 and app version 0.5.9. [Changelog](../CHANGELOG.md#preview-1081--build-016--app-059)
+- Completed the pre-build audit, fixed receipt review and currency regressions, and delivered the checked internal APK. Device acceptance and backend rollout remain pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056)
+
+
+## 24 November 2026 — next preview preparation
+
+- The owner requested „Обнови цени“, lazy loading with 10, 15 or 20 rows depending on delay, direct cart addition from search, the password hashing method, investigation of one repeated sign-in report, document mode, QR extraction for long receipts, and a performance assessment.
+- Staged the price labels, 15-row virtualization and 401 recovery. Recorded the direct-add and camera options, QR limits, and Android checks. [Next preview TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+
+- The owner asked about the fuel-price loading delay after the next-preview list changes. Confirmed the difference between cached prices, list rendering and a first uncached fetch. Added a dedicated Android timing task. [Fuel follow-up](ACTIVITY_LOG.md#24-november-2026--fuel-price-loading-follow-up)
+
+## 24 November 2026 — mock request and cold fuel priority
+
+- The owner confirmed that caching is acceptable and identified cold start as the priority. They requested a mock of every next-preview item, explicitly including adding from search, and set a target under 200 ms. They requested the mock results before APK approval or further timing optimization.
+- The mock results and remaining Android checks are filed with the release TODO. [Mock report](NEXT_PREVIEW_MOCK.md) · [Next preview tasks](PREVIEW_006_BACKLOG.md#next-preview-preparation)
+
+## 24 November 2026 — product search follow-up
+
+- The owner requested removal of „Приложи“ and „Изчисти“ and their code, direct cart addition by selecting a product, and a full matching list on Enter. They requested another mock and a before-and-after delay comparison. [Search mock and timing](NEXT_PREVIEW_MOCK.md#product-search-follow-up)
+
+## 24 November 2026 — product icon reconciliation follow-up
+
+- The owner reported missing and misplaced product icon artwork in both tabs, including bread for biscuits and juice for beer in „Храни“, and corresponding mismatches in „Техника“. They asked to plan the fix, confirm content hashing, check the code again, remove redundant interlinks and verify that the app shrinks where possible. [Thumbnail plan](PREVIEW_006_BACKLOG.md#thumbnail-reconciliation)
+
+## 24 November 2026 — automated verification and preview 10.9.1 plan
+
+- The owner asked for automated checks, verification before every commit, and a measured assessment of benefit for each change. They requested that today's candidates and open work be organized as preview-10.9.1, with redundant internal dependencies and link associations removed where verified. [Release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan)
+
+## 24 November 2026 — authorize the preview 10.9.1 source commit
+
+- The owner asked to implement the remaining fixes where a solution was available and start the commit. The source candidate includes corrected artwork assignments and consolidated fuel loading. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+## 24 November 2026 — preview 10.9.1 APK approval
+
+- The owner approved building the APK. Packaged and verified the signed preview 10.9.1 ARM artifact. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)

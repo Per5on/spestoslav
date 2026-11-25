@@ -176,6 +176,30 @@ with sync_playwright() as playwright:
     page.reload()
     open_appearance()
     expect(page.get_by_role("radio", name="Цветова комбинация 1", exact=True)).to_have_attribute("aria-checked", "true")
+
+    startup = browser.new_page(viewport={"width": 390, "height": 844})
+    startup.on("pageerror", lambda error: errors.append(str(error)))
+    startup.add_init_script("""(() => {
+        const getItem = Storage.prototype.getItem;
+        localStorage.setItem("spestovnik-preferences",
+            JSON.stringify({ language: "bg", palette: 10, dark: true }));
+        Storage.prototype.getItem = function(key) {
+            const value = getItem.call(this, key);
+            if (key !== "spestovnik-preferences") return value;
+            return new Promise(resolve => {
+                window.finishThemeRead = () => resolve(value);
+            });
+        };
+    })()""")
+    startup.goto(args.base_url)
+    startup.wait_for_function("typeof window.finishThemeRead === 'function'")
+    header = startup.get_by_test_id("app-header")
+    expect(header).to_have_count(0)
+    startup.evaluate("window.finishThemeRead()")
+    expect(header).to_have_css("background-color", "rgb(2, 47, 64)")
+    expect(startup.get_by_test_id("location-search").locator("..")).to_have_css(
+        "background-color", "rgb(69, 86, 76)"
+    )
     assert not errors, errors
     browser.close()
 print("Catalogue toolbar dry run passed at standard and narrow widths in six languages.")

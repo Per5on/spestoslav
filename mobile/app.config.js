@@ -2,7 +2,7 @@ const base = require("./app.json").expo;
 const preview = require("./preview.json");
 if (!/^[0-9]{3}$/.test(preview.sequence) || Number(preview.sequence) < 1)
   throw new Error("Invalid preview sequence");
-if (preview.label !== undefined && !/^\d+(?:\.\d+)?$/.test(preview.label))
+if (preview.label !== undefined && !/^\d+(?:\.\d+){0,2}$/.test(preview.label))
   throw new Error("Invalid preview label");
 if (!/^\d+\.\d+\.\d+$/.test(preview.version))
   throw new Error("Invalid app version");

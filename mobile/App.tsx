@@ -5,7 +5,8 @@ import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
 import { DeleteDataScreen } from "./src/navigation/DeleteDataScreen";
 import { eraseLocalData, savedListKey as storageKey, type CloudErasure } from "./src/localData";
 import { LegalDocument } from "./src/legal/LegalDocument";
-import { productSymbol, referencePhoto } from "./src/catalog/samples";
+import { productArtwork } from "./src/catalog/samples";
+import { useThumbnailManifest } from "./src/catalog/thumbnailManifest";
 import { ProductThumbnail } from "./src/catalog/ProductThumbnail";
 import { AppearanceScreen } from "./src/navigation/AppearanceScreen";
 import { SettingsChoices } from "./src/navigation/SettingsChoices";
@@ -13,10 +14,13 @@ import { FeedbackScreen } from "./src/workflows/FeedbackScreen";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
-  Image,
+  FlatList,
+  Platform,
+  RefreshControl,
   ScrollView,
   View,
 } from "react-native";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaProvider,
@@ -31,14 +35,18 @@ import {
   BasketItem,
   MAX_BASKET_ITEMS,
   Product,
+  type Retailer,
   changeQuantity,
   restoreBasket,
   indexLowestPrices, indexIndicativePrices, groupFuelResults,
+  prioritizePricedProducts,
   matchesSearchText, productSearchText, searchText,
   duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
-import { Category, useCatalog } from "./src/catalog/useCatalog";
+import type { Category } from "./src/catalog/catalogData";
+import { enableCatalogSync } from "./src/catalog/backgroundSync";
+import { useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
 import { Pressable, Input, Text, UIProvider, useUI, AutoFitLabel } from "./src/ui";
 import { Screen } from "./src/navigation/menu";
@@ -54,6 +62,11 @@ import { SessionProvider } from "./src/workflows/session";
 import { AccountScreen } from "./src/workflows/AccountScreen";
 import { ScanScreen } from "./src/workflows/ScanScreen";
 import { ReceiptsScreen } from "./src/workflows/ReceiptsScreen";
+
+if (Platform.OS !== "web") {
+  void SplashScreen.preventAutoHideAsync().catch(() => undefined);
+}
+
 const tabs = [
   { id: "groceries", label: "food", icon: "cart-outline" },
   { id: "technology", label: "technology", icon: "laptop-outline" },
@@ -64,10 +77,12 @@ function AddButton({
   name,
   onAdd,
   disabled,
+  showName = false,
 }: {
   name: string;
   onAdd: () => boolean;
   disabled: boolean;
+  showName?: boolean;
 }) {
   const { t, styles: s, color } = useUI();
   const [added, setAdded] = useState(false);
@@ -84,8 +99,9 @@ function AddButton({
         setAdded(true);
         timer.current = setTimeout(() => setAdded(false), 1000);
       }}
-      style={[s.add, added && s.added]}
+      style={[showName ? [s.option, { paddingHorizontal: 8, borderRadius: 8 }] : s.add, added && s.added]}
     >
+      {showName && <Text style={{ flex: 1, color: added ? "#fff" : "#264c30" }}>{name}</Text>}
       <Ionicons
         name="cart-outline"
         size={22}
@@ -120,16 +136,28 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+const mockBatch = SIMULATION_MODE && Platform.OS === "web" && typeof location !== "undefined"
+  ? Number(new URLSearchParams(location.search).get("batch"))
+  : 0;
+const tabBatchSize = mockBatch === 10 || mockBatch === 20 ? mockBatch : 15;
+type TabRow =
+  | { kind: "product"; key: string; value: Product }
+  | { kind: "basket"; key: string; value: BasketItem }
+  | { kind: "fuel"; key: string; value: ReturnType<typeof groupFuelResults>[number] }
+  | { kind: "retailer"; key: string; value: Retailer };
+
 function Main({ initialNotice, onErase }: {
   initialNotice: MessageKey | "";
   onErase: (cloud: Promise<CloudErasure>) => void;
 }) {
+  const startupShown = useRef(false);
   const { t, language, setLanguage, fontScale, setFontScale, styles: s, color, palette } = useUI();
   const insets = useSafeAreaInsets();
   const [headerHeight, setHeaderHeight] = useState(48);
   const headerInk = palette === 0 ? "#fff" : contrastingInk(color("#195b27", true));
   const selectedInk = palette === 0 ? "#fff" : contrastingInk(color("#ff8500", true));
   const contentRef = useRef<ScrollView>(null);
+  const tabList = useRef<FlatList<TabRow>>(null);
   const [category, setCategory] = useState<Category>("groceries"),
     [screen, setScreen] = useState<Screen>("catalog");
   const [locality, setLocality] = useState<Locality | null>(null),
@@ -139,19 +167,23 @@ function Main({ initialNotice, onErase }: {
   const [appliedQuery, setAppliedQuery] = useState("");
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
-    [pageSize, setPageSize] = useState(40),
-    [suggestionLimit,setSuggestionLimit]=useState(40),
-    [group, setGroup] = useState<string | null>(null),
-    [selected, setSelected] = useState<string[]>([]),
-    [draft, setDraft] = useState<string[]>([]);
+    [suggestionLimit, setSuggestionLimit] = useState(tabBatchSize),
+    [group, setGroup] = useState<string | null>(null);
   const [notice, setNotice] = useState<MessageKey | "">(initialNotice),
     [comparing, setComparing] = useState(false);
   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
     null,
   );
-  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, true, screen === "catalog" || screen === "basket");
+  const catalog = useCatalog(category, locality?.id, SIMULATION_MODE, {
+    active: restored && (screen === "catalog" || screen === "basket"),
+  });
+  const thumbnailUrls = useThumbnailManifest(catalog.revision);
+  useEffect(() => {
+    if (restored) void enableCatalogSync().catch(error => console.warn("Could not schedule catalogue sync", error));
+  }, [restored]);
   useEffect(() => {
     contentRef.current?.scrollTo({ y: 0, animated: false });
+    tabList.current?.scrollToOffset({ offset: 0, animated: false });
   }, [screen, category]);
   const comparisonKey = JSON.stringify({ basket, locality: locality?.id });
   const comparison = quote?.key === comparisonKey ? quote.data : null;
@@ -227,9 +259,7 @@ function Main({ initialNotice, onErase }: {
     if (category !== id) {
       setGroup(null);
       setQuery("");
-      setSelected([]);
       setAppliedQuery("");
-      setDraft([]);
       setSearchOpen(false);
     }
     setCategory(id);
@@ -265,6 +295,7 @@ function Main({ initialNotice, onErase }: {
           include_online: true,
         }),
       });
+      if (data.currency !== "EUR") throw new Error("Unexpected basket currency");
       setQuote({ key, data });
     } catch {
       setNotice("compareError");
@@ -310,24 +341,20 @@ function Main({ initialNotice, onErase }: {
   const hasFuelPrices = fuelResults.some(row =>
     row.branchCount > 0 || row.stations.some(station => station.price !== undefined));
   const searchActive = searchOpen || Boolean(appliedQuery);
-  const searchIndex = useMemo(() => searchActive ? new Map(catalog.products.map(p => {
-    const name = displayName(p);
-    return [p.id, { foldedName: name.toLocaleLowerCase(language), text: productSearchText(p, name) }];
-  })) : undefined, [catalog.products, displayName, language, searchActive]);
+  const searchIndex = useMemo(() => searchActive
+    ? new Map(catalog.products.map(p => [p.id, productSearchText(p, displayName(p))]))
+    : undefined, [catalog.products, displayName, searchActive]);
   const visible = useMemo(() => {
-    const ids = new Set(selected);
-    const tokens = searchText(appliedQuery).split(" ");
-    return catalog.products.filter(p => {
-      if (group && p.group_code !== group) return false;
-      if (ids.size) return ids.has(p.id);
-      return !appliedQuery || matchesSearchText(searchIndex?.get(p.id)?.text ?? "", tokens);
-    });
-  }, [catalog.products, group, selected, appliedQuery, searchIndex]);
+    if (appliedQuery && searchIndex) {
+      const tokens = appliedQuery.split(" ");
+      return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+    }
+    const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
+    return prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
+  }, [catalog.products, group, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
-    setSelected([]);
-    setDraft([]);
     setQuery("");
     setAppliedQuery("");
     setSearchOpen(false);
@@ -338,26 +365,25 @@ function Main({ initialNotice, onErase }: {
   )], [catalog.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
   const suggestions = useMemo(() => {
-    const normalizedQuery = query.trim().toLocaleLowerCase(language);
+    const normalizedQuery = searchText(query);
     if (!searchOpen || !normalizedQuery || !searchIndex) return [];
-    const tokens = searchText(query).split(" ");
-    return catalog.products.filter(p => {
-      const indexed = searchIndex.get(p.id);
-      return indexed && (matchesSearchText(indexed.text, tokens) || indexed.foldedName.includes(normalizedQuery));
-    });
-  }, [catalog.products, language, query, searchIndex, searchOpen]);
-  useEffect(()=>setSuggestionLimit(40),[query,category]);
-  useEffect(() => setPageSize(40), [selected, group, category]);
+    const tokens = normalizedQuery.split(" ");
+    return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+  }, [catalog.products, query, searchIndex, searchOpen]);
+  useEffect(() => setSuggestionLimit(tabBatchSize), [query, category]);
+  function thumbnail(p: Product) {
+    const art = productArtwork(p);
+    return <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
+      uri={p.image_url} representativeUri={art.code ? thumbnailUrls[art.code] : undefined}
+      fallback={art.source} symbolic={art.symbolic} />;
+  }
   function productCard(p: Product) {
-    const reference = referencePhoto(p);
     const localPrice = p.is_demo ? undefined : priceIndex.products.get(p.id);
     const onlinePrice = p.is_demo ? undefined : indicativePrices.products.get(p.id);
     const price = localPrice ?? onlinePrice ?? null;
     return (
       <View key={p.id} style={s.card}>
-        <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
-          uri={p.image_url} fallback={reference ?? productSymbol(p)}
-          symbolic={!reference && (!p.is_demo || p.category_code === "technology")} />
+        {thumbnail(p)}
 
         <View style={{ flex: 1, gap: 4 }}>
           {p.is_demo && <Text style={s.badge}>{t("demo")}</Text>}
@@ -384,8 +410,310 @@ function Main({ initialNotice, onErase }: {
   const cachedFooter = photoFooter && catalog.cached;
   const footerError = screen === "catalog" &&
     (catalog.storeError || (category === "fuel" && !locality && catalog.chainError ? "storesError" : ""));
+  const localityPriceGap = photoFooter && Boolean(locality) &&
+    !catalog.loading && !catalog.error && !catalog.storeLoading && !catalog.storeError &&
+    catalog.products.length > 0 &&
+    !catalog.products.some(product => !product.is_demo &&
+      (priceIndex.products.has(product.id) || indicativePrices.products.has(product.id)));
+  const tabRows = useMemo<TabRow[]>(() => {
+    if (screen === "basket") {
+      return basket.map(value => ({ kind: "basket", key: value.product.id, value }));
+    }
+    if (screen !== "catalog") return [];
+    if (category !== "fuel") {
+      return visible.map(value => ({ kind: "product", key: value.id, value }));
+    }
+    return locality
+      ? fuelResults.map(value => ({ kind: "fuel", key: value.key, value }))
+      : catalog.retailers.map(value => ({ kind: "retailer", key: value.code, value }));
+  }, [screen, basket, category, visible, locality, fuelResults, catalog.retailers]);
+  function renderTabRow({ item }: { item: TabRow }) {
+    switch (item.kind) {
+      case "product":
+        return productCard(item.value);
+      case "retailer": {
+        const chain = item.value;
+        return (
+          <View style={s.store}>
+            <View style={{ flex: 1, gap: 5 }}>
+              <Text style={s.productName}>{chain.name}</Text>
+              <Text style={s.meta}>{t("chainOverview")}</Text>
+            </View>
+          </View>
+        );
+      }
+      case "fuel": {
+        const row = item.value;
+        const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
+        const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
+        return <View key={row.key} style={s.store}>
+          <View style={s.storeMark}>
+            <Ionicons name="car-outline" size={25} color={color("#19562a")} />
+          </View>
+          <View style={{ flex: 1, gap: 5 }}>
+            <Text style={s.productName}>{row.name}</Text>
+            {row.branchCount > 0 && row.estimate && (
+              <>
+                <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
+                <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
+              </>
+            )}
+            {row.stations.map(({ store, price }) => (
+              <View key={store.id} style={{ gap: 4 }}>
+                <Text style={s.meta}>{store.address}</Text>
+                <Text style={price === undefined ? s.meta : s.price}>
+                  {price === undefined ? (catalog.fuelLoading ? "" : t("noPrice")) : `${price.toFixed(2)} €/L`}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </View>;
+      }
+      case "basket": {
+        const { product: p, quantity } = item.value;
+        return (
+          <View key={p.id} style={s.panel}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 12,
+              }}
+            >
+              {(p.category_code === "groceries" || p.category_code === "technology") && thumbnail(p)}
+              <View style={{ flex: 1, gap: 5 }}>
+                <Text style={s.productName}>{displayName(p)}</Text>
+                {p.is_demo && (
+                  <Text style={s.meta}>{t("demoProduct")}</Text>
+                )}
+              </View>
+            </View>
+            <View style={s.row}>
+              <Button
+                label="−"
+                disabled={comparing}
+                onPress={() => change(p, -1)}
+              />
+              <Text
+                accessibilityLabel={`${t("quantity")} ${quantity}`}
+                style={s.price}
+              >
+                {quantity}
+              </Text>
+              <Button
+                label="+"
+                disabled={comparing}
+                onPress={() => change(p, 1)}
+              />
+              <Button
+                label={t("remove")}
+                disabled={comparing}
+                onPress={() => {
+                  setBasket((items) =>
+                    items.filter((i) => i.product.id !== p.id),
+                  );
+                  setQuote(null);
+                }}
+              />
+            </View>
+          </View>
+        );
+      }
+    }
+  }
+  const bodyHeader = (
+    <View style={{ gap: 11 }}>
+      {screen === "catalog" ? (
+        <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}
+          onFuel={setFuel}>
+          {category !== "fuel" && (
+            <Input
+              testID="product-search"
+              accessibilityLabel={t("searchProduct")}
+              placeholder={t("searchProduct")}
+              style={s.productSearch}
+              value={query}
+              maxLength={80}
+              returnKeyType="search"
+              onFocus={() => setSearchOpen(true)}
+              onChangeText={(value) => {
+                setQuery(value);
+                setSearchOpen(true);
+                if (!value.trim()) setAppliedQuery("");
+              }}
+              onSubmitEditing={({ nativeEvent }) => {
+                const normalizedQuery = searchText(nativeEvent.text);
+                setAppliedQuery(normalizedQuery);
+                if (normalizedQuery) setGroup(null);
+                setSearchOpen(false);
+                tabList.current?.scrollToOffset({ offset: 0, animated: false });
+              }}
+            />
+          )}
+        </CatalogToolbar>
+      ) : (
+        <View style={s.headingRow}>
+          {screen !== "basket" && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("back")}
+              style={s.button}
+              onPress={() =>
+                setScreen(
+                  ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
+                    ? "settings"
+                    : screen === "feedback" || screen === "thirdParties"
+                      ? "about"
+                      : "catalog",
+                )
+              }
+            >
+              <Ionicons name="arrow-back" color={color("#19562a")} size={20} />
+            </Pressable>
+          )}
+          <Text style={[s.heading, ["settings", "language", "font", "terms", "privacy"].includes(screen) && { color: "#111" }]}>{t(title)}</Text>
+        </View>
+      )}
+      {SIMULATION_MODE && <Text style={s.notice}>{t("simulationNotice")}</Text>}
+      {!!notice && (
+        <Text accessibilityLiveRegion="polite" style={s.notice}>
+          {t(notice)}
+        </Text>
+      )}
+      {screen === "catalog" && (
+        <>
+          {category !== "fuel" ? (
+            <>
+              {suggestions.length > 0 && (
+                <View testID="product-suggestions" style={s.panel}>
+                  {suggestions.slice(0, suggestionLimit).map(p => (
+                    <AddButton key={p.id} name={displayName(p)} disabled={!restored}
+                      showName onAdd={() => change(p, 1)} />
+                  ))}
+                  {suggestions.length > suggestionLimit && (
+                    <Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`}
+                      onPress={() => setSuggestionLimit(n => n + tabBatchSize)} />
+                  )}
+                </View>
+              )}
+              {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
+              {!!catalog.error && (
+                <View style={{ gap: 8 }}>
+                  <Text style={s.notice}>{t(catalog.error)}</Text>
+                  <Button label={t("retry")} onPress={catalog.refresh} />
+                </View>
+              )}
+              {!!groups.length && (
+                <CategoryGroups key={category} technology={category === "technology"}
+                  groups={[
+                    { code: null, label: t(category === "technology" ? "allProducts" : "allGroceries") },
+                    ...groups.map(code => ({ code, label: groupNames[code] ? t(groupNames[code]) : code })),
+                  ]}
+                  selected={group} onSelect={code => {
+                    setGroup(code);
+                    setAppliedQuery("");
+                    setQuery("");
+                    setSearchOpen(false);
+                  }} />
+              )}
+              {!catalog.loading && !catalog.error && !visible.length && (
+                <Text style={s.meta}>{t("emptyProducts")}</Text>
+              )}
+            </>
+          ) : (
+            <>
+              {!locality ? <>
+                <Text style={s.notice}>{t("chainCoverage")}</Text>
+                {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
+              </> : !hasFuelPrices && (
+                catalog.fuelLoading
+                  ? <ActivityIndicator testID="fuel-loading" color={color("#19562a")} />
+                  : <Text accessibilityLiveRegion="polite" style={s.notice}>
+                      {t(catalog.storeError || catalog.error || "fuelPending")}
+                    </Text>
+              )}
+              {locality &&
+                !catalog.storeLoading &&
+                !catalog.storeError &&
+                !catalog.stores.length && (
+                  <Text style={s.notice}>{t("noStores")}</Text>
+                )}
+            </>
+          )}
+        </>
+      )}
+      {screen === "basket" && !basket.length && <Text style={s.notice}>{t("emptyList")}</Text>}
+    </View>
+  );
+  const bodyFooter = (
+    <View style={{ gap: 11 }}>
+      {screen === "merchants" && <MerchantDirectoryScreen />}
+      {screen === "basket" && (
+        <>
+          <Button
+            label={t(comparing ? "comparing" : "compare")}
+            primary
+            disabled={comparing || !basket.length}
+            onPress={compare}
+          />
+          {comparison && (
+            <BasketComparison key={comparison.quoted_at ?? comparisonKey}
+              comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
+          )}
+        </>
+      )}
+      {screen === "scan" && (
+        <ScanScreen onAdd={(product) => change(product, 1)} />
+      )}
+      {screen === "login" && <AccountScreen />}
+      {screen === "receipts" && (
+        <ReceiptsScreen
+          localityId={locality?.id}
+          onLogin={() => setScreen("login")}
+        />
+      )}
+      {screen === "settings" && (
+        <View testID="settings-columns" style={{ flexDirection: "row", gap: 8 }}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <SettingsChoices singleColumn items={[
+              { value: "language", label: t("language"), icon: "language-outline" },
+              { value: "appearance", label: t("appearance"), icon: "color-palette-outline" },
+              { value: "font", label: t("font"), icon: "text-outline" },
+            ]} onSelect={value => setScreen(value as "appearance" | "font" | "language")} />
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <SettingsChoices singleColumn items={[
+              { value: "terms", label: t("terms"), icon: "document-text-outline" },
+              { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" },
+              { value: "deleteData", label: t("deleteData"), icon: "trash-outline" },
+            ]} onSelect={value => setScreen(value as "deleteData" | "terms" | "privacy")} />
+          </View>
+        </View>
+      )}
+      {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
+      {screen === "appearance" && <AppearanceScreen />}
+      {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
+        onThirdParties={() => setScreen("thirdParties")} />}
+      {screen === "thirdParties" && <ThirdPartiesScreen />}
+      {screen === "feedback" && <FeedbackScreen />}
+      {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
+      {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
+        selected={language} onSelect={value => setLanguage(value as Language)} />}
+      {screen === "font" && <View style={{ gap: 12 }}>
+        <SettingsChoices radio items={[
+          { value: "0.9", label: t("small") }, { value: "1", label: t("normal") },
+          { value: "1.15", label: t("large") }, { value: "1.3", label: t("extraLarge") },
+        ]} selected={String(fontScale)} onSelect={value => setFontScale(Number(value))} />
+        <Text style={{ color: "#111" }}>{t("fontPreview")}</Text>
+      </View>}
+    </View>
+  );
   return (
-    <SafeAreaView style={s.page} edges={["top", "bottom"]}>
+    <SafeAreaView style={s.page} edges={["top", "bottom"]} onLayout={() => {
+      if (Platform.OS === "web" || startupShown.current) return;
+      startupShown.current = true;
+      SplashScreen.hide();
+    }}>
       <StatusBar style={headerInk === "#fff" ? "light" : "dark"} />
       <View testID="app-header" style={s.header} onLayout={event => setHeaderHeight(event.nativeEvent.layout.height)}>
         <View style={{ flex: 1 }}>
@@ -438,322 +766,36 @@ function Main({ initialNotice, onErase }: {
           </Pressable>
         ))}
       </View>
-      <ScrollView
-        ref={contentRef}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={s.body}
-      >
-        {screen === "catalog" ? (
-          <CatalogToolbar onRefresh={refreshCatalogue} fuel={category === "fuel" ? fuel : undefined}
-            onFuel={setFuel}>
-            {category !== "fuel" && (
-              <Input
-                testID="product-search"
-                accessibilityLabel={t("searchProduct")}
-                placeholder={t("searchProduct")}
-                style={s.productSearch}
-                value={query}
-                onFocus={() => {
-                  if (!searchOpen) setDraft(selected);
-                  setSearchOpen(true);
-                }}
-                onChangeText={(value) => {
-                  setQuery(value);
-                  setSearchOpen(true);
-                }}
-              />
-            )}
-          </CatalogToolbar>
-        ) : (
-          <View style={s.headingRow}>
-            {screen !== "basket" && (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("back")}
-                style={s.button}
-                onPress={() =>
-                  setScreen(
-                    ["font", "language", "appearance", "deleteData", "terms", "privacy"].includes(screen)
-                      ? "settings"
-                      : screen === "feedback" || screen === "thirdParties"
-                        ? "about"
-                        : "catalog",
-                  )
-                }
-              >
-                <Ionicons name="arrow-back" color={color("#19562a")} size={20} />
-              </Pressable>
-            )}
-            <Text style={[s.heading, ["settings", "language", "font", "terms", "privacy"].includes(screen) && { color: "#111" }]}>{t(title)}</Text>
-          </View>
-        )}
-        {SIMULATION_MODE && <Text style={s.notice}>{t("simulationNotice")}</Text>}
-        {!!notice && (
-          <Text accessibilityLiveRegion="polite" style={s.notice}>
-            {t(notice)}
-          </Text>
-        )}
-        {screen === "catalog" && (
-          <>
-            {category === "fuel" && !hasFuelPrices && <Text style={s.notice}>{t("fuelPending")}</Text>}
-            {category !== "fuel" ? (
-              <>
-                {searchOpen && (
-                  <View style={s.panel}>
-                    {suggestions.slice(0,suggestionLimit)
-                      .map((p) => (
-                        <Pressable
-                          key={p.id}
-                          accessibilityRole="checkbox"
-                          accessibilityLabel={displayName(p)}
-                          accessibilityState={{ checked: draft.includes(p.id) }}
-                          aria-checked={draft.includes(p.id)}
-                          style={s.option}
-                          onPress={() =>
-                            setDraft((d) =>
-                              d.includes(p.id)
-                                ? d.filter((id) => id !== p.id)
-                                : [...d, p.id],
-                            )
-                          }
-                        >
-                          <Ionicons
-                            name={
-                              draft.includes(p.id)
-                                ? "checkbox"
-                                : "square-outline"
-                            }
-                            size={24}
-                            color={color("#267133")}
-                          />
-                          <Text style={{ flex: 1, color: "#264c30" }}>
-                            {displayName(p)}
-                          </Text>
-                        </Pressable>
-                      ))}
-                    {suggestions.length>suggestionLimit&&<Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`} onPress={()=>setSuggestionLimit(n=>n+40)}/>}
-                    <View style={s.row}>
-                      <Button
-                        label={t("clear")}
-                        onPress={() => {
-                          setDraft([]);
-                          setSelected([]);
-                          setAppliedQuery("");
-                          setQuery("");
-                        }}
-                      />
-                      <Button
-                        label={`${t("apply")} (${draft.length || (query.trim() ? suggestions.length : 0)})`}
-                        primary
-                        onPress={() => {
-                          setSelected(draft);
-                          setAppliedQuery(draft.length ? "" : query.trim());
-                          setSearchOpen(false);
-                        }}
-                      />
-                    </View>
-                  </View>
-                )}
-                {catalog.loading && <ActivityIndicator color={color("#19562a")} />}
-                {!!catalog.error && (
-                  <View style={{ gap: 8 }}>
-                    <Text style={s.notice}>{t(catalog.error)}</Text>
-                    <Button label={t("retry")} onPress={catalog.refresh} />
-                  </View>
-                )}
-                {!!groups.length && (
-                  <CategoryGroups key={category} technology={category === "technology"}
-                    groups={[
-                      { code: null, label: t(category === "technology" ? "allProducts" : "allGroceries") },
-                      ...groups.map(code => ({ code, label: groupNames[code] ? t(groupNames[code]) : code })),
-                    ]}
-                    selected={group} onSelect={code => {
-                      setGroup(code);
-                      setSelected([]);
-                      setDraft([]);
-                      setAppliedQuery("");
-                      setQuery("");
-                      setSearchOpen(false);
-                    }} />
-                )}
-                {visible.slice(0, pageSize).map(productCard)}
-                {visible.length > pageSize && (
-                  <Button
-                    label={`${t("showMore")} (${pageSize}/${visible.length})`}
-                    onPress={() => setPageSize((n) => n + 40)}
-                  />
-                )}
-                {!catalog.loading && !catalog.error && !visible.length && (
-                  <Text style={s.meta}>{t("emptyProducts")}</Text>
-                )}
-              </>
-            ) : (
-              <>
-                {!locality ? <>
-                  <Text style={s.notice}>{t("chainCoverage")}</Text>
-                  {catalog.chainLoading && <ActivityIndicator color={color("#19562a")} />}
-                  {catalog.retailers.map(chain => <View key={chain.code} style={s.store}>
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <Text style={s.productName}>{chain.name}</Text>
-                      <Text style={s.meta}>{t("chainOverview")}</Text>
-                    </View>
-                  </View>)}
-                </> : catalog.storeLoading ? <ActivityIndicator color={color("#19562a")} /> : null}
-                {fuelResults.map(row => {
-                  const count = fuelBranchLabel?.select(row.branchCount) ?? (row.branchCount === 1 ? "one" : "other");
-                  const label = count === "one" ? "fuelBranchOne" : count === "few" ? "fuelBranchFew" : "fuelBranchMany";
-                  return <View key={row.key} style={s.store}>
-                    <View style={s.storeMark}>
-                      <Ionicons name="car-outline" size={25} color={color("#19562a")} />
-                    </View>
-                    <View style={{ flex: 1, gap: 5 }}>
-                      <Text style={s.productName}>{row.name}</Text>
-                      {row.branchCount > 0 && row.estimate && (
-                        <>
-                          <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
-                          <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
-                        </>
-                      )}
-                      {row.stations.map(({ store, price }) => (
-                        <View key={store.id} style={{ gap: 4 }}>
-                          <Text style={s.meta}>{store.address}</Text>
-                          <Text style={price === undefined ? s.meta : s.price}>
-                            {price === undefined ? t("noPrice") : `${price.toFixed(2)} €/L`}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>;
-                })}
-                {locality &&
-                  !catalog.storeLoading &&
-                  !catalog.storeError &&
-                  !catalog.stores.length && (
-                    <Text style={s.notice}>{t("noStores")}</Text>
-                  )}
-              </>
-            )}
-          </>
-        )}
-        {screen === "merchants" && <MerchantDirectoryScreen />}
-        {screen === "basket" && (
-          <>
-            {!basket.length && <Text style={s.notice}>{t("emptyList")}</Text>}
-            {basket.map(({ product: p, quantity }) => (
-              <View key={p.id} style={s.panel}>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 12,
-                  }}
-                >
-                  {p.image_url && (
-                    <Image
-                      source={{ uri: p.image_url }}
-                      style={{ width: 64, height: 76 }}
-                      resizeMode="contain"
-                    />
-                  )}
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text style={s.productName}>{displayName(p)}</Text>
-                    {p.is_demo && (
-                      <Text style={s.meta}>{t("demoProduct")}</Text>
-                    )}
-                  </View>
-                </View>
-                <View style={s.row}>
-                  <Button
-                    label="−"
-                    disabled={comparing}
-                    onPress={() => change(p, -1)}
-                  />
-                  <Text
-                    accessibilityLabel={`${t("quantity")} ${quantity}`}
-                    style={s.price}
-                  >
-                    {quantity}
-                  </Text>
-                  <Button
-                    label="+"
-                    disabled={comparing}
-                    onPress={() => change(p, 1)}
-                  />
-                  <Button
-                    label={t("remove")}
-                    disabled={comparing}
-                    onPress={() => {
-                      setBasket((items) =>
-                        items.filter((i) => i.product.id !== p.id),
-                      );
-                      setQuote(null);
-                    }}
-                  />
-                </View>
-              </View>
-            ))}
-            <Button
-              label={t(comparing ? "comparing" : "compare")}
-              primary
-              disabled={comparing || !basket.length}
-              onPress={compare}
-            />
-            {comparison && (
-              <BasketComparison key={comparison.quoted_at ?? comparisonKey}
-                comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
-            )}
-          </>
-        )}
-        {screen === "scan" && (
-          <ScanScreen onAdd={(product) => change(product, 1)} />
-        )}
-        {screen === "login" && <AccountScreen />}
-        {screen === "receipts" && (
-          <ReceiptsScreen
-            localityId={locality?.id}
-            onLogin={() => setScreen("login")}
-          />
-        )}
-        {screen === "settings" && (
-          <View testID="settings-columns" style={{ flexDirection: "row", gap: 8 }}>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <SettingsChoices singleColumn items={[
-                { value: "language", label: t("language"), icon: "language-outline" },
-                { value: "appearance", label: t("appearance"), icon: "color-palette-outline" },
-                { value: "font", label: t("font"), icon: "text-outline" },
-              ]} onSelect={value => setScreen(value as "appearance" | "font" | "language")} />
-            </View>
-            <View style={{ flex: 1, minWidth: 0 }}>
-              <SettingsChoices singleColumn items={[
-                { value: "terms", label: t("terms"), icon: "document-text-outline" },
-                { value: "privacy", label: t("privacy"), icon: "shield-checkmark-outline" },
-                { value: "deleteData", label: t("deleteData"), icon: "trash-outline" },
-              ]} onSelect={value => setScreen(value as "deleteData" | "terms" | "privacy")} />
-            </View>
-          </View>
-        )}
-        {screen === "deleteData" && <DeleteDataScreen onErase={onErase} />}
-        {screen === "appearance" && <AppearanceScreen />}
-        {screen === "about" && <AboutScreen onFeedback={() => setScreen("feedback")}
-          onThirdParties={() => setScreen("thirdParties")} />}
-        {screen === "thirdParties" && <ThirdPartiesScreen />}
-        {screen === "feedback" && <FeedbackScreen />}
-        {(screen === "terms" || screen === "privacy") && <LegalDocument key={screen} kind={screen} />}
-        {screen === "language" && <SettingsChoices radio items={languages.map(l => ({ value: l.code, label: l.name }))}
-          selected={language} onSelect={value => setLanguage(value as Language)} />}
-        {screen === "font" && <View style={{ gap: 12 }}>
-          <SettingsChoices radio items={[
-            { value: "0.9", label: t("small") }, { value: "1", label: t("normal") },
-            { value: "1.15", label: t("large") }, { value: "1.3", label: t("extraLarge") },
-          ]} selected={String(fontScale)} onSelect={value => setFontScale(Number(value))} />
-          <Text style={{ color: "#111" }}>{t("fontPreview")}</Text>
-        </View>}
-
-      </ScrollView>
+      {screen === "catalog" || screen === "basket" ? (
+        <FlatList
+          key={screen === "basket" ? "basket" : category}
+          ref={tabList}
+          data={tabRows}
+          keyExtractor={row => row.key}
+          renderItem={renderTabRow}
+          initialNumToRender={tabBatchSize}
+          maxToRenderPerBatch={tabBatchSize}
+          windowSize={5}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={s.body}
+          ListHeaderComponent={bodyHeader}
+          ListFooterComponent={screen === "basket" ? bodyFooter : null}
+          refreshControl={Platform.OS !== "web" && screen === "catalog"
+            ? <RefreshControl refreshing={catalog.refreshing} onRefresh={catalog.refresh}
+                colors={[color("#19562a")]} tintColor={color("#19562a")} />
+            : undefined}
+        />
+      ) : (
+        <ScrollView ref={contentRef} keyboardShouldPersistTaps="handled" contentContainerStyle={s.body}>
+          {bodyHeader}
+          {bodyFooter}
+        </ScrollView>
+      )}
       {(photoFooter || cachedFooter || footerError) ? (
         <View testID="catalog-footer" style={s.catalogFooter} accessibilityLiveRegion="polite">
           {photoFooter && <Text style={s.catalogFooterText}>{t("illustrativePhotoShort")}</Text>}
           {!!footerError && <Text style={[s.catalogFooterText, s.catalogFooterWarning]}>{t(footerError)}</Text>}
+          {localityPriceGap && <Text style={s.catalogFooterText}>{t("noLocalPrices")}</Text>}
           {cachedFooter && <Text style={s.catalogFooterText}>{t("cachedCatalog")}</Text>}
         </View>
       ) : null}

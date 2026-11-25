@@ -1,4 +1,6 @@
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const source = require("../preview.json");
 const config = require("../app.config.js");
 const base = require("../app.json").expo;
@@ -16,4 +18,6 @@ assert.equal(registry.next_version, String(next).padStart(3,"0"));
 assert.equal(config.android.permissions.includes("android.permission.CAMERA"), true);
 assert.equal(config.android.blockedPermissions.includes("android.permission.CAMERA"), false);
 assert.equal(config.android.blockedPermissions.includes("android.permission.RECORD_AUDIO"), true);
+const [, splash] = config.plugins.find(plugin => Array.isArray(plugin) && plugin[0] === "expo-splash-screen");
+assert(fs.existsSync(path.resolve(__dirname, "..", splash.image)));
 console.log("Preview metadata checks passed: one source for app label/versionCode/workflow, generated next-number registry and camera-only permission.");

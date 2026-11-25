@@ -1,10 +1,22 @@
 # Спестовник — ongoing project handoff
 
-Updated: **22 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+Updated: **24 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 
+
+### 24 November 2026 — verified preview 10.9.1 Android APK
+
+Delivered build 017 (app 0.5.10) from source `2726bce`. The package ID and signing certificate match preview 10.8.1, and Android version code advanced to 17. Hosted Android, browser and database checks passed. The two new live API routes still returned 404 at packaging. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
+
+### 24 November 2026 — preview 10.9.1 bug-fix plan
+
+Use the [release plan](PREVIEW_006_BACKLOG.md#preview-1091-bug-fix-release-plan) and the new [mobile verification workflow](../.github/workflows/mobile-tests.yml). Run and assess the relevant checks before committing. The candidate implements the fuel and thumbnail fixes. Continue with hosted checks, backend rollout and the remaining release checks. [Candidate evidence](NEXT_PREVIEW_MOCK.md#preview-1091-fuel-and-thumbnail-checks)
+
+### 24 November 2026 — next preview mock
+
+Continue from the [mock report](NEXT_PREVIEW_MOCK.md) and [release TODO](PREVIEW_006_BACKLOG.md#next-preview-preparation). The mock covered all requested next-preview items. The next timing pass should separate app startup and first-price delivery in „Горива“ and correct the premature empty-price notice. Native receipt document capture and physical Android checks remain open. The next APK awaits explicit approval.
 
 ### 23 November 2026 — next beta
 
@@ -466,3 +478,5 @@ The import matched 676 regular grocery observations at Burlex Надежда and
 „За приложението → Трети страни“ collects links for data and prices, merchant addresses, photos and icons, and the software and services used by the app. Photo authors and applicable licenses are credited there. The catalogue and fuel screens keep the information needed to interpret photos and prices. Record-level source references stay available for data verification. Keep the source section current when introducing a feed, provider or licensed image. [Third-party source list](../mobile/src/navigation/thirdPartySources.ts)
 
 **Beta_10.8 delivery.** The signed ARM test APK for source `cb8d736` passed Android CI for `arm64-v8a` and `armeabi-v7a`. Both hosted PostgreSQL jobs passed. Physical installation and camera scanning are pending. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45191123258/artifacts/14826956549) · [Android run](https://github.com/Per5on/spestoslav/actions/runs/45191123258) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45191136452) The hosted build is an internal test-signed APK. Test the installed app's camera and barcode scan, and check the managed password recovery and feedback after their respective backend rollout and mail setup. [Full changelog](../CHANGELOG.md)
+
+**Bug-fix build 015.** The APK is ready for device testing. Varna and Veliko Tarnovo received verified branch updates, and the approved KARAI feed was refreshed. Finish the staged recurring publisher and check managed recovery on the live backend. [Build and rollout notes](BUG_FIX_015.md) · [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45210084849/artifacts/14836831458) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45210084849) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45210224790)

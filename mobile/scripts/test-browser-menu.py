@@ -15,7 +15,7 @@ errors=[];proof={}
 with sync_playwright() as p:
  browser=p.chromium.launch(headless=True,executable_path=os.getenv('PLAYWRIGHT_CHROMIUM_EXECUTABLE'),args=['--no-sandbox']);page=browser.new_page(viewport={'width':390,'height':844});page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(args.base_url,wait_until='domcontentloaded')
- refresh = page.get_by_role('button', name='Обнови', exact=True)
+ refresh = page.get_by_role('button', name='Обнови цени', exact=True)
  refresh.wait_for(timeout=60000)
  refresh.focus()
  assert refresh.evaluate("(el) => getComputedStyle(el).outlineWidth") == "0px"

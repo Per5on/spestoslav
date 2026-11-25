@@ -1,151 +1,161 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api } from "../api";
-import { MessageKey } from "../i18n";
-import { Product, Store, Price, OnlinePrice, Retailer } from "./model";
-import { loadProducts } from "./cache";
+import { AppState } from "react-native";
+import type { MessageKey } from "../i18n";
+import type { Product, Store, Price, OnlinePrice, Retailer } from "./model";
+import {
+  fuelChainsResource, loadCatalogProducts, onlineResource, pricesResource, storesResource, warmOtherCatalogs, type Category,
+} from "./catalogData";
 import { sampleProducts } from "./samples";
+
 const noProducts: Product[] = [];
 const noStores: Store[] = [];
 const noPrices: Price[] = [];
 const noOnline: OnlinePrice[] = [];
-async function allPages<T>(
-  path: string,
-  signal: AbortSignal,
-  pageSize = 500,
-): Promise<T[]> {
-  const result: T[] = [];
-  for (let offset = 0; offset < 10000; offset += pageSize) {
-    const page = await api<T[]>(path + `&limit=${pageSize}&offset=${offset}`, {
-      signal,
-    });
-    result.push(...page);
-    if (page.length < pageSize) return result;
-  }
-  throw new Error("Too many rows; refine the locality");
-}
-export type Category = "groceries" | "technology" | "fuel";
+const noRetailers: Retailer[] = [];
+type Products = { rows: Product[]; cached: boolean };
+type LocalData = { localityId: string; stores?: Store[]; prices?: Price[]; online?: OnlinePrice[] };
+
 export function useCatalog(
   category: Category,
   localityId: string | undefined,
   demo: boolean,
-  includePrices = true,
-  active = true,
+  { active = true, includePrices = true }: { active?: boolean; includePrices?: boolean } = {},
 ) {
-  const [chains, setChains] = useState<Retailer[]>([]);
-  const [chainLoading, setChainLoading] = useState(true);
-  const [chainError, setChainError] = useState(false);
   const [revision, setRevision] = useState(0);
-  const [cached, setCached] = useState(false);
-  const [products, setProducts] = useState<Partial<Record<Category, Product[]>>>({});
-  const loadedRevision = useRef<Partial<Record<Category, number>>>({});
-  const [loading, setLoading] = useState(true),
-    [error, setError] = useState<MessageKey | "">("");
-  const scope = category + ":" + (localityId ?? "");
-  const [data, setData] = useState<{
-    scope: string;
-    stores: Store[];
-    prices: Price[];
-    online: OnlinePrice[];
-  }>({ scope: "", stores: [], prices: [], online: [] });
-  const [storeLoading, setStoreLoading] = useState(false),
-    [storeError, setStoreError] = useState<MessageKey | "">("");
+  const [resumeRevision, setResumeRevision] = useState(0);
+  const [products, setProducts] = useState<Partial<Record<Category, Products>>>({});
+  const [locals, setLocals] = useState<Partial<Record<Category, LocalData>>>({});
+  const [chains, setChains] = useState<Retailer[]>();
+  const [finished, setFinished] = useState("");
+  const [error, setError] = useState<MessageKey | "">("");
+  const [storeError, setStoreError] = useState<MessageKey | "">("");
+  const [chainError, setChainError] = useState(false);
+  const manual = useRef<{ category: Category; localityId?: string; revision: number }>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const loadKey = `${category}:${localityId ?? ""}:${resumeRevision}:${revision}`;
+  const loaded = finished === loadKey;
+  const data = locals[category]?.localityId === localityId ? locals[category] : undefined;
+
   useEffect(() => {
-    if (!active) return;
-    const controller = new AbortController();
-    const { signal } = controller;
-    const show = (rows: Product[]) => {
-      if (!signal.aborted) setProducts(previous =>
-        previous[category] === rows ? previous : { ...previous, [category]: rows });
-    };
-    setError("");
-    setLoading(category !== "fuel");
-    setCached(false);
-    const force = revision > (loadedRevision.current[category] ?? 0);
-    const load = category === "fuel"
-      ? allPages<Product>("/api/v1/products?category_code=fuel", signal, 100)
-          .then(rows => ({ products: rows, cached: false }))
-      : loadProducts(signal, force, show, category);
-    load.then(result => {
-      if (signal.aborted) return;
-      show(result.products);
-      setCached(result.cached);
-      if (!result.cached) loadedRevision.current[category] = revision;
-    }).catch(() => {
-      if (!signal.aborted) setError("catalogError");
-    }).finally(() => {
-      if (!signal.aborted) setLoading(false);
+    let previous = AppState.currentState;
+    const subscription = AppState.addEventListener("change", state => {
+      if (state === "active" && previous !== "active") setResumeRevision(value => value + 1);
+      previous = state;
     });
-    return () => controller.abort();
-  }, [active, category, revision]);
+    return () => subscription.remove();
+  }, []);
+
   useEffect(() => {
-    if (!active) return;
+    if (!active) {
+      setRefreshing(false);
+      return;
+    }
     const controller = new AbortController();
     const { signal } = controller;
+    const requested = manual.current;
+    const force = requested !== null && requested.category === category &&
+      requested.localityId === localityId && requested.revision === revision;
+    if (requested && !force) manual.current = null;
+    setRefreshing(force);
+    setError("");
     setStoreError("");
-    setStoreLoading(Boolean(localityId));
-    if (localityId) {
-      const onlineRequest = includePrices
-        ? allPages<OnlinePrice>(`/api/v1/national-offers?locality_id=${localityId}&category_code=${category}`, signal, 100)
-        : Promise.resolve(noOnline);
-      const storesRequest = allPages<Store>(
-        `/api/v1/stores?locality_id=${localityId}&category_code=${category}`, signal,
-      );
-      const pricesRequest = includePrices
-        ? allPages<Price>(`/api/v1/prices/current?locality_id=${localityId}&category_code=${category}`, signal)
-        : Promise.resolve(noPrices);
-      void storesRequest.then(stores => {
-        if (!signal.aborted) setData(previous => ({
-          scope,
-          stores,
-          prices: includePrices && previous.scope === scope ? previous.prices : noPrices,
-          online: includePrices && previous.scope === scope ? previous.online : noOnline,
-        }));
-      }).catch(() => undefined);
-      void Promise.all([storesRequest, pricesRequest.catch(() => noPrices)]).then(([, prices]) => {
-        if (!signal.aborted) setData(previous => previous.scope === scope ? { ...previous, prices } : previous);
-      }).catch(() => undefined);
-      void Promise.all([storesRequest, onlineRequest.catch(() => noOnline)]).then(([, online]) => {
-        if (!signal.aborted) setData(previous => previous.scope === scope ? { ...previous, online } : previous);
-      }).catch(() => undefined);
-      void Promise.allSettled([storesRequest, pricesRequest, onlineRequest]).then(([stores, prices, online]) => {
-        if (signal.aborted) return;
-        if (stores.status === "rejected") {
-          setStoreError("storesError");
-        } else if (prices.status === "rejected" || online.status === "rejected") {
-          setStoreError("pricesError");
-        }
-        setStoreLoading(false);
+    setChainError(false);
+
+    const showProducts = (rows: Product[], cached: boolean) => {
+      if (!signal.aborted) setProducts(previous =>
+        previous[category]?.rows === rows && previous[category]?.cached === cached
+          ? previous : { ...previous, [category]: { rows, cached } });
+    };
+    function show<K extends "stores" | "prices" | "online">(field: K, rows: LocalData[K]) {
+      if (!localityId || signal.aborted) return;
+      setLocals(previous => {
+        const current = previous[category]?.localityId === localityId ? previous[category] : undefined;
+        if (current?.[field] === rows) return previous;
+        return { ...previous, [category]: { ...current, localityId, [field]: rows } };
       });
     }
+    const showChains = (rows: Retailer[]) => {
+      if (!signal.aborted) setChains(rows);
+    };
+
+    const productRead = category !== "fuel" || localityId
+      ? loadCatalogProducts({ category, localityId }, signal, force, rows => showProducts(rows, true))
+        .then(result => showProducts(result.products, result.cached))
+        .catch(() => {
+          if (!signal.aborted) setError("catalogError");
+        })
+      : Promise.resolve();
+
+    const loadLocal = async (id: string) => {
+      const scope = { category, localityId: id };
+      const [stores, prices, online] = await Promise.allSettled([
+        storesResource.load(scope, signal, force, rows => show("stores", rows))
+          .then(rows => show("stores", rows)),
+        includePrices ? pricesResource.load(scope, signal, force, rows => show("prices", rows))
+          .then(rows => show("prices", rows)) : Promise.resolve(),
+        includePrices ? onlineResource.load(scope, signal, force, rows => show("online", rows))
+          .then(rows => show("online", rows)) : Promise.resolve(),
+      ]);
+      if (signal.aborted) return;
+      if (stores.status === "rejected") setStoreError("storesError");
+      else if (prices.status === "rejected" || online.status === "rejected") setStoreError("pricesError");
+    };
+    const localRead = localityId
+      ? loadLocal(localityId)
+      : category === "fuel"
+        ? fuelChainsResource.load({ category, localityId: "" }, signal, force, showChains)
+          .then(showChains).catch(() => {
+            if (!signal.aborted) setChainError(true);
+          })
+        : Promise.resolve();
+
+    void Promise.all([productRead, localRead]).then(() => {
+      if (signal.aborted) return;
+      if (manual.current === requested) manual.current = null;
+      setFinished(loadKey);
+      setRefreshing(false);
+    });
     return () => controller.abort();
-  }, [active, category, localityId, revision, includePrices]);
+  }, [active, category, localityId, revision, loadKey, includePrices]);
+
+  const warm = active && includePrices && loaded && !refreshing && !error && !storeError;
   useEffect(() => {
-    if (!active || category !== "fuel" || localityId) return;
+    if (!warm || !localityId) return;
     const controller = new AbortController();
-    setChainLoading(true); setChainError(false);
-    api<{ retailers: Retailer[] }>(`/api/v1/catalog?category_code=${category}`, { signal: controller.signal })
-      .then(result => { if (!controller.signal.aborted) setChains(result.retailers.filter(r => r.category_code === category)); })
-      .catch(() => { if (!controller.signal.aborted) setChainError(true); })
-      .finally(() => { if (!controller.signal.aborted) setChainLoading(false); });
-    return () => controller.abort();
-  }, [active, category, localityId, revision]);
-  const real = products[category] ?? noProducts;
+    // Let the selected tab render and settle before fetching other tabs.
+    const timer = setTimeout(() => void warmOtherCatalogs(category, localityId, controller.signal), 700);
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [warm, category, localityId]);
+
+  const real = products[category]?.rows ?? noProducts;
   const visibleProducts = useMemo(() => demo && category !== "fuel"
     ? [...sampleProducts.filter(row => row.category_code === category), ...real]
     : real, [demo, category, real]);
   return {
-    cached,
-    retailers: category === "fuel" ? chains : [],
-    chainLoading, chainError,
+    cached: products[category]?.cached ?? false,
+    retailers: chains ?? noRetailers,
+    chainLoading: !chains && !loaded,
+    chainError,
     products: visibleProducts,
-    loading: category !== "fuel" && loading && real.length === 0 && visibleProducts.length === 0,
+    loading: category !== "fuel" && !products[category] && visibleProducts.length === 0 && !loaded,
     error,
-    stores: data.scope === scope ? data.stores : noStores,
-    prices: data.scope === scope && includePrices ? data.prices : noPrices,
-    online: data.scope === scope && includePrices ? data.online : noOnline,
-    storeLoading: Boolean(localityId) && (storeLoading || (!storeError && data.scope !== scope)),
+    stores: data?.stores ?? noStores,
+    prices: data?.prices ?? noPrices,
+    online: data?.online ?? noOnline,
+    storeLoading: Boolean(localityId) && !loaded &&
+      (!data?.stores || (includePrices && (!data.prices || !data.online)) ||
+        (category === "fuel" && !products.fuel)),
     storeError,
+    fuelLoading: Boolean(localityId) && !loaded,
     revision,
-    refresh: () => setRevision((v) => v + 1),
+    refreshing,
+    refresh: () => {
+      manual.current = { category, localityId, revision: revision + 1 };
+      setRefreshing(true);
+      setRevision(revision + 1);
+    },
   };
 }

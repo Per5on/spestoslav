@@ -13,6 +13,9 @@ import collect_burlex_branch_prices as burlex
 import collect_karai_fuel_offers as karai
 import collect_techmart_offers as techmart
 
+TECHMART_SKUS = ("46637", "43832", "43957", "46638", "45769")
+SOURCE_ERRORS = (httpx.HTTPError, ValueError, TypeError, KeyError, AttributeError)
+
 
 def check(category, client):
     if category == "groceries":
@@ -25,10 +28,14 @@ def check(category, client):
             results.append({"store": store, "count": len(rows), "observed_at": observed.isoformat()})
         return {"source": burlex.SOURCE, "checks": results}
     if category == "technology":
-        rows = list(techmart.collect(["46637", "43832", "43957", "46638", "45769"], client))
+        failed = []
+        rows = list(techmart.collect(TECHMART_SKUS, client, on_failed_sku=failed.append))
         if not rows:
             raise ValueError("Techmart returned no usable offers")
-        return {"source": techmart.BASE, "count": len(rows), "requested": 5}
+        return {
+            "source": techmart.BASE, "count": len(rows), "requested": len(TECHMART_SKUS),
+            "failed_skus": failed,
+        }
     response = client.get(karai.API)
     response.raise_for_status()
     rows, observed = karai.offers(response.json(), datetime.now(timezone.utc))
@@ -65,7 +72,7 @@ def grocery_archive(client, today):
 def attempt(operation):
     try:
         return {"ok": True, **operation()}
-    except (httpx.HTTPError, ValueError, KeyError) as exc:
+    except SOURCE_ERRORS as exc:
         # HTTP errors contain request URLs that may include a public frontend nonce.
         return {"ok": False, "error": type(exc).__name__}
 

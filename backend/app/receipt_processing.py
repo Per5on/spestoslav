@@ -79,17 +79,17 @@ def finish_job(db, job_id, attempt, text=None):
             ):
                 continue
             if re.search(
-                r"\b\d+(?:[,.]\d+)?\s*[xх×*]\s*\d+[,.]\d{2}\s*(?:EUR|€)?\s*$",
+                r"\b\d+(?:[,.]\d+)?\s*[xх×*]\s*\d+[,.]\d{2}\s*(?:EUR|€|ЕВРО|лв\.?|BGN)?\s*$",
                 line,
                 re.I,
             ):
                 # A separate quantity × unit-price row is not a product line total.
                 continue
             match = re.search(
-                r"(?<!\d)(\d{1,7}[,.]\d{2})\s*(?:EUR|€|лв\.?|BGN)?\s*$", line
+                r"(?<!\d)(\d{1,7}[,.]\d{2})\s*(?:EUR|€|ЕВРО|лв\.?|BGN)?\s*$", line, re.I
             )
             if match and not re.search(r"-\s*\d+[,.]\d{2}", line):
-                explicit_eur = bool(re.search(r"(?:EUR|€)\s*$", line, re.I))
+                explicit_eur = bool(re.search(r"(?:EUR|€|ЕВРО)\s*$", line, re.I))
                 amount = Decimal(match.group(1).replace(",", "."))
                 if amount <= 0:
                     continue

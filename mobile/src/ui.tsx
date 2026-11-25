@@ -85,6 +85,8 @@ export function UIProvider({ children }: { children: React.ReactNode }) {
     localStyle: <T extends ViewStyle | TextStyle | ImageStyle>(value: T) =>
       appearanceStyle(value, palette, dark),
   }), [palette, dark]);
+  // The startup screen covers the window until the saved appearance is applied.
+  if (!loaded) return null;
   return (
     <Context.Provider
       value={{

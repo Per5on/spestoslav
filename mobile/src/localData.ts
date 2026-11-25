@@ -3,6 +3,7 @@ import * as FileSystem from "expo-file-system/legacy";
 import * as SecureStore from "expo-secure-store";
 import { Platform } from "react-native";
 import { API_BASE_URL } from "./api";
+import { clearLocalCatalogs } from "./catalog/catalogData";
 
 export type CloudErasure = "guest" | "deleted" | "unconfirmed";
 
@@ -12,7 +13,7 @@ export const sessionKey =
   "spestovnik-private-session-" + API_BASE_URL.replace(/[^a-zA-Z0-9._-]/g, "_");
 
 export async function eraseLocalData() {
-  const work = [AsyncStorage.multiRemove([savedListKey, preferencesKey])];
+  const work = [AsyncStorage.multiRemove([savedListKey, preferencesKey]), clearLocalCatalogs()];
   if (Platform.OS !== "web") {
     work.push(SecureStore.deleteItemAsync(sessionKey));
     if (FileSystem.cacheDirectory) {

@@ -2,7 +2,7 @@
 """Render indicative chain offers from the public KARAI Fuel Index (CC BY 4.0)."""
 
 from datetime import date, datetime, timedelta, timezone
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import json
 from zoneinfo import ZoneInfo
 
@@ -19,7 +19,9 @@ def offers(data, now):
     source_date = date.fromisoformat(data["date"])
     observed = datetime.fromisoformat(data["fetchedAt"])
     if (
-        data["source"] != "live"
+        observed.utcoffset() is None
+        or data["source"] != "live"
+        or data.get("currency", "EUR") != "EUR"
         or not now - timedelta(hours=24) <= observed <= now
         or source_date != observed.astimezone(sofia).date()
     ):
@@ -37,7 +39,10 @@ def offers(data, now):
             amount = provider[field]
             if amount is None:
                 continue
-            price = Decimal(str(amount))
+            try:
+                price = Decimal(str(amount))
+            except InvalidOperation as exc:
+                raise ValueError(f"Invalid source price for {retailer}/{fuel}") from exc
             if not price.is_finite() or not 0 < price <= 10 or price.as_tuple().exponent < -2:
                 raise ValueError(f"Invalid source price for {retailer}/{fuel}")
             rows.append({"retailer": retailer, "fuel": fuel, "price": str(price)})
@@ -46,23 +51,32 @@ def offers(data, now):
     return rows, observed
 
 
-def render(rows, observed):
+def render(rows, observed, *, summary=False):
     payload = json.dumps(rows)
+    if "$karai$" in payload:
+        raise ValueError("Invalid source identifier delimiter")
     expires = observed + timedelta(hours=24)
-    return f"""WITH source_rows AS (
+    statement = f"""WITH source_rows AS (
   SELECT * FROM jsonb_to_recordset($karai${payload}$karai$::jsonb)
     AS o(retailer text, fuel text, price numeric)
-)
-INSERT INTO national_offers
-  (id,product_id,retailer_code,price_eur,source_reference,observed_at,verified_at,verified_by,valid_until)
-SELECT md5(concat_ws('|','karai-chain-index',p.id,o.retailer,'{observed.isoformat()}'))::uuid,
-  p.id,r.code,o.price,'{ATTRIBUTION}',
-  '{observed.isoformat()}',now(),'karai-chain-index','{expires.isoformat()}'
+), matched AS (
+SELECT md5(concat_ws('|','karai-chain-index',p.id,o.retailer,'{observed.isoformat()}'))::uuid AS id,
+  p.id AS product_id,r.code,o.price
 FROM source_rows o JOIN products p ON p.category_code='fuel' AND p.active AND p.variant=o.fuel
 JOIN catalog_retailers r ON r.code=o.retailer AND r.active AND r.category_code=p.category_code
 WHERE current_timestamp >= '{observed.isoformat()}'::timestamptz
   AND current_timestamp < '{expires.isoformat()}'::timestamptz
-ON CONFLICT (id) DO NOTHING RETURNING product_id, retailer_code, price_eur;"""
+), inserted AS (
+  INSERT INTO national_offers
+    (id,product_id,retailer_code,price_eur,source_reference,observed_at,verified_at,verified_by,valid_until)
+  SELECT id,product_id,code,price,'{ATTRIBUTION}',
+    '{observed.isoformat()}',now(),'karai-chain-index','{expires.isoformat()}'
+  FROM matched ON CONFLICT (id) DO NOTHING RETURNING product_id, retailer_code, price_eur
+) """
+    return statement + (
+        "SELECT (SELECT count(*) FROM matched) AS matched, count(*) AS published FROM inserted;"
+        if summary else "SELECT product_id, retailer_code, price_eur FROM inserted;"
+    )
 
 
 if __name__ == "__main__":

@@ -8,9 +8,10 @@ import os
 import re
 
 import httpx
-from fastapi import APIRouter, Header, HTTPException, Response
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, Header, HTTPException, Request, Response
+from pydantic import BaseModel, Field, field_validator
 from .auth import auth_base_url
+from .request_limits import client_address, request_limits
 
 router = APIRouter(prefix="/api/v1/auth")
 COOKIE = "__Secure-neon-auth.session_token"
@@ -20,6 +21,11 @@ class RecoveryEmail(BaseModel):
     email: str = Field(
         min_length=3, max_length=254, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$"
     )
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def normalize_email(cls, value):
+        return value.strip().lower() if isinstance(value, str) else value
 
 
 class Credentials(RecoveryEmail):
@@ -51,6 +57,13 @@ def upstream(path, method="GET", session=None, payload=None):
         )
         if result.status_code >= 500:
             raise HTTPException(503, "Sign-in service unavailable")
+        if path.startswith("/email-otp/") and result.status_code == 204:
+            return {}, None
+        if result.status_code == 429:
+            retry_after = result.headers.get("retry-after", "60")
+            if not re.fullmatch(r"[0-9]{1,6}", retry_after):
+                retry_after = "60"
+            raise HTTPException(429, "Please wait before retrying", headers={"Retry-After": retry_after})
         if result.status_code != 200:
             if path == "/sign-up/email" and result.status_code == 422:
                 try:
@@ -65,7 +78,7 @@ def upstream(path, method="GET", session=None, payload=None):
                 raise HTTPException(result.status_code, "Password reset request was not accepted")
             code = (
                 result.status_code
-                if result.status_code in (400, 401, 403, 409, 429)
+                if result.status_code in (400, 401, 403, 409)
                 else 502
             )
             raise HTTPException(code, "Sign-in request was not accepted")
@@ -94,8 +107,25 @@ def session_result(data, cookie, response):
     }
 
 
+def limit_auth(request, scope, email, per_email, per_address):
+    request_limits.check(
+        scope, 900, ("email:" + email, per_email), ("address:" + client_address(request), per_address)
+    )
+
+
 @router.post("/sign-in")
-def sign_in(payload: Credentials, response: Response):
+def sign_in(payload: Credentials, request: Request, response: Response):
+    # Failed guesses are counted per email+address (10), so a stranger cannot lock a
+    # victim out from elsewhere; a looser per-email cap (40) still slows distributed
+    # guessing, and a per-address cap (60) slows one source trying many accounts.
+    address = client_address(request)
+    request_limits.check(
+        "sign-in",
+        900,
+        ("pair:" + payload.email + "|" + address, 10),
+        ("email:" + payload.email, 40),
+        ("address:" + address, 60),
+    )
     data, cookie = upstream(
         "/sign-in/email",
         "POST",
@@ -105,7 +135,9 @@ def sign_in(payload: Credentials, response: Response):
 
 
 @router.post("/sign-up")
-def sign_up(payload: Credentials, response: Response):
+def sign_up(payload: Credentials, request: Request, response: Response):
+    # Each attempt can make the provider send a verification email.
+    limit_auth(request, "sign-up", payload.email, 5, 20)
     data, cookie = upstream("/sign-up/email", "POST", payload=payload.model_dump())
     return session_result(data, cookie, response)
 
@@ -131,18 +163,20 @@ def sign_out(
 
 
 @router.post("/request-password-reset", status_code=204)
-def request_password_reset(payload: RecoveryEmail, response: Response):
+def request_password_reset(payload: RecoveryEmail, request: Request, response: Response):
+    limit_auth(request, "request-reset", payload.email, 3, 20)
     response.headers["Cache-Control"] = "no-store"
     try:
         upstream("/email-otp/request-password-reset", "POST", payload=payload.model_dump())
     except HTTPException as exc:
         # Keep the same public response for recognized and unrecognized addresses.
-        if exc.status_code != 404:
+        if exc.status_code not in (400, 404, 422):
             raise
 
 
 @router.post("/reset-password", status_code=204)
-def reset_password(payload: PasswordReset, response: Response):
+def reset_password(payload: PasswordReset, request: Request, response: Response):
+    limit_auth(request, "verify-reset", payload.email, 5, 30)
     response.headers["Cache-Control"] = "no-store"
     try:
         upstream("/email-otp/reset-password", "POST", payload=payload.model_dump())

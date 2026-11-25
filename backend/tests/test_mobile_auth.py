@@ -5,6 +5,7 @@ import pytest
 from app.main import app
 from fastapi.testclient import TestClient
 from app import mobile_auth
+from app.request_limits import RequestLimits
 
 client = TestClient(app)
 COOKIE = mobile_auth.COOKIE
@@ -12,6 +13,7 @@ COOKIE = mobile_auth.COOKIE
 
 @pytest.fixture
 def provider(monkeypatch):
+    monkeypatch.setattr(mobile_auth, "request_limits", RequestLimits())
     monkeypatch.setenv(
         "NEON_AUTH_BASE_URL", "https://identity.example.invalid/bgprices/auth"
     )
@@ -185,3 +187,57 @@ def test_password_recovery_preserves_provider_identity_and_does_not_disclose_acc
     assert calls[-1][2] == {**payload, "otp": "123456"}
     assert client.post("/api/v1/auth/reset-password", json={**payload, "otp": "short"}).status_code == 422
     assert len(calls) == 4
+
+
+def test_recovery_request_statuses_and_resend_window(provider, monkeypatch):
+    now = [0]
+    monkeypatch.setattr(mobile_auth, "request_limits", RequestLimits(clock=lambda: now[0]))
+    seen = []
+    statuses = iter((204, 422, 404, 429))
+
+    def request(method, url, **kwargs):
+        seen.append(kwargs["json"]["email"])
+        return httpx.Response(next(statuses), headers={"retry-after": "90"})
+
+    monkeypatch.setattr(mobile_auth.httpx, "request", request)
+    path = "/api/v1/auth/request-password-reset"
+    for email in (" Alice@Example.invalid ", "alice@example.invalid", "ALICE@EXAMPLE.INVALID"):
+        assert client.post(path, json={"email": email}).status_code == 204
+    assert seen == ["alice@example.invalid"] * 3
+    limited = client.post(path, json={"email": "alice@example.invalid"})
+    assert limited.status_code == 429 and limited.headers["retry-after"] == "900"
+    now[0] = 900
+    upstream = client.post(path, json={"email": "alice@example.invalid"})
+    assert upstream.status_code == 429 and upstream.headers["retry-after"] == "90"
+
+
+def test_recovery_code_attempts_stop_before_provider(provider, monkeypatch):
+    calls = []
+
+    def request(method, url, **kwargs):
+        calls.append(url)
+        return httpx.Response(422, json={"code": "OTP_EXPIRED"})
+
+    monkeypatch.setattr(mobile_auth.httpx, "request", request)
+    path = "/api/v1/auth/reset-password"
+    payload = {"email": "alice@example.invalid", "otp": "123456", "password": "new-password"}
+    for _ in range(5):
+        response = client.post(path, json=payload)
+        assert response.status_code == 400 and "OTP_EXPIRED" not in response.text
+    assert client.post(path, json=payload).status_code == 429
+    assert len(calls) == 5
+
+
+def test_rate_limit_scope_and_window():
+    from fastapi import HTTPException
+
+    now = [0]
+    limits = RequestLimits(clock=lambda: now[0])
+    limits.check("locality", 60, ("address:one", 1))
+    with pytest.raises(HTTPException) as limited:
+        limits.check("locality", 60, ("address:one", 1))
+    assert limited.value.status_code == 429
+    limits.check("sign-in", 900, ("address:one", 1))
+    limits.check("locality", 60, ("address:two", 1))
+    now[0] = 60
+    limits.check("locality", 60, ("address:one", 1))

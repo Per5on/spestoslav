@@ -69,8 +69,9 @@
   "price_date": "2026-11-22",
   "price_archive": "https://kolkostruva.bg/opendata_files/2026-11-22.zip",
   "price_archive_sha256": "7fe04905e2e914197891998578ee0db0c2344aee0c6113563290466493fff2f7",
+  "price_input_currency": "BGN",
   "price_currency": "EUR",
-  "price_currency_evidence": "https://www.kolkostruva.bg/compare",
+  "price_currency_evidence": "https://burlex.bg/kolkostruva/",
   "branches": [
     {
       "code": "68134",
