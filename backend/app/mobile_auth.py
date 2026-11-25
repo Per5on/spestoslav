@@ -115,7 +115,17 @@ def limit_auth(request, scope, email, per_email, per_address):
 
 @router.post("/sign-in")
 def sign_in(payload: Credentials, request: Request, response: Response):
-    limit_auth(request, "sign-in", payload.email, 10, 60)
+    # Failed guesses are counted per email+address (10), so a stranger cannot lock a
+    # victim out from elsewhere; a looser per-email cap (40) still slows distributed
+    # guessing, and a per-address cap (60) slows one source trying many accounts.
+    address = client_address(request)
+    request_limits.check(
+        "sign-in",
+        900,
+        ("pair:" + payload.email + "|" + address, 10),
+        ("email:" + payload.email, 40),
+        ("address:" + address, 60),
+    )
     data, cookie = upstream(
         "/sign-in/email",
         "POST",
@@ -125,7 +135,9 @@ def sign_in(payload: Credentials, request: Request, response: Response):
 
 
 @router.post("/sign-up")
-def sign_up(payload: Credentials, response: Response):
+def sign_up(payload: Credentials, request: Request, response: Response):
+    # Each attempt can make the provider send a verification email.
+    limit_auth(request, "sign-up", payload.email, 5, 20)
     data, cookie = upstream("/sign-up/email", "POST", payload=payload.model_dump())
     return session_result(data, cookie, response)
 
