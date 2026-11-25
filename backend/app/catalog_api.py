@@ -22,6 +22,7 @@ from .models import (
     StoreBranch,
 )
 from .marketplace import CurrentPrice, ProductBarcode, Promotion
+from .quotas import enforce_daily_quota
 from .workflows import ProductIdentificationRequest, ProductImage, NationalOffer
 from .write_api import Input, ProductInput
 
@@ -79,6 +80,15 @@ def identify(
     )
     if existing:
         return {"id": str(existing.id), "status": existing.status}
+    # Distinct valid barcodes are cheap to generate, so cap new requests per person.
+    enforce_daily_quota(
+        db,
+        ProductIdentificationRequest,
+        principal.subject,
+        "IDENTIFICATION_DAILY_LIMIT",
+        50,
+        "Daily identification request limit reached",
+    )
     request = ProductIdentificationRequest(
         owner_subject=principal.subject, **payload.model_dump()
     )

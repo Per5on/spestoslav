@@ -29,6 +29,7 @@ from .db import get_db
 from .grocery import GroceryIdentity
 from .models import Category, Product, Retailer, StoreBranch, PriceObservation
 from .marketplace import CurrentPrice, PriceCache, ProductBarcode, ReceiptItem, ReceiptScan
+from .quotas import enforce_daily_quota
 from .technology import TechnologyIdentity
 from .workflows import (
     CollectionSource,
@@ -183,6 +184,16 @@ def enqueue(db, payload, principal, request_key, source):
         if expiry != payload.expires_at:
             raise HTTPException(409, "Idempotency key expiry differs")
         return existing, cache
+    if principal.role == "user":
+        # Replays returned above; only genuinely new user submissions count.
+        enforce_daily_quota(
+            db,
+            ReviewSubmission,
+            principal.subject,
+            "SUBMISSION_DAILY_LIMIT",
+            200,
+            "Daily price submission limit reached",
+        )
     active_pair(db, payload.product_id, payload.branch_id)
     now = datetime.now(timezone.utc)
     if payload.observed_at and (

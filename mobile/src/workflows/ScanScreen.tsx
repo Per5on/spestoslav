@@ -112,10 +112,11 @@ export function ScanScreen({ onAdd }: { onAdd: (p: Product) => boolean }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ barcode }),
       });
+      if (!mounted.current) return;
       setSent(true);
       setNotice("identificationSent");
     } catch {
-      setNotice("searchError");
+      if (mounted.current) setNotice("searchError");
     } finally {
       if (mounted.current) setBusy(false);
     }

@@ -14,7 +14,7 @@ from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 router = APIRouter(prefix="/api/v1/feedback")
-RECIPIENT = "ivo77@duck.com"
+RECIPIENT = os.getenv("FEEDBACK_RECIPIENT") or "ivo77@duck.com"
 _attempts: deque[float] = deque()
 _lock = Lock()
 

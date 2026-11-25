@@ -1,7 +1,9 @@
 """Bound short-lived request counters for a single API process."""
 
 import hashlib
+import ipaddress
 import math
+import os
 from threading import Lock
 from time import monotonic
 
@@ -45,9 +47,37 @@ class RequestLimits:
 request_limits = RequestLimits()
 
 
+def trusted_proxy_hops():
+    """Number of reverse proxies in front of the API that append to X-Forwarded-For.
+
+    Defaults to 0 (use the socket peer). On a host such as Render, set
+    TRUSTED_PROXY_HOPS to the number of proxies you trust so each person gets their
+    own rate-limit bucket instead of all sharing the proxy's address.
+    """
+    try:
+        return max(0, min(int(os.getenv("TRUSTED_PROXY_HOPS", "0")), 5))
+    except ValueError:
+        return 0
+
+
 def client_address(request: Request):
-    # The server resolves trusted proxy headers. Never trust a raw forwarded header here.
-    return request.client.host if request.client else "unknown"
+    peer = request.client.host if request.client else "unknown"
+    hops = trusted_proxy_hops()
+    if hops:
+        chain = [
+            part.strip()
+            for part in request.headers.get("x-forwarded-for", "").split(",")
+            if part.strip()
+        ]
+        # Entries are appended on the right by each proxy, so the address seen by the
+        # outermost trusted proxy is hops-from-the-right. Anything a client prepends
+        # sits to the left of it and is ignored.
+        if len(chain) >= hops:
+            try:
+                return str(ipaddress.ip_address(chain[-hops]))
+            except ValueError:
+                pass
+    return peer
 
 
 def limit_locality_search(request: Request):

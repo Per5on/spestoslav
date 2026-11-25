@@ -1,6 +1,7 @@
 """Private receipt upload and owner-scoped retrieval; OCR runs in a worker."""
 
 import hashlib
+from datetime import datetime, timedelta, timezone
 from io import BytesIO
 import logging
 import os
@@ -21,15 +22,16 @@ from fastapi import (
     Query,
     Response,
 )
-from PIL import Image, UnidentifiedImageError
+from PIL import Image, ImageOps, UnidentifiedImageError
 from pydantic import ValidationError
-from sqlalchemy import select, delete
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from .auth import current_user
 from .db import get_db
 from .models import StoreBranch
+from .request_limits import request_limits
 from .marketplace import ReceiptScan, ReceiptItem
 from .workflows import ReceiptJob
 from .write_api import PriceInput, enqueue, submission_view
@@ -44,6 +46,34 @@ router = APIRouter(prefix="/api/v1/receipts")
 logger = logging.getLogger(__name__)
 MAX_BYTES = 8 * 1024 * 1024
 Image.MAX_IMAGE_PIXELS = 20_000_000
+DEFAULT_DAILY_UPLOADS = 30
+
+
+def daily_upload_limit():
+    """Receipts one person may upload per rolling 24 hours (0 disables the cap)."""
+    try:
+        return max(0, int(os.getenv("RECEIPT_DAILY_LIMIT", str(DEFAULT_DAILY_UPLOADS))))
+    except ValueError:
+        return DEFAULT_DAILY_UPLOADS
+
+
+def enforce_daily_quota(db: Session, subject: str) -> None:
+    limit = daily_upload_limit()
+    if not limit:
+        return
+    since = datetime.now(timezone.utc) - timedelta(hours=24)
+    used = db.scalar(
+        select(func.count())
+        .select_from(ReceiptJob)
+        .join(ReceiptScan, ReceiptScan.id == ReceiptJob.scan_id)
+        .where(ReceiptJob.owner_subject == subject, ReceiptScan.created_at >= since)
+    )
+    if used >= limit:
+        raise HTTPException(
+            429,
+            "Daily receipt upload limit reached",
+            headers={"Retry-After": "3600"},
+        )
 
 
 class ReceiptStorage:
@@ -128,6 +158,8 @@ def upload_receipt(
     db: Session = Depends(get_db),
     idempotency_key: str | None = Header(default=None, min_length=8, max_length=100),
 ):
+    # Cheap guard before any image decoding; the daily quota below is the durable cap.
+    request_limits.check("receipt-upload", 60, ("user:" + principal.subject, 20))
     if branch_id:
         branch = db.get(StoreBranch, branch_id)
         if not branch or not branch.active:
@@ -152,9 +184,14 @@ def upload_receipt(
         raise HTTPException(422, "Upload a valid JPEG, PNG or WebP image") from None
     # Strip EXIF/location and embedded metadata before private storage.
     with Image.open(BytesIO(data)) as image:
+        # Phones usually store rotation in EXIF. Apply it before the metadata is
+        # dropped, otherwise receipts are saved sideways and OCR accuracy suffers.
+        upright = ImageOps.exif_transpose(image)
+        # Flatten transparency onto white (not black) so dark text stays readable.
+        rgba = upright.convert("RGBA")
+        sanitized = Image.new("RGB", rgba.size, "white")
+        sanitized.paste(rgba, mask=rgba.getchannel("A"))
         cleaned = BytesIO()
-        sanitized = Image.new("RGB", image.size)
-        sanitized.paste(image.convert("RGB"))
         sanitized.save(cleaned, format=format)
         data = cleaned.getvalue()
     if len(data) > MAX_BYTES:
@@ -175,6 +212,8 @@ def upload_receipt(
                     409, "Upload request key was already used for a different receipt"
                 )
             return {"id": str(previous[1].id), "status": previous[1].status}
+    # Only new uploads count; an idempotent replay above returned without reaching here.
+    enforce_daily_quota(db, principal.subject)
     key = (
         "receipts/"
         + hashlib.sha256(principal.subject.encode()).hexdigest()

@@ -13,7 +13,7 @@ import { Button } from "../Action";
 import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
-import { SIMULATION_MODE } from "../api";
+import { SIMULATION_MODE, httpStatus } from "../api";
 import { ReceiptCaptureMock } from "./ReceiptCaptureMock";
 type Summary = {
   id: string;
@@ -52,7 +52,7 @@ export function ReceiptsScreen({
     [error, setError] = useState(false),
     [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null),
     [note, setNote] = useState<
-      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed"
+      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed" | "receiptLimit"
     >("");
   const mounted = useRef(true),
     requestKey = useRef(""),
@@ -171,10 +171,11 @@ export function ReceiptsScreen({
         headers: { "Idempotency-Key": requestKey.current },
         body: form,
       });
-    } catch {
+    } catch (failure) {
       // The outcome is unknown if the response was lost. Keep the draft and its request key.
       if (mounted.current) {
-        setError(true);
+        if (httpStatus(failure) === 429) setNote("receiptLimit");
+        else setError(true);
         setBusy(false);
       }
       return;
