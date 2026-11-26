@@ -1,0 +1,774 @@
+diff --git a/backend/.env.example b/backend/.env.example
+index fbba95f..3493352 100644
+--- a/backend/.env.example
++++ b/backend/.env.example
+@@ -18,6 +18,9 @@ RECEIPT_DAILY_LIMIT=30
+ # Other per-person daily caps (0 disables): barcode identification requests, price submissions.
+ IDENTIFICATION_DAILY_LIMIT=50
+ SUBMISSION_DAILY_LIMIT=200
++# Grocery/technology prices are indicative and stay visible after their stated expiry for this many
++# days (default 90; 0 = hide as soon as they expire). Fuel always hides expired prices.
++STALE_PRICE_MAX_AGE_DAYS=90
+ # Where feedback is delivered; defaults to the maintainer address in code.
+ FEEDBACK_RECIPIENT=
+ # Random 32+ character server credentials. Never put these into Android EXPO_PUBLIC variables.
+diff --git a/backend/app/catalog_api.py b/backend/app/catalog_api.py
+index e2b789d..f1b5232 100644
+--- a/backend/app/catalog_api.py
++++ b/backend/app/catalog_api.py
+@@ -22,6 +22,7 @@ from .models import (
+     StoreBranch,
+ )
+ from .marketplace import CurrentPrice, ProductBarcode, Promotion
++from .freshness import still_shown
+ from .quotas import enforce_daily_quota
+ from .workflows import ProductIdentificationRequest, ProductImage, NationalOffer
+ from .write_api import Input, ProductInput
+@@ -341,8 +342,14 @@ def national_rows(db, product_id=None, retailer_code=None):
+             )
+             .label("rank"),
+         )
++        .join(Product, Product.id == NationalOffer.product_id)
+         .where(
+-            NationalOffer.valid_until > now,
++            still_shown(
++                NationalOffer.valid_until > now,
++                NationalOffer.observed_at,
++                now,
++                category_column=Product.category_code,
++            ),
+             NationalOffer.observed_at <= now,
+             NationalOffer.verified_at <= now,
+         )
+@@ -499,7 +506,12 @@ def compare_basket(payload: BasketInput, db: Session = Depends(get_db)):
+             CurrentPrice.branch_id.in_(branch_ids),
+             CurrentPrice.product_id.in_(product_ids),
+             CurrentPrice.verified_at <= now,
+-            (CurrentPrice.expires_at.is_(None)) | (CurrentPrice.expires_at > now),
++            still_shown(
++                (CurrentPrice.expires_at.is_(None)) | (CurrentPrice.expires_at > now),
++                CurrentPrice.verified_at,
++                now,
++                category=next(iter(categories)),
++            ),
+         )
+     ).all()
+     by_branch = {}
+diff --git a/backend/app/freshness.py b/backend/app/freshness.py
+new file mode 100644
+index 0000000..d8fea82
+--- /dev/null
++++ b/backend/app/freshness.py
+@@ -0,0 +1,36 @@
++"""How long last-known indicative prices stay visible after their stated expiry.
++
++Grocery and technology prices are indicative figures copied from original online
++sources and are not re-checked, so the latest known price stays visible for
++STALE_PRICE_MAX_AGE_DAYS (default 90; 0 restores the strict "hide when expired" rule).
++Fuel prices change quickly and always keep the strict rule.
++"""
++
++import os
++from datetime import timedelta
++
++from sqlalchemy import and_, or_
++
++DEFAULT_STALE_DAYS = 90
++
++
++def stale_price_days():
++    try:
++        return max(0, int(os.getenv("STALE_PRICE_MAX_AGE_DAYS", str(DEFAULT_STALE_DAYS))))
++    except ValueError:
++        return DEFAULT_STALE_DAYS
++
++
++def still_shown(expiry_ok, timestamp, now, *, category=None, category_column=None):
++    """`expiry_ok` or (not fuel and `timestamp` is recent enough).
++
++    Pass `category_column` inside a query that spans categories, or a plain `category`
++    string when the category is already known.
++    """
++    days = stale_price_days()
++    if not days:
++        return expiry_ok
++    recent = timestamp > now - timedelta(days=days)
++    if category_column is not None:
++        return or_(expiry_ok, and_(category_column != "fuel", recent))
++    return expiry_ok if category == "fuel" else or_(expiry_ok, recent)
+diff --git a/backend/app/main.py b/backend/app/main.py
+index efc507c..0a88270 100644
+--- a/backend/app/main.py
++++ b/backend/app/main.py
+@@ -8,6 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
+ from sqlalchemy.orm import Session, load_only
+ 
+ from .db import get_db
++from .freshness import still_shown
+ from .request_limits import limit_locality_search
+ from .grocery import GroceryGroup, GroceryIdentity
+ from .technology import TechnologyIdentity
+@@ -383,7 +384,12 @@ def current_prices(
+     rows = db.scalars(
+         stmt.where(
+             CurrentPrice.verified_at <= now,
+-            or_(CurrentPrice.expires_at.is_(None), CurrentPrice.expires_at > now),
++            still_shown(
++                or_(CurrentPrice.expires_at.is_(None), CurrentPrice.expires_at > now),
++                CurrentPrice.verified_at,
++                now,
++                category_column=Category.code,
++            ),
+         )
+         .order_by(CurrentPrice.verified_at.desc(), CurrentPrice.id)
+         .offset(offset)
+diff --git a/backend/tests/test_backend_readiness.py b/backend/tests/test_backend_readiness.py
+index 959dfd8..cd0f1cd 100644
+--- a/backend/tests/test_backend_readiness.py
++++ b/backend/tests/test_backend_readiness.py
+@@ -31,7 +31,8 @@ def test_inactive_entities_hide_all_offers(model):
+     assert fixtures.client.get("/api/v1/promotions").json() == []
+ 
+ 
+-def test_expired_unverified_and_future_offers_hidden():
++def test_expired_unverified_and_future_offers_hidden(monkeypatch):
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "0")  # strict mode
+     with fixtures.TestingSessionLocal() as db:
+         db.execute(
+             update(CurrentPrice).values(
+diff --git a/backend/tests/test_stale_prices.py b/backend/tests/test_stale_prices.py
+new file mode 100644
+index 0000000..b3882fc
+--- /dev/null
++++ b/backend/tests/test_stale_prices.py
+@@ -0,0 +1,174 @@
++"""Last-known indicative grocery/technology prices stay visible; fuel stays strict."""
++
++import uuid
++from decimal import Decimal
++from datetime import datetime, timedelta, timezone
++
++import pytest
++from sqlalchemy import select, update
++
++import test_locality_search as fixtures
++from app.db import get_db
++from app.freshness import still_shown
++from app.main import app
++from app.marketplace import CurrentPrice, Promotion
++from app.models import Category, Locality, Product, Retailer, StoreBranch
++from app.workflows import NationalOffer
++
++
++@pytest.fixture(autouse=True)
++def database():
++    previous = dict(app.dependency_overrides)
++    fixtures.setup_function()
++    app.dependency_overrides[get_db] = fixtures.override_get_db
++    yield
++    fixtures.teardown_function()
++    app.dependency_overrides.clear()
++    app.dependency_overrides.update(previous)
++
++
++def age_prices(days_since_check, days_expired):
++    now = datetime.now(timezone.utc)
++    with fixtures.TestingSessionLocal() as db:
++        db.execute(
++            update(CurrentPrice).values(
++                verified_at=now - timedelta(days=days_since_check),
++                expires_at=now - timedelta(days=days_expired),
++            )
++        )
++        db.commit()
++
++
++def prices():
++    return fixtures.client.get("/api/v1/prices/current").json()
++
++
++def test_expired_grocery_price_stays_visible_by_default():
++    age_prices(days_since_check=2, days_expired=1)
++    assert [row["price_eur"] for row in prices()] == [1.25]
++
++
++def test_stale_grocery_price_disappears_after_the_cutoff(monkeypatch):
++    age_prices(days_since_check=100, days_expired=99)
++    assert prices() == []
++    age_prices(days_since_check=60, days_expired=59)
++    assert len(prices()) == 1
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "30")
++    assert prices() == []
++
++
++def test_zero_restores_strict_expiry(monkeypatch):
++    age_prices(days_since_check=2, days_expired=1)
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "0")
++    assert prices() == []
++
++
++def add_fuel_price(expired):
++    now = datetime.now(timezone.utc)
++    with fixtures.TestingSessionLocal() as db:
++        locality = db.scalar(select(StoreBranch.locality_id))
++        db.add(Category(code="fuel", name_bg="Гориво", name_en="Fuel"))
++        db.flush()
++        db.add(Retailer(code="PUMP", name="Pump", category_code="fuel"))
++        product, branch = uuid.uuid4(), uuid.uuid4()
++        db.add(
++            Product(
++                id=product, category_code="fuel", name="Petrol", normalized_name="petrol",
++            )
++        )
++        db.flush()
++        db.add(
++            StoreBranch(id=branch, retailer_code="PUMP", locality_id=locality, address="Pump 1")
++        )
++        db.flush()
++        db.add(
++            CurrentPrice(
++                product_id=product, branch_id=branch, price_eur=1.5, source="TEST",
++                verified_at=now - timedelta(hours=2),
++                expires_at=now - timedelta(hours=1) if expired else now + timedelta(hours=1),
++            )
++        )
++        db.commit()
++
++
++def test_fuel_keeps_the_strict_expiry_rule():
++    add_fuel_price(expired=True)
++    assert [row["price_eur"] for row in prices()] == [1.25]  # grocery only
++    fuel = fixtures.client.get("/api/v1/prices/current", params={"category_code": "fuel"})
++    assert fuel.json() == []
++
++
++def test_unexpired_fuel_price_is_still_returned():
++    add_fuel_price(expired=False)
++    fuel = fixtures.client.get("/api/v1/prices/current", params={"category_code": "fuel"})
++    assert [row["price_eur"] for row in fuel.json()] == [1.5]
++
++
++def offer_rows(**filters):
++    return fixtures.client.get("/api/v1/national-offers", params=filters).json()
++
++
++def add_offer(valid_for_days, observed_days_ago, product_id=None):
++    now = datetime.now(timezone.utc)
++    with fixtures.TestingSessionLocal() as db:
++        product = product_id or db.scalar(select(Product.id).where(Product.category_code == "FOOD"))
++        db.add(
++            NationalOffer(
++                product_id=product, retailer_code="TEST", price_eur="2.00",
++                source_reference="https://retailer.example/p",
++                observed_at=now - timedelta(days=observed_days_ago),
++                verified_at=now - timedelta(days=observed_days_ago),
++                verified_by="test",
++                valid_until=now + timedelta(days=valid_for_days),
++            )
++        )
++        db.commit()
++
++
++def test_expired_online_offer_stays_visible_and_newest_wins(monkeypatch):
++    add_offer(valid_for_days=-3, observed_days_ago=10)
++    add_offer(valid_for_days=-1, observed_days_ago=4)
++    rows = offer_rows(category_code="FOOD")
++    assert len(rows) == 1 and Decimal(rows[0]["price_eur"]) == Decimal("2")
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "0")
++    assert offer_rows(category_code="FOOD") == []
++
++
++def test_online_offer_older_than_cutoff_is_hidden():
++    add_offer(valid_for_days=-89, observed_days_ago=120)
++    assert offer_rows(category_code="FOOD") == []
++
++
++def test_comparison_includes_the_stale_online_offer_only_for_local_chains():
++    add_offer(valid_for_days=-1, observed_days_ago=4)
++    with fixtures.TestingSessionLocal() as db:
++        db.execute(update(CurrentPrice).values(expires_at=datetime.now(timezone.utc) - timedelta(days=200),
++                                               verified_at=datetime.now(timezone.utc) - timedelta(days=200)))
++        db.execute(update(Promotion).values(ends_at=datetime.now(timezone.utc) - timedelta(days=1)))
++        locality = str(db.scalar(select(StoreBranch.locality_id)))
++        product = str(db.scalar(select(Product.id).where(Product.category_code == "FOOD")))
++        db.commit()
++    body = {"locality_id": locality, "items": [{"product_id": product}], "include_online": True}
++    result = fixtures.client.post("/api/v1/baskets/compare", json=body).json()
++    cheapest = result["cheapest"]
++    assert cheapest["price_scope"] == "NATIONAL_ONLINE" and cheapest["retailer_code"] == "TEST"
++    # Chains with no branch in the chosen place never appear, however recent their offer.
++    with fixtures.TestingSessionLocal() as db:
++        remote = Locality(source="TEST", source_id="elsewhere", name="Elsewhere")
++        db.add(remote)
++        db.commit()
++        remote_id = str(remote.id)
++    body["locality_id"] = remote_id
++    assert fixtures.client.post("/api/v1/baskets/compare", json=body).json()["quotes"] == []
++
++
++def test_helper_is_strict_for_fuel_and_open_for_others(monkeypatch):
++    now = datetime.now(timezone.utc)
++    expiry = CurrentPrice.expires_at.is_(None)
++    verified = CurrentPrice.verified_at
++    assert still_shown(expiry, verified, now, category="fuel") is expiry
++    assert still_shown(expiry, verified, now, category="FOOD") is not expiry
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "0")
++    assert still_shown(expiry, verified, now, category="FOOD") is expiry
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "bad")
++    assert still_shown(expiry, verified, now, category="FOOD") is not expiry
+diff --git a/backend/tests/test_write_workflows.py b/backend/tests/test_write_workflows.py
+index 9832c27..f0310d3 100644
+--- a/backend/tests/test_write_workflows.py
++++ b/backend/tests/test_write_workflows.py
+@@ -474,7 +474,7 @@ def test_older_reviewed_observation_does_not_overwrite_newer_price():
+     assert history.json()[0]["price_scope"] == "BRANCH"
+ 
+ 
+-def test_product_images_and_national_scope_are_separate_from_branches():
++def test_product_images_and_national_scope_are_separate_from_branches(monkeypatch):
+     with fixtures.TestingSessionLocal() as db:
+         product_id = str(db.scalar(select(Product.id)))
+         retailer = db.get(
+@@ -539,6 +539,7 @@ def test_product_images_and_national_scope_are_separate_from_branches():
+     assert quotes["cheapest"]["price_scope"] == "BRANCH"
+     assert all(q["price_scope"] == "BRANCH" for q in quotes["quotes"])
+ 
++    monkeypatch.setenv("STALE_PRICE_MAX_AGE_DAYS", "0")  # strict expiry for this check
+     with fixtures.TestingSessionLocal() as db:
+         db.scalar(select(CurrentPrice)).expires_at = now - timedelta(seconds=1)
+         db.scalar(select(Promotion)).ends_at = now - timedelta(seconds=1)
+diff --git a/mobile/App.tsx b/mobile/App.tsx
+index 4a947bd..bc80222 100644
+--- a/mobile/App.tsx
++++ b/mobile/App.tsx
+@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+ import {
+   ActivityIndicator,
+   FlatList,
++  Keyboard,
+   Platform,
+   RefreshControl,
+   ScrollView,
+@@ -168,7 +169,9 @@ function Main({ initialNotice, onErase }: {
+   const [query, setQuery] = useState(""),
+     [searchOpen, setSearchOpen] = useState(false),
+     [suggestionLimit, setSuggestionLimit] = useState(tabBatchSize),
+-    [group, setGroup] = useState<string | null>(null);
++    [group, setGroup] = useState<string | null>(null),
++    // A product picked from the suggestions: shown alone in the list, never added to the cart.
++    [focusId, setFocusId] = useState<string | null>(null);
+   const [notice, setNotice] = useState<MessageKey | "">(initialNotice),
+     [comparing, setComparing] = useState(false);
+   const [quote, setQuote] = useState<{ key: string; data: Comparison } | null>(
+@@ -260,6 +263,7 @@ function Main({ initialNotice, onErase }: {
+       setGroup(null);
+       setQuery("");
+       setAppliedQuery("");
++      setFocusId(null);
+       setSearchOpen(false);
+     }
+     setCategory(id);
+@@ -324,12 +328,12 @@ function Main({ initialNotice, onErase }: {
+     return () => clearTimeout(timer);
+   }, [catalog.prices, catalog.online, priceRevision]);
+   const priceIndex = useMemo(
+-    () => indexLowestPrices(catalog.prices, catalog.stores),
+-    [catalog.prices, catalog.stores, priceRevision],
++    () => indexLowestPrices(catalog.prices, catalog.stores, undefined, category !== "fuel"),
++    [catalog.prices, catalog.stores, priceRevision, category],
+   );
+   const indicativePrices = useMemo(
+-    () => indexIndicativePrices(catalog.online, catalog.stores),
+-    [catalog.online, catalog.stores, priceRevision],
++    () => indexIndicativePrices(catalog.online, catalog.stores, undefined, category !== "fuel"),
++    [catalog.online, catalog.stores, priceRevision, category],
+   );
+   const fuelResults = useMemo(() => category === "fuel"
+     ? groupFuelResults(catalog.stores, fuelProduct?.id, priceIndex.branches, indicativePrices.chains)
+@@ -345,18 +349,20 @@ function Main({ initialNotice, onErase }: {
+     ? new Map(catalog.products.map(p => [p.id, productSearchText(p, displayName(p))]))
+     : undefined, [catalog.products, displayName, searchActive]);
+   const visible = useMemo(() => {
++    if (focusId) return catalog.products.filter(p => p.id === focusId);
+     if (appliedQuery && searchIndex) {
+       const tokens = appliedQuery.split(" ");
+       return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+     }
+     const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
+     return prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
+-  }, [catalog.products, group, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
++  }, [catalog.products, group, appliedQuery, focusId, searchIndex, priceIndex.products, indicativePrices.products]);
+   function refreshCatalogue() {
+     catalog.refresh();
+     setNotice("");
+     setQuery("");
+     setAppliedQuery("");
++    setFocusId(null);
+     setSearchOpen(false);
+     setQuote(null);
+   }
+@@ -371,6 +377,15 @@ function Main({ initialNotice, onErase }: {
+     return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+   }, [catalog.products, query, searchIndex, searchOpen]);
+   useEffect(() => setSuggestionLimit(tabBatchSize), [query, category]);
++  function selectSuggestion(p: Product) {
++    setFocusId(p.id);
++    setGroup(null);
++    setAppliedQuery("");
++    setQuery(displayName(p));
++    setSearchOpen(false);
++    Keyboard.dismiss();
++    tabList.current?.scrollToOffset({ offset: 0, animated: false });
++  }
+   function thumbnail(p: Product) {
+     const art = productArtwork(p);
+     return <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
+@@ -395,7 +410,7 @@ function Main({ initialNotice, onErase }: {
+           <Text style={price === null ? s.meta : s.price}>
+             {price === null
+               ? t(catalog.storeError ? "priceUnavailable" : "noPrice")
+-              : `${t("from")} ${price.toFixed(2)} €${localPrice === undefined ? " · " + t("indicativeOnlinePrice") : ""}`}
++              : `${t("from")} ${price.toFixed(2)} € · ${t("indicativeOnlinePrice")}`}
+           </Text>
+         </View>
+         <AddButton
+@@ -539,10 +554,12 @@ function Main({ initialNotice, onErase }: {
+               onChangeText={(value) => {
+                 setQuery(value);
+                 setSearchOpen(true);
++                setFocusId(null);
+                 if (!value.trim()) setAppliedQuery("");
+               }}
+               onSubmitEditing={({ nativeEvent }) => {
+                 const normalizedQuery = searchText(nativeEvent.text);
++                setFocusId(null);
+                 setAppliedQuery(normalizedQuery);
+                 if (normalizedQuery) setGroup(null);
+                 setSearchOpen(false);
+@@ -587,8 +604,12 @@ function Main({ initialNotice, onErase }: {
+               {suggestions.length > 0 && (
+                 <View testID="product-suggestions" style={s.panel}>
+                   {suggestions.slice(0, suggestionLimit).map(p => (
+-                    <AddButton key={p.id} name={displayName(p)} disabled={!restored}
+-                      showName onAdd={() => change(p, 1)} />
++                    <Pressable key={p.id} accessibilityRole="button"
++                      accessibilityLabel={displayName(p)}
++                      style={[s.option, { paddingHorizontal: 8, borderRadius: 8 }]}
++                      onPress={() => selectSuggestion(p)}>
++                      <Text style={{ flex: 1, color: "#264c30" }}>{displayName(p)}</Text>
++                    </Pressable>
+                   ))}
+                   {suggestions.length > suggestionLimit && (
+                     <Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`}
+@@ -611,6 +632,7 @@ function Main({ initialNotice, onErase }: {
+                   ]}
+                   selected={group} onSelect={code => {
+                     setGroup(code);
++                    setFocusId(null);
+                     setAppliedQuery("");
+                     setQuery("");
+                     setSearchOpen(false);
+diff --git a/mobile/scripts/test-browser-preview007.py b/mobile/scripts/test-browser-preview007.py
+index b008b19..734d820 100644
+--- a/mobile/scripts/test-browser-preview007.py
++++ b/mobile/scripts/test-browser-preview007.py
+@@ -102,16 +102,23 @@ with sync_playwright() as p:
+  search=page.get_by_label('Търси продукт…',exact=True)
+  search.fill('Лаптоп')
+  suggestions=page.get_by_test_id('product-suggestions')
+- laptop=suggestions.get_by_role('button',name='Добави Лаптоп (примерна снимка)',exact=True)
+- laptop.get_by_text('Лаптоп (примерна снимка)',exact=True).click()
++ suggestions.get_by_role('button',name='Лаптоп (примерна снимка)',exact=True).click()
++ # Picking a suggestion only shows that product in the list; it never touches the cart.
++ expect(suggestions).to_have_count(0)
++ expect(page.get_by_test_id('thumbnail-loaded-demo-laptop')).to_be_visible()
++ add_laptop=page.get_by_role('button',name='Добави Лаптоп (примерна снимка)',exact=True)
++ expect(add_laptop).to_have_count(1)
++ assert page.evaluate("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket.length""")==0
++ expect(page.get_by_role('button',name=re.compile('^(Приложи|Изчисти)'))).to_have_count(0)
++ add_laptop.click()
+  page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
+   .some(item => item.product.id === 'demo-laptop' && item.quantity === 1)""")
+- expect(page.get_by_role('button',name=re.compile('^(Приложи|Изчисти)'))).to_have_count(0)
+  search.fill('Смартфон')
+- suggestions.get_by_role('button',name='Добави Смартфон (примерна снимка)',exact=True).click()
+- page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
+-  .some(item => item.product.id === 'demo-smartphone' && item.quantity === 1)""")
+- proof['search_row_tap_directly_adds_without_filter_controls']=True
++ suggestions.get_by_role('button',name='Смартфон (примерна снимка)',exact=True).click()
++ expect(page.get_by_role('button',name=re.compile('^Добави '))).to_have_count(1)
++ assert page.evaluate("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
++  .every(item => item.product.id !== 'demo-smartphone')""")
++ proof['search_suggestion_shows_product_without_adding_it_and_list_card_adds']=True
+  search.fill('телевизор')
+  search.press('Enter')
+  expect(suggestions).to_have_count(0)
+diff --git a/mobile/scripts/test-catalog-sync.cjs b/mobile/scripts/test-catalog-sync.cjs
+index 447c609..3887490 100644
+--- a/mobile/scripts/test-catalog-sync.cjs
++++ b/mobile/scripts/test-catalog-sync.cjs
+@@ -82,8 +82,45 @@ const catalogue = load("catalogData", { ...modules, "./cache": load("cache", mod
+   await clearLocalCatalogs();
+   assert.equal(saved.size, 0);
+ 
++  // Grocery and technology prices are indicative: the cached copy loads whatever its expiry (for up
++  // to 30 days) and is refreshed only once per 24 hours. Fuel keeps its short, strict cycle.
++  const hour = 3600000;
++  const cacheKey = (slot, category) => "spestovnik-local-catalog-v1:https://fixture.invalid:" + slot + ":" + category;
++  const seed = (slot, category, ageMs, rows) => saved.set(cacheKey(slot, category), JSON.stringify({
++    localityId: "sofia", savedAt: Date.now() - ageMs, rows,
++  }));
++  const oldOffer = { ...offer, valid_until: "2020-01-01T00:00:00Z" };
++  const oldPrice = { ...price, expires_at: "2020-01-01T00:00:00.000Z" };
++  const grocery = { category: "groceries", localityId: "sofia" };
++  fetchResult = async () => { throw new Error("Server unreachable"); };
++  paths.length = 0;
++  seed("online", "groceries", hour, [oldOffer]);
++  seed("prices", "groceries", hour, [oldPrice]);
++  assert.deepEqual(await onlineResource.load(grocery, signal), [oldOffer]);
++  assert.deepEqual(await pricesResource.load(grocery, signal), [oldPrice]);
++  assert.equal(paths.length, 0, "a cache younger than 24 hours needs no request");
++  seed("online", "groceries", 3 * 24 * hour, [oldOffer]);
++  cached = undefined;
++  await assert.rejects(onlineResource.load(grocery, signal, false, rows => { cached = rows; }), /unreachable/);
++  assert.deepEqual(cached, [oldOffer], "an older cache is shown at once while it refreshes");
++  seed("online", "groceries", 40 * 24 * hour, [oldOffer]);
++  cached = undefined;
++  await assert.rejects(onlineResource.load(grocery, signal, false, rows => { cached = rows; }), /unreachable/);
++  assert.equal(cached, undefined, "a cache older than 30 days is not used");
++  seed("online", "fuel", hour, [oldOffer]);
++  cached = undefined;
++  await assert.rejects(onlineResource.load(scope, signal, false, rows => { cached = rows; }), /unreachable/);
++  assert.deepEqual(cached, [], "fuel offers still drop out when they expire");
++  seed("online", "fuel", 11 * 60000, [{ ...offer, valid_until: new Date(Date.now() + 60000).toISOString() }]);
++  paths.length = 0;
++  await assert.rejects(onlineResource.load(scope, signal), /unreachable/);
++  assert.equal(paths.length > 0, true, "fuel refreshes after 10 minutes");
++  await clearLocalCatalogs();
++
+   let task;
+   let registered;
++  let registrations = 0;
++  let unregistrations = 0;
+   const product = { id: "a95", name: "A95", category_code: "fuel", fuel_type: "petrol" };
+   saved.set("saved-locality", JSON.stringify({ locality: { id: "sofia" } }));
+   fetchResult = async path => {
+@@ -102,12 +139,19 @@ const catalogue = load("catalogData", { ...modules, "./cache": load("cache", mod
+     "expo-background-task": {
+       getStatusAsync: async () => 2, BackgroundTaskStatus: { Available: 2 },
+       BackgroundTaskResult: { Success: 1, Failed: 2 },
+-      registerTaskAsync: async (name, options) => { registered = { name, ...options }; },
++      registerTaskAsync: async (name, options) => { registered = { name, ...options }; registrations += 1; },
++      unregisterTaskAsync: async () => { registered = undefined; unregistrations += 1; },
+     },
+     "../localData": { savedListKey: "saved-locality" }, "./catalogData": catalogue,
+   });
+   await background.enableCatalogSync();
+-  assert.deepEqual(registered, { name: "spestovnik-catalog-sync", minimumInterval: 60 });
++  assert.deepEqual(registered, { name: "spestovnik-catalog-sync", minimumInterval: 720 });
++  await background.enableCatalogSync();
++  assert.deepEqual([registrations, unregistrations], [1, 0], "an up-to-date job is left alone");
++  saved.set("spestovnik-catalog-sync-minutes", "60"); // a build that scheduled the old 60-minute job
++  await background.enableCatalogSync();
++  assert.deepEqual([registrations, unregistrations], [2, 1], "the old job is replaced once");
++  assert.deepEqual(registered, { name: "spestovnik-catalog-sync", minimumInterval: 720 });
+   paths.length = 0;
+   assert.equal(await task(), 1);
+   assert.equal(paths.length, 12);
+diff --git a/mobile/scripts/test-model.cjs b/mobile/scripts/test-model.cjs
+index d0d87ae..1ff8c3f 100644
+--- a/mobile/scripts/test-model.cjs
++++ b/mobile/scripts/test-model.cjs
+@@ -50,6 +50,16 @@ assert.deepEqual([...indexIndicativePrices([
+   { ...onlineOffer, retailer_code: "other-city", price_eur: "1.01" },
+   { ...onlineOffer, valid_until: "2026-11-22T12:00:00Z", price_eur: "0.99" },
+ ], [{ id: "a-local-branch", retailer_code: "local" }], refreshTime).products], [["p1", 2.99]]);
++// Grocery and technology: the last known indicative price stays visible after its expiry,
++// but a chain without a branch in the chosen place never does.
++const expiredOffer = { ...onlineOffer, valid_until: "2026-11-22T12:00:00Z" };
++assert.deepEqual([...indexIndicativePrices([
++  { ...expiredOffer, price_eur: "0.99" },
++  { ...expiredOffer, retailer_code: "other-city", price_eur: "0.50" },
++], [{ id: "a-local-branch", retailer_code: "local" }], refreshTime, true).products], [["p1", 0.99]]);
++const expiredBranchPrice = { branch_id: "b", product_id: "p1", price_eur: 1.5, expires_at: "2026-11-22T12:00:00Z" };
++assert.deepEqual([...indexLowestPrices([expiredBranchPrice], [{ id: "b" }], refreshTime, true).products], [["p1", 1.5]]);
++assert.equal(indexLowestPrices([expiredBranchPrice], [{ id: "b" }], refreshTime).products.size, 0);
+ const fuelStores = [
+   { id: "fallback", retailer_code: "local", retailer_name: "Local", address: "Fallback street" },
+   { id: "same", retailer_code: "local", retailer_name: "Local", address: "Same street" },
+diff --git a/mobile/src/catalog/backgroundSync.ts b/mobile/src/catalog/backgroundSync.ts
+index 5bef923..e03ce49 100644
+--- a/mobile/src/catalog/backgroundSync.ts
++++ b/mobile/src/catalog/backgroundSync.ts
+@@ -26,10 +26,18 @@ if (enabled) {
+   });
+ }
+ 
++// Android decides the exact time; a fixed hour cannot be requested, only a minimum interval.
++const syncMinutes = 12 * 60;
++const intervalKey = "spestovnik-catalog-sync-minutes";
++
+ export async function enableCatalogSync() {
+   if (!enabled || !await TaskManager.isAvailableAsync()) return;
+   if (await BackgroundTask.getStatusAsync() !== BackgroundTask.BackgroundTaskStatus.Available) return;
+-  if (!await TaskManager.isTaskRegisteredAsync(taskName)) {
+-    await BackgroundTask.registerTaskAsync(taskName, { minimumInterval: 60 });
+-  }
++  const registered = await TaskManager.isTaskRegisteredAsync(taskName);
++  const current = await AsyncStorage.getItem(intervalKey).catch(() => null);
++  if (registered && current === String(syncMinutes)) return;
++  // Builds before this one registered a 60-minute job; replace it once.
++  if (registered) await BackgroundTask.unregisterTaskAsync(taskName);
++  await BackgroundTask.registerTaskAsync(taskName, { minimumInterval: syncMinutes });
++  await AsyncStorage.setItem(intervalKey, String(syncMinutes)).catch(() => undefined);
+ }
+diff --git a/mobile/src/catalog/catalogData.ts b/mobile/src/catalog/catalogData.ts
+index ca147ba..f288ff3 100644
+--- a/mobile/src/catalog/catalogData.ts
++++ b/mobile/src/catalog/catalogData.ts
+@@ -7,8 +7,12 @@ const categories = ["groceries", "technology", "fuel"] as const;
+ export type Category = typeof categories[number];
+ 
+ const prefix = "spestovnik-local-catalog-v1:" + API_BASE_URL + ":";
+-const freshFor = 10 * 60 * 1000;
++const fuelFreshFor = 10 * 60 * 1000;
+ const day = 24 * 60 * 60 * 1000;
++// Fuel keeps its short cycle. Grocery and technology prices are indicative: the cached copy is
++// shown at once, refreshed on the first open in each 24 hours, and kept for 30 days.
++const freshFor = (category: Category) => (category === "fuel" ? fuelFreshFor : day);
++const indicativeMaxAge = (category: Category) => (category === "fuel" ? day : 30 * day);
+ type Scope = { category: Category; localityId: string };
+ type Snapshot<T> = { localityId: string; savedAt: number; rows: T[] };
+ 
+@@ -25,8 +29,8 @@ async function allPages<T>(path: string, signal: AbortSignal, pageSize = 500): P
+ function catalogResource<T>(
+   slot: string,
+   fetchRows: (scope: Scope, signal: AbortSignal) => Promise<T[]>,
+-  prepare: (rows: T[], savedAt: number, now: number) => T[] = rows => rows,
+-  maxAge = day,
++  prepare: (rows: T[], savedAt: number, now: number, category: Category) => T[] = rows => rows,
++  maxAge: number | ((category: Category) => number) = day,
+ ) {
+   const pending = new Map<string, Promise<T[]>>();
+   const latest = new Map<string, Promise<T[]>>();
+@@ -45,6 +49,7 @@ function catalogResource<T>(
+     ): Promise<T[]> {
+       const key = prefix + slot + ":" + scope.category;
+       const startedIn = generation;
++      const limit = typeof maxAge === "function" ? maxAge(scope.category) : maxAge;
+       let saved: Snapshot<T> | null = null;
+       try {
+         const raw = await AsyncStorage.getItem(key);
+@@ -53,8 +58,8 @@ function catalogResource<T>(
+           const now = Date.now();
+           if (candidate?.localityId === scope.localityId &&
+               Number.isFinite(candidate.savedAt) && candidate.savedAt <= now &&
+-              now - candidate.savedAt < maxAge && Array.isArray(candidate.rows)) {
+-            const rows = prepare(candidate.rows, candidate.savedAt, now);
++              now - candidate.savedAt < limit && Array.isArray(candidate.rows)) {
++            const rows = prepare(candidate.rows, candidate.savedAt, now, scope.category);
+             saved = { ...candidate, rows };
+             if (rows.length !== candidate.rows.length) force = true;
+             if (!signal.aborted && startedIn === generation) onCached(rows);
+@@ -64,7 +69,7 @@ function catalogResource<T>(
+         // A storage error shouldn't prevent live catalogue loading.
+       }
+       if (signal.aborted || startedIn !== generation) throw new Error("Catalogue read cancelled");
+-      if (saved && !force && Date.now() - saved.savedAt < freshFor) return saved.rows;
++      if (saved && !force && Date.now() - saved.savedAt < freshFor(scope.category)) return saved.rows;
+ 
+       const requestKey = key + ":" + scope.localityId;
+       let request = pending.get(requestKey);
+@@ -76,7 +81,7 @@ function catalogResource<T>(
+         const started = fetchRows(scope, controller.signal).then(async rows => {
+           if (controller.signal.aborted) throw new Error("Catalogue refresh timed out");
+           const savedAt = Date.now();
+-          const prepared = prepare(rows, savedAt, savedAt);
++          const prepared = prepare(rows, savedAt, savedAt, scope.category);
+           const raw = JSON.stringify({ localityId: scope.localityId, savedAt, rows: prepared });
+           if (latest.get(key) === started) {
+             // Leave room for Android's per-entry cursor limit.
+@@ -130,7 +135,7 @@ async function fuelSnapshotField<K extends "products" | "stores" | "prices" | "o
+         return result;
+       })
+       .catch(error => {
+-        if (httpStatus(error) === 404) fuelSnapshotUnavailableUntil = Date.now() + freshFor;
++        if (httpStatus(error) === 404) fuelSnapshotUnavailableUntil = Date.now() + fuelFreshFor;
+         return undefined; // Older hosts and failed snapshots retain the independent reads.
+       })
+       .finally(() => fuelRequests.delete(localityId));
+@@ -163,25 +168,26 @@ export const storesResource = catalogResource<Store>("stores",
+ 
+ export const pricesResource = catalogResource<Price>("prices",
+   async (scope, signal) => await fuelSnapshotField("prices", scope, signal) ?? allPages(localPath("prices/current", scope), signal),
+-  (rows, savedAt, now) => rows.flatMap(row => {
++  (rows, savedAt, now, category) => rows.flatMap(row => {
+     if (typeof row?.product_id !== "string" || typeof row.branch_id !== "string" ||
+         !Number.isFinite(Number(row.price_eur)) || Number(row.price_eur) <= 0) return [];
+     const expiry = row.expires_at ?? new Date(savedAt + day).toISOString();
+-    if (!(Date.parse(expiry) > now)) return [];
++    if (category === "fuel" && !(Date.parse(expiry) > now)) return [];
+     const { product_id, branch_id, price_eur, verified_at } = row;
+     return [{ product_id, branch_id, price_eur, verified_at, expires_at: expiry }];
+-  }),
++  }), indicativeMaxAge,
+ );
+ 
+ export const onlineResource = catalogResource<OnlinePrice>("online",
+   async (scope, signal) => await fuelSnapshotField("online", scope, signal) ?? allPages(localPath("national-offers", scope), signal, 100),
+-  (rows, _savedAt, now) => rows.flatMap(row => {
++  (rows, _savedAt, now, category) => rows.flatMap(row => {
+     if (row?.price_scope !== "NATIONAL_ONLINE" || typeof row.product_id !== "string" ||
+         typeof row.retailer_code !== "string" || !Number.isFinite(Number(row.price_eur)) ||
+-        Number(row.price_eur) <= 0 || !(Date.parse(row.valid_until) > now)) return [];
+-    const { product_id, retailer_code, price_eur, valid_until, source_reference, price_scope } = row;
+-    return [{ product_id, retailer_code, price_eur, valid_until, source_reference, price_scope }];
+-  }),
++        Number(row.price_eur) <= 0 || (category === "fuel" && !(Date.parse(row.valid_until) > now))) return [];
++    // The source link is never shown in the app; dropping it keeps the cache under the size cap.
++    const { product_id, retailer_code, price_eur, valid_until, price_scope } = row;
++    return [{ product_id, retailer_code, price_eur, valid_until, price_scope }];
++  }), indicativeMaxAge,
+ );
+ 
+ export const fuelChainsResource = catalogResource<Retailer>("retailers", async ({ category }, signal) => {
+diff --git a/mobile/src/catalog/model.ts b/mobile/src/catalog/model.ts
+index 68932df..6175446 100644
+--- a/mobile/src/catalog/model.ts
++++ b/mobile/src/catalog/model.ts
+@@ -41,14 +41,16 @@ export type OnlinePrice = {
+   price_scope: "NATIONAL_ONLINE";
+ };
+ 
+-export function indexIndicativePrices(offers: OnlinePrice[], stores: Store[], now = Date.now()) {
++// keepExpired: grocery and technology prices are indicative and stay visible until replaced;
++// fuel keeps the strict expiry rule.
++export function indexIndicativePrices(offers: OnlinePrice[], stores: Store[], now = Date.now(), keepExpired = false) {
+   const retailers = new Set(stores.map(store => store.retailer_code));
+   const products = new Map<string, number>();
+   const chains = new Map<string, Map<string, OnlinePrice>>();
+   for (const row of offers) {
+     const price = Number(row.price_eur);
+     if (row.price_scope !== "NATIONAL_ONLINE" || !retailers.has(row.retailer_code) ||
+-        !Number.isFinite(price) || price <= 0 || !(Date.parse(row.valid_until) > now)) continue;
++        !Number.isFinite(price) || price <= 0 || (!keepExpired && !(Date.parse(row.valid_until) > now))) continue;
+     products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
+     const chain = chains.get(row.retailer_code) ?? new Map<string, OnlinePrice>();
+     const previous = chain.get(row.product_id);
+@@ -143,14 +145,14 @@ export function lowestPrice(
+   return indexLowestPrices(prices, stores, now).products.get(product.id) ?? null;
+ }
+ 
+-export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.now()) {
++export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.now(), keepExpired = false) {
+   const ids = new Set(stores.map(store => store.id));
+   const products = new Map<string, number>();
+   const branches = new Map<string, Map<string, number>>();
+   for (const row of prices) {
+     const price = Number(row.price_eur);
+     if (!ids.has(row.branch_id) || !Number.isFinite(price) || price <= 0 ||
+-        (row.expires_at && !(Date.parse(row.expires_at) > now))) continue;
++        (!keepExpired && row.expires_at && !(Date.parse(row.expires_at) > now))) continue;
+     products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
+     const branch = branches.get(row.branch_id) ?? new Map<string, number>();
+     branch.set(row.product_id, Math.min(price, branch.get(row.product_id) ?? Infinity));
