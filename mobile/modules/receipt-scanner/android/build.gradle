@@ -3,8 +3,15 @@ plugins {
   id 'expo-module-gradle-plugin'
 }
 
+group = 'bg.spestoslav.receiptscanner'
+version = '1.0.0'
+
 android {
   namespace 'bg.spestoslav.receiptscanner'
+  defaultConfig {
+    versionCode 1
+    versionName project.version
+  }
 }
 
 dependencies {
