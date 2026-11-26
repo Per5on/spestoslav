@@ -24,6 +24,8 @@ export function useCatalog(
   const [revision, setRevision] = useState(0);
   const [resumeRevision, setResumeRevision] = useState(0);
   const [products, setProducts] = useState<Partial<Record<Category, Products>>>({});
+  const [published, setPublished] = useState<Partial<Record<Category, OnlinePrice[]>>>({});
+  const [onlineError, setOnlineError] = useState(false);
   const [locals, setLocals] = useState<Partial<Record<Category, LocalData>>>({});
   const [chains, setChains] = useState<Retailer[]>();
   const [finished, setFinished] = useState("");
@@ -59,6 +61,7 @@ export function useCatalog(
     setRefreshing(force);
     setError("");
     setStoreError("");
+    setOnlineError(false);
     setChainError(false);
 
     const showProducts = (rows: Product[], cached: boolean) => {
@@ -88,19 +91,20 @@ export function useCatalog(
 
     const loadLocal = async (id: string) => {
       const scope = { category, localityId: id };
+      const fuelPrices = includePrices && category === "fuel";
       const [stores, prices, online] = await Promise.allSettled([
         storesResource.load(scope, signal, force, rows => show("stores", rows))
           .then(rows => show("stores", rows)),
-        includePrices ? pricesResource.load(scope, signal, force, rows => show("prices", rows))
+        fuelPrices ? pricesResource.load(scope, signal, force, rows => show("prices", rows))
           .then(rows => show("prices", rows)) : Promise.resolve(),
-        includePrices ? onlineResource.load(scope, signal, force, rows => show("online", rows))
+        fuelPrices ? onlineResource.load(scope, signal, force, rows => show("online", rows))
           .then(rows => show("online", rows)) : Promise.resolve(),
       ]);
       if (signal.aborted) return;
       if (stores.status === "rejected") setStoreError("storesError");
       else if (prices.status === "rejected" || online.status === "rejected") setStoreError("pricesError");
     };
-    const localRead = localityId
+    const localRead = localityId && (category === "fuel" || !includePrices)
       ? loadLocal(localityId)
       : category === "fuel"
         ? fuelChainsResource.load({ category, localityId: "" }, signal, force, showChains)
@@ -109,7 +113,17 @@ export function useCatalog(
           })
         : Promise.resolve();
 
-    void Promise.all([productRead, localRead]).then(() => {
+    const showPublished = (rows: OnlinePrice[]) => {
+      if (!signal.aborted) setPublished(previous =>
+        previous[category] === rows ? previous : { ...previous, [category]: rows });
+    };
+    const onlineRead = includePrices && category !== "fuel"
+      ? onlineResource.load({ category, localityId: "" }, signal, force, showPublished)
+        .then(showPublished)
+        .catch(() => { if (!signal.aborted) setOnlineError(true); })
+      : Promise.resolve();
+
+    void Promise.all([productRead, localRead, onlineRead]).then(() => {
       if (signal.aborted) return;
       if (manual.current === requested) manual.current = null;
       setFinished(loadKey);
@@ -118,7 +132,7 @@ export function useCatalog(
     return () => controller.abort();
   }, [active, category, localityId, revision, loadKey, includePrices]);
 
-  const warm = active && includePrices && loaded && !refreshing && !error && !storeError;
+  const warm = active && includePrices && loaded && !refreshing && !error && !storeError && !onlineError;
   useEffect(() => {
     if (!warm || !localityId) return;
     const controller = new AbortController();
@@ -144,9 +158,10 @@ export function useCatalog(
     error,
     stores: data?.stores ?? noStores,
     prices: data?.prices ?? noPrices,
-    online: data?.online ?? noOnline,
-    storeLoading: Boolean(localityId) && !loaded &&
-      (!data?.stores || (includePrices && (!data.prices || !data.online)) ||
+    online: (category === "fuel" ? data?.online : published[category]) ?? noOnline,
+    onlineError,
+    storeLoading: Boolean(localityId) && (category === "fuel" || !includePrices) && !loaded &&
+      (!data?.stores || (category === "fuel" && includePrices && (!data.prices || !data.online)) ||
         (category === "fuel" && !products.fuel)),
     storeError,
     fuelLoading: Boolean(localityId) && !loaded,

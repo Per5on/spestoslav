@@ -41,13 +41,13 @@ export type OnlinePrice = {
   price_scope: "NATIONAL_ONLINE";
 };
 
-export function indexIndicativePrices(offers: OnlinePrice[], stores: Store[], now = Date.now()) {
-  const retailers = new Set(stores.map(store => store.retailer_code));
+export function indexIndicativePrices(offers: OnlinePrice[], stores?: Store[], now = Date.now()) {
+  const retailers = stores && new Set(stores.map(store => store.retailer_code));
   const products = new Map<string, number>();
   const chains = new Map<string, Map<string, OnlinePrice>>();
   for (const row of offers) {
     const price = Number(row.price_eur);
-    if (row.price_scope !== "NATIONAL_ONLINE" || !retailers.has(row.retailer_code) ||
+    if (row.price_scope !== "NATIONAL_ONLINE" || (retailers && !retailers.has(row.retailer_code)) ||
         !Number.isFinite(price) || price <= 0 || !(Date.parse(row.valid_until) > now)) continue;
     products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
     const chain = chains.get(row.retailer_code) ?? new Map<string, OnlinePrice>();
@@ -56,6 +56,62 @@ export function indexIndicativePrices(offers: OnlinePrice[], stores: Store[], no
     chains.set(row.retailer_code, chain);
   }
   return { products, chains };
+}
+
+type OnlineQuoteItem = {
+  product_id: string;
+  quantity: number;
+  unit_price_eur: string | null;
+  subtotal_eur: string | null;
+};
+type OnlineQuote = {
+  retailer_code: string;
+  retailer_name: string;
+  complete: boolean;
+  total_eur: string | null;
+  items: OnlineQuoteItem[];
+};
+export type Comparison = { quotes: OnlineQuote[]; cheapest: OnlineQuote | null; quoted_at: string };
+
+export function comparePublishedBasket(basket: BasketItem[], offers: OnlinePrice[], localStores: Store[], now = Date.now()): Comparison {
+  const { chains } = indexIndicativePrices(offers, localStores, now);
+  const names = new Map(localStores.map(store => [store.retailer_code, store.retailer_name]));
+  // National offers have at most four decimal places. Multiply in integer
+  // units so each line and basket total preserve the published amount.
+  const scale = BigInt(10000);
+  const toEUR = (amount: bigint) => `${amount / scale}.${String(amount % scale).padStart(4, "0")}`;
+  const candidates = Array.from(chains, ([retailer_code, retailerOffers]) => {
+    let total = BigInt(0);
+    let complete = true;
+    let priced = false;
+    const items = basket.map(({ product, quantity }) => {
+      const offer = retailerOffers.get(product.id);
+      const match = offer && /^(\d{1,8})(?:\.(\d{1,4}))?$/.exec(offer.price_eur);
+      if (!match) {
+        complete = false;
+        return { product_id: product.id, quantity, unit_price_eur: null, subtotal_eur: null };
+      }
+      priced = true;
+      const amount = BigInt(match[1]) * scale + BigInt((match[2] ?? "").padEnd(4, "0"));
+      const subtotal = amount * BigInt(quantity);
+      total += subtotal;
+      return {
+        product_id: product.id, quantity, unit_price_eur: toEUR(amount),
+        subtotal_eur: toEUR(subtotal),
+      };
+    });
+    const quote: OnlineQuote = {
+      retailer_code, retailer_name: names.get(retailer_code) ?? retailer_code, complete,
+      total_eur: complete ? toEUR(total) : null, items,
+    };
+    return { total, quote, priced };
+  });
+  const quotes = candidates.filter(row => row.priced).sort((a, b) => {
+    if (a.quote.complete !== b.quote.complete) return a.quote.complete ? -1 : 1;
+    if (a.quote.complete && a.total !== b.total) return a.total < b.total ? -1 : 1;
+    return a.quote.retailer_code.localeCompare(b.quote.retailer_code);
+  }).map(row => row.quote);
+  return { quotes, cheapest: quotes[0]?.complete ? quotes[0] : null, quoted_at: new Date(now).toISOString() };
 }
 
 export function groupFuelResults(
@@ -161,14 +217,13 @@ export function indexLowestPrices(prices: Price[], stores: Store[], now = Date.n
 
 export function prioritizePricedProducts(
   products: Product[],
-  local: ReadonlyMap<string, number>,
-  indicative: ReadonlyMap<string, number>,
+  published: ReadonlyMap<string, number>,
 ) {
-  if (!local.size && !indicative.size) return products;
+  if (!published.size) return products;
   const priced: Product[] = [];
   const remaining: Product[] = [];
   for (const product of products) {
-    const available = !product.is_demo && (local.has(product.id) || indicative.has(product.id));
+    const available = !product.is_demo && published.has(product.id);
     (available ? priced : remaining).push(product);
   }
   return [...priced, ...remaining];

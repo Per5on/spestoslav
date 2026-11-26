@@ -628,3 +628,6 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 ## 26 November 2026 — hybrid build candidate
 
 - Recovered hybrid source on top of `6673ead`. Strict TypeScript, mobile tests and scanner autolinking passed. Ran 148 backend tests locally, with nine skips due to the database fixture or optional local test dependencies. Separate ARM64 and ARMv7 builds use preview 10.9.1-hybrid, Android version code 18, and package `bg.spestoslav.preview.hybrid`. [Design and scope](HYBRID_PREVIEW.md)
+
+- Verified that ordinary grocery and technology values come from the retailer online offer feed. The selected town filters basket retailers through the active store directory. Browser fixtures use different branch and published amounts, a retailer with two local branches, and a cheaper retailer outside town. Product cards and comparisons omit source and verification-status labels in all six languages.
+- The live national-offer endpoint returned zero current grocery and zero technology offers at the 26 November check. Sites with branch-scoped data still need an eligible retailer-published online feed to show a price in the hybrid catalogue.

@@ -13,6 +13,7 @@ new Function("exports", "require", "module", source)(
 );
 const {
   changeQuantity,
+  comparePublishedBasket,
   restoreBasket,
   lowestPrice,
   indexIndicativePrices,
@@ -30,10 +31,10 @@ const bananas = [
 ];
 const qualifiers = duplicateProductQualifiers([...bananas, bananas[0]]);
 assert.deepEqual(
-  prioritizePricedProducts(bananas, new Map([["bio", 1.4]]), new Map([["second", 2.4]])).map(p => p.id),
+  prioritizePricedProducts(bananas, new Map([["bio", 1.4], ["second", 2.4]])).map(p => p.id),
   ["second", "bio", "first"],
 );
-assert.equal(prioritizePricedProducts(bananas, new Map(), new Map()), bananas);
+assert.equal(prioritizePricedProducts(bananas, new Map()), bananas);
 assert.deepEqual([...qualifiers], [["first", "81590"], ["second", "88590"]]);
 assert.equal(matchesProduct(bananas[0], "81590", "БАНАНИ · 81590"), true);
 assert.equal(matchesProduct(bananas[1], "81590", "БАНАНИ · 88590"), false);
@@ -226,3 +227,30 @@ for (const scale of [0.9, 1, 1.15, 1.3]) {
   }
 }
 console.log("Font settings: actual text +1pt at every saved scale; minimum readable size retained.");
+
+
+// Published values are independent of location. A comparison uses the town
+// only for eligibility, deduplicates chains and retains four decimal places.
+const sourceOffer = (product_id, retailer_code, price_eur, valid_until = "2026-11-24T12:00:00Z") => ({
+  product_id, retailer_code, price_eur, valid_until, price_scope: "NATIONAL_ONLINE",
+});
+const sold = [
+  sourceOffer("first", "outside", "0.1000"),
+  sourceOffer("first", "local", "1.3333"), sourceOffer("second", "local", "0.0100"),
+  sourceOffer("first", "partial", "0.5000"),
+  sourceOffer("second", "partial", "0.0001", "2026-11-22T00:00:00Z"),
+];
+const local = [
+  { retailer_code: "local", retailer_name: "Local" },
+  { retailer_code: "local", retailer_name: "Local" },
+  { retailer_code: "partial", retailer_name: "Partial" },
+];
+const compared = comparePublishedBasket(
+  [{ product: bananas[0], quantity: 3 }, { product: bananas[1], quantity: 1 }],
+  sold, local, refreshTime,
+);
+assert.equal(indexIndicativePrices(sold, undefined, refreshTime).products.get("first"), 0.1);
+assert.deepEqual(compared.quotes.map(q => q.retailer_code), ["local", "partial"]);
+assert.equal(compared.cheapest.total_eur, "4.0099");
+assert.equal(compared.quotes[0].items[0].subtotal_eur, "3.9999");
+assert.equal(compared.quotes[1].total_eur, null);

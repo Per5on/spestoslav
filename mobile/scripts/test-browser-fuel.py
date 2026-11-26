@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from statistics import median
 from urllib.request import urlopen
@@ -12,7 +13,7 @@ from playwright.async_api import async_playwright, expect
 API = "http://127.0.0.1:8774"
 WEB = "http://127.0.0.1:8775"
 PRICE = "1.45 €/L"
-NOTICE = "Проверени цени за това гориво още не са налични."
+NOTICE = "Няма налични цени за това гориво."
 
 
 async def trial(browser, locality, delay, legacy=False):
@@ -72,12 +73,49 @@ async def trial(browser, locality, delay, legacy=False):
         await context.close()
 
 
+async def check_online_and_empty_states(browser, locality):
+    context = await browser.new_context(viewport={"width": 390, "height": 844})
+    await context.add_init_script(
+        f"localStorage.setItem('spestovnik-preview-001', {json.dumps(json.dumps({'locality': locality, 'basket': []}))})"
+    )
+    page = await context.new_page()
+
+    async def online_only(route):
+        response = await route.fetch()
+        payload = await response.json()
+        payload["prices"] = []
+        product = next(row for row in payload["products"] if row["fuel_type"] == "petrol")
+        store = payload["stores"][0]
+        payload["online"] = [{
+            "product_id": product["id"],
+            "retailer_code": store["retailer_code"],
+            "price_eur": "1.87",
+            "price_scope": "NATIONAL_ONLINE",
+            "valid_until": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+        }]
+        await route.fulfill(response=response, json=payload)
+
+    try:
+        await page.route(API + "/api/v1/fuel-snapshot?*", online_only)
+        await page.goto(WEB, wait_until="domcontentloaded")
+        await page.get_by_role("tab", name="Горива", exact=True).click()
+        await expect(page.get_by_text("1.87 €/L", exact=True)).to_be_visible()
+        await expect(page.get_by_text("1 клон", exact=True)).to_be_visible()
+        await expect(page.get_by_text(NOTICE, exact=True)).to_have_count(0)
+        await page.get_by_role("radio", name="Дизел", exact=True).click()
+        await expect(page.get_by_text(NOTICE, exact=True)).to_be_visible()
+        await expect(page.get_by_text("Няма налична цена", exact=True).first).to_be_visible()
+    finally:
+        await context.close()
+
+
 async def main(output):
     with urlopen(API + "/api/v1/localities?q=Sofija", timeout=5) as response:
         sofia = json.load(response)[0]
     output.mkdir(parents=True)
     async with async_playwright() as playwright:
         browser = await playwright.chromium.launch(args=["--no-sandbox"])
+        await check_online_and_empty_states(browser, sofia)
         results = {}
         for label, delay, legacy, count in [
             ("loopback", 0, False, 5), ("100-ms", 100, False, 5),

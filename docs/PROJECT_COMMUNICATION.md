@@ -199,3 +199,5 @@ The owner wrote:
 ## 26 November 2026 — resume the hybrid comparison build
 
 - The owner requested further platform research and a side-by-side hybrid preview. Recovered the candidate on the separate hybrid branch after the earlier local checkout became unavailable. The source also includes the updated receipt and account flow from `bug_fix`. [Design and scope](HYBRID_PREVIEW.md)
+
+- The owner clarified that prices published by their retailer or vendor are verified by the issuer. The owner then clarified that online is the sole source for product prices and the interface should show the amount without a label. The selected town is used for retailer eligibility in comparison.

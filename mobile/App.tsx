@@ -1,4 +1,4 @@
-import { BasketComparison, type Comparison } from "./src/catalog/BasketComparison";
+import { BasketComparison } from "./src/catalog/BasketComparison";
 import { contrastingInk } from "./src/appearance";
 import { CategoryGroups } from "./src/catalog/CategoryGroups";
 import { MerchantDirectoryScreen } from "./src/catalog/MerchantDirectoryScreen";
@@ -30,13 +30,15 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LocationPicker, Locality } from "./src/location/LocationPicker";
-import { api, API_BASE_URL, SIMULATION_MODE } from "./src/api";
+import { API_BASE_URL, SIMULATION_MODE } from "./src/api";
 import {
   BasketItem,
   MAX_BASKET_ITEMS,
   Product,
   type Retailer,
   changeQuantity,
+  comparePublishedBasket,
+  type Comparison,
   restoreBasket,
   indexLowestPrices, indexIndicativePrices, groupFuelResults,
   prioritizePricedProducts,
@@ -44,7 +46,7 @@ import {
   duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
-import type { Category } from "./src/catalog/catalogData";
+import { onlineResource, storesResource, type Category } from "./src/catalog/catalogData";
 import { enableCatalogSync } from "./src/catalog/backgroundSync";
 import { useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
@@ -274,28 +276,23 @@ function Main({ initialNotice, onErase }: {
       setNotice("demoCompare");
       return;
     }
-    if (new Set(basket.map((i) => i.product.category_code)).size > 1) {
+    const category = basket[0]?.product.category_code;
+    if (!category) return;
+    if ((category !== "groceries" && category !== "technology") ||
+        basket.some(item => item.product.category_code !== category)) {
       setNotice("mixedCompare");
       return;
     }
-    if (!basket.length) return;
     const key = comparisonKey;
+    const { signal } = new AbortController();
     setComparing(true);
     setNotice("");
     try {
-      const data = await api<Comparison>("/api/v1/baskets/compare", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          locality_id: locality.id,
-          items: basket.map((i) => ({
-            product_id: i.product.id,
-            quantity: i.quantity,
-          })),
-          include_online: true,
-        }),
-      });
-      if (data.currency !== "EUR") throw new Error("Unexpected basket currency");
+      const [offers, stores] = await Promise.all([
+        onlineResource.load({ category, localityId: "" }, signal, true),
+        storesResource.load({ category, localityId: locality.id }, signal, true),
+      ]);
+      const data = comparePublishedBasket(basket, offers, stores);
       setQuote({ key, data });
     } catch {
       setNotice("compareError");
@@ -328,8 +325,8 @@ function Main({ initialNotice, onErase }: {
     [catalog.prices, catalog.stores, priceRevision],
   );
   const indicativePrices = useMemo(
-    () => indexIndicativePrices(catalog.online, catalog.stores),
-    [catalog.online, catalog.stores, priceRevision],
+    () => indexIndicativePrices(catalog.online, category === "fuel" ? catalog.stores : undefined),
+    [catalog.online, catalog.stores, category, priceRevision],
   );
   const fuelResults = useMemo(() => category === "fuel"
     ? groupFuelResults(catalog.stores, fuelProduct?.id, priceIndex.branches, indicativePrices.chains)
@@ -350,8 +347,8 @@ function Main({ initialNotice, onErase }: {
       return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
     }
     const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
-    return prioritizePricedProducts(filtered, priceIndex.products, indicativePrices.products);
-  }, [catalog.products, group, appliedQuery, searchIndex, priceIndex.products, indicativePrices.products]);
+    return prioritizePricedProducts(filtered, indicativePrices.products);
+  }, [catalog.products, group, appliedQuery, searchIndex, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
@@ -378,9 +375,7 @@ function Main({ initialNotice, onErase }: {
       fallback={art.source} symbolic={art.symbolic} />;
   }
   function productCard(p: Product) {
-    const localPrice = p.is_demo ? undefined : priceIndex.products.get(p.id);
-    const onlinePrice = p.is_demo ? undefined : indicativePrices.products.get(p.id);
-    const price = localPrice ?? onlinePrice ?? null;
+    const price = p.is_demo ? null : indicativePrices.products.get(p.id) ?? null;
     return (
       <View key={p.id} style={s.card}>
         {thumbnail(p)}
@@ -394,8 +389,8 @@ function Main({ initialNotice, onErase }: {
           </Text>
           <Text style={price === null ? s.meta : s.price}>
             {price === null
-              ? t(catalog.storeError ? "priceUnavailable" : "noPrice")
-              : `${t("from")} ${price.toFixed(2)} €${localPrice === undefined ? " · " + t("indicativeOnlinePrice") : ""}`}
+              ? t(catalog.onlineError ? "priceUnavailable" : "noPrice")
+              : `${t("from")} ${price.toFixed(2)} €`}
           </Text>
         </View>
         <AddButton
@@ -410,11 +405,6 @@ function Main({ initialNotice, onErase }: {
   const cachedFooter = photoFooter && catalog.cached;
   const footerError = screen === "catalog" &&
     (catalog.storeError || (category === "fuel" && !locality && catalog.chainError ? "storesError" : ""));
-  const localityPriceGap = photoFooter && Boolean(locality) &&
-    !catalog.loading && !catalog.error && !catalog.storeLoading && !catalog.storeError &&
-    catalog.products.length > 0 &&
-    !catalog.products.some(product => !product.is_demo &&
-      (priceIndex.products.has(product.id) || indicativePrices.products.has(product.id)));
   const tabRows = useMemo<TabRow[]>(() => {
     if (screen === "basket") {
       return basket.map(value => ({ kind: "basket", key: value.product.id, value }));
@@ -455,7 +445,7 @@ function Main({ initialNotice, onErase }: {
             {row.branchCount > 0 && row.estimate && (
               <>
                 <Text style={s.price}>{Number(row.estimate.price_eur).toFixed(2)} €/L</Text>
-                <Text style={s.meta}>{t("indicativeChainPrice")} · {row.branchCount} {t(label)}</Text>
+                <Text style={s.meta}>{row.branchCount} {t(label)}</Text>
               </>
             )}
             {row.stations.map(({ store, price }) => (
@@ -629,7 +619,7 @@ function Main({ initialNotice, onErase }: {
                 catalog.fuelLoading
                   ? <ActivityIndicator testID="fuel-loading" color={color("#19562a")} />
                   : <Text accessibilityLiveRegion="polite" style={s.notice}>
-                      {t(catalog.storeError || catalog.error || "fuelPending")}
+                      {t(catalog.storeError || catalog.error || "noFuelPrices")}
                     </Text>
               )}
               {locality &&
@@ -658,7 +648,7 @@ function Main({ initialNotice, onErase }: {
           />
           {comparison && (
             <BasketComparison key={comparison.quoted_at ?? comparisonKey}
-              comparison={comparison} basket={basket} stores={catalog.stores} productLabel={displayName} />
+              comparison={comparison} basket={basket} productLabel={displayName} />
           )}
         </>
       )}
@@ -795,7 +785,6 @@ function Main({ initialNotice, onErase }: {
         <View testID="catalog-footer" style={s.catalogFooter} accessibilityLiveRegion="polite">
           {photoFooter && <Text style={s.catalogFooterText}>{t("illustrativePhotoShort")}</Text>}
           {!!footerError && <Text style={[s.catalogFooterText, s.catalogFooterWarning]}>{t(footerError)}</Text>}
-          {localityPriceGap && <Text style={s.catalogFooterText}>{t("noLocalPrices")}</Text>}
           {cachedFooter && <Text style={s.catalogFooterText}>{t("cachedCatalog")}</Text>}
         </View>
       ) : null}

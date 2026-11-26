@@ -18,18 +18,21 @@ with sync_playwright() as p:
  context=browser.new_context(viewport={'width':390,'height':844},permissions=['camera']);page=context.new_page();page.on('pageerror',lambda e:errors.append(str(e)));calls=[];page.on('request',lambda r:calls.append(r.url))
  page.goto(args.base_url,wait_until='domcontentloaded')
  milk=page.get_by_role('button',name='Добави SIM Мляко 1 L',exact=True);milk.wait_for(timeout=120000)
+ expect(milk.locator("..").get_by_text("от 0.10 €",exact=True)).to_be_visible()
  page.get_by_label('Търси населено място…',exact=True).fill('Sofia');page.get_by_text('София',exact=True).click()
  milk.click();milk.click();page.get_by_role('button',name='Добави SIM Олио 1 L',exact=True).click()
  page.get_by_role('tab',name='Сравни цените',exact=True).click()
  page.get_by_role('button',name='Сравни цени',exact=True).click()
  comparison=page.get_by_test_id("basket-comparison")
+ expect(comparison.get_by_text("Симулация извън града",exact=True)).to_have_count(0)
+ expect(comparison.get_by_text("Онлайн цена на търговеца",exact=True)).to_have_count(0)
  cheapest=comparison.get_by_role("button",name=re.compile(r"Симулация A: 5,50"))
  expect(cheapest).to_have_attribute("aria-expanded","true")
  expect(comparison.get_by_text("SIM Мляко 1 L ×2",exact=True)).to_be_visible()
  expect(comparison.get_by_text("2,50",exact=False)).to_be_visible()
  expect(comparison.get_by_text("Общо за кошницата",exact=False)).to_be_visible()
- comparison.get_by_role("button",name=re.compile(r"Симулация B: 6,20")).click()
- expect(comparison.get_by_text("2,20",exact=False)).to_be_visible()
+ comparison.get_by_role("button",name=re.compile(r"Симулация B: 6,40")).click()
+ expect(comparison.get_by_text("2,40",exact=False)).to_be_visible()
  comparison.get_by_role("button",name=re.compile(r"Симулация C: липсват цени")).click()
  expect(comparison.get_by_text("липсват цени",exact=True)).to_have_count(2)
  cheapest.click()
@@ -45,7 +48,14 @@ with sync_playwright() as p:
  menu('Вход');page.get_by_label('Имейл',exact=True).fill('alice@example.invalid');page.get_by_label('Парола (поне 8 знака)',exact=True).fill('simulation-password');page.get_by_role('button',name='Вход',exact=True).click();expect(page.get_by_text('alice@example.invalid',exact=True)).to_be_visible(timeout=15000)
  menu('Сканирай');page.get_by_label('Търсене по баркод',exact=True).fill('1234567890128');page.get_by_role('button',name='Намери продукт',exact=True).click();page.get_by_role('button',name='Заяви разпознаване',exact=True).click(timeout=10000);expect(page.get_by_text('Заявката е изпратена за проверка. Не е добавен непроверен продукт.',exact=True)).to_be_visible();proof['unknown_barcode_review_request']=True
  # A rejected access token must not discard a still-valid provider session.
- page.route('**/api/v1/receipts', lambda route: route.fulfill(status=401,json={'detail':'Expired access token'}),times=1)
+ blocked_reads = []
+ def reject_first_read(route):
+  if route.request.method != "GET" or blocked_reads:
+   route.continue_()
+   return
+  blocked_reads.append(route.request.url)
+  route.fulfill(status=401, headers={"Access-Control-Allow-Origin":args.base_url}, json={'detail':'Expired access token'})
+ page.route('**/api/v1/receipts', reject_first_read)
  with page.expect_response(lambda r: r.url.endswith('/api/v1/auth/refresh') and r.status==200):
   menu('Касови бележки')
  expect(page.get_by_role('button',name='Вход',exact=True)).to_have_count(0)

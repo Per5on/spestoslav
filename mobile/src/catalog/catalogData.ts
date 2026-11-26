@@ -99,7 +99,8 @@ function catalogResource<T>(
 }
 
 function localPath(path: string, { category, localityId }: Scope) {
-  return `/api/v1/${path}?locality_id=${encodeURIComponent(localityId)}&category_code=${category}`;
+  const locality = localityId ? `locality_id=${encodeURIComponent(localityId)}&` : "";
+  return `/api/v1/${path}?${locality}category_code=${category}`;
 }
 
 type FuelSnapshot = {
@@ -194,13 +195,19 @@ async function refreshCategory(
   category: Category, localityId: string | undefined, signal: AbortSignal, force: boolean,
 ) {
   const products = loadCatalogProducts({ category, localityId }, signal, force, () => {});
-  const reads = localityId
-    ? [products, storesResource.load({ category, localityId }, signal),
-      pricesResource.load({ category, localityId }, signal),
-      onlineResource.load({ category, localityId }, signal)]
-    : category === "fuel"
-      ? [products, fuelChainsResource.load({ category, localityId: "" }, signal)]
-      : [products];
+  const scope = { category, localityId: localityId ?? "" };
+  const reads: Promise<unknown>[] = [products];
+  if (category !== "fuel") {
+    reads.push(onlineResource.load({ category, localityId: "" }, signal));
+  } else if (!localityId) {
+    reads.push(fuelChainsResource.load(scope, signal));
+  }
+  if (localityId) {
+    reads.push(storesResource.load(scope, signal));
+    if (category === "fuel") {
+      reads.push(pricesResource.load(scope, signal), onlineResource.load(scope, signal));
+    }
+  }
   const outcomes = await Promise.allSettled(reads);
   return !signal.aborted && outcomes.every(result => result.status === "fulfilled");
 }

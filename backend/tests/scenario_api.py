@@ -20,6 +20,7 @@ from app.db import get_db
 from app.auth import current_user, Principal
 from app.models import Category, Product, Retailer, StoreBranch
 from app.marketplace import CurrentPrice, ProductBarcode, Promotion
+from app.workflows import NationalOffer
 from app import mobile_auth
 from app.receipt_worker import process_one
 
@@ -98,6 +99,25 @@ with fixtures.TestingSessionLocal.begin() as db:
                         verified_at=datetime.now(timezone.utc),
                     )
                 )
+
+    # Published vendor prices deliberately differ from the branch data.
+    db.add(Retailer(code="SIM_AWAY", name="Симулация извън града", category_code="groceries"))
+    # A second local branch must not create a second quote for the same retailer.
+    db.add(StoreBranch(retailer_code="TEST", locality_id=branch.locality_id, address="Тестова улица A2"))
+    db.flush()
+    now = datetime.now(timezone.utc)
+    for code, milk_price, oil_price in [
+        ("TEST", "1.25", "3"), ("SIM_B", "1.20", "4"), ("SIM_C", ".50", None),
+        ("SIM_AWAY", ".10", ".10"),
+    ]:
+        for item, price in [(product, milk_price), (oil, oil_price)]:
+            if price is not None:
+                db.add(NationalOffer(
+                    product_id=item.id, retailer_code=code, price_eur=Decimal(price),
+                    source_reference="https://supplier.example.invalid/fixture",
+                    observed_at=now, verified_at=now, verified_by="simulation",
+                    valid_until=now + timedelta(days=1),
+                ))
 
 from preview007_fixtures import seed as seed_preview007
 seed_preview007(app, fixtures.TestingSessionLocal, root)

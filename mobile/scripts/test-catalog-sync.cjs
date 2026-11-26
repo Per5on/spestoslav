@@ -110,8 +110,8 @@ const catalogue = load("catalogData", { ...modules, "./cache": load("cache", mod
   assert.deepEqual(registered, { name: "spestovnik-catalog-sync", minimumInterval: 60 });
   paths.length = 0;
   assert.equal(await task(), 1);
-  assert.equal(paths.length, 12);
-  assert.equal(paths.filter(path => path.includes("locality_id=sofia")).length, 9);
+  assert.equal(paths.length, 10);
+  assert.equal(paths.filter(path => path.includes("locality_id=sofia")).length, 5);
   assert(Array.from(saved.values()).some(value => value.includes('"fuel_type":"petrol"')));
   console.log("Catalogue sync checks passed: scoped first paint, shared reads, outage fallback, offer expiry, local reset and scheduled Android task.");
 })().catch(error => {

@@ -12,3 +12,7 @@ The comparison build uses `bg.spestoslav.preview.hybrid` so it can coexist with 
 - Defer the optional remote thumbnail manifest until saved state is restored and JavaScript reaches an idle period. Use the bundled artwork immediately. Measure first display, first usable screen, first cached price and first fresh price separately. Compare frame timing, memory, scanner launch time and receipt retakes on the same ARM phone. [Android startup measurements](https://developer.android.com/topic/performance/vitals/launch-time)
 
 The staging backend fixture exercises the new fuel path. The production rollout remains separate. The pilot uses the current receipt API and OCR worker.
+
+## Retailer price wording
+
+All six languages use availability wording for products and fuel without a current price. Product cards show published online prices without a source-type label, regardless of the selected town. Basket comparison uses the same prices and includes only retailers with an active local branch. Each eligible retailer appears once. Fuel keeps branch counts and the existing station-price path. Sample products are identified as outside the comparison.
