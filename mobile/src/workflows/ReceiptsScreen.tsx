@@ -14,6 +14,7 @@ import { Pressable, Text, useUI } from "../ui";
 import { useCatalog } from "../catalog/useCatalog";
 import { ReceiptItemReview } from "./ReceiptItemReview";
 import { SIMULATION_MODE, httpStatus } from "../api";
+import { getDocumentScanner } from "./documentScanner";
 import { ReceiptCaptureMock } from "./ReceiptCaptureMock";
 type Summary = {
   id: string;
@@ -49,10 +50,11 @@ export function ReceiptsScreen({
     [draft, setDraft] = useState<ImagePicker.ImagePickerAsset | null>(null),
     [branch, setBranch] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
+    [scanning, setScanning] = useState(false),
     [error, setError] = useState(false),
     [submittedReceipt, setSubmittedReceipt] = useState<string | null>(null),
     [note, setNote] = useState<
-      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed" | "receiptLimit"
+      "" | "receiptCameraDenied" | "receiptUploadedRefreshFailed" | "receiptLimit" | "documentScanUnavailable"
     >("");
   const mounted = useRef(true),
     requestKey = useRef(""),
@@ -113,6 +115,30 @@ export function ReceiptsScreen({
   useEffect(() => {
     if (branch && !stores.some((s) => s.id === branch)) setBranch(null);
   }, [stores, branch]);
+  const scanner = getDocumentScanner();
+  function useDraft(asset: ImagePicker.ImagePickerAsset) {
+    discard();
+    setSubmittedReceipt(null);
+    draftRef.current = asset;
+    setDraft(asset);
+    requestKey.current = "receipt-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+  }
+  async function scanDocument() {
+    if (!scanner || scanning || busy) return;
+    setError(false);
+    setNote("");
+    setScanning(true);
+    try {
+      const asset = await scanner.scanAsync();
+      if (!asset) return;
+      if (mounted.current) useDraft(asset);
+      else await FileSystem.deleteAsync(asset.uri, { idempotent: true });
+    } catch {
+      if (mounted.current) setNote("documentScanUnavailable");
+    } finally {
+      if (mounted.current) setScanning(false);
+    }
+  }
   async function pick(camera: boolean) {
     setError(false);
     setNote("");
@@ -135,18 +161,13 @@ export function ReceiptsScreen({
         setError(true);
         return;
       }
-      discard();
-      setSubmittedReceipt(null);
-      draftRef.current = asset;
-      setDraft(asset);
-      requestKey.current =
-        "receipt-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+      useDraft(asset);
     } catch {
       setError(true);
     }
   }
   async function upload() {
-    if (!draft || busy) return;
+    if (!draft || busy || scanning) return;
     setBusy(true);
     setError(false);
     setNote("");
@@ -250,15 +271,17 @@ export function ReceiptsScreen({
     <View style={{ gap: 12 }}>
       <Text style={s.meta}>{t("receiptPrivacy")}</Text>
       {SIMULATION_MODE && Platform.OS === "web" && <ReceiptCaptureMock />}
+      {scanner && <Button primary label={t("scanDocument")} disabled={busy || scanning} onPress={scanDocument} />}
+      {scanning && <ActivityIndicator />}
       <View style={s.row}>
         <Button
           label={t("takeReceipt")}
-          disabled={busy}
+          disabled={busy || scanning}
           onPress={() => pick(true)}
         />
         <Button
           label={t("chooseReceipt")}
-          disabled={busy}
+          disabled={busy || scanning}
           onPress={() => pick(false)}
         />
       </View>

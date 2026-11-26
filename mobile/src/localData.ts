@@ -17,9 +17,9 @@ export async function eraseLocalData() {
   if (Platform.OS !== "web") {
     work.push(SecureStore.deleteItemAsync(sessionKey));
     if (FileSystem.cacheDirectory) {
-      work.push(FileSystem.deleteAsync(FileSystem.cacheDirectory + "ImagePicker", {
-        idempotent: true,
-      }));
+      for (const folder of ["ImagePicker", "receipt-scans"]) {
+        work.push(FileSystem.deleteAsync(FileSystem.cacheDirectory + folder, { idempotent: true }));
+      }
     }
   }
   const outcomes = await Promise.allSettled(work);

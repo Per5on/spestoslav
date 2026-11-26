@@ -19,16 +19,30 @@ export function parseThumbnailManifest(value: unknown): ThumbnailUrls {
   return Object.fromEntries(entries.map(([code, path]) => [code, API_BASE_URL + path]));
 }
 
-export function useThumbnailManifest(refresh: number) {
+export function useThumbnailManifest(refresh: number, ready: boolean) {
   const [images, setImages] = useState<ThumbnailUrls>({});
   useEffect(() => {
+    if (!ready) return;
     const controller = new AbortController();
-    void api<unknown>("/api/v1/thumbnails/catalogue", { signal: controller.signal }, 5000)
-      .then(result => {
-        if (!controller.signal.aborted) setImages(parseThumbnailManifest(result));
-      })
-      .catch(() => { /* The bundled pack is immediately available. */ });
-    return () => controller.abort();
-  }, [refresh]);
+    const load = () => {
+      void api<unknown>("/api/v1/thumbnails/catalogue", { signal: controller.signal }, 5000)
+        .then(result => {
+          if (!controller.signal.aborted) setImages(parseThumbnailManifest(result));
+        })
+        .catch(() => { /* The bundled pack is immediately available. */ });
+    };
+    let cancel: () => void;
+    if (typeof requestIdleCallback === "function") {
+      const timer = requestIdleCallback(load, { timeout: 1200 });
+      cancel = () => cancelIdleCallback(timer);
+    } else {
+      const timer = setTimeout(load, 250);
+      cancel = () => clearTimeout(timer);
+    }
+    return () => {
+      cancel();
+      controller.abort();
+    };
+  }, [refresh, ready]);
   return images;
 }

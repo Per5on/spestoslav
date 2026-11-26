@@ -195,3 +195,7 @@ The owner wrote:
 ## 24 November 2026 — preview 10.9.1 APK approval
 
 - The owner approved building the APK. Packaged and verified the signed preview 10.9.1 ARM artifact. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45425062806/artifacts/14936930787) · [Android build](https://github.com/Per5on/spestoslav/actions/runs/45425062806) · [Mobile checks](https://github.com/Per5on/spestoslav/actions/runs/45425040496) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45425040439)
+
+## 26 November 2026 — resume the hybrid comparison build
+
+- The owner requested further platform research and a side-by-side hybrid preview. Recovered the candidate on the separate hybrid branch after the earlier local checkout became unavailable. The source also includes the updated receipt and account flow from `bug_fix`. [Design and scope](HYBRID_PREVIEW.md)

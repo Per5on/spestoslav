@@ -2,7 +2,7 @@ const base = require("./app.json").expo;
 const preview = require("./preview.json");
 if (!/^[0-9]{3}$/.test(preview.sequence) || Number(preview.sequence) < 1)
   throw new Error("Invalid preview sequence");
-if (preview.label !== undefined && !/^\d+(?:\.\d+){0,2}$/.test(preview.label))
+if (preview.label !== undefined && !/^\d+(?:\.\d+){0,2}(?:-hybrid)?$/.test(preview.label))
   throw new Error("Invalid preview label");
 if (!/^\d+\.\d+\.\d+$/.test(preview.version))
   throw new Error("Invalid app version");
@@ -16,7 +16,11 @@ module.exports = {
   ...base,
   name: `Спестовник ${preview.label ?? String(Number(preview.sequence)).padStart(2, "0")}`,
   version: preview.version,
-  android: { ...base.android, versionCode: Number(preview.sequence) },
+  android: {
+    ...base.android,
+    package: preview.label?.endsWith("-hybrid") ? `${base.android.package}.hybrid` : base.android.package,
+    versionCode: Number(preview.sequence),
+  },
   plugins: base.plugins.map(plugin => {
     if (!Array.isArray(plugin) || plugin[0] !== "expo-build-properties") return plugin;
     return [plugin[0], {

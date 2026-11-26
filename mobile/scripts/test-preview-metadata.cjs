@@ -8,6 +8,8 @@ const registry = require("../../docs/references/preview-sequence.json");
 assert.match(source.sequence, /^[0-9]{3}$/);
 assert.equal(config.name, `Спестовник ${source.label ?? String(Number(source.sequence)).padStart(2,"0")}`);
 assert.equal(config.android.versionCode, Number(source.sequence));
+const hybrid = source.label?.endsWith("-hybrid") ?? false;
+assert.equal(config.android.package, base.android.package + (hybrid ? ".hybrid" : ""));
 assert.equal(config.version, source.version);
 assert.equal(require("../package.json").version, source.version);
 assert.equal(base.name, undefined);

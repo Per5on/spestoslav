@@ -77,6 +77,7 @@ export const softwareCredits: Credit[] = [
   { name: "React Native Safe Area Context", url: "https://appandflow.github.io/react-native-safe-area-context/" },
   { name: "ZXing", url: "https://github.com/zxing-js/browser" },
   { name: "Google ML Kit", url: "https://developers.google.com/ml-kit/vision/barcode-scanning" },
+  { name: "ML Kit Document Scanner", url: "https://developers.google.com/ml-kit/vision/doc-scanner/android" },
   { name: "Tesseract OCR", url: "https://tesseract-ocr.github.io/" },
   { name: "FastAPI", url: "https://fastapi.tiangolo.com/" },
   { name: "SQLAlchemy", url: "https://www.sqlalchemy.org/" },
