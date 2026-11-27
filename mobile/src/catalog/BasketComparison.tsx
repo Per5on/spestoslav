@@ -64,7 +64,7 @@ export function BasketComparison({ comparison, basket, productLabel }: {
           </View>
         );
       })}
-      <Text style={s.meta}>{t("travelExcluded")}</Text>
+      <Text style={s.meta}>{t("indicativePrices")} {t("travelExcluded")}</Text>
     </View>
   );
 }

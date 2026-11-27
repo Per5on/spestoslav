@@ -1,6 +1,13 @@
 # Спестовник changelog
 
-This lists the recorded Android previews and pre-alpha and beta candidates through build 016. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
+This lists the recorded Android previews and pre-alpha and beta candidates through build 017. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
+
+## Unreleased · hybrid price and search candidate
+
+- Selecting a suggestion shows the exact product in „Храни“ or „Техника“. Enter shows all matches. Basket actions stay on catalogue cards.
+- Load still-valid cached online prices first and check twice daily, using 06:00 and 18:00 Sofia windows. Basket comparisons include only chains present in the selected locality.
+- Added pilot grocery publication for T MARKET and BulMag and technology publication for Techmart and Ardes. The workflow checks that newly published amounts are available through the public API and that two eligible retailers can be compared for a shared product. Manual price refresh recovers from an empty app cache. Added optional backend corroboration of licensed Fuelo chain prices while preserving those prices on mismatches and missing secondary values.
+- The public API price feed is empty. Publication, wider coverage, the Android timing comparison and explicit owner approval are release gates. [Verification and coverage](docs/HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
 
 ## Preview 10.9.1 · build 017 · app 0.5.10
 

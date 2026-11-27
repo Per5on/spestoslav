@@ -12,7 +12,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 import check_daily_prices as checks
 import collect_burlex_branch_prices as burlex
 import collect_karai_fuel_offers as karai
-from refresh_live_prices import Batch, cache_batches, collect_batches
+import collect_storefront_offers as storefront
+from verify_price_coverage import verify_category
+from refresh_live_prices import Batch, cache_batches, check_published_feed, collect_batches, combine_fuel_sources
 
 
 def test_tarnovo_prices_match_catalogue_names_and_keep_the_branch_scope():
@@ -44,16 +46,96 @@ def test_tarnovo_prices_match_catalogue_names_and_keep_the_branch_scope():
     assert "b.address='ул. Васил Левски 15'" in statement
 
 
-def test_grocery_refresh_keeps_reviewed_sofia_and_tarnovo_branch_scopes(monkeypatch):
+def test_grocery_refresh_uses_direct_online_sku_and_skips_unavailable_products(monkeypatch):
+    import json
+
+    delays = []
+    monkeypatch.setattr(storefront.time, "sleep", delays.append)
+    base, delay, products = storefront.STOREFRONTS["t_market"]
+    monkeypatch.setitem(storefront.STOREFRONTS, "t_market", (base, delay, products[:2]))
+    monkeypatch.setitem(storefront.STOREFRONTS, "bulmag", (base, delay, ()))
+    good_code, good_sku, good_slug, good_name, _ = products[0]
+    _, failed_sku, second_slug, *_ = products[1]
+
+    def response(request):
+        if request.url.path == "/robots.txt":
+            return httpx.Response(200, text="User-agent: *\nCrawl-delay: 3", headers={"Set-Cookie": "store_location=1; Path=/"})
+        assert request.url.host == "tmarketonline.bg"
+        assert not request.url.query
+        assert "cookie" not in request.headers
+        if request.url.path.endswith(second_slug):
+            return httpx.Response(503)
+        assert request.url.path.endswith(good_slug)
+        data = {
+            "@type": "Product", "name": good_name, "sku": good_sku,
+            "offers": [{"@type": "Offer", "url": str(request.url), "price": 1.32,
+                        "priceCurrency": "EUR", "availability": "https://schema.org/InStock"}],
+        }
+        return httpx.Response(200, text=f'<script type="application/ld+json">{json.dumps(data)}</script>')
+
+    failed = []
+    with httpx.Client(transport=httpx.MockTransport(response)) as client:
+        batch, = collect_batches("groceries", client, failed.append)
+    assert delays == [3, 3]
+    assert failed == [failed_sku]
+    row, = batch.rows
+    assert row[2:7] == ("t_market", "", "", good_code, "1.32")
+    assert row[9] == "NATIONAL_ONLINE"
+    assert "INSERT INTO national_offers" in batch.statement
+    assert "store_branches" not in batch.statement
+
+
+def test_public_readback_rejects_old_or_missing_offers():
     now = datetime.now(timezone.utc)
-    monkeypatch.setattr(burlex, "check_robots", lambda client: None)
-    monkeypatch.setattr(burlex, "collect", lambda store, client: ([{"code": "81590", "price": "1.10"}], now))
-    batches = list(collect_batches("groceries", None, None))
-    assert {(batch.rows[0][3], batch.rows[0][4]) for batch in batches} == (
-        {("София", address) for address in burlex.STORES.values()}
-        | {("Велико Търново", address) for address in burlex.TARNOVO_STORES.values()}
-    )
-    assert all("name_bg='" + batch.rows[0][3] + "'" in batch.statement for batch in batches)
+    stamp = now.isoformat()
+    source = "https://tmarketonline.bg/product/zahar-sladeya-1kg"
+    batch = Batch("groceries", [
+        ("groceries", source, "t_market", "", "", "404031", "1.32", stamp, stamp, "NATIONAL_ONLINE"),
+    ], "")
+    result = {"retailer_code": "t_market", "source_reference": source,
+              "price_eur": "1.3200", "observed_at": stamp, "price_scope": "NATIONAL_ONLINE"}
+
+    def respond(request):
+        assert request.url.params["category_code"] == "groceries"
+        return httpx.Response(200, json=[result])
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client:
+        assert check_published_feed(client, "https://api.example", "groceries", [batch]) == {"expected": 1, "served": 1}
+        result["observed_at"] = (now - timedelta(hours=4)).isoformat()
+        assert check_published_feed(client, "https://api.example", "groceries", [batch]) == {
+            "ok": False, "expected": 1, "served": 0,
+        }
+
+
+def test_public_release_check_requires_two_eligible_retailers_for_the_same_product():
+    now = datetime.now(timezone.utc)
+    branches = [
+        {"category_code": "groceries", "locality_id": "town", "locality_name": "Варна", "retailer_code": code}
+        for code in ("t_market", "bulmag")
+    ]
+    results = [
+        {"product_id": "flour", "retailer_code": code, "price_eur": price,
+         "valid_until": (now + timedelta(hours=1)).isoformat(), "price_scope": "NATIONAL_ONLINE"}
+        for code, price in (("t_market", "1.15"), ("bulmag", "1.23"))
+    ]
+    scoped = list(results)
+
+    def respond(request):
+        if request.url.params.get("locality_id"):
+            assert request.url.params["locality_id"] == "town"
+            assert request.url.params["product_id"] == "flour"
+            return httpx.Response(200, json=scoped)
+        return httpx.Response(200, json=results)
+
+    with httpx.Client(base_url="https://api.example", transport=httpx.MockTransport(respond)) as client:
+        result = verify_category(client, "groceries", branches, now)
+        assert result["ok"]
+        assert result["sample"]["retailer_prices"] == {"bulmag": "1.23", "t_market": "1.15"}
+        assert not verify_category(client, "groceries", branches[:1], now)["ok"]
+        scoped.pop()
+        assert not verify_category(client, "groceries", branches, now)["ok"]
+        results[1]["product_id"] = "different"
+        assert not verify_category(client, "groceries", branches, now)["ok"]
 
 
 def test_invalid_fuel_source_is_reported():
@@ -72,6 +154,33 @@ def test_invalid_fuel_source_is_reported():
     assert rows == [{"retailer": "eko", "fuel": "petrol", "price": "1.45"}] and observed == now
     payload["currency"] = "BGN"
     assert checks.attempt(lambda: karai.offers(payload, now)) == {"ok": False, "error": "ValueError"}
+
+
+def test_cross_check_keeps_fuelo_amount_with_missing_or_different_secondary():
+    now = datetime.now(timezone.utc)
+    feed = {
+        "observed_at": (now - timedelta(hours=1)).isoformat(), "currency": "EUR", "unit": "L",
+        "prices": [
+            {"retailer": "eko", "fuel": "petrol", "price": "1.46"},
+            {"retailer": "eko", "fuel": "diesel", "price": "1.75"},
+            {"retailer": "eko", "fuel": "dieselPlus", "price": "1.80"},
+        ],
+    }
+    secondary = [
+        {"retailer": "eko", "fuel": "petrol", "price": "1.46"},
+        {"retailer": "eko", "fuel": "diesel", "price": "1.69"},
+        {"retailer": "omv", "fuel": "lpg", "price": "0.80"},
+    ]
+    prices, checks = combine_fuel_sources(feed, secondary, now)
+    assert checks == {"matched": 1, "different": 1, "no_secondary": 1}
+    assert {(row["retailer"], row["fuel"]): row["price"] for row in prices} == {
+        ("eko", "petrol"): "1.46", ("eko", "diesel"): "1.75",
+        ("eko", "dieselPlus"): "1.80", ("omv", "lpg"): "0.80",
+    }
+    assert all(row["source"].startswith("https://bg.fuelo.net/prices/date/") for row in prices[:3])
+    assert prices[3] == secondary[2]
+    with pytest.raises(ValueError, match="expired"):
+        combine_fuel_sources(feed, secondary, now + timedelta(days=1))
 
 
 def test_cache_preserves_history_without_returning_expired_prices(tmp_path):

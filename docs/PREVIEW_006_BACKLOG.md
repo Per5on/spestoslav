@@ -215,3 +215,14 @@ Historical006 scope follows; latest owner order above wins.
 - `mobile/src/catalog/useCatalog.ts`: no locality -> stores empty; fuel skips product loading; separate product and store fetches; allPages serial pagination.
 - `mobile/src/location/LocationPicker.tsx`: 300ms debounce, 60s fetch abort timeout, clears results during every new request. These are investigation targets, not confirmed root causes.
 - CI backend test success is not evidence that shared Neon has complete stores/images/stations or that Render live API responds quickly.
+
+
+## 26 November 2026 — hybrid beta acceptance
+
+- [x] Verify that search selection only shows the exact product and Enter shows every match. Check that suggestion selection leaves the basket unchanged.
+- [x] Verify cache-first loading, expiry, empty-response retention, schedule gating and locality eligibility in automated tests.
+- [x] Run the real-source publication pipeline and replay against disposable PostgreSQL. Record actual production and nationwide coverage separately.
+- [ ] Obtain approval for the candidate source commit. Roll out recurring publication and verify that the API remains populated through expiry and renewal. Expand published offer coverage by retailer and catalogue product, using an eligible fallback when the original has no price. Test that Пловдив and Велико Търново use the same amounts for shared eligible chains.
+- [ ] Activate licensed Fuelo chain data and verify current primary amounts for pairs with and without secondary coverage. Keep existing branch prices where available.
+- [ ] Compare the native and existing Android scan paths on the same device, including JS startup, first usable prices, barcode latency, unrecognized images and installed size.
+- [ ] Get explicit APK approval after verifying live price coverage, regression checks, and timing. [Verification and coverage](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)

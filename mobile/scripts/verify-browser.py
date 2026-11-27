@@ -70,7 +70,7 @@ def verify(output):
         stack.callback(stop, api)
         wait_for_server(api, API_URL + "/api/v1/localities?q=Sofija")
         subprocess.run(
-            ["npm", "exec", "--", "expo", "export", "--platform", "web", "--output-dir", str(web)],
+            ["npm", "exec", "--", "expo", "export", "--clear", "--platform", "web", "--output-dir", str(web)],
             cwd=MOBILE, check=True, env={
                 **os.environ, "CI": "1", "EXPO_NO_DOTENV": "1", "EXPO_NO_TELEMETRY": "1",
                 "EXPO_PUBLIC_API_URL": API_URL, "EXPO_PUBLIC_SIMULATION_MODE": "true",

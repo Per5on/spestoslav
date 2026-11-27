@@ -52,25 +52,28 @@ def offers(data, now):
 
 
 def render(rows, observed, *, summary=False):
-    payload = json.dumps(rows)
+    if not rows:
+        raise ValueError("No supported chain prices")
+    payload = json.dumps([
+        {**row, "source": row.get("source", ATTRIBUTION), "publisher": row.get("publisher", "karai-chain-index"),
+         "observed": row.get("observed", observed.isoformat()), "expires": row.get("expires", (observed + timedelta(hours=24)).isoformat())}
+        for row in rows
+    ])
     if "$karai$" in payload:
         raise ValueError("Invalid source identifier delimiter")
-    expires = observed + timedelta(hours=24)
     statement = f"""WITH source_rows AS (
   SELECT * FROM jsonb_to_recordset($karai${payload}$karai$::jsonb)
-    AS o(retailer text, fuel text, price numeric)
+    AS o(retailer text, fuel text, price numeric, source text, publisher text, observed timestamptz, expires timestamptz)
 ), matched AS (
-SELECT md5(concat_ws('|','karai-chain-index',p.id,o.retailer,'{observed.isoformat()}'))::uuid AS id,
-  p.id AS product_id,r.code,o.price
+SELECT md5(concat_ws('|',o.publisher,p.id,o.retailer,o.observed::text))::uuid AS id,
+  p.id AS product_id,r.code,o.price,o.source,o.publisher,o.observed,o.expires
 FROM source_rows o JOIN products p ON p.category_code='fuel' AND p.active AND p.variant=o.fuel
 JOIN catalog_retailers r ON r.code=o.retailer AND r.active AND r.category_code=p.category_code
-WHERE current_timestamp >= '{observed.isoformat()}'::timestamptz
-  AND current_timestamp < '{expires.isoformat()}'::timestamptz
+WHERE o.observed <= current_timestamp AND current_timestamp < o.expires
 ), inserted AS (
   INSERT INTO national_offers
     (id,product_id,retailer_code,price_eur,source_reference,observed_at,verified_at,verified_by,valid_until)
-  SELECT id,product_id,code,price,'{ATTRIBUTION}',
-    '{observed.isoformat()}',now(),'karai-chain-index','{expires.isoformat()}'
+  SELECT id,product_id,code,price,source,observed,now(),publisher,expires
   FROM matched ON CONFLICT (id) DO NOTHING RETURNING product_id, retailer_code, price_eur
 ) """
     return statement + (

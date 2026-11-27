@@ -102,16 +102,17 @@ with sync_playwright() as p:
  search=page.get_by_label('Търси продукт…',exact=True)
  search.fill('Лаптоп')
  suggestions=page.get_by_test_id('product-suggestions')
- laptop=suggestions.get_by_role('button',name='Добави Лаптоп (примерна снимка)',exact=True)
- laptop.get_by_text('Лаптоп (примерна снимка)',exact=True).click()
- page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
-  .some(item => item.product.id === 'demo-laptop' && item.quantity === 1)""")
+ suggestions.get_by_role('button',name='Лаптоп (примерна снимка)',exact=True).click()
+ expect(suggestions).to_have_count(0)
+ expect(page.get_by_role('button',name=re.compile('^Добави '))).to_have_count(1)
+ expect(page.get_by_role('button',name='Добави Лаптоп (примерна снимка)',exact=True)).to_be_visible()
  expect(page.get_by_role('button',name=re.compile('^(Приложи|Изчисти)'))).to_have_count(0)
  search.fill('Смартфон')
- suggestions.get_by_role('button',name='Добави Смартфон (примерна снимка)',exact=True).click()
- page.wait_for_function("""() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket
-  .some(item => item.product.id === 'demo-smartphone' && item.quantity === 1)""")
- proof['search_row_tap_directly_adds_without_filter_controls']=True
+ suggestions.get_by_role('button',name='Смартфон (примерна снимка)',exact=True).click()
+ expect(page.get_by_role('button',name=re.compile('^Добави '))).to_have_count(1)
+ expect(page.get_by_role('button',name='Добави Смартфон (примерна снимка)',exact=True)).to_be_visible()
+ assert page.evaluate("() => JSON.parse(localStorage.getItem('spestovnik-preview-001')).basket") == []
+ proof['search_selection_filters_without_adding_or_extra_controls']=True
  search.fill('телевизор')
  search.press('Enter')
  expect(suggestions).to_have_count(0)

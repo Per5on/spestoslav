@@ -7,7 +7,7 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import AwareDatetime, Field, HttpUrl, field_validator
-from sqlalchemy import select, func
+from sqlalchemy import case, select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -27,6 +27,9 @@ from .workflows import ProductIdentificationRequest, ProductImage, NationalOffer
 from .write_api import Input, ProductInput
 
 router = APIRouter(prefix="/api/v1")
+
+# T MARKET links its separate online shop from tmarket.bg.
+ONLINE_STOREFRONTS = {"t_market": {"tmarketonline.bg", "www.tmarketonline.bg"}}
 
 
 class IdentificationInput(Input):
@@ -302,7 +305,8 @@ def create_national_offer(
     if (
         not official
         or source.scheme != "https"
-        or source.hostname != official
+        or source.hostname not in {official, *ONLINE_STOREFRONTS.get(retailer.code, ())}
+        or source.port not in (None, 443)
         or source.username
         or source.password
     ):
@@ -334,6 +338,7 @@ def national_rows(db, product_id=None, retailer_code=None):
             .over(
                 partition_by=(NationalOffer.product_id, NationalOffer.retailer_code),
                 order_by=(
+                    case((NationalOffer.verified_by == "fuelo-chain-reference", 0), else_=1),
                     NationalOffer.observed_at.desc(),
                     NationalOffer.verified_at.desc(),
                     NationalOffer.id,

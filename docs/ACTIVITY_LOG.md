@@ -631,3 +631,30 @@ Build 015 completed at exact source `430abff`. Both ARM ABIs, the signature, dow
 
 - Verified that ordinary grocery and technology values come from the retailer online offer feed. The selected town filters basket retailers through the active store directory. Browser fixtures use different branch and published amounts, a retailer with two local branches, and a cheaper retailer outside town. Product cards and comparisons omit source and verification-status labels in all six languages.
 - The live national-offer endpoint returned zero current grocery and zero technology offers at the 26 November check. Sites with branch-scoped data still need an eligible retailer-published online feed to show a price in the hybrid catalogue.
+
+## 26 November 2026 — price publication and beta acceptance checkpoint
+
+- Confirmed the older Android job had already completed and withheld the resulting APK. Kept the revised search, cache, pricing and publisher work uncommitted for owner review.
+- The live API returned zero offers in all three categories despite 1,585 directory records. Verified that the default branch has daily source checks and lacks the separate publisher workflow. Source dry runs collected 3,746 Burlex branch observations, five Techmart offers and 17 KARAI prices. Disposable PostgreSQL publication and replay passed. It served 495 Burlex references, five Techmart offers and 17 KARAI fuel offers. Coverage remains partial in the product categories.
+- Completed the 159 PostgreSQL-backed tests and seven browser suites. Strict TypeScript, mobile unit checks, Ruff, Expo dependencies, scanner autolinking and the Android JavaScript export passed. Five paired browser trials per condition measured 133 ms from the fuel tab for both candidates at 100 ms injected latency. Native timing and live coverage remain open.
+- The source commit is the next approval checkpoint. Recurring publication must then be rolled out and verified, with broader retailer coverage, the native Android comparison, and separate APK approval. [Current checkpoint](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
+
+## 26 November 2026 — nationwide pricing correction
+
+- The owner clarified that groceries and technology use the same retailer-published online amounts across all localities. Local addresses serve only to determine retailer eligibility for comparison. Corrected the prior city-level wording in the current handoff and release notes.
+- Removed the branch-derived grocery references from the candidate publisher. Added mobile and API checks that changing locality can include or exclude a chain while a shared chain retains the exact published amount. The backend suite passed 158 tests after the publication correction. The focused publisher and API rerun passed 26 tests after adding the second eligible locality. Mobile checks, TypeScript and Ruff also passed.
+- The source remains uncommitted. Next obtain source-commit approval and address recurring publication and coverage by retailer and product. APK approval remains separate. [Corrected checkpoint](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
+
+## 26 November 2026 — direct online offer publication and rebuild
+
+- Confirmed the deployed T MARKET retailer record uses `tmarket.bg`, while the official online product URLs use `tmarketonline.bg`. The candidate API accepts that verified storefront alias for T MARKET only. Confirmed the publication workflow is absent on the default branch and GitHub Actions configuration metadata returns HTTP 403.
+- Verified two T MARKET and five Techmart offers against the independently served FastAPI readback after using the restricted publisher role in disposable PostgreSQL. Wrote 17 KARAI chain estimates. Replay inserted zero rows. София and Пловдив had identical T MARKET offers, with the retailer excluded in Мадан.
+- Removed branch-only price monitoring from the online workflow and fixed manual recovery when the mobile cache holds zero offers. Confirmed production still has zero online offers for both product categories. Next obtain source-commit approval and configure or confirm the remote publisher before running and checking a production refresh. APK approval remains separate. [Current recovery evidence](HYBRID_PREVIEW.md#retailer-publication-recovery)
+- Rebuilt the Android JavaScript bundle and web candidate, and passed seven browser suites, mobile tests and strict TypeScript. The full PostgreSQL-backed suite passed 160 tests. A focused rerun after the final collection change passed 28 tests, along with Ruff and the workflow shell and missing-configuration checks.
+
+## 27 November 2026 — same-product retailer comparisons
+
+- Extended direct publication to BulMag and Ardes. Matched София Мел Екстра 1 kg across T MARKET and BulMag, and the exact black 4/64 GB Xiaomi variant across Techmart and Ardes. Added a reviewed BulMag store in Варна and validated the inventory and targeted import.
+- A restricted simulation of the scheduled publisher collected and read back four grocery and six technology offers from live retailer pages. The public API comparison check passed with both retailers in Варна and failed against the current production API. GitHub default-branch publication and restricted connection settings still need activation.
+- All 161 backend tests passed with disposable PostgreSQL. Mobile tests, strict TypeScript, Ruff and inventory validation passed. An inconsistent KARAI day and timestamp were rejected. Next obtain explicit approval for the source commit, then verify production publication, comparison and expiry recovery. APK approval remains separate. [Current evidence](HYBRID_PREVIEW.md#27-november--two-retailer-comparison-and-production-rollout)
+- Ran the web app against the isolated API with real retailer prices and simulation disabled. Both product cards showed their online prices and the Варна basket displayed both eligible quotes. The first test export reused a cached simulation bundle. The clean export and browser check passed after clearing Metro's cache. The production API still had zero grocery and technology offers.

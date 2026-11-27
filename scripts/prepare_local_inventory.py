@@ -64,13 +64,14 @@ BEGIN
 END $import_branches$;""".replace("@PAYLOAD@", payload)
 
 
-def render(city, municipality, region, categories):
+def render(city, municipality, region, categories, retailer=None):
     validate()
     locality = identity(city, municipality, region)
     return render_rows([
         row for row in read("store_branches_seed.csv")
         if identity(row["city"], row["municipality"], row["region"]) == locality
         and row["category_code"] in categories
+        and (retailer is None or row["retailer_code"] == retailer)
     ])
 
 
@@ -80,14 +81,15 @@ if __name__ == "__main__":
     parser.add_argument("--city")
     parser.add_argument("--municipality")
     parser.add_argument("--region")
+    parser.add_argument("--retailer")
     parser.add_argument("--category", action="append", required=True, choices=("groceries", "technology", "fuel"))
     args = parser.parse_args()
     if args.all_reviewed:
         if any((args.city, args.municipality, args.region)):
             parser.error("--all-reviewed excludes locality arguments")
         validate()
-        print(render_rows([row for row in read("store_branches_seed.csv") if row["category_code"] in args.category]))
+        print(render_rows([row for row in read("store_branches_seed.csv") if row["category_code"] in args.category and (not args.retailer or row["retailer_code"] == args.retailer)]))
     else:
         if not all((args.city, args.municipality, args.region)):
             parser.error("Provide city, municipality and region, or select --all-reviewed")
-        print(render(args.city, args.municipality, args.region, set(args.category)))
+        print(render(args.city, args.municipality, args.region, set(args.category), args.retailer))

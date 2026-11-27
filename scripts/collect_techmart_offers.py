@@ -48,18 +48,26 @@ class StructuredData(HTMLParser):
             )
 
 
-def offer_price(html, code):
+def offer_price(html, code, *, source_url=None, product_name=None, gtin=None):
     structured = StructuredData()
     structured.feed(html)
     matching = [node for node in structured.product_nodes if str(node.get("sku")) == code]
     if len(matching) != 1:
-        raise ValueError(f"Expected one exact Techmart SKU {code}")
-    offer = matching[0].get("offers")
+        raise ValueError(f"Expected one exact online SKU {code}")
+    product = matching[0]
+    if product_name is not None and product.get("name") != product_name:
+        raise ValueError(f"Product name changed for SKU {code}")
+    if gtin is not None and str(product.get("gtin13")) != gtin:
+        raise ValueError(f"GTIN changed for SKU {code}")
+    offer = product.get("offers")
+    if isinstance(offer, list):
+        offer = offer[0] if len(offer) == 1 else None
     if (
         not isinstance(offer, dict)
         or offer.get("@type") != "Offer"
         or offer.get("priceCurrency") != "EUR"
-        or offer.get("availability") != "https://schema.org/InStock"
+        or offer.get("availability") not in ("https://schema.org/InStock", "http://schema.org/InStock")
+        or (source_url is not None and offer.get("url", source_url) != source_url)
     ):
         return None
     try:

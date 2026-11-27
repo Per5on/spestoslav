@@ -201,3 +201,31 @@ The owner wrote:
 - The owner requested further platform research and a side-by-side hybrid preview. Recovered the candidate on the separate hybrid branch after the earlier local checkout became unavailable. The source also includes the updated receipt and account flow from `bug_fix`. [Design and scope](HYBRID_PREVIEW.md)
 
 - The owner clarified that prices published by their retailer or vendor are verified by the issuer. The owner then clarified that online is the sole source for product prices and the interface should show the amount without a label. The selected town is used for retailer eligibility in comparison.
+
+## 26 November 2026 — beta acceptance and pricing correction
+
+- The owner confirmed that explicit APK approval always applies. The owner requires backend, frontend, responsiveness and delay evidence before approving the next commit. The separate Kotlin/Expo work still needs a measured comparison against the existing Android app.
+- In „Храни“ and „Техника“, selecting a search suggestion shows that exact product in the catalogue. Enter shows all matching products. Product cards provide the basket action.
+- Grocery and technology prices are indicative amounts from the retailer's online publication or an eligible Broshura.bg listing. Seek an additional source when the original has no price. Load previously saved prices first and use a fixed 12-hour or 24-hour refresh schedule that also checks on app open.
+- In „Горива“, preserve branch-level amounts where available. Use Fuelo's chain prices when an independent comparison is missing or differs. The source comparison is backend-only. Store addresses determine which chains have a branch in the selected locality for price comparison.
+- The owner reported that prices and comparison were unusable. Beta acceptance requires working live price publication. The earlier hybrid candidate completed before cancellation and its APK was withheld. [Candidate checks and open issues](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
+
+## 26 November 2026 — nationwide online amounts and local retailer eligibility
+
+- The owner corrected the wording about missing prices in Пловдив and Велико Търново. Grocery and technology use retailer-published online prices across all locations. Branch presence is only an eligibility filter on the comparison. A price for the same retailer and product stays the same when the town changes.
+- Removed the candidate's conversion of branch tables into nationwide grocery reference prices. The remaining data gap is published online offers by retailer and product. Source-commit and APK approvals remain separate. [Corrected checkpoint](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
+
+## 26 November 2026 — recover the online publication path
+
+- The owner asked to find publishable retailer sources or fix the rejection, verify configuration, remove redundant code, rebuild and recheck.
+- Verified T MARKET's separate official online domain and added a focused API allowlist entry. The local publisher read two regular grocery offers and five technology offers back through FastAPI after publication. Removed the branch-only work from online offer monitoring and publication. Fixed manual recovery from an empty app cache. [Evidence and configuration](HYBRID_PREVIEW.md#retailer-publication-recovery)
+
+## 27 November 2026 — make price comparison a production check
+
+- The owner emphasized that visible prices and useful comparisons are essential, asked for the direct production fix to be verified, and asked to continue through the blockers. The accepted app still uses nationwide published retailer prices with branch presence as the comparison filter.
+- Added live-source pilot coverage for a second grocery and a second technology retailer and a production check for real two-retailer comparisons. Source-commit and APK approvals remain separate. [Comparison and rollout record](HYBRID_PREVIEW.md#27-november--two-retailer-comparison-and-production-rollout)
+
+## 27 November 2026 — source approval and grocery display names
+
+- The owner approved the source commit and production verification. APK approval is separate.
+- The owner requested simpler grocery descriptions for variants found in at most two chains, with sizes and package amounts retained. Use the lowest published matching amount per retailer and preserve exact catalogue identities.

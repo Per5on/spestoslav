@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api, API_BASE_URL, httpStatus } from "../api";
 import { loadProducts } from "./cache";
+import { publishedPriceWindow } from "./priceSchedule";
 import type { OnlinePrice, Price, Product, Retailer, Store } from "./model";
 
 const categories = ["groceries", "technology", "fuel"] as const;
@@ -10,7 +11,7 @@ const prefix = "spestovnik-local-catalog-v1:" + API_BASE_URL + ":";
 const freshFor = 10 * 60 * 1000;
 const day = 24 * 60 * 60 * 1000;
 type Scope = { category: Category; localityId: string };
-type Snapshot<T> = { localityId: string; savedAt: number; rows: T[] };
+type Snapshot<T> = { localityId: string; savedAt: number; rows: T[]; checkedAt?: number };
 
 async function allPages<T>(path: string, signal: AbortSignal, pageSize = 500): Promise<T[]> {
   const result: T[] = [];
@@ -44,6 +45,7 @@ function catalogResource<T>(
       onCached: (rows: T[]) => void = () => {},
     ): Promise<T[]> {
       const key = prefix + slot + ":" + scope.category;
+      const scheduled = slot === "online" && scope.category !== "fuel";
       const startedIn = generation;
       let saved: Snapshot<T> | null = null;
       try {
@@ -64,11 +66,19 @@ function catalogResource<T>(
         // A storage error shouldn't prevent live catalogue loading.
       }
       if (signal.aborted || startedIn !== generation) throw new Error("Catalogue read cancelled");
-      if (saved && !force && Date.now() - saved.savedAt < freshFor) return saved.rows;
+      const now = Date.now();
+      if (saved) {
+        const checkedAt = saved.checkedAt ?? saved.savedAt;
+        const reusable = scheduled && saved.rows.length > 0
+          ? publishedPriceWindow(checkedAt) === publishedPriceWindow(now)
+          : !force && now - checkedAt < freshFor;
+        if (reusable) return saved.rows;
+      }
 
       const requestKey = key + ":" + scope.localityId;
       let request = pending.get(requestKey);
       if (!request) {
+        const previous = saved;
         // Share the read across screens and the Android job. Leaving a tab
         // stops delivery to that screen while the bounded read warms its cache.
         const controller = new AbortController();
@@ -77,13 +87,20 @@ function catalogResource<T>(
           if (controller.signal.aborted) throw new Error("Catalogue refresh timed out");
           const savedAt = Date.now();
           const prepared = prepare(rows, savedAt, savedAt);
-          const raw = JSON.stringify({ localityId: scope.localityId, savedAt, rows: prepared });
+          const snapshot: Snapshot<T> = { localityId: scope.localityId, savedAt, rows: prepared };
+          if (scheduled && !prepared.length && previous?.rows.length) {
+            // A publisher gap should not erase still-valid local prices.
+            snapshot.savedAt = previous.savedAt;
+            snapshot.rows = prepare(previous.rows, previous.savedAt, savedAt);
+            snapshot.checkedAt = savedAt;
+          }
+          const raw = JSON.stringify(snapshot);
           if (latest.get(key) === started) {
             // Leave room for Android's per-entry cursor limit.
             const write = raw.length < 750000 ? AsyncStorage.setItem(key, raw) : AsyncStorage.removeItem(key);
             await write.catch(() => undefined);
           }
-          return prepared;
+          return snapshot.rows;
         }).finally(() => {
           clearTimeout(timer);
           pending.delete(requestKey);
@@ -93,7 +110,11 @@ function catalogResource<T>(
         latest.set(key, started);
         request = started;
       }
-      return request;
+      return scheduled ? request.catch(error => {
+        const retained = saved && prepare(saved.rows, saved.savedAt, Date.now());
+        if (retained?.length) return retained;
+        throw error;
+      }) : request;
     },
   };
 }
@@ -217,10 +238,10 @@ export async function syncCatalogs(localityId: string | undefined, signal: Abort
   return outcomes.every(Boolean);
 }
 
-export async function warmOtherCatalogs(category: Category, localityId: string, signal: AbortSignal) {
+export async function warmOtherCatalogs(category: Category, localityId: string | undefined, signal: AbortSignal) {
   for (const next of ["fuel", "groceries", "technology"] as const) {
     if (signal.aborted) return;
-    if (next !== category) await refreshCategory(next, localityId, signal, false);
+    if (next !== category && (next !== "fuel" || localityId)) await refreshCategory(next, localityId, signal, false);
   }
 }
 

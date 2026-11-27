@@ -245,12 +245,21 @@ const local = [
   { retailer_code: "local", retailer_name: "Local" },
   { retailer_code: "partial", retailer_name: "Partial" },
 ];
-const compared = comparePublishedBasket(
-  [{ product: bananas[0], quantity: 3 }, { product: bananas[1], quantity: 1 }],
-  sold, local, refreshTime,
-);
+const basketForComparison = [
+  { product: bananas[0], quantity: 3 }, { product: bananas[1], quantity: 1 },
+];
+const compared = comparePublishedBasket(basketForComparison, sold, local, refreshTime);
 assert.equal(indexIndicativePrices(sold, undefined, refreshTime).products.get("first"), 0.1);
 assert.deepEqual(compared.quotes.map(q => q.retailer_code), ["local", "partial"]);
 assert.equal(compared.cheapest.total_eur, "4.0099");
 assert.equal(compared.quotes[0].items[0].subtotal_eur, "3.9999");
 assert.equal(compared.quotes[1].total_eur, null);
+
+// Change the branches and eligible chains while reusing the same published feed.
+const anotherTown = comparePublishedBasket(basketForComparison, sold, [
+  { retailer_code: "local", retailer_name: "Local", address: "Different branch" },
+  { retailer_code: "outside", retailer_name: "Outside" },
+], refreshTime);
+assert.deepEqual(anotherTown.quotes.map(q => q.retailer_code), ["local", "outside"]);
+assert.deepEqual(anotherTown.quotes[0], compared.quotes[0]);
+assert.equal(anotherTown.quotes[1].items[0].unit_price_eur, "0.1000");

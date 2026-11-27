@@ -1,10 +1,14 @@
 # Спестовник — ongoing project handoff
 
-Updated: **24 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+Updated: **26 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 
+
+### 26 November 2026 — hybrid pricing recovery
+
+Continue from the [current verification and coverage checkpoint](HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint). The live price feed is empty across all three categories. Real-source collection, controlled publication and replay passed, with partial grocery and technology coverage. The search and cache changes are in the local hybrid working tree. Source commit and APK approval are separate. Measure the Kotlin scanner against the existing Android path on the same device.
 
 ### 24 November 2026 — verified preview 10.9.1 Android APK
 

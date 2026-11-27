@@ -12,7 +12,7 @@ from app.main import app
 from app.db import get_db
 from app.auth import Principal, current_user
 from app.marketplace import CurrentPrice, PriceCache, Promotion, ReceiptScan
-from app.models import Locality, Product, StoreBranch
+from app.models import Locality, Product, Retailer, StoreBranch
 from app.receipt_worker import process_one
 
 
@@ -474,6 +474,31 @@ def test_older_reviewed_observation_does_not_overwrite_newer_price():
     assert history.json()[0]["price_scope"] == "BRANCH"
 
 
+def test_national_offer_accepts_the_retailers_official_separate_online_shop():
+    with fixtures.TestingSessionLocal() as db:
+        product = db.scalar(select(Product))
+        product_id = str(product.id)
+        db.add_all([
+            Retailer(code="t_market", name="T MARKET", website_url="https://tmarket.bg", category_code=product.category_code),
+            Retailer(code="other", name="Other", website_url="https://other.example", category_code=product.category_code),
+        ])
+        db.commit()
+    now = datetime.now(timezone.utc)
+    payload = {
+        "product_id": product_id, "retailer_code": "t_market", "price_eur": "1.32",
+        "source_reference": "https://tmarketonline.bg/product/zahar-sladeya-1kg",
+        "observed_at": now.isoformat(), "valid_until": (now + timedelta(hours=12)).isoformat(),
+    }
+    url = "/api/v1/admin/national-offers"
+    assert fixtures.client.post(url, json=payload, headers=ADMIN).status_code == 201
+    for rejected in (
+        {**payload, "retailer_code": "other"},
+        {**payload, "source_reference": "https://tmarketonline.bg.example/product/test"},
+        {**payload, "source_reference": "https://tmarketonline.bg:444/product/test"},
+    ):
+        assert fixtures.client.post(url, json=rejected, headers=ADMIN).status_code == 422
+
+
 def test_product_images_and_national_scope_are_separate_from_branches():
     with fixtures.TestingSessionLocal() as db:
         product_id = str(db.scalar(select(Product.id)))
@@ -519,20 +544,25 @@ def test_product_images_and_national_scope_are_separate_from_branches():
     with fixtures.TestingSessionLocal() as db:
         locality_id = str(db.scalar(select(StoreBranch.locality_id)))
         remote = Locality(source="TEST", source_id="nonlocal", name="Other city")
-        db.add(remote)
+        shared_chain = Locality(source="TEST", source_id="shared-chain", name="Second city")
+        db.add_all([remote, shared_chain])
         db.flush()
         remote_id = str(remote.id)
-        db.add(StoreBranch(
-            retailer_code="TEST", locality_id=remote.id, address="Closed store", active=False,
-        ))
+        shared_chain_id = str(shared_chain.id)
+        db.add_all([
+            StoreBranch(retailer_code="TEST", locality_id=remote.id, address="Closed store", active=False),
+            StoreBranch(retailer_code="TEST", locality_id=shared_chain.id, address="Second active store"),
+        ])
         db.commit()
 
-    assert len(fixtures.client.get(
-        "/api/v1/national-offers", params={"locality_id": locality_id, "category_code": "FOOD"},
-    ).json()) == 1
-    assert fixtures.client.get(
-        "/api/v1/national-offers", params={"locality_id": remote_id},
-    ).json() == []
+    offers = "/api/v1/national-offers"
+    published = fixtures.client.get(offers, params={"category_code": "FOOD"}).json()
+    assert len(published) == 1
+    for eligible_id in (locality_id, shared_chain_id):
+        assert fixtures.client.get(
+            offers, params={"locality_id": eligible_id, "category_code": "FOOD"},
+        ).json() == published
+    assert fixtures.client.get(offers, params={"locality_id": remote_id}).json() == []
     payload = {"locality_id": locality_id, "items": [{"product_id": product_id}]}
     compare = "/api/v1/baskets/compare"
     quotes = fixtures.client.post(compare, json={**payload, "include_online": True}).json()

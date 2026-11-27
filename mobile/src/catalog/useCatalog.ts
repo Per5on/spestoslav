@@ -5,6 +5,7 @@ import type { Product, Store, Price, OnlinePrice, Retailer } from "./model";
 import {
   fuelChainsResource, loadCatalogProducts, onlineResource, pricesResource, storesResource, warmOtherCatalogs, type Category,
 } from "./catalogData";
+import { publishedPriceWindow } from "./priceSchedule";
 import { sampleProducts } from "./samples";
 
 const noProducts: Product[] = [];
@@ -46,6 +47,19 @@ export function useCatalog(
     });
     return () => subscription.remove();
   }, []);
+
+  useEffect(() => {
+    if (!active || !includePrices || category === "fuel") return;
+    let priceWindow = publishedPriceWindow(Date.now());
+    const timer = setInterval(() => {
+      if (AppState.currentState !== "active") return;
+      const next = publishedPriceWindow(Date.now());
+      if (next === priceWindow) return;
+      priceWindow = next;
+      setResumeRevision(value => value + 1);
+    }, 60000);
+    return () => clearInterval(timer);
+  }, [active, category, includePrices]);
 
   useEffect(() => {
     if (!active) {
@@ -134,7 +148,7 @@ export function useCatalog(
 
   const warm = active && includePrices && loaded && !refreshing && !error && !storeError && !onlineError;
   useEffect(() => {
-    if (!warm || !localityId) return;
+    if (!warm) return;
     const controller = new AbortController();
     // Let the selected tab render and settle before fetching other tabs.
     const timer = setTimeout(() => void warmOtherCatalogs(category, localityId, controller.signal), 700);

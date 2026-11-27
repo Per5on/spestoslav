@@ -1,6 +1,10 @@
 # Спестовник — active project status
 
-Updated: 24 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
+Updated: 27 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continuation checklist: [CODEX_HANDOFF.md](CODEX_HANDOFF.md). Historical changes and decisions: [ACTIVITY_LOG.md](ACTIVITY_LOG.md) and Git history. Resume from this checkpoint without rereading old conversations. The reconstructed and ongoing decisions are in the [project communication record](PROJECT_COMMUNICATION.md).
+
+## Current checkpoint — 27 November 2026
+
+The hybrid publisher and scheduled comparison check are pending source-commit approval. Direct publication collected four grocery and six technology offers. The isolated API confirmed 2-retailer comparisons in Варна for София Мел flour and the Xiaomi Redmi A7 Pro. The public API returned zero current grocery or technology offers. The default branch still needs recurring publication, restricted connection configuration and the additive BulMag store seed. An inconsistent date from KARAI prevented the latest fuel ingestion. [Comparison and rollout evidence](HYBRID_PREVIEW.md#27-november--two-retailer-comparison-and-production-rollout)
 
 ## Preview 10.9.1 bug-fix release
 
@@ -18,7 +22,7 @@ Thumbnail reconciliation is open in both „Храни“ and „Техника�
 
 ## Current work — preview 10.8.1
 
-The reviewed nationwide directory is live with 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It has 17 indicative fuel offers and five indicative technology offers. A matched fresh grocery feed for the city is still needed.
+At the build 016 checkpoint, the reviewed nationwide directory had 1,585 active branches across its three categories. At the verification snapshot, eligible prices were returned for fuel in 241 localities, technology in 10 and groceries in two. Пловдив has 41 fuel, 45 grocery and 12 technology branches. It had 17 indicative fuel offers and five indicative technology offers in that snapshot. See the current checkpoint above for the nationwide retailer-price rule.
 
 Candidate 016, display label 10.8.1 and app version 0.5.9, explains empty local price coverage in the grocery and technology footer. The staged grocery publisher includes the four reviewed Велико Търново branches. Browser checks used the live API and showed the Пловдив grocery notice, five technology offers and six A95 prices. The candidate also restores the saved theme before the first app screen. The delayed browser preference test passed. The signed ARM package is available for device verification. [APK artifact](https://github.com/Per5on/spestoslav/actions/runs/45352059558/artifacts/14901017390) · [Android checks](https://github.com/Per5on/spestoslav/actions/runs/45352059558) · [Backend checks](https://github.com/Per5on/spestoslav/actions/runs/45352011056) The next steps are recorded in the [release TODO](PREVIEW_006_BACKLOG.md#build-016-release-plan) and [unreleased changelog](../CHANGELOG.md#preview-1081--build-016--app-059). [Preview](references/preview016-plovdiv-grocery.png) · [Rollout evidence](ACTIVITY_LOG.md#23-november-2026--nationwide-rollout-and-build-016)
 

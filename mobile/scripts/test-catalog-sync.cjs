@@ -42,7 +42,8 @@ const mockApi = {
   },
 };
 const modules = { "@react-native-async-storage/async-storage": storageModule, "../api": mockApi };
-const catalogue = load("catalogData", { ...modules, "./cache": load("cache", modules) });
+const schedule = load("priceSchedule", {});
+const catalogue = load("catalogData", { ...modules, "./cache": load("cache", modules), "./priceSchedule": schedule });
 
 (async () => {
   const signal = new AbortController().signal;
@@ -78,6 +79,45 @@ const catalogue = load("catalogData", { ...modules, "./cache": load("cache", mod
   saved.set(onlineKey, JSON.stringify(expired));
   await assert.rejects(onlineResource.load(scope, signal, false, rows => { cached = rows; }), /unreachable/);
   assert.deepEqual(cached, []);
+
+  const dateNow = Date.now;
+  let time = Date.parse("2026-11-26T15:59:59Z"); // 17:59:59 in Sofia
+  const reference = { ...offer, source_reference: "https://retailer.example/published", valid_until: "2026-11-27T04:30:00.000Z" };
+  const publishedScope = { category: "groceries", localityId: "" };
+  Date.now = () => time;
+  try {
+    assert.equal(schedule.publishedPriceWindow(time), "2026-11-26:06");
+    assert.equal(schedule.publishedPriceWindow(Date.parse("2026-07-08T03:00:00Z")), "2026-07-08:06");
+    assert.equal(schedule.publishedPriceWindow(Date.parse("2027-01-01T01:00:00Z")), "2026-12-31:18");
+    fetchResult = async () => [reference];
+    await onlineResource.load(publishedScope, signal);
+    let earlier = paths.length;
+    assert.deepEqual(await onlineResource.load(publishedScope, signal, true), [reference]);
+    assert.equal(paths.length, earlier);
+    time += 1000;
+    assert.equal(schedule.publishedPriceWindow(time), "2026-11-26:18");
+    fetchResult = async () => { throw new Error("Server unreachable"); };
+    assert.deepEqual(await onlineResource.load(publishedScope, signal, false, rows => { cached = rows; }), [reference]);
+    assert.deepEqual(cached, [reference]);
+    fetchResult = async () => [];
+    assert.deepEqual(await onlineResource.load(publishedScope, signal), [reference]);
+    earlier = paths.length;
+    assert.deepEqual(await onlineResource.load(publishedScope, signal), [reference]);
+    assert.equal(paths.length, earlier);
+    time = Date.parse(reference.valid_until);
+    assert.deepEqual(await onlineResource.load(publishedScope, signal), []);
+    earlier = paths.length;
+    const recovered = { ...reference, valid_until: "2026-11-27T19:00:00.000Z" };
+    fetchResult = async () => [recovered];
+    assert.deepEqual(await onlineResource.load(publishedScope, signal), []);
+    assert.equal(paths.length, earlier);
+    assert.deepEqual(await onlineResource.load(publishedScope, signal, true), [recovered]);
+    assert.equal(paths.length, earlier + 1);
+    assert.deepEqual(await onlineResource.load(publishedScope, signal, true), [recovered]);
+    assert.equal(paths.length, earlier + 1);
+  } finally {
+    Date.now = dateNow;
+  }
 
   await clearLocalCatalogs();
   assert.equal(saved.size, 0);

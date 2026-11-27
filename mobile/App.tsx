@@ -79,12 +79,10 @@ function AddButton({
   name,
   onAdd,
   disabled,
-  showName = false,
 }: {
   name: string;
   onAdd: () => boolean;
   disabled: boolean;
-  showName?: boolean;
 }) {
   const { t, styles: s, color } = useUI();
   const [added, setAdded] = useState(false);
@@ -101,9 +99,8 @@ function AddButton({
         setAdded(true);
         timer.current = setTimeout(() => setAdded(false), 1000);
       }}
-      style={[showName ? [s.option, { paddingHorizontal: 8, borderRadius: 8 }] : s.add, added && s.added]}
+      style={[s.add, added && s.added]}
     >
-      {showName && <Text style={{ flex: 1, color: added ? "#fff" : "#264c30" }}>{name}</Text>}
       <Ionicons
         name="cart-outline"
         size={22}
@@ -167,6 +164,7 @@ function Main({ initialNotice, onErase }: {
     [restored, setRestored] = useState(false);
   const [fuel, setFuel] = useState<FuelChoice>("petrol");
   const [appliedQuery, setAppliedQuery] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState<string>();
   const [query, setQuery] = useState(""),
     [searchOpen, setSearchOpen] = useState(false),
     [suggestionLimit, setSuggestionLimit] = useState(tabBatchSize),
@@ -262,6 +260,7 @@ function Main({ initialNotice, onErase }: {
       setGroup(null);
       setQuery("");
       setAppliedQuery("");
+      setSelectedProductId(undefined);
       setSearchOpen(false);
     }
     setCategory(id);
@@ -289,8 +288,8 @@ function Main({ initialNotice, onErase }: {
     setNotice("");
     try {
       const [offers, stores] = await Promise.all([
-        onlineResource.load({ category, localityId: "" }, signal, true),
-        storesResource.load({ category, localityId: locality.id }, signal, true),
+        onlineResource.load({ category, localityId: "" }, signal),
+        storesResource.load({ category, localityId: locality.id }, signal),
       ]);
       const data = comparePublishedBasket(basket, offers, stores);
       setQuote({ key, data });
@@ -342,18 +341,20 @@ function Main({ initialNotice, onErase }: {
     ? new Map(catalog.products.map(p => [p.id, productSearchText(p, displayName(p))]))
     : undefined, [catalog.products, displayName, searchActive]);
   const visible = useMemo(() => {
+    if (selectedProductId) return catalog.products.filter(p => p.id === selectedProductId);
     if (appliedQuery && searchIndex) {
       const tokens = appliedQuery.split(" ");
       return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
     }
     const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
     return prioritizePricedProducts(filtered, indicativePrices.products);
-  }, [catalog.products, group, appliedQuery, searchIndex, indicativePrices.products]);
+  }, [catalog.products, group, appliedQuery, selectedProductId, searchIndex, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
     setQuery("");
     setAppliedQuery("");
+    setSelectedProductId(undefined);
     setSearchOpen(false);
     setQuote(null);
   }
@@ -528,11 +529,13 @@ function Main({ initialNotice, onErase }: {
               onFocus={() => setSearchOpen(true)}
               onChangeText={(value) => {
                 setQuery(value);
+                setSelectedProductId(undefined);
                 setSearchOpen(true);
                 if (!value.trim()) setAppliedQuery("");
               }}
               onSubmitEditing={({ nativeEvent }) => {
                 const normalizedQuery = searchText(nativeEvent.text);
+                setSelectedProductId(undefined);
                 setAppliedQuery(normalizedQuery);
                 if (normalizedQuery) setGroup(null);
                 setSearchOpen(false);
@@ -577,8 +580,14 @@ function Main({ initialNotice, onErase }: {
               {suggestions.length > 0 && (
                 <View testID="product-suggestions" style={s.panel}>
                   {suggestions.slice(0, suggestionLimit).map(p => (
-                    <AddButton key={p.id} name={displayName(p)} disabled={!restored}
-                      showName onAdd={() => change(p, 1)} />
+                    <Button key={p.id} label={displayName(p)} onPress={() => {
+                      setSelectedProductId(p.id);
+                      setAppliedQuery("");
+                      setGroup(null);
+                      setQuery(displayName(p));
+                      setSearchOpen(false);
+                      tabList.current?.scrollToOffset({ offset: 0, animated: false });
+                    }} />
                   ))}
                   {suggestions.length > suggestionLimit && (
                     <Button label={`${t("showMore")} (${suggestionLimit}/${suggestions.length})`}
@@ -602,6 +611,7 @@ function Main({ initialNotice, onErase }: {
                   selected={group} onSelect={code => {
                     setGroup(code);
                     setAppliedQuery("");
+                    setSelectedProductId(undefined);
                     setQuery("");
                     setSearchOpen(false);
                   }} />
