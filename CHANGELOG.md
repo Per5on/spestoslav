@@ -2,12 +2,14 @@
 
 This lists the recorded Android previews and pre-alpha and beta candidates through build 017. [Project activity log](docs/ACTIVITY_LOG.md) · [Release handoff](docs/CODEX_HANDOFF.md)
 
-## Unreleased · hybrid price and search candidate
+## alpha2M · second mixed-architecture alpha · candidate 019 · app 0.5.12
 
+- In the grocery candidate, variants carried by up to two chains can appear under one descriptive name. Package quantities and egg sizes remain separate. Each retailer quote uses its lowest eligible published offer.
 - Selecting a suggestion shows the exact product in „Храни“ or „Техника“. Enter shows all matches. Basket actions stay on catalogue cards.
 - Load still-valid cached online prices first and check twice daily, using 06:00 and 18:00 Sofia windows. Basket comparisons include only chains present in the selected locality.
 - Added pilot grocery publication for T MARKET and BulMag and technology publication for Techmart and Ardes. The workflow checks that newly published amounts are available through the public API and that two eligible retailers can be compared for a shared product. Manual price refresh recovers from an empty app cache. Added optional backend corroboration of licensed Fuelo chain prices while preserving those prices on mismatches and missing secondary values.
-- The public API price feed is empty. Publication, wider coverage, the Android timing comparison and explicit owner approval are release gates. [Verification and coverage](docs/HYBRID_PREVIEW.md#26-november--pricing-and-approval-checkpoint)
+- Activated production price publication every four hours. The first run kept four grocery and six technology offers available through the API. Direct retailer prices are primary and third-party copies remain fallback candidates. [Production refresh](https://github.com/Per5on/spestoslav/actions/runs/45964615435)
+- The source checkpoint preserves the separate mixed-architecture Android package. Signed APK packaging requires explicit approval. Broader retailer coverage and physical Android performance measurements remain open. [Verification and coverage](docs/HYBRID_PREVIEW.md)
 
 ## Preview 10.9.1 · build 017 · app 0.5.10
 

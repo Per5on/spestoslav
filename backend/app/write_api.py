@@ -574,6 +574,7 @@ def browse_products(
             "group_code": identity.group_code if identity else None,
             "source_url": identity.source_url if identity else None,
             "source_product_code": identity.source_product_code if identity else None,
+            "source_category": grocery.source_category if grocery else None,
             "catalog_observed_at": identity.observed_at if identity else None,
             "image_url": image_url,
         }

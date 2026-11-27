@@ -54,6 +54,8 @@ function validateCatalog(value: Cache | null, now: number, category: Category): 
     "fuel_type",
     "source_url",
     "source_product_code",
+    "source_category",
+    "package",
     "catalog_observed_at",
     "image_url",
   ] as const;

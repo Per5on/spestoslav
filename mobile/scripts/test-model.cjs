@@ -263,3 +263,51 @@ const anotherTown = comparePublishedBasket(basketForComparison, sold, [
 assert.deepEqual(anotherTown.quotes.map(q => q.retailer_code), ["local", "outside"]);
 assert.deepEqual(anotherTown.quotes[0], compared.quotes[0]);
 assert.equal(anotherTown.quotes[1].items[0].unit_price_eur, "0.1000");
+
+const choicesModule = { exports: {} };
+new Function("exports", ts.transpileModule(fs.readFileSync("src/catalog/groceryChoices.ts", "utf8"), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS },
+}).outputText)(choicesModule.exports);
+const { groupGroceryChoices, isGroceryChoice } = choicesModule.exports;
+const grocery = (id, name, rest = {}) => ({ id, name, category_code: "groceries", ...rest });
+const groceryRows = [
+  grocery("plain", "Банани 1 кг"),
+  grocery("organic", "Био банани 1000 г"),
+  grocery("organic-copy", "БИО БАНАНИ 1000 г"),
+  grocery("mini", "Малки банани 500 г"),
+  grocery("wide", "Дребни банани 1 кг"),
+  grocery("baby-food", "Каша с банани 190 г", { source_category: "Каша (млечна, плодова) от 190 гр. до 250 гр." }),
+  grocery("m-20", "Яйца размер М 20 бр."),
+  grocery("m-10", "Яйца размер M 10 бр."),
+  grocery("l-20", "Яйца размер L 20 бр."),
+  { id: "tech", name: "Product 500 г", category_code: "technology" },
+];
+const groceryOffers = [
+  sourceOffer("plain", "a", "1.70"),
+  sourceOffer("plain", "a", "1.60"),
+  sourceOffer("organic", "a", "1.20"),
+  sourceOffer("organic-copy", "b", "1.40"),
+  sourceOffer("mini", "b", "0.70"),
+  sourceOffer("wide", "a", "0.80"),
+  sourceOffer("wide", "b", "0.75"),
+  sourceOffer("wide", "c", "0.65"),
+  sourceOffer("organic", "c", "0.55", "2026-11-22T00:00:00Z"),
+];
+const organized = groupGroceryChoices(groceryRows, groceryOffers, refreshTime);
+const oneKilo = organized.products.find(p => p.name === "Банани" && p.package === "1 кг");
+assert(isGroceryChoice(oneKilo));
+assert.equal(organized.products.find(p => p.id === "wide").name, "Дребни банани 1 кг");
+assert.equal(organized.products.find(p => p.id === "tech"), groceryRows.at(-1));
+assert.equal(organized.products.find(p => p.id === "baby-food").name, "Каша с банани 190 г");
+assert.equal(organized.products.filter(p => p.name === "Банани").length, 2);
+assert(organized.products.some(p => p.name === "Яйца размер M" && p.package === "20 бр."));
+assert(organized.products.some(p => p.name === "Яйца размер M" && p.package === "10 бр."));
+assert(organized.products.some(p => p.name === "Яйца размер L" && p.package === "20 бр."));
+assert(matchesProduct(oneKilo, "био банани"));
+const genericQuote = comparePublishedBasket([{ product: oneKilo, quantity: 2 }], organized.offers, [
+  { retailer_code: "a", retailer_name: "A" },
+  { retailer_code: "b", retailer_name: "B" },
+], refreshTime);
+assert.deepEqual(genericQuote.quotes.map(quote => quote.total_eur), ["2.4000", "2.8000"]);
+assert.equal(indexIndicativePrices(organized.offers, undefined, refreshTime).products.get(oneKilo.id), 1.2);
+console.log("Grocery grouping checks passed: eligible variants, same package, egg size and lowest prices per chain.");

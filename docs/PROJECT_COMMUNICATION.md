@@ -229,3 +229,20 @@ The owner wrote:
 
 - The owner approved the source commit and production verification. APK approval is separate.
 - The owner requested simpler grocery descriptions for variants found in at most two chains, with sizes and package amounts retained. Use the lowest published matching amount per retailer and preserve exact catalogue identities.
+
+## 27 November 2026 — third-party offer candidates and production API
+
+- The owner asked to check third-party publications of retailer offers and recheck production access. Reviewed the source scope and freshness and restored the live retailer pilot with four grocery and six technology offers. The scheduled publisher still needs configuration for renewal. [Source and API checks](HYBRID_PREVIEW.md#27-november--production-pilot-restored-and-third-party-review)
+
+## 27 November 2026 — source inventory and owner configuration
+
+- The owner asked for the new and previous sources in the data repository and for instructions to configure the publisher themselves. Recorded the sources and prepared the secure setup and production verification sequence. [Price registry](../data/price_source_registry.csv) · [Feed setup](PRICE_FEED_SETUP.md)
+
+## 27 November 2026 — direct retailer recheck and activation
+
+- The owner configured the restricted Neon login, repository secret and category variable. The hosted read-only check confirmed the exact `groceries technology` value, a working connection and the publisher's insert permission. [Configuration check](https://github.com/Per5on/spestoslav/actions/runs/45963801361)
+- The owner confirmed that original retailer price publications remain the primary source when they populate the API. Third-party copies remain a backup if direct sourcing fails. The owner authorized activation after a successful test. The hosted retailer source check passed, and all ten freshly collected prices matched the public API by retailer, source URL and amount before activation. [Hosted source check](https://github.com/Per5on/spestoslav/actions/runs/45964493567)
+
+## 27 November 2026 — alpha2M source approval
+
+- The owner approved the first scheduled renewal check and the second mixed-architecture alpha source commit after verification. The approved label is `alpha2M`. APK packaging still needs separate approval.

@@ -46,7 +46,8 @@ import {
   duplicateProductQualifiers,
   productName,
 } from "./src/catalog/model";
-import { onlineResource, storesResource, type Category } from "./src/catalog/catalogData";
+import { groupGroceryChoices, isGroceryChoice } from "./src/catalog/groceryChoices";
+import { loadCatalogProducts, onlineResource, storesResource, type Category } from "./src/catalog/catalogData";
 import { enableCatalogSync } from "./src/catalog/backgroundSync";
 import { useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
@@ -232,7 +233,7 @@ function Main({ initialNotice, onErase }: {
       if (p.id === "demo-oil") return t("demoOil");
       if (p.id === "demo-sugar") return t("demoSugar");
     }
-    const qualifier = qualifiers.get(p.id) ?? p.identityQualifier;
+    const qualifier = isGroceryChoice(p) ? p.package : qualifiers.get(p.id) ?? p.identityQualifier;
     return qualifier ? `${productName(p)} · ${qualifier}` : productName(p);
   }, [qualifiers, t]);
   function change(p: Product, delta: number) {
@@ -287,11 +288,15 @@ function Main({ initialNotice, onErase }: {
     setComparing(true);
     setNotice("");
     try {
-      const [offers, stores] = await Promise.all([
+      const [offers, stores, groceries] = await Promise.all([
         onlineResource.load({ category, localityId: "" }, signal),
         storesResource.load({ category, localityId: locality.id }, signal),
+        category === "groceries" && basket.some(({ product }) => isGroceryChoice(product))
+          ? loadCatalogProducts({ category }, signal, false, () => {})
+          : undefined,
       ]);
-      const data = comparePublishedBasket(basket, offers, stores);
+      const eligibleOffers = groceries ? groupGroceryChoices(groceries.products, offers).offers : offers;
+      const data = comparePublishedBasket(basket, eligibleOffers, stores);
       setQuote({ key, data });
     } catch {
       setNotice("compareError");
@@ -323,9 +328,15 @@ function Main({ initialNotice, onErase }: {
     () => indexLowestPrices(catalog.prices, catalog.stores),
     [catalog.prices, catalog.stores, priceRevision],
   );
+  const catalogue = useMemo(
+    () => category === "groceries" ? groupGroceryChoices(catalog.products, catalog.online) : {
+      products: catalog.products, offers: catalog.online,
+    },
+    [catalog.products, catalog.online, category, priceRevision],
+  );
   const indicativePrices = useMemo(
-    () => indexIndicativePrices(catalog.online, category === "fuel" ? catalog.stores : undefined),
-    [catalog.online, catalog.stores, category, priceRevision],
+    () => indexIndicativePrices(catalogue.offers, category === "fuel" ? catalog.stores : undefined),
+    [catalogue.offers, catalog.stores, category, priceRevision],
   );
   const fuelResults = useMemo(() => category === "fuel"
     ? groupFuelResults(catalog.stores, fuelProduct?.id, priceIndex.branches, indicativePrices.chains)
@@ -338,17 +349,17 @@ function Main({ initialNotice, onErase }: {
     row.branchCount > 0 || row.stations.some(station => station.price !== undefined));
   const searchActive = searchOpen || Boolean(appliedQuery);
   const searchIndex = useMemo(() => searchActive
-    ? new Map(catalog.products.map(p => [p.id, productSearchText(p, displayName(p))]))
-    : undefined, [catalog.products, displayName, searchActive]);
+    ? new Map(catalogue.products.map(p => [p.id, productSearchText(p, displayName(p))]))
+    : undefined, [catalogue.products, displayName, searchActive]);
   const visible = useMemo(() => {
-    if (selectedProductId) return catalog.products.filter(p => p.id === selectedProductId);
+    if (selectedProductId) return catalogue.products.filter(p => p.id === selectedProductId);
     if (appliedQuery && searchIndex) {
       const tokens = appliedQuery.split(" ");
-      return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+      return catalogue.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
     }
-    const filtered = group ? catalog.products.filter(p => p.group_code === group) : catalog.products;
+    const filtered = group ? catalogue.products.filter(p => p.group_code === group) : catalogue.products;
     return prioritizePricedProducts(filtered, indicativePrices.products);
-  }, [catalog.products, group, appliedQuery, selectedProductId, searchIndex, indicativePrices.products]);
+  }, [catalogue.products, group, appliedQuery, selectedProductId, searchIndex, indicativePrices.products]);
   function refreshCatalogue() {
     catalog.refresh();
     setNotice("");
@@ -359,18 +370,18 @@ function Main({ initialNotice, onErase }: {
     setQuote(null);
   }
   const groups = useMemo(() => [...new Set(
-    catalog.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
-  )], [catalog.products]);
+    catalogue.products.map(p => p.group_code).filter((code): code is string => Boolean(code)),
+  )], [catalogue.products]);
   const groupNames: Record<string, MessageKey> = {"mobile":"groupMobile","major-appliances":"groupMajor","small-appliances":"groupSmall","tv-computing":"groupComputing","smart-home-mobility":"groupSmart","dairy-eggs":"groupDairy","bakery-breakfast":"groupBakery",produce:"groupProduce","meat-fish":"groupMeat",pantry:"groupPantry","spices-drinks":"groupSpices"};
   const suggestions = useMemo(() => {
     const normalizedQuery = searchText(query);
     if (!searchOpen || !normalizedQuery || !searchIndex) return [];
     const tokens = normalizedQuery.split(" ");
-    return catalog.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
-  }, [catalog.products, query, searchIndex, searchOpen]);
+    return catalogue.products.filter(p => matchesSearchText(searchIndex.get(p.id) ?? "", tokens));
+  }, [catalogue.products, query, searchIndex, searchOpen]);
   useEffect(() => setSuggestionLimit(tabBatchSize), [query, category]);
   function thumbnail(p: Product) {
-    const art = productArtwork(p);
+    const art = productArtwork(p.groceryAliases ? { ...p, name: p.groceryAliases[0] } : p);
     return <ProductThumbnail key={catalog.revision} id={p.id} name={displayName(p)}
       uri={p.image_url} representativeUri={art.code ? thumbnailUrls[art.code] : undefined}
       fallback={art.source} symbolic={art.symbolic} />;

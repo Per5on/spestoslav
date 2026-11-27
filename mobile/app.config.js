@@ -1,8 +1,9 @@
 const base = require("./app.json").expo;
 const preview = require("./preview.json");
+const { validLabel, isMixedLabel } = require("./scripts/preview-label.cjs");
 if (!/^[0-9]{3}$/.test(preview.sequence) || Number(preview.sequence) < 1)
   throw new Error("Invalid preview sequence");
-if (preview.label !== undefined && !/^\d+(?:\.\d+){0,2}(?:-hybrid)?$/.test(preview.label))
+if (preview.label !== undefined && !validLabel(preview.label))
   throw new Error("Invalid preview label");
 if (!/^\d+\.\d+\.\d+$/.test(preview.version))
   throw new Error("Invalid app version");
@@ -18,7 +19,7 @@ module.exports = {
   version: preview.version,
   android: {
     ...base.android,
-    package: preview.label?.endsWith("-hybrid") ? `${base.android.package}.hybrid` : base.android.package,
+    package: isMixedLabel(preview.label) ? `${base.android.package}.hybrid` : base.android.package,
     versionCode: Number(preview.sequence),
   },
   plugins: base.plugins.map(plugin => {

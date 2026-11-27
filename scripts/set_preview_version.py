@@ -13,9 +13,10 @@ def synchronize(sequence,version,check=False):
     if not re.fullmatch(r'\d+\.\d+\.\d+',version):raise ValueError('Use a semantic app version')
     source_path=ROOT/'mobile/preview.json'
     registry_path=ROOT/'docs/references/preview-sequence.json'
+    source=json.loads(source_path.read_text())
     registry=json.loads(registry_path.read_text())
     next_number=max(int(sequence),*(int(v['version'])+1 for v in registry['versions']))
-    values={source_path:{'sequence':sequence,'version':version}}
+    values={source_path:{**source,'sequence':sequence,'version':version}}
     registry['next_version']=f'{next_number:03d}'
     registry['metadata_source']='../../mobile/preview.json'
     values[registry_path]=registry

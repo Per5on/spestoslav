@@ -81,6 +81,8 @@ def test_1000_source_products_idempotency_groups_and_search():
     products = snapshot.json()["products"]
     assert len(products) == 1000
     assert all(p["source_url"] == "https://burlex.bg/kolkostruva/" for p in products)
+    categories_by_code = {p["source_product_code"]: p["source_category"] for p in data["products"]}
+    assert all(p["source_category"] == categories_by_code[p["source_product_code"]] for p in products)
     assert len({p["id"] for p in products}) == 1000
     groups = fixtures.client.get("/api/v1/grocery/groups").json()
     assert len(groups) == 6 and sum(g["count"] for g in groups) == 1000
@@ -89,7 +91,7 @@ def test_1000_source_products_idempotency_groups_and_search():
         "/api/v1/products",
         params={"q": target["name"], "group_code": target["group_code"]},
     ).json()
-    assert target["id"] in [p["id"] for p in found]
+    assert target in found
     assert fixtures.client.get("/api/v1/products", params={"q": "%_"}).json() == []
 
 

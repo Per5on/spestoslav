@@ -15,6 +15,8 @@ export type Product = {
   group_code?: string | null;
   source_url?: string | null;
   source_product_code?: string | null;
+  source_category?: string | null;
+  groceryAliases?: string[];
 };
 export const MAX_BASKET_ITEMS = 100;
 export type BasketItem = { product: Product; quantity: number };
@@ -276,7 +278,7 @@ export function searchText(value: string) {
 }
 export function productSearchText(p: Product, name = productName(p)) {
   return searchText([
-    name, p.package_quantity == null ? "" : Number(p.package_quantity), p.package_unit,
+    name, ...(p.groceryAliases ?? []), p.package, p.package_quantity == null ? "" : Number(p.package_quantity), p.package_unit,
   ].filter(Boolean).join(" "));
 }
 

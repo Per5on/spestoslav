@@ -1,10 +1,14 @@
 # Спестовник — ongoing project handoff
 
-Updated: **26 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
+Updated: **27 November 2026 (Europe/Sofia)**. Project status: **ACTIVE**.
 
 This is the continuing project. Read this checkpoint, `PROJECT_STATUS.md` and the newest `ACTIVITY_LOG.md` entry first; do not restart by rereading old conversations. Handoff files preserve continuity; they do not run a background coding process by themselves.
 
 
+
+### 27 November 2026 — alpha2M and the live price feed
+
+The production publisher runs every four hours. The first live run served four grocery and six technology offers. The `alpha2M` source candidate uses build 019 and app 0.5.12. Before device acceptance, roll out the additive grocery catalogue metadata and obtain explicit approval for signed ARM APK packaging. Measuring native scanner and startup performance still requires a same-device comparison. [Current verification](PROJECT_STATUS.md#current-checkpoint--27-november-2026) · [Production refresh](https://github.com/Per5on/spestoslav/actions/runs/45964615435)
 
 ### 26 November 2026 — hybrid pricing recovery
 

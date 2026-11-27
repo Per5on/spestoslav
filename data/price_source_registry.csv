@@ -1,2 +1,12 @@
 source_code,category_code,source_kind,website_url,api_docs_url,source_checked_at,collection_status
 fuelo,fuel,AGGREGATOR,https://bg.fuelo.net/prices/date/,https://developers.fuelo.net/docs,2026-11-14,ADAPTER_READY_REQUIRES_API_KEY_AND_REVIEWED_STATION_MAPPING
+karai,fuel,INDEX,https://karai.bg/fuel-prices/indeks,https://karai.bg/api/fuel-prices,2026-11-27,CONDITIONAL_SECONDARY_REJECT_INCONSISTENT_DATES
+t_market,groceries,RETAILER,https://tmarketonline.bg/,,2026-11-27,LIVE_PILOT_RENEWAL_PENDING
+bulmag,groceries,RETAILER,https://bulmag.org/,,2026-11-27,LIVE_PILOT_RENEWAL_PENDING
+burlex,groceries,RETAILER,https://burlex.bg/,,2026-11-26,BRANCH_OBSERVATIONS_ONLY
+techmart,technology,RETAILER,https://techmart.bg/,,2026-11-27,LIVE_PILOT_RENEWAL_PENDING
+ardes,technology,RETAILER,https://ardes.bg/,,2026-11-27,LIVE_PILOT_RENEWAL_PENDING
+broshura,groceries,RETAILER_MIRROR,https://www.broshura.bg/h/80630-t-market,,2026-11-27,CANDIDATE_REUSE_PERMISSION_AND_OFFER_SCOPE
+broshura,technology,RETAILER_MIRROR,https://www.broshura.bg/obzor,,2026-11-27,CANDIDATE_REUSE_PERMISSION_AND_OFFER_SCOPE
+pazaruvaj,technology,RETAILER_MIRROR,https://www.pazaruvaj.com/,,2026-11-27,CANDIDATE_AUTHORIZED_TIMESTAMPED_FEED_NEEDED
+kolkostruva,groceries,REGULATOR,https://kolkostruva.bg/opendata,,2026-11-27,OPEN_DATA_BRANCH_OBSERVATIONS_ONLY

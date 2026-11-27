@@ -4,7 +4,9 @@ Updated: 27 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 ## Current checkpoint — 27 November 2026
 
-The hybrid publisher and scheduled comparison check are pending source-commit approval. Direct publication collected four grocery and six technology offers. The isolated API confirmed 2-retailer comparisons in Варна for София Мел flour and the Xiaomi Redmi A7 Pro. The public API returned zero current grocery or technology offers. The default branch still needs recurring publication, restricted connection configuration and the additive BulMag store seed. An inconsistent date from KARAI prevented the latest fuel ingestion. [Comparison and rollout evidence](HYBRID_PREVIEW.md#27-november--two-retailer-comparison-and-production-rollout)
+The production publisher is active on `main` every four hours after PR 28 merged. The first live run refreshed six offers and the public API served four grocery and six technology offers in total. Two-retailer comparisons passed for groceries in Варна and technology across three localities. T MARKET and Ardes still depend on earlier valid offers when the hosted fetch misses. Keep direct retailer sources primary and third-party sources on standby. [Production PR](https://github.com/Per5on/spestoslav/pull/28) · [First live refresh](https://github.com/Per5on/spestoslav/actions/runs/45964615435)
+
+The owner approved the `alpha2M` source checkpoint, Android candidate 019 and app 0.5.12. The mixed package ID remains `bg.spestoslav.preview.hybrid`. The live product catalogue still needs the new grocery `source_category` field for full descriptive grouping. Signed APK packaging awaits separate approval. After packaging, compare the scanner and start-up timings against build 017 on the same ARM device.
 
 ## Preview 10.9.1 bug-fix release
 
