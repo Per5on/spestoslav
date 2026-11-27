@@ -1,4 +1,4 @@
-import type { OnlinePrice, Product } from "./model";
+import type { ComparableOffer, Product } from "./model";
 
 const prefix = "grocery-choice:";
 export const isGroceryChoice = (product: Product) => product.id.startsWith(prefix);
@@ -57,7 +57,7 @@ function family(product: Product) {
   };
 }
 
-export function groupGroceryChoices(products: Product[], offers: OnlinePrice[], now = Date.now()) {
+export function groupGroceryChoices(products: Product[], offers: ComparableOffer[], now = Date.now()) {
   const definitions = new Map(products.flatMap(product => {
     if (product.category_code !== "groceries" || product.is_demo) return [];
     const match = family(product);
@@ -68,7 +68,7 @@ export function groupGroceryChoices(products: Product[], offers: OnlinePrice[], 
   const retailers = new Map<string, Set<string>>();
   for (const offer of offers) {
     const match = definitions.get(offer.product_id);
-    if (!match || offer.price_scope !== "NATIONAL_ONLINE" || !(Date.parse(offer.valid_until) > now) ||
+    if (!match || !(Date.parse(offer.valid_until) > now) ||
         !Number.isFinite(Number(offer.price_eur)) || Number(offer.price_eur) <= 0) continue;
     const chains = retailers.get(match.variant) ?? new Set<string>();
     chains.add(offer.retailer_code);

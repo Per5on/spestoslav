@@ -1,0 +1,16 @@
+{
+  "retailer_code": "moyat_magazin",
+  "price_kind": "RETAILER_PROMO_MAXIMUM",
+  "valid_from": "2026-11-23T00:00:00+02:00",
+  "valid_until": "2026-12-07T00:00:00+02:00",
+  "branch_source": "https://www.moiatmagazin.bg/magazini",
+  "source_url": "https://www.moiatmagazin.bg/-/media/Project/Traders/BG_B2C/Offers/2026/11-November/23-11-06-12-2026/MM24_1046819_MyStore-Catalog_Release_Web.pdf?rev=093587ac235240508b7d4d5d1744c0c5&sc_lang=bg-BG&hash=8F6CAA389D680A17841D935C68D854A5",
+  "offers": [
+    {
+      "catalogue_code": "303619",
+      "product": "Deutsche Markenbutter, 250 г",
+      "price_eur": "1.69",
+      "page": 1
+    }
+  ]
+}

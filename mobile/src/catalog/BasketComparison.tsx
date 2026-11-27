@@ -34,6 +34,8 @@ export function BasketComparison({ comparison, basket, productLabel }: {
         const header = <>
           <View style={{ flex: 1 }}>
             <Text style={s.productName}>{name}</Text>
+            {quote.items.some(item => item.promotional_maximum) &&
+              <Text style={s.meta}>{t("promotionalMaximum")}</Text>}
           </View>
           <View style={{ flexShrink: 1 }}>
             <Text style={quote.complete ? s.price : s.meta}>{total}</Text>
@@ -56,7 +58,7 @@ export function BasketComparison({ comparison, basket, productLabel }: {
                     ? t("missingPrices") : prices.format(Number(item.subtotal_eur))}</Text>
                 </View>
                 {item.unit_price_eur !== null &&
-                  <Text style={s.meta}>{t("packagePrice")} {prices.format(Number(item.unit_price_eur))}
+                  <Text style={s.meta}>{t(item.promotional_maximum ? "promotionalMaximum" : "packagePrice")} {prices.format(Number(item.unit_price_eur))}
                   </Text>}
               </View>
             ))}

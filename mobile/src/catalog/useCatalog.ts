@@ -106,11 +106,14 @@ export function useCatalog(
     const loadLocal = async (id: string) => {
       const scope = { category, localityId: id };
       const fuelPrices = includePrices && category === "fuel";
+      const storesRead = storesResource.load(scope, signal, force, rows => show("stores", rows));
+      const readPrices = () => pricesResource.load(scope, signal, force, rows => show("prices", rows))
+        .then(rows => show("prices", rows));
       const [stores, prices, online] = await Promise.allSettled([
-        storesResource.load(scope, signal, force, rows => show("stores", rows))
-          .then(rows => show("stores", rows)),
-        fuelPrices ? pricesResource.load(scope, signal, force, rows => show("prices", rows))
-          .then(rows => show("prices", rows)) : Promise.resolve(),
+        storesRead.then(rows => show("stores", rows)),
+        fuelPrices ? readPrices() : category === "groceries" && includePrices
+          ? storesRead.then(rows => rows.some(row => row.retailer_code === "moyat_magazin") ? readPrices() : undefined)
+          : Promise.resolve(),
         fuelPrices ? onlineResource.load(scope, signal, force, rows => show("online", rows))
           .then(rows => show("online", rows)) : Promise.resolve(),
       ]);
@@ -118,7 +121,7 @@ export function useCatalog(
       if (stores.status === "rejected") setStoreError("storesError");
       else if (prices.status === "rejected" || online.status === "rejected") setStoreError("pricesError");
     };
-    const localRead = localityId && (category === "fuel" || !includePrices)
+    const localRead = localityId && (category !== "technology" || !includePrices)
       ? loadLocal(localityId)
       : category === "fuel"
         ? fuelChainsResource.load({ category, localityId: "" }, signal, force, showChains)

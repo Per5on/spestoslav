@@ -38,6 +38,7 @@ import {
   type Retailer,
   changeQuantity,
   comparePublishedBasket,
+  moyatMagazinOffers,
   type Comparison,
   restoreBasket,
   indexLowestPrices, indexIndicativePrices, groupFuelResults,
@@ -47,7 +48,7 @@ import {
   productName,
 } from "./src/catalog/model";
 import { groupGroceryChoices, isGroceryChoice } from "./src/catalog/groceryChoices";
-import { loadCatalogProducts, onlineResource, storesResource, type Category } from "./src/catalog/catalogData";
+import { loadCatalogProducts, onlineResource, pricesResource, storesResource, type Category } from "./src/catalog/catalogData";
 import { enableCatalogSync } from "./src/catalog/backgroundSync";
 import { useCatalog } from "./src/catalog/useCatalog";
 import { Language, languages, MessageKey } from "./src/i18n";
@@ -288,14 +289,19 @@ function Main({ initialNotice, onErase }: {
     setComparing(true);
     setNotice("");
     try {
-      const [offers, stores, groceries] = await Promise.all([
+      const scope = { category, localityId: locality.id } as const;
+      const storesRead = storesResource.load(scope, signal);
+      const [offers, stores, groceries, localPrices] = await Promise.all([
         onlineResource.load({ category, localityId: "" }, signal),
-        storesResource.load({ category, localityId: locality.id }, signal),
+        storesRead,
         category === "groceries" && basket.some(({ product }) => isGroceryChoice(product))
           ? loadCatalogProducts({ category }, signal, false, () => {})
           : undefined,
+        category === "groceries" ? storesRead.then(rows => rows.some(row => row.retailer_code === "moyat_magazin")
+          ? pricesResource.load(scope, signal).catch(() => []) : []) : [],
       ]);
-      const eligibleOffers = groceries ? groupGroceryChoices(groceries.products, offers).offers : offers;
+      const localOffers = [...offers, ...moyatMagazinOffers(localPrices, stores)];
+      const eligibleOffers = groceries ? groupGroceryChoices(groceries.products, localOffers).offers : localOffers;
       const data = comparePublishedBasket(basket, eligibleOffers, stores);
       setQuote({ key, data });
     } catch {
@@ -329,10 +335,11 @@ function Main({ initialNotice, onErase }: {
     [catalog.prices, catalog.stores, priceRevision],
   );
   const catalogue = useMemo(
-    () => category === "groceries" ? groupGroceryChoices(catalog.products, catalog.online) : {
+    () => category === "groceries" ? groupGroceryChoices(catalog.products,
+      [...catalog.online, ...moyatMagazinOffers(catalog.prices, catalog.stores)]) : {
       products: catalog.products, offers: catalog.online,
     },
-    [catalog.products, catalog.online, category, priceRevision],
+    [catalog.products, catalog.online, catalog.prices, catalog.stores, category, priceRevision],
   );
   const indicativePrices = useMemo(
     () => indexIndicativePrices(catalogue.offers, category === "fuel" ? catalog.stores : undefined),
@@ -404,6 +411,8 @@ function Main({ initialNotice, onErase }: {
               ? t(catalog.onlineError ? "priceUnavailable" : "noPrice")
               : `${t("from")} ${price.toFixed(2)} €`}
           </Text>
+          {price !== null && indicativePrices.promotionalMaxima.has(p.id) &&
+            <Text style={s.meta}>{t("promotionalMaximum")}</Text>}
         </View>
         <AddButton
           name={displayName(p)}

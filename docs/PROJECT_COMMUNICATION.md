@@ -246,3 +246,9 @@ The owner wrote:
 ## 27 November 2026 — alpha2M source approval
 
 - The owner approved the first scheduled renewal check and the second mixed-architecture alpha source commit after verification. The approved label is `alpha2M`. APK packaging still needs separate approval.
+- The owner subsequently approved the signed `alpha2M` APK only after the scheduled price renewal is verified and the remaining pre-build checks pass. The grocery metadata rollout passed. The first scheduled renewal remains the sole pre-build gate.
+
+- The owner confirmed that „Моят магазин“ should retain its available localities and actual branch-level prices where those can be sourced. Use the official locator for branch addresses. The franchise's promotional maximums do not establish an outlet's actual selling price.
+- The owner clarified that when a local „Моят магазин“ price is unavailable, the app must use the current official recommended promotional maximum wherever the brochure applies. Actual branch prices take precedence. The maximum carries its own label and campaign expiry.
+
+- The owner approved the updated alpha2M APK source with the „Моят магазин“ fallback. The scheduled price renewal and exact-commit checks are still required before packaging.

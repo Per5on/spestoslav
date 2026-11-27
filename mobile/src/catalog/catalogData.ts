@@ -190,8 +190,8 @@ export const pricesResource = catalogResource<Price>("prices",
         !Number.isFinite(Number(row.price_eur)) || Number(row.price_eur) <= 0) return [];
     const expiry = row.expires_at ?? new Date(savedAt + day).toISOString();
     if (!(Date.parse(expiry) > now)) return [];
-    const { product_id, branch_id, price_eur, verified_at } = row;
-    return [{ product_id, branch_id, price_eur, verified_at, expires_at: expiry }];
+    const { product_id, branch_id, price_eur, verified_at, source } = row;
+    return [{ product_id, branch_id, price_eur, verified_at, expires_at: expiry, ...(source ? { source } : {}) }];
   }),
 );
 

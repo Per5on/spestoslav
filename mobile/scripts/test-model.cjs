@@ -14,6 +14,7 @@ new Function("exports", "require", "module", source)(
 const {
   changeQuantity,
   comparePublishedBasket,
+  moyatMagazinOffers,
   restoreBasket,
   lowestPrice,
   indexIndicativePrices,
@@ -46,6 +47,18 @@ const onlineOffer = {
   product_id: "p1", retailer_code: "local", price_eur: "2.99",
   valid_until: "2026-11-23T12:00:00Z", price_scope: "NATIONAL_ONLINE",
 };
+const franchiseStores = [{ id: "moyat-a", retailer_code: "moyat_magazin" },
+  { id: "moyat-b", retailer_code: "moyat_magazin" }];
+const maximum = { product_id: "p1", branch_id: "moyat-a", price_eur: 1.69,
+  source: "RETAILER_PROMO_MAXIMUM", verified_at: "2026-11-23T09:00:00Z", expires_at: onlineOffer.valid_until };
+const maxima = moyatMagazinOffers([maximum, { ...maximum, branch_id: "out-of-town" }], franchiseStores, refreshTime);
+assert.equal(maxima.length, 1);
+assert.equal(maxima[0].price_scope, "PROMOTIONAL_MAXIMUM");
+assert.equal(indexIndicativePrices(maxima, franchiseStores, refreshTime).promotionalMaxima.has("p1"), true);
+assert.equal(comparePublishedBasket([{ product: { id: "p1" }, quantity: 2 }], maxima, franchiseStores, refreshTime).cheapest.items[0].promotional_maximum, true);
+const actual = moyatMagazinOffers([{ ...maximum, branch_id: "moyat-b", source: "LOCAL", price_eur: 2.39 }], franchiseStores, refreshTime);
+assert.equal(comparePublishedBasket([{ product: { id: "p1" }, quantity: 2 }], [...maxima, ...actual], franchiseStores, refreshTime).cheapest.total_eur, "4.7800");
+assert.equal(moyatMagazinOffers([maximum], franchiseStores, Date.parse(onlineOffer.valid_until)).length, 0);
 assert.deepEqual([...indexIndicativePrices([
   onlineOffer,
   { ...onlineOffer, retailer_code: "other-city", price_eur: "1.01" },

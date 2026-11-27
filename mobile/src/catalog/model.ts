@@ -33,6 +33,7 @@ export type Price = {
   price_eur: number;
   verified_at: string;
   expires_at?: string | null;
+  source?: string;
 };
 export type OnlinePrice = {
   product_id: string;
@@ -42,22 +43,53 @@ export type OnlinePrice = {
   source_reference?: string;
   price_scope: "NATIONAL_ONLINE";
 };
+export type ComparableOffer = Omit<OnlinePrice, "price_scope"> & {
+  price_scope: "NATIONAL_ONLINE" | "BRANCH" | "PROMOTIONAL_MAXIMUM";
+};
 
-export function indexIndicativePrices(offers: OnlinePrice[], stores?: Store[], now = Date.now()) {
+export function moyatMagazinOffers(rows: Price[], stores: Store[], now = Date.now()): ComparableOffer[] {
+  const franchise = new Set(stores.filter(store => store.retailer_code === "moyat_magazin").map(store => store.id));
+  return rows.flatMap(row => {
+    if (!franchise.has(row.branch_id) || !(Date.parse(row.verified_at) <= now) ||
+        !Number.isFinite(row.price_eur) || row.price_eur <= 0) return [];
+    const maximum = row.source === "RETAILER_PROMO_MAXIMUM";
+    if (maximum && !row.expires_at) return [];
+    const expiry = row.expires_at ?? "9999-12-31T00:00:00Z";
+    if (!(Date.parse(expiry) > now)) return [];
+    return [{ product_id: row.product_id, retailer_code: "moyat_magazin", price_eur: String(row.price_eur),
+      valid_until: expiry, price_scope: maximum ? "PROMOTIONAL_MAXIMUM" : "BRANCH" }];
+  });
+}
+
+export function indexIndicativePrices(offers: ComparableOffer[], stores?: Store[], now = Date.now()) {
   const retailers = stores && new Set(stores.map(store => store.retailer_code));
   const products = new Map<string, number>();
-  const chains = new Map<string, Map<string, OnlinePrice>>();
+  const chains = new Map<string, Map<string, ComparableOffer>>();
   for (const row of offers) {
     const price = Number(row.price_eur);
-    if (row.price_scope !== "NATIONAL_ONLINE" || (retailers && !retailers.has(row.retailer_code)) ||
+    if ((retailers && !retailers.has(row.retailer_code)) ||
         !Number.isFinite(price) || price <= 0 || !(Date.parse(row.valid_until) > now)) continue;
-    products.set(row.product_id, Math.min(price, products.get(row.product_id) ?? Infinity));
-    const chain = chains.get(row.retailer_code) ?? new Map<string, OnlinePrice>();
+    const chain = chains.get(row.retailer_code) ?? new Map<string, ComparableOffer>();
     const previous = chain.get(row.product_id);
-    if (!previous || price < Number(previous.price_eur)) chain.set(row.product_id, row);
+    const maximum = row.price_scope === "PROMOTIONAL_MAXIMUM";
+    const previousMaximum = previous?.price_scope === "PROMOTIONAL_MAXIMUM";
+    if (!previous || (previousMaximum && !maximum) || (previousMaximum === maximum && price < Number(previous.price_eur))) {
+      chain.set(row.product_id, row);
+    }
     chains.set(row.retailer_code, chain);
   }
-  return { products, chains };
+  const promotionalMaxima = new Set<string>();
+  chains.forEach(chain => chain.forEach((row, id) => {
+    const price = Number(row.price_eur);
+    const previous = products.get(id) ?? Infinity;
+    const maximum = row.price_scope === "PROMOTIONAL_MAXIMUM";
+    if (price < previous || (price === previous && !maximum)) {
+      products.set(id, price);
+      if (maximum) promotionalMaxima.add(id);
+      else promotionalMaxima.delete(id);
+    }
+  }));
+  return { products, chains, promotionalMaxima };
 }
 
 type OnlineQuoteItem = {
@@ -65,6 +97,7 @@ type OnlineQuoteItem = {
   quantity: number;
   unit_price_eur: string | null;
   subtotal_eur: string | null;
+  promotional_maximum?: boolean;
 };
 type OnlineQuote = {
   retailer_code: string;
@@ -75,7 +108,7 @@ type OnlineQuote = {
 };
 export type Comparison = { quotes: OnlineQuote[]; cheapest: OnlineQuote | null; quoted_at: string };
 
-export function comparePublishedBasket(basket: BasketItem[], offers: OnlinePrice[], localStores: Store[], now = Date.now()): Comparison {
+export function comparePublishedBasket(basket: BasketItem[], offers: ComparableOffer[], localStores: Store[], now = Date.now()): Comparison {
   const { chains } = indexIndicativePrices(offers, localStores, now);
   const names = new Map(localStores.map(store => [store.retailer_code, store.retailer_name]));
   // National offers have at most four decimal places. Multiply in integer
@@ -100,6 +133,7 @@ export function comparePublishedBasket(basket: BasketItem[], offers: OnlinePrice
       return {
         product_id: product.id, quantity, unit_price_eur: toEUR(amount),
         subtotal_eur: toEUR(subtotal),
+        ...(offer.price_scope === "PROMOTIONAL_MAXIMUM" ? { promotional_maximum: true } : {}),
       };
     });
     const quote: OnlineQuote = {
@@ -120,12 +154,12 @@ export function groupFuelResults(
   stores: Store[],
   productId: string | undefined,
   branchPrices: ReadonlyMap<string, ReadonlyMap<string, number>>,
-  chainPrices: ReadonlyMap<string, ReadonlyMap<string, OnlinePrice>>,
+  chainPrices: ReadonlyMap<string, ReadonlyMap<string, ComparableOffer>>,
 ) {
   type FuelResult = {
     key: string;
     name: string;
-    estimate?: OnlinePrice;
+    estimate?: ComparableOffer;
     branchCount: number;
     stations: { store: Store; price: number | undefined }[];
   };

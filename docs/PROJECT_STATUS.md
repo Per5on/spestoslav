@@ -6,7 +6,9 @@ Updated: 27 November 2026 (Europe/Sofia). Project **ACTIVE**. Canonical continua
 
 The production publisher is active on `main` every four hours after PR 28 merged. The first live run refreshed six offers and the public API served four grocery and six technology offers in total. Two-retailer comparisons passed for groceries in Варна and technology across three localities. T MARKET and Ardes still depend on earlier valid offers when the hosted fetch misses. Keep direct retailer sources primary and third-party sources on standby. [Production PR](https://github.com/Per5on/spestoslav/pull/28) · [First live refresh](https://github.com/Per5on/spestoslav/actions/runs/45964615435)
 
-The owner approved the `alpha2M` source checkpoint, Android candidate 019 and app 0.5.12. The mixed package ID remains `bg.spestoslav.preview.hybrid`. The live product catalogue still needs the new grocery `source_category` field for full descriptive grouping. Signed APK packaging awaits separate approval. After packaging, compare the scanner and start-up timings against build 017 on the same ARM device.
+The owner approved the `alpha2M` source checkpoint, Android candidate 019 and app 0.5.12. The mixed package ID remains `bg.spestoslav.preview.hybrid`. The grocery metadata is live and the candidate displayed both price comparisons in Варна using production data. The owner conditionally approved the signed build after the first scheduled renewal is verified. The follow-up watch checks that gate before dispatching the exact approved source. After packaging, compare the scanner and start-up timings against build 017 on the same ARM device. [Backend rollout](https://github.com/Per5on/spestoslav/pull/29)
+
+The later „Моят магазин“ requirement adds a labelled brochure maximum when a local selling price is missing. The first exact-match offer is live in the API at €1.69 for 250 g Deutsche Markenbutter through 6 December. The Android fallback passed local browser verification and the owner approved the updated source. Packaging remains conditional on exact-commit CI and successful scheduled price renewal.
 
 ## Preview 10.9.1 bug-fix release
 

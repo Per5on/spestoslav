@@ -4,6 +4,8 @@ This lists the recorded Android previews and pre-alpha and beta candidates throu
 
 ## alpha2M · second mixed-architecture alpha · candidate 019 · app 0.5.12
 
+- Follow-up candidate for „Моят магазин“ uses the current brochure's labelled promotional maximum for a listed branch with no local selling price. Local prices take precedence and brochure prices expire with the campaign. The initial exact catalogue match is Deutsche Markenbutter 250 g at €1.69 through 6 December 2026.
+
 - In the grocery candidate, variants carried by up to two chains can appear under one descriptive name. Package quantities and egg sizes remain separate. Each retailer quote uses its lowest eligible published offer.
 - Selecting a suggestion shows the exact product in „Храни“ or „Техника“. Enter shows all matches. Basket actions stay on catalogue cards.
 - Load still-valid cached online prices first and check twice daily, using 06:00 and 18:00 Sofia windows. Basket comparisons include only chains present in the selected locality.
