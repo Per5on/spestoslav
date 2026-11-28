@@ -6,19 +6,27 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from decimal import Decimal
 import json
+from time import sleep
 
 import httpx
 
 PRODUCT_CATEGORIES = ("groceries", "technology")
+RETRYABLE_READ_STATUSES = {408, 500, 502, 503, 504}
 
 
 def read(client, path, **params):
-    try:
-        response = client.get(path, params=params)
-    except httpx.TransportError:
-        response = client.get(path, params=params)
-    response.raise_for_status()
-    return response.json()
+    for delay in (1, 2, None):
+        try:
+            response = client.get(path, params=params)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPStatusError as exc:
+            if delay is None or exc.response.status_code not in RETRYABLE_READ_STATUSES:
+                raise
+        except httpx.TransportError:
+            if delay is None:
+                raise
+        sleep(delay)
 
 
 def directory(client):

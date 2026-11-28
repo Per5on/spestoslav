@@ -19,6 +19,7 @@ import psycopg
 from check_daily_prices import attempt, product_offers
 import collect_karai_fuel_offers as karai
 import collect_techmart_offers as techmart
+from verify_price_coverage import read
 
 CATEGORIES = ("groceries", "technology", "fuel")
 DATA = Path(__file__).resolve().parents[1] / "data"
@@ -225,12 +226,11 @@ def check_published_feed(client, api_base, category, batches):
     if not total:
         raise ValueError("No online offers to verify")
     for offset in range(0, 10000, 100):
-        response = client.get(
+        rows = read(
+            client,
             api_base.rstrip("/") + "/api/v1/national-offers",
-            params={"category_code": category, "limit": 100, "offset": offset},
+            category_code=category, limit=100, offset=offset,
         )
-        response.raise_for_status()
-        rows = response.json()
         expected.difference_update(
             (row["retailer_code"], row["source_reference"], Decimal(row["price_eur"]),
              datetime.fromisoformat(row["observed_at"]))
