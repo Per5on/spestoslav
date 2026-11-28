@@ -64,17 +64,20 @@ def github_worker(credentials: HTTPAuthorizationCredentials | None = Depends(bea
         raise HTTPException(401, "Invalid GitHub workload identity") from None
     # Immutable IDs prevent namespace/repository takeover. Both documented
     # subject formats are accepted only with the same immutable IDs and ref.
+    worker_repository = {
+        "Per5on/spestoslav/.github/workflows/backend-workers.yml@refs/heads/main": "spestoslav",
+        "Per5on/spestovnik/.github/workflows/backend-workers.yml@refs/heads/main": "spestovnik",
+    }.get(str(claims["workflow_ref"]))
     subjects = {
-        "repo:Per5on@162897472/spestoslav@1457549969:ref:refs/heads/main",
-        "repo:Per5on/spestoslav:ref:refs/heads/main",
+        f"repo:Per5on@162897472/{worker_repository}@1457549969:ref:refs/heads/main",
+        f"repo:Per5on/{worker_repository}:ref:refs/heads/main",
     }
     if (
         str(claims["repository_id"]) != "1457549969"
         or str(claims["repository_owner_id"]) != "162897472"
         or claims["sub"] not in subjects
         or claims["ref"] != "refs/heads/main"
-        or claims["workflow_ref"]
-        != "Per5on/spestoslav/.github/workflows/backend-workers.yml@refs/heads/main"
+        or worker_repository is None
         or claims["event_name"] not in ("schedule", "workflow_dispatch")
         or claims.get("runner_environment") != "github-hosted"
     ):

@@ -100,6 +100,28 @@ def test_oidc_worker_receives_only_a_leased_image_and_completes_once(identity):
 
 
 @pytest.mark.parametrize(
+    "subject",
+    [
+        "repo:Per5on/spestoslav:ref:refs/heads/main",
+        "repo:Per5on/spestovnik:ref:refs/heads/main",
+        "repo:Per5on@162897472/spestovnik@1457549969:ref:refs/heads/main",
+    ],
+)
+def test_worker_accepts_repository_rename_with_matching_subject(identity, subject):
+    repository = "spestovnik" if "spestovnik" in subject else "spestoslav"
+    authorization = identity(
+        sub=subject,
+        workflow_ref=f"Per5on/{repository}/.github/workflows/backend-workers.yml@refs/heads/main",
+    )
+    response = fixtures.client.post(
+        "/internal/receipt-worker/claim",
+        headers={"Authorization": "Bearer " + authorization},
+    )
+    assert response.status_code == 200
+    assert response.json() == {"job": None}
+
+
+@pytest.mark.parametrize(
     "change",
     [
         {"repository_id": "123"},
@@ -111,6 +133,12 @@ def test_oidc_worker_receives_only_a_leased_image_and_completes_once(identity):
         {"event_name": "pull_request"},
         {"runner_environment": "self-hosted"},
         {"sub": "repo:attacker/spestoslav:ref:refs/heads/main"},
+        {"sub": "repo:Per5on/spestovnik:ref:refs/heads/main"},
+        {
+            "sub": "repo:Per5on/spestovnik:ref:refs/heads/main",
+            "workflow_ref": "Per5on/spestovnik/.github/workflows/backend-workers.yml@refs/heads/main",
+            "repository_id": "123",
+        },
     ],
 )
 def test_other_repositories_branches_workflows_and_events_are_denied(identity, change):
