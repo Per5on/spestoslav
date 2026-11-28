@@ -13,6 +13,7 @@ import check_daily_prices as checks
 import collect_burlex_branch_prices as burlex
 import collect_karai_fuel_offers as karai
 import collect_storefront_offers as storefront
+import verify_price_coverage as coverage
 from verify_price_coverage import verify_category
 from refresh_live_prices import Batch, cache_batches, check_published_feed, collect_batches, combine_fuel_sources
 
@@ -85,7 +86,7 @@ def test_grocery_refresh_uses_direct_online_sku_and_skips_unavailable_products(m
     assert "store_branches" not in batch.statement
 
 
-def test_public_readback_rejects_old_or_missing_offers():
+def test_public_readback_retries_transient_errors_and_rejects_old_offers(monkeypatch):
     now = datetime.now(timezone.utc)
     stamp = now.isoformat()
     source = "https://tmarketonline.bg/product/zahar-sladeya-1kg"
@@ -95,16 +96,43 @@ def test_public_readback_rejects_old_or_missing_offers():
     result = {"retailer_code": "t_market", "source_reference": source,
               "price_eur": "1.3200", "observed_at": stamp, "price_scope": "NATIONAL_ONLINE"}
 
+    requests = []
+
+    delays = []
+    monkeypatch.setattr(coverage, "sleep", delays.append)
+
     def respond(request):
         assert request.url.params["category_code"] == "groceries"
+        requests.append(request)
+        if len(requests) == 1:
+            raise httpx.ReadTimeout("First read timed out", request=request)
+        if len(requests) == 2:
+            return httpx.Response(503)
         return httpx.Response(200, json=[result])
 
     with httpx.Client(transport=httpx.MockTransport(respond)) as client:
         assert check_published_feed(client, "https://api.example", "groceries", [batch]) == {"expected": 1, "served": 1}
+        assert [request.url for request in requests] == [requests[0].url] * 3
+        assert all(request.method == "GET" for request in requests)
+        assert delays == [1, 2]
         result["observed_at"] = (now - timedelta(hours=4)).isoformat()
         assert check_published_feed(client, "https://api.example", "groceries", [batch]) == {
             "ok": False, "expected": 1, "served": 0,
         }
+
+
+@pytest.mark.parametrize("status, expected_calls", [(503, 3), (404, 1)])
+def test_public_readback_fails_after_bounded_retries(monkeypatch, status, expected_calls):
+    calls = []
+    monkeypatch.setattr(coverage, "sleep", lambda delay: None)
+
+    def respond(request):
+        calls.append(request)
+        return httpx.Response(status)
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client, pytest.raises(httpx.HTTPStatusError):
+        coverage.read(client, "https://api.example")
+    assert len(calls) == expected_calls
 
 
 def test_public_release_check_requires_two_eligible_retailers_for_the_same_product():
